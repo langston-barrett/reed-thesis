@@ -1,0 +1,46 @@
+\documentclass{book}
+\input{./tex-preamble/general.tex}
+\input{./tex-preamble/math.tex}
+\usepackage{prftree}
+\begin{document}
+\title{Type Theory and Functional Programming: \\ Solutions to Exercises}
+\author{Langston Barrett}
+\date{\today}
+\maketitle
+
+\chapter{Introduction to Logic}
+\section{Predicate Logic}
+
+\subsection*{1.14}
+\begin{displaymath}
+  \prftree[r]{$\scriptstyle\implies I_{\prfref<assum:root>}$}
+    {\prftree[r]{$\scriptstyle\implies I_{\prfref<assum:existsx>}$}
+      {\prftree[r]{$\scriptstyle\exists\mathrm{E}_{\prfref<assum:Ax>}$}
+        {\prfboundedassumption<assum:existsx>{\exists x.A(x)}}
+        {\prftree[r]{$\scriptstyle\implies\mathrm{E}$}
+          {\prfboundedassumption<assum:Ax>{A(x)}}
+          {\prftree[r]{$\scriptstyle\forall\mathrm{E}$}
+            {\prfboundedassumption<assum:root>{\forall x.(A(x)\implies B)}}
+            {A(x)\implies B}}
+          {B}}
+        {B}}
+      {\exists x.A(x)\implies B}}
+    {(\forall x.(A(x)\implies B))\implies (\exists x.A(x)\implies B)}
+\end{displaymath}
+
+\begin{displaymath}
+  \prftree[r]{$\scriptstyle\implies\mathrm{I}_{}$}
+    {\prftree[r]{$\scriptstyle\forall\mathrm{I}_{}$}
+      {\prftree[r]{$\scriptstyle\implies\mathrm{I}$}
+        {\prftree[r]{$\scriptstyle\implies\mathrm{E}$}
+          {\prfboundedassumption<assum:impl>{\exists x.A(x)\implies B}}
+          {\prftree[r]{$\scriptstyle\exists\mathrm{I}$}
+            {\prfboundedassumption<assum:ax>{A(x)}}
+            {\exists x.A(x)}}
+          {B}}
+        {A(x)\implies B}}
+      {\forall x.(A(x)\implies B)}}
+    {(\exists x.A(x)\implies B)\implies (\forall x.(A(x)\implies B))}
+\end{displaymath}
+
+\end{document}

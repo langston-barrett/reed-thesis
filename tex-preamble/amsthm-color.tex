@@ -1,0 +1,21 @@
+% Theorems, proofs, and other mathematical environments in Technicolor
+
+\usepackage{amsthm}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{\color{theorems}Theorem}[subsection]
+\newtheorem*{theorem*}{\color{theorems}Theorem}
+\newtheorem{lemma}[theorem]{\color{lemmas}Lemma}
+\newtheorem*{lemma*}{\color{lemmas}Lemma}
+\newtheorem{corollary}[theorem]{\color{corrolaries}Corollary}
+\newtheorem*{corollary*}{\color{corrolaries}Corollary}
+
+\theoremstyle{definition} % these are the non-italicized
+\newtheorem{eqenv}[theorem]{\color{equations}Equation}
+\newtheorem*{eqenv*}{\color{equations}Equation}
+\newtheorem{remark}[theorem]{\color{remarks}Remark}
+\newtheorem*{remark*}{\color{remarks}Remark}
+\newtheorem{example}[theorem]{\color{examples}Example}
+\newtheorem*{example*}{\color{examples}Example}
+\newtheorem{definition}[theorem]{\color{definitions}Definition}
+\newtheorem*{definition*}{\color{definitions}Definition}

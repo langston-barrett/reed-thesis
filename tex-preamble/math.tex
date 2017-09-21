@@ -1,0 +1,153 @@
+%% math symbols, notation, etc
+\usepackage{amssymb}       % math characters
+\usepackage{mathtools}     % improvement on amsmath
+
+% Use better math fonts when available
+\IfFileExists{../tex-preamble/fonts/latinmodern-math.otf}
+  {\newcommand{\fontpath}{../tex-preamble/fonts}}
+  {\newcommand{\fontpath}{../../tex-preamble/fonts}}
+
+\IfFileExists{\fontpath}{
+  \usepackage{unicode-math}         % use OTF math fonts
+  \AtBeginDocument{\let\phi\varphi} % varphi with unicode-math
+  %\AtBeginDocument{\let\epsilon\varepsilon}
+  \setmathfont[Path=\fontpath]{latinmodern-math.otf}
+  \setmathfont[Path=\fontpath,range=\setminus]{Asana-Math.otf}
+  \setmathfont[Path=\fontpath,range=\mathbb]{texgyretermes-math.otf}
+  \setmathfont[Path=\fontpath,range=\mathcal]{latinmodern-math.otf}
+
+  % fix xmapsto. only works with text above.
+  % https://github.com/wspr/unicode-math/issues/197
+  \ExplSyntaxOn
+  \RenewDocumentCommand \xmapsto { m } {
+    \mathrel {
+      \exp_after:wN \Uoverdelimiter \cs:w sym \__um_symfont_tl \cs_end: "21A6 {
+        \mkern 5mu \scan_stop: #1 \mkern 5mu \scan_stop:
+      }
+    }
+  }
+  \ExplSyntaxOff
+}{}
+
+% general stuff
+\newcommand{\units}[1]{\;\mathrm{#1}}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\ov}{\overline}
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\braces}[1]{\left\{#1\right\}}
+\newcommand{\brackets}[1]{\left[#1\right]}
+\newcommand{\ceiling}[1]{\left\lceil{} #1 \right\rceil}
+\newcommand{\floor}[1]{\left\lfloor{} #1 \right\rfloor}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\e}[1]{\cdot 10^{#1}}
+% \newcommand{\emf}{\mathcal{E}}
+\newcommand{\contradiction}{\Rightarrow\Leftarrow}
+\newcommand{\inv}[1]{\frac{1}{#1}}
+\newcommand{\tif}{\text{ if }}
+\newcommand{\totherwise}{\text{ otherwise }}
+% \newcommand{\mydef}{\textbf{Definition:}}
+% complex numbers
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\Re}{\operatorname{Re}}
+% sets
+\newcommand{\zn}{\mathbf{Z}_n}
+\newcommand{\zp}{\mathbf{Z}_p}
+\newcommand{\N}{\mathbf{N}}
+\newcommand{\Z}{\mathbf{Z}}
+\newcommand{\Q}{\mathbf{Q}}
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\C}{\mathbf{C}}
+% \C is a command (needs to be renewed) on XeLaTeX
+
+% operators/functions
+\DeclareMathOperator{\ord}{ord}
+% \DeclareMathOperator{\image}{image}
+\DeclareMathOperator{\Int}{Int}
+\DeclareMathOperator{\Ext}{Ext}
+\DeclareMathOperator{\Lim}{Lim}
+\DeclareMathOperator{\Bd}{Bd}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\proj}{proj}
+\DeclareMathOperator{\xor}{xor}
+\DeclareMathOperator{\spanf}{span}
+\DeclareMathOperator{\id}{id}
+% linear
+\DeclareMathOperator{\col}{Col}
+\DeclareMathOperator{\row}{Row}
+\DeclareMathOperator{\nul}{Nul}
+\DeclareMathOperator{\rank}{rank}
+
+% set theory
+\newcommand{\xlongmapsto}[1]{\xmapsto{\,\,\, #1\,\,\,}}
+\newcommand{\xlongrightarrow}[1]{\xrightarrow{\,\,\, #1\,\,\,}}
+\newcommand{\union}{\mathop{\bigcup}}
+\newcommand{\disunion}{\mathop{\dot\bigcup}}
+\newcommand{\intersection}{\mathop{\bigcap}}
+\newcommand{\powerset}{\mathcal{P}}
+
+% analysis & calculus
+\usepackage{esint} % \oiint, etc
+\newcommand{\evalat}[2]{{\bigg|_{#1}^{#2}}}
+\newcommand{\ext}[1]{{#1}^{ext}}  % extension of function
+\DeclareMathOperator{\determinant}{det}
+\DeclareMathOperator{\oball}{B}
+\DeclareMathOperator{\cball}{\ov{B}}
+\DeclareMathOperator{\sphere}{S}
+\DeclareMathOperator{\divergence}{div}
+\DeclareMathOperator{\curl}{curl}
+
+% vectors
+\newcommand{\ihat}{\hat{\imath}}
+\newcommand{\jhat}{\hat{\jmath}}
+\newcommand{\khat}{\hat{k}}
+\newcommand{\lvec}[1]{\overrightarrow{#1}}
+\newcommand{\len}[1]{\left\| #1 \right\|}
+
+% topology
+\newcommand{\RP}{\ensuremath{\R\hspace{-0.07em}\mathrm{P}}}
+
+% categories
+\newcommand{\I}{\ensuremath{\mathbf{I}}} % "interval groupoid"
+\newcommand{\Cat}{\ensuremath{\mathcal{C}\mathrm{at}}}
+\newcommand{\ComGrp}{\ensuremath{\mathcal{C}\mathrm{om}\mathcal{G}\mathrm{rp}}}
+\newcommand{\AbGrp}{\ensuremath{\mathcal{A}\mathrm{b}\mathcal{G}\mathrm{rp}}}
+\newcommand{\Grp}{\ensuremath{\mathcal{G}\mathrm{rp}}}
+\newcommand{\Grpd}{\ensuremath{\mathcal{G}\mathrm{rpd}}}
+\newcommand{\Mod}{\ensuremath{\mathcal{M}\mathrm{od}}}
+\newcommand{\Man}{\ensuremath{\mathcal{M}\mathrm{an}}}
+\newcommand{\Metric}{\ensuremath{\mathcal{M}\mathrm{etric}}}
+\newcommand{\Set}{\ensuremath{\mathcal{S}\mathrm{et}}}
+\newcommand{\Top}{\ensuremath{\mathcal{T}\!\mathrm{op}}}
+\newcommand{\homoTop}{\ensuremath{\mathrm{homo}\mathcal{T}\mathrm{op}}}
+\newcommand{\Vect}{\ensuremath{\mathcal{V}\mathrm{ect}}}
+\renewcommand{\phi}{\varphi}
+
+% number theory
+\newcommand{\modulus}[1]{\; \left(\mathrm{mod}\; #1\right)}
+\newcommand{\crash}[2]{\left(\frac{#1}{#2}\right)}
+\newcommand{\QED}{\begin{flushright}QED\end{flushright}}
+
+% algebra
+\newcommand{\quotient}[2]{{\raisebox{.2em}{$#1$}\left/\raisebox{-.2em}{$#2$}\right.}}
+\newcommand{\GL}{\mathrm{GL}}     % general linear group
+\newcommand{\SL}{\mathrm{SL}}     % special linear group
+\DeclareMathOperator{\ann}{ann}   % the annihilator of a submodule
+\DeclareMathOperator{\Obj}{Obj}     % objects of a category
+\DeclareMathOperator{\Hom}{Hom}   % homomorphisms between modules
+\DeclareMathOperator{\Mor}{Mor}   % categorical morphisms
+\DeclareMathOperator{\characteristic}{char} % ring characteristic
+\DeclareMathOperator{\Tor}{Tor}   % torsion elements
+\DeclareMathOperator{\Stab}{Stab} % stabilizer
+\DeclareMathOperator{\Orb}{Orb}   % orbit
+\DeclareMathOperator{\Aut}{Aut}   % automorphisms
+\DeclareMathOperator{\End}{End}   % endomorphisms
+\DeclareMathOperator{\Mat}{Mat}   % matrix ring
+\DeclareMathOperator{\Tr}{Trace}  % trace of a matrix
+\DeclareMathOperator{\im}{im}     % image
+
+% statistics
+\DeclareMathOperator{\Var}{Var}
+
+% nicer empty set
+\let\oldemptyset\emptyset{}
+\let\emptyset\varnothing{}

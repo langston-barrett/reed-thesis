@@ -1,0 +1,102 @@
+\RequirePackage{luatex85}
+
+\documentclass[margin=5mm]{standalone}
+\usepackage{varwidth}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{graphdrawing,graphs}
+\usegdlibrary{trees}  % tree layout
+\usegdlibrary{layered}% layered layout
+\usegdlibrary{force}  % spring layout
+\newcommand{\node}[2]{\begin{varwidth}{#1}\centering #2\end{varwidth}}
+\usepackage{xcolor}
+\begin{document}
+\begin{tikzpicture}[rounded corners]
+  % \graph[spring electrical layout, nodes=draw, node distance=2cm, electric charge=5] 
+  % \graph[spring layout, nodes=draw, node distance=10cm, convergence tolerance=0.000001, cooling factor=0.2] 
+  % \graph[layered layout, nodes={draw, text width=3.0cm, align=flush center}, level distance=1.3cm, node distance=3cm]
+  \graph
+  [layered layout,
+  nodes={draw, align=flush center},
+  level distance=1.3cm,
+  sibling distance=3.2cm,
+  nope/.style={color=white, fill=gray}
+  ]
+  {
+    "\node{3cm}{Homotopy Type Theory}" -- {
+      "\node{2cm}{Homotopy}" -- {
+        "\node{2cm}{Category theory}"[color=white, fill=yellow, sibling distance=2.8cm],
+        "\node{3cm}{Loop spaces}",
+        "\node{3cm}{Weak $\omega$-groupoid?}"[sibling distance=2.5cm] -- {
+          "\node{3cm}{Globular sets}"[sibling distance=0.5cm, nope] -- {
+            "\node{3cm}{Presheafs}"[sibling distance=0.5cm, nope]
+          }
+        },
+        ""[sibling distance=0cm] -- {
+        ""[sibling distance=0cm] -- {
+        "\node{3cm}{Fibration}"[sibling distance=0.5cm] -- {
+          "\node{3cm}{Higher homotopy groups?}",
+          "\node{3cm}{Fiber bundle}"
+        },
+        },
+        },
+        ""[sibling distance=0cm] -- {
+          "\node{3cm}{Fundamental weak $\infty$-groupoid}" -- {
+            "\node{3cm}{Fundamental groupoid}"[color=white, fill=yellow],
+            "\node{3cm}{$\infty$-categories}"
+          },
+        },
+        ""[sibling distance=0cm] -- {
+        ""[sibling distance=0cm] -- {
+        "\node{3cm}{Quillin model categories}"[nope] -- {
+          ""[sibling distance=0cm] -- {
+            "\node{2.2cm}{Grothendieck, Serre, Kan fibrations}"[nope],
+          },
+          "\node{3cm}{Weak factorization systems}"[nope] -- {
+            "\node{3cm}{Lifting properties}"
+          },
+        },
+        },
+        },
+      },
+      "\node{3cm}{Type Theory}" -- {
+        "\node{3cm}{Voevodsky's}" --[bend right=15] {
+          "\node{3cm}{Simplicial sets?}",
+        },
+        "\node{3cm}{Voevodsky's}" -- {
+          "\node{2cm}{Univalence Axiom}" -- {
+            "\node{2cm}{Weak equivalences}",
+          },
+          ""[sibling distance=0cm] -- {
+            "\node{3cm}{Per Martin-L\"of's}" --[bend right=10] {
+              ""[sibling distance=2.2cm] -- {
+                Equality -- {
+                  "\node{3cm}{Propositional vs syntactic}"[color=white, fill=yellow],
+                  "\node{3cm}{Extensional vs intentional}"[color=white, fill=yellow],
+                  "\node{3cm}{(Higher) equality types}"
+                },
+              },
+            },
+            "\node{3cm}{Per Martin-L\"of's}" -- {
+              "\node{3cm}{Dependent sum/product}"[color=white, fill=yellow],
+              "\node{3cm}{Inductive types}",
+              "\node{3cm}{Classical type theory}" -- {
+                "\node{3cm}{1\textsuperscript{st} order and predicate logic}"[color=white, fill=green]
+              }
+            }
+          },
+          "\node{2cm}{Grothendieck Universes}",
+        },
+        "\node{3cm}{Voevodsky's}" --[bend left=10] {
+          "\node{3cm}{$h$-levels}" -- {
+            "\node{3cm}{homotopy $n$-types}"
+          },
+          "\node{3cm}{Higher inductive types}",
+        },
+      },
+      "\node{2cm}{Homotopy}" --[bend left=0] "\node{2cm}{Weak equivalences}",
+      "\node{3cm}{Quillin model categories}" -- "\node{3cm}{Simplicial sets?}",
+    },
+  };
+\end{tikzpicture}
+\end{document}

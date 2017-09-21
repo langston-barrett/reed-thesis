@@ -1,0 +1,45 @@
+%% formatting
+
+\usepackage{fontspec}
+% EB Garamond (Initials - just for fun) - body text, old style, serif
+% Nimbus Roman - serifed
+% URW Gothic - geometric, title text
+% Libre Caslon Text - absurdly well spaced
+% FreeSerif - plays pretty nicely with math, looks like Times
+% Liberation Serif - good alternative to FreeSerif, less TNR looking
+% unclear whether to use Tinos or Liberation Serif. same design.
+\setmainfont[Ligatures=TeX]{Tinos}
+
+% date
+\usepackage{polyglossia}
+\usepackage[yyyymmdd]{datetime}
+\renewcommand{\dateseparator}{--}
+
+\usepackage{geometry}
+\geometry{
+  lmargin=4cm,
+  rmargin=4cm,
+  tmargin=3cm,
+  bmargin=3cm,
+}
+
+\renewcommand{\arraystretch}{1.2} % Make tables a little bigger
+% \usepackage{indentfirst}          % indent first \par after sections
+\usepackage{parskip}              % don't indent anything
+\usepackage{enumitem}             % enumerate with A), b., c) styles
+\usepackage{hyperref}             % linked table of contents
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+% graphics
+\usepackage{graphicx}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\usepackage{float} % image positioning
+
+% semicolon is mapped to \ in my editor
+\newcommand{\semicolon}{;}

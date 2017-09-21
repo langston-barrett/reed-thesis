@@ -1,0 +1,279 @@
+\documentclass[a5paper]{article}
+\input{../tex-preamble/amsthm.tex}
+\input{../tex-preamble/anki.tex}
+\input{../tex-preamble/general.tex}
+\input{../tex-preamble/math.tex}
+\input{../tex-preamble/colors/tao-yang.tex}
+\geometry{
+  lmargin=1.5cm,
+  rmargin=1.5cm,
+  tmargin=2cm,
+  bmargin=2cm
+}
+\usepackage{tikz}
+\usetikzlibrary{cd}
+\begin{document}
+\title{The Fundamental Groupoid}
+\author{Langston Barrett}
+\date{Fall 2017}
+\maketitle
+
+\begin{definition*}[Model]
+	A model is a functor which is a sort of ``homomorphism of categories''. 
+\end{definition*}
+
+
+\begin{definition*}[Path]
+	A path in a space $(X,\tau)$ of length $r$ is a continuous function
+  $a:[0,r]\to X$. 
+\end{definition*}
+
+
+\begin{definition*}[Category of Paths]
+	For a topological space $X$, the category $PX$ of paths on $X$ has as objects
+  the points of $X$ and for $x,y\in X$, $PX(x,y)$ is the set of paths from $x$
+  to $y$. Composition of paths $p,q$ is written $p+q$. There is a zero path
+  $0_x$ which serves as the identity.
+\end{definition*}
+
+
+\begin{definition*}[Full subcategory, wide subcategory]
+	A subcategory $D$ of $C$ is full if for all objects $x,y$ of $D$,
+  $\Hom_D(x,y)=\Hom_C(x,y)$. A subcategory is called wide if $\Obj(D)=\Obj(C)$.
+\end{definition*}
+
+
+\begin{example*}
+	Full subcategories of $\Top$ include Hausdorff spaces, metrizable spaces, and
+  compact spaces. Wide subcategories of $\Top$ include those with only open
+  maps, only closed maps, or only isomorphisms.
+\end{example*}
+
+
+\begin{definition*}[Groupoid]
+	A groupoid is a category in which every morphism is an isomorphism.
+\end{definition*}
+
+
+\begin{example*}
+	The category of paths $PX$ is not a groupoid: if $g\in\Hom_{PX}(x,y)$ is not
+  the zero path, then there is no $f$ such that $fg=0_x$.
+\end{example*}
+
+
+\begin{definition*}[Homotopy rel endpoints]
+	If $a,b\in\Hom_{PX}(x,y)$ are paths of length $r$, then a homotopy rel
+  endpoints of length 1 from $a$ to $b$ is a continuous map
+  $H:[0,q]\times[0,r]$ such that
+  \begin{align*}
+    \begin{split}
+      H(0,t) &= a(s) \\
+      H(1,t) &= b(s)
+    \end{split}
+    \begin{split}
+      H(s,0) &= x \\
+      H(s,1) &= y
+    \end{split}
+  \end{align*}
+  for all $s\in [0,r]$ and $t\in [0,1]$.
+\end{definition*}
+
+
+Note that homotopy rel endpoints defines an equivalence relation on
+$\Hom_{PX}(x,y)$, and that for every homotopy of length other than 1, there is
+also a homotopy of length 1.
+
+
+\begin{definition*}[The fundamental groupoid]
+	The fundamental groupoid $\Pi(X)$ of a space $(X,\tau)$ is the category with
+  points of $X$ as objects and equivalence classes under homotopy of paths from
+  $x\in X$ to $y\in X$ as morphisms $\Hom_{\Pi(X)}(x,y)$. Composition is 
+  given by path concatenation.
+\end{definition*}
+
+
+\begin{example*}
+	If the connected components of $X$ consist of single points, then
+  \begin{equation*}
+    \Hom_{\Pi(X)}(x,y) = \begin{cases}
+      \emptyset &\text{ if }x\neq y \\
+      \braces{\id_x} &\text{ if }x=y
+    \end{cases}
+  \end{equation*}
+  A groupoid with this property is called discrete.
+
+  For any convex subset $X$ of a normed vector space $V$, the straight line
+  homotopy gives an equivalence between all paths in $PX(x,y)$. Therefore,
+  $\Hom_{\Pi(X)}(x,y)$ has exactly one object for all $x,y\in X$. A groupoid
+  with this property is called 1-connected and a tree groupoid. If $\Pi(X)$ is a
+  tree groupoid, then $X$ is path-connected. If every path-component of $X$ is
+  1-connected, then $X$ is simply connected.
+\end{example*}
+
+
+\begin{definition}[Subgroupoid]
+	A subgroupoid is a subcategory of a groupoid that is also a groupoid.
+\end{definition}
+
+
+If $G$ is a groupoid and $x$ is an object of $G$, there is a full subgroupoid
+$G(x)$ which has $x$ as its only object. This is just a group (called the object
+or vertex group)!
+
+
+\begin{definition}[Totally disconnected groupoid]
+	A groupoid $G$ is totally disconnected if
+  \begin{equation*}
+    \Hom_G(x,y)=\emptyset\qquad\text{when}\qquad x\neq y
+  \end{equation*}
+\end{definition}
+
+
+\begin{theorem*}
+	If $G$ is a groupoid, all initial objects are terminal, and all terminal
+  objects are initial. If $G$ has an initial or terminal object, all
+  objects in $G$ are isomorphic.
+\end{theorem*}
+\begin{proof}
+  Let $t\in\Obj(G)$ be terminal. Then for all $g\in\Obj(G)$, there is a unique arrow in $\Hom_G(g,t)$. Since $G$ is a groupoid, there is a bijection
+  $\Hom_G(g,t)\cong\Hom_G(t,g)$ between arrows and their inverses. Therefore,
+  there is also a single unique arrow in $\Hom_G(t,g)$, making $t$ initial in $G$.
+\end{proof}
+
+
+\begin{definition*}[Groupoid morphism]
+	A groupoid morphism is a functor between groupoids.
+\end{definition*}
+
+
+\begin{proposition*}
+  Functor preserve retractions, sections, and isomorphisms.
+\end{proposition*}
+
+
+\begin{proposition*}
+  For all spaces $X,Y\in\Obj(\Top)$,
+  \begin{itemize}
+    \item continuous maps $X\to Y$ between spaces induce functors $PX\to PY$
+      between path categories (via composition).
+    \item $P$ is a functor $P:\Top\to\Cat$
+    \item There is a functor $PX\to \Pi(X)$ which sends maps to their homotopy
+      equivalence classes
+    \item $\Pi_1$ is a functor $\Top\to\Grpd$
+  \end{itemize}
+\end{proposition*}
+
+
+\begin{corollary*}
+  If $X\cong Y$ as spaces, then $\Pi_1(X)\cong\Pi_1(X)$ as groupoids.
+\end{corollary*}
+
+
+\begin{proposition*}
+  The fundamental group is a functor from pointed topological spaces $\Top_*$ to
+  $\Grp$.
+\end{proposition*}
+
+
+\begin{definition*}[$\Grpd$]
+  The category $\Grpd$ has groupoids as objects and groupoid morphisms as
+  morphisms. 
+\end{definition*}
+
+
+\begin{definition*}[Cartesian closed category]
+  A category $C$ is Cartesian closed if
+  \begin{itemize}
+    \itemsep0em
+    \item It has a terminal object
+    \item It has all finite products
+    \item Any two objects $Y,Z\in\Obj(C)$ have an exponential $Z^Y$
+  \end{itemize}
+  where in a locally small category, the third condition is equivalent to
+  requiring a bijection
+  \begin{equation*}
+    \Hom_C(X\times Y, Z)\cong \Hom_C(X,Z^Y)
+  \end{equation*}
+\end{definition*}
+
+
+\begin{proposition*}
+	The category $\Grpd$ of groupoids is cartesian closed.
+\end{proposition*}
+
+
+\begin{definition*}
+	The groupoid $\I$ has two objects (denoted $0,1$) and one (iso)morphism
+  $\iota:0\leftrightarrow 1$.
+\end{definition*}
+
+
+\begin{proposition*}
+	If $X,Y$ are topological spaces, then
+  \begin{align*}
+    \Pi_1(X\times Y)\cong \Pi_1(X)\times\Pi_1(Y)
+    &&\text{and}&&
+    \Pi_1(X\amalg Y)\cong \Pi_1(X)\amalg\Pi_1(Y)
+  \end{align*}
+  (naturally) as groupoids.
+\end{proposition*}
+
+
+\begin{definition*}
+	A homotopy of length $q$ is a map $F:X\times[0,q]\to Y$. The initial map of
+  $F$ is $F_0(x)\coloneqq F(x,0)$ and the final map is $F_q(x)\coloneqq F(x,q)$.
+  We write $F:F_0\simeq F_q$.
+\end{definition*}
+
+
+\begin{proposition*}
+	Homotopy is an equivalence relation on maps $X\to Y$.
+\end{proposition*}
+
+
+\begin{definition*}
+	If $f:X\to Y$ and $g:Y\to X$ are continuous with $f\circ g\simeq \id_Y$ and
+  $g\circ f\simeq \id_X$, then we say $f$ and $g$ are homotopy inverses and $X$
+  and $Y$ are homotopy equivalent (or of the same homotopy type).
+\end{definition*}
+
+
+\begin{definition*}
+	A space is contractible if it is homotopy equivalent to a point. Equivalently,
+  a space is contractible if its identity function is homotopic to a constant map.
+\end{definition*}
+
+
+\begin{proposition*}
+	If $f,g:X\to Y$ are homotopic continuous functions, then the induced functors
+  of fundamental groupoids $\Pi_1(f),\Pi_1(g):\Pi_1(X)\to\Pi_1(Y)$ are
+  equivalent, i.e.\ there is a natural transformation $\eta:F\Rightarrow G$ such
+  that the following diagram commutes for all $x,y\in \Pi_1(X)$ and
+  $h\in\Hom_{\Pi_1(X)}(x,y)$:
+  \begin{center}
+    \begin{tikzcd}[sep=large]
+      \Pi_1(f)(x)
+        \arrow[r, "\Pi_1(f)(h)"]
+        \arrow[d, <->, "\eta_x", "\eta_x^{-1}" swap] &
+      \Pi_1(f)(y) 
+        \arrow[d, <->, "\eta_y", "\eta_y^{-1}" swap] \\
+      \Pi_1(g)(x)
+        \arrow[r, "\Pi_1(g)(h)"] &
+      \Pi_1(g)(y)
+    \end{tikzcd}
+  \end{center}
+\end{proposition*}
+
+
+\begin{corollary*}
+	If $f:X\to Y$ is a homotopy equivalence, then $\Pi_1(X)$  and $\Pi_1(Y)$ are
+  equivalent as groupoids.
+\end{corollary*}
+
+
+\begin{proposition*}
+	If $F:C\to D$ is an equivalence of categories, then
+  $F:\Hom_C(x,y)\to \Hom_D(F(x),F(y))$ is a bijection for all $x,y\in C$.
+\end{proposition*}
+
+\end{document}

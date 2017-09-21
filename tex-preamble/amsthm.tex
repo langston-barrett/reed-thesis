@@ -1,0 +1,31 @@
+% Theorems, proofs, and other mathematical environments
+
+\usepackage{amsthm}
+
+\newtheoremstyle{mine} % name
+  {7pt} % space above
+  {7pt} % space below
+  {} % body font
+  {} % indent amount
+  {\bfseries} % theorem head font
+  {.} % punctuation after theorem head
+  {.5em} % space after theorem head
+  {} % theorem head spec (can be left empty, meaning no)
+
+\theoremstyle{mine} % these are the non-italicized
+\newtheorem{theorem}{Theorem}[subsection]
+\newtheorem*{theorem*}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{corollary*}{Corollary}
+\newtheorem{eqenv}[theorem]{Equation}
+\newtheorem*{eqenv*}{Equation}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem*{remark*}{Remark}
+\newtheorem{example}[theorem]{Example}
+\newtheorem*{example*}{Example}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem*{definition*}{Definition}

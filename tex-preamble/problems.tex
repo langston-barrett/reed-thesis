@@ -1,0 +1,35 @@
+\newcounter{Problem} \stepcounter{Problem} % start at 1
+\newcommand{\problem}[0]{
+  \vspace{-0.8em}
+  \begin{center}
+    \huge
+    \rule[0.25em]{0.3\textwidth}{0.6pt}
+    \arabic{Problem}
+    \rule[0.25em]{0.3\textwidth}{0.6pt}
+  \end{center}
+  \stepcounter{Problem}
+  \vspace{0.5em}
+}
+\newcommand{\problemnum}[1]{
+  \vspace{-0.5em}
+  \begin{center}
+    \huge
+    \rule[0.25em]{0.3\textwidth}{0.5pt}
+    #1
+    \rule[0.25em]{0.3\textwidth}{0.5pt}
+  \end{center}
+  \vspace{0.5em}
+}
+\newcommand{\subproblem}[1]{
+  \vspace{0.2em}
+  \begin{center}
+    \large
+    \rule[0.25em]{0.2\textwidth}{0.5pt}
+    #1
+    \rule[0.25em]{0.2\textwidth}{0.5pt}
+  \end{center}
+  \vspace{0.2em}
+}
+% Combine the two with more pleasant vertical spacing
+\newcommand{\problemsubproblem}[1]{\problem \vspace{-0.8em}\subproblem{#1}}
+\newcommand{\problemnumsubproblem}[2]{\problemnum{#1}\vspace{-0.8em}\subproblem{#2}}

@@ -1,0 +1,20 @@
+% set up our custom colors - these are based on "zenburn"
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{theorems}{HTML}{E0CF9F}
+\definecolor{lemmas}{HTML}{DC8CC3}
+\definecolor{corrolaries}{HTML}{8CD0D3}
+\definecolor{equations}{HTML}{F0DFAF}
+\definecolor{remarks}{HTML}{7F9F7F}
+\definecolor{examples}{HTML}{CC9393}
+\definecolor{definitions}{HTML}{93E0E3}
+
+\IfFileExists{../tex-preamble/general.tex}{
+  \input{../tex-preamble/amsthm-color.tex}
+}{\input{../../tex-preamble/amsthm-color.tex}}
+
+% text and background colors
+\definecolor{bg}{HTML}{3F3F3F}
+\definecolor{fg}{HTML}{DCDCCC}
+\pagecolor{bg}
+\color{fg}
