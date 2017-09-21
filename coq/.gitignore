@@ -1,3 +1,6 @@
+# Ignore the symlinked "coqtop"
+coqtop
+
 .*.aux
 *.a
 *.cma
