@@ -1,7 +1,8 @@
-# To use this file as function, uncomment this line and comment the above two:
 { stdenv, fetchFromGitHub, autoconf, automake, coq }:
 
-stdenv.mkDerivation rec {
+if !stdenv.lib.versionAtLeast coq.coq-version "8.6"
+then throw "This version of HoTT requires Coq 8.6"
+else stdenv.mkDerivation rec {
   name = "coq${coq.coq-version}-HoTT";
 
   src = fetchFromGitHub {
