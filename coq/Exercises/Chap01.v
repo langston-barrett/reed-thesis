@@ -130,10 +130,127 @@ Qed.
 
 (* ========================================= Exercise 1.5 *)
 
+(* Unclear what it's asking for... What definitional equalities? *)
 
 (* ========================================= Exercise 1.6 *)
+
+(* Unclear what it's asking for... What definitional equalities? *)
+
 (* ========================================= Exercise 1.7 *)
+
 (* ========================================= Exercise 1.8 *)
+
+Fixpoint rec_nat' (C : 𝒰) c0 cs (n : nat) : C :=
+  match n with
+    0 => c0
+  | S m => cs m (rec_nat' C c0 cs m)
+  end.
+
+Definition add : nat → nat → nat :=
+  rec_nat' (nat → nat) (fun m => m) (fun n g m => (S (g m))).
+
+Definition mult : nat → nat → nat  :=
+  rec_nat' (nat → nat) (fun m => 0) (fun n g m => add m (g m)).
+
+Definition exp' : nat → nat → nat  :=
+  rec_nat' (nat → nat) (fun m => 1) (fun n g m => mult m (g m)).
+
+Definition flip {A B C : 𝒰} (f : A → B → C) : (B → A → C) :=
+  fun b a => f a b.
+
+Definition exp := flip exp'.
+
+Notation "n ** m" := (exp' m n).
+
+(* Definition of semiring from Wikipedia:
+
+(R, +) is a commutative monoid with identity element 0:
+    (a + b) + c = a + (b + c)
+    0 + a = a + 0 = a
+    a + b = b + a
+(R, ⋅) is a monoid with identity element 1:
+    (a⋅b)⋅c = a⋅(b⋅c)
+    1⋅a = a⋅1 = a
+Multiplication left and right distributes over addition:
+    a⋅(b + c) = (a⋅b) + (a⋅c)
+    (a + b)⋅c = (a⋅c) + (b⋅c)
+Multiplication by 0 annihilates R:
+    0⋅a = a⋅0 = 0 
+*)
+
+Lemma add_s_left: ∀ a b : nat, add (S a) b = S (add a b). reflexivity. Qed.
+Lemma add_s_right : ∀ a b : nat, add a (S b) = S (add a b).
+  induction a; intros b; try reflexivity.
+  do 2 rewrite add_s_left.
+  rewrite IHa.
+  reflexivity.
+Qed.
+
+Fact plus_assoc : ∀ a b c : nat, (add a) (add b c) = add (add a b) c.
+  induction a; try reflexivity.
+  intros b c.
+  do 3 rewrite add_s_left.
+  rewrite IHa.
+  reflexivity.
+Qed.
+
+Fact plus_unit_left : ∀ n : nat, add 0 n = n. reflexivity. Qed.
+
+Fact plus_unit_right : ∀ n : nat, add n 0 = n.
+  induction n; try reflexivity.
+  rewrite add_s_left; rewrite IHn; reflexivity.
+Qed.
+
+Fact plus_commutative : ∀ a b : nat, add a b = add b a.
+  induction a; intros b.
+  {
+    rewrite plus_unit_right; reflexivity.
+  }
+  {
+    rewrite add_s_left, add_s_right.
+    rewrite IHa.
+    reflexivity.
+  }
+Qed.
+
+Notation "x ⋅ y" := (mult x y) (at level 53).
+
+Lemma mult_s_left : ∀ a b, (S a) ⋅ b = add b (a ⋅ b). reflexivity. Qed.
+Lemma mult_s_right : ∀ a b, a ⋅ (S b) = add a (a ⋅ b).
+  induction a; intros b; try reflexivity.
+  do 2 rewrite mult_s_left.
+  do 2 rewrite add_s_left.
+  rewrite IHa.
+  do 2 rewrite plus_assoc.
+  assert (eqab : add b a = add a b) by (apply plus_commutative).
+  rewrite eqab; reflexivity.
+Qed.
+
+Fact mult_annihilate_left : ∀ n, 0 ⋅ n = 0. reflexivity. Qed.
+Fact mult_annihilate_right : ∀ n, n ⋅ 0 = 0.
+  induction n; try reflexivity.
+  rewrite mult_s_left.
+  rewrite plus_unit_left.
+  exact IHn.
+Qed.
+
+Fact mult_assoc : ∀ a b c : nat, a ⋅ (b ⋅ c) = (a ⋅ b) ⋅ c.
+  induction a; try reflexivity.
+  induction b.
+  - intros c.
+    rewrite mult_annihilate_left.
+    rewrite mult_annihilate_right.
+    rewrite mult_annihilate_left.
+    reflexivity.
+Admitted.
+
+Fact mult_unit_left : ∀ n : nat, 1 ⋅ n = n. apply plus_unit_right. Qed.
+
+Fact mult_unit_right : ∀ n : nat, n ⋅ 1 = n.
+  induction n; try reflexivity.
+  rewrite mult_s_left; rewrite IHn; reflexivity.
+Qed.
+
 (* ========================================= Exercise 1.9 *)
 (* ========================================= Exercise 1.10 *)
 (* ========================================= Exercise 1.11 *)
