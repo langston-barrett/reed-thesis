@@ -50,15 +50,6 @@
 % complex numbers
 \renewcommand{\Im}{\operatorname{Im}}
 \renewcommand{\Re}{\operatorname{Re}}
-% sets
-\newcommand{\zn}{\mathbf{Z}_n}
-\newcommand{\zp}{\mathbf{Z}_p}
-\newcommand{\N}{\mathbf{N}}
-\newcommand{\Z}{\mathbf{Z}}
-\newcommand{\Q}{\mathbf{Q}}
-\newcommand{\R}{\mathbf{R}}
-\newcommand{\C}{\mathbf{C}}
-% \C is a command (needs to be renewed) on XeLaTeX
 
 % operators/functions
 \DeclareMathOperator{\ord}{ord}
@@ -128,12 +119,34 @@
 \newcommand{\crash}[2]{\left(\frac{#1}{#2}\right)}
 \newcommand{\QED}{\begin{flushright}QED\end{flushright}}
 
+% make letters in different fonts (bold, blackboard, caligraphic, fraktur)
+% https://tex.stackexchange.com/questions/156196/newcommand-with-variable-name
+\newcommand{\mkltr}[1]{%
+    \expandafter\newcommand\csname bf#1\endcsname{\ensuremath{\mathbb #1}}
+    \expandafter\newcommand\csname bb#1\endcsname{\ensuremath{\mathbb #1}}
+    \expandafter\newcommand\csname ca#1\endcsname{\ensuremath{\mathcal #1}}
+    \expandafter\newcommand\csname fr#1\endcsname{\ensuremath{\mathfrak #1}}
+}%
+\mkltr A \mkltr B \mkltr C \mkltr D \mkltr E \mkltr F \mkltr G \mkltr H
+\mkltr I \mkltr J \mkltr K \mkltr L \mkltr M \mkltr N \mkltr O \mkltr P
+\mkltr Q \mkltr R \mkltr S \mkltr T \mkltr U \mkltr V \mkltr W \mkltr X
+\mkltr Y \mkltr Z
+
+\newcommand{\zn}{\mathbf{Z}_n}
+\newcommand{\zp}{\mathbf{Z}_p}
+\newcommand{\N}{\ensuremath{\mathbf{N}}}
+\newcommand{\Z}{\ensuremath{\mathbf{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbf{Q}}}
+\newcommand{\R}{\ensuremath{\mathbf{R}}}
+\newcommand{\C}{\ensuremath{\mathbf{C}}}
+
 % algebra
 \newcommand{\quotient}[2]{{\raisebox{.2em}{$#1$}\left/\raisebox{-.2em}{$#2$}\right.}}
 \newcommand{\GL}{\mathrm{GL}}     % general linear group
 \newcommand{\SL}{\mathrm{SL}}     % special linear group
+\renewcommand{\S}{\mathfrak{S}}   % symmetric group
 \DeclareMathOperator{\ann}{ann}   % the annihilator of a submodule
-\DeclareMathOperator{\Obj}{Obj}     % objects of a category
+\DeclareMathOperator{\Obj}{Obj}   % objects of a category
 \DeclareMathOperator{\Hom}{Hom}   % homomorphisms between modules
 \DeclareMathOperator{\Mor}{Mor}   % categorical morphisms
 \DeclareMathOperator{\characteristic}{char} % ring characteristic
