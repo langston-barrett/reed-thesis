@@ -11,6 +11,7 @@ This repo is mostly for backup right now, it holds my notes and plans for my und
     * `coq/Exercises` contains solutions to exercises in the HoTT book.
  - `exercises/` contains informal solutions to exercises in the HoTT book (scanned from handwritten versions).
  - `notes/` contains LaTeX notes on various subjects at the level of detail I required at the time (no attempt to be comprehensive nor expository has been made).
+    * `notes/hott-figures` is a bunch of Tikz drawings corresponding to lemmas and theorems in the HoTT book
  - `tex-preamble/` is a collection of LaTeX files that are useful to `\input{}` at the beginning of documents.
 
 ## A Note on Continuous Integration
