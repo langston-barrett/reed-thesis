@@ -15,6 +15,8 @@
 \usepackage{tikz}
 \usetikzlibrary{cd}
 
+\usepackage{stmaryrd}
+
 \usepackage{titling}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -65,6 +67,46 @@
 
 \problemnum{2}
 
+\begin{lemma*}
+  The following is a basis for a disjoint union $\coprod_i B_i$:
+  \begin{equation*}
+    \caB \coloneqq \braces{\iota_j(U)|U\text{ is open in }B_j}
+  \end{equation*}
+  where $\iota_j:B_j\hookrightarrow \coprod_i B_i$ is the canonical inclusion.
+\end{lemma*}
+\begin{proof}
+	This is a restatement of the universal property of the coproduct.
+\end{proof}
+
+\begin{lemma*}
+  In $\Top$, finite products commute with arbitrary coproducts. Namely for all
+  spaces $A$ and a disjoint union $\coprod_i B_i$,
+  \begin{equation*}
+    A\times \coprod_i B_i\cong \coprod_i (A\times B_i)
+  \end{equation*}
+\end{lemma*}
+\begin{proof}
+  Recall that the coproduct is an indexed union, a set of pairs where the first
+  element of the pair is a ``tag'' indicating which set that item originated from.
+  \begin{align*}
+    \phi:A\times\coprod_i B_i &\longrightarrow \coprod_i (A\times B_i) \\
+    (a,(i,b))&\longmapsto (i,(a,b)) \\
+  \intertext{with inverse}
+    A\times\coprod_i B_i &\longleftarrow \coprod_i (A\times B_i):\phi^{-1} \\
+    (a,(i,b))&\longmapsfrom (i,(a,b)) 
+  \end{align*}
+  To prove continuity of a map into a space, it suffices to prove that the
+  inverse images of basis elements are open. As we have bases for both the
+  product and coproduct topologies, it suffices to show that 
+  $\phi^{-1}(j,U\times V)$ is open where $U$ is open in $A$ and $V$ is open in
+  $B_j$. From the definition of $\phi$ and $\phi^{-1}$, we obtain
+  \begin{equation*}
+    \phi^{-1}(j,U\times V) = (U,(j,V))
+  \end{equation*}
+  which is open by definition of the product topology. A similar argument shows
+  that $\phi^{-1}$ is continuous.
+\end{proof}
+
 \begin{proposition*}
 	If $\tilde{X}$, $p:\tilde{X}\to X$, $\braces{U_\alpha}$ and $\tilde{Y}$,
   $q:\tilde{Y}\to Y$, $\braces{V_\beta}$ are covering spaces, then the product
@@ -88,29 +130,18 @@
   \end{align*}
   By continuity of $p$ and $q$, this is an open set in the product topology on
   $\wt{X}\times \wt{Y}$.
-  % Since its components are mapped homeomorphically onto
-  % $U_\alpha$ and $V_\beta$ by $p$ and $q$, by the universal property of the
-  % product, $\langle p,q \rangle$ maps the product homeomorphically onto
-  % $U_\alpha\times V_\beta$.
   It remains to show that it is the disjoint union of sets
   mapped homeomorphically onto $U_\alpha\times V_\beta$ by $\langle p,q \rangle$.
-
-  % By the definition of a covering space,
-  % $p^{-1}(U_\alpha)\cong\coprod^n U_\alpha$ and
-  % $p^{-1}(V_\beta)\cong\coprod^n V_\beta$. The proof proceeds by double induction
-  % on the number of copies $n$.
-  % Since $\Top$ is a distibutive category, we have isomorphisms
-  % \begin{equation*}
-  %   A\times (B\amalg C)\cong (A\times B) \amalg (A\times C)
-  % \end{equation*}
-  % for spaces $A,B,C$.
+  A slight generalization of the above lemma demonstrates that the inverse image
+  is indeed a disjoint union of open sets. The definition of
+  $\langle p,q \rangle$ ensures that the mapping is homeomorphic.
 \end{proof}
 
 \problemnum{3}
 
-\begin{lemma*}
-	If $\wt{X}$ covers $X$ via $p:\wt{X}\to X$, then $p$ is an open map.
-\end{lemma*}
+% \begin{lemma*}
+% 	If $\wt{X}$ covers $X$ via $p:\wt{X}\to X$, then $p$ is an open map.
+% \end{lemma*}
 % \begin{proof}
 % 	Let $\wt{U}\subseteq\wt{X}$ be open. By the definition of a covering space,
 %   there is a distinguished open cover $\braces{U_\alpha}$ of $X$. Then
