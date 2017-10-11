@@ -27,28 +27,36 @@
       "\node{2cm}{Homotopy}" -- {
         "\node{2cm}{Category theory}"[color=white, fill=yellow, sibling distance=2.8cm],
         "\node{3cm}{Loop spaces}",
-        "\node{3cm}{Weak $\omega$-groupoid?}"[sibling distance=2.5cm] -- {
-          "\node{3cm}{Globular sets}"[sibling distance=0.5cm, nope] -- {
-            "\node{3cm}{Presheafs}"[sibling distance=0.5cm, nope]
-          }
+        "\node{3cm}{Globular sets}"[sibling distance=0.5cm, nope] -- {
+          "\node{3cm}{Presheafs}"[sibling distance=0.5cm, nope]
         },
         ""[sibling distance=0cm] -- {
         ""[sibling distance=0cm] -- {
         "\node{3cm}{Fibration}"[sibling distance=0.5cm] -- {
-          "\node{3cm}{Higher homotopy groups?}",
-          "\node{3cm}{Fiber bundle}"
+          "\node{3cm}{Homotopy lifting property}",
+          "\node{3cm}{Fiber bundle}" -- {
+            "\node{3cm}{Covering space}"[color=white, fill=yellow, sibling distance=2.8cm]
+          }
         },
         },
         },
         ""[sibling distance=0cm] -- {
-          "\node{3cm}{Fundamental weak $\infty$-groupoid}" -- {
+          "\node{3cm}{Weak $\infty$-groupoid}" -- {
             "\node{3cm}{Fundamental groupoid}"[color=white, fill=yellow],
-            "\node{3cm}{$\infty$-categories}"
+            ""[sibling distance=0cm] -- {
+            ""[sibling distance=0cm] -- {
+            "\node{3cm}{$\infty$-categories}" -- {
+              "\node{3cm}{Whiskering}",
+              "\node{3cm}{Vertical composition}",
+              "\node{3cm}{Horizontal composition}",
+            }
+            }
+            }
           },
         },
         ""[sibling distance=0cm] -- {
         ""[sibling distance=0cm] -- {
-        "\node{3cm}{Quillin model categories}"[nope] -- {
+        "\node{3cm}{Quillin model categories}"[nope] --[bend right=20] {
           ""[sibling distance=0cm] -- {
             "\node{2.2cm}{Grothendieck, Serre, Kan fibrations}"[nope],
           },
@@ -61,24 +69,26 @@
       },
       "\node{3cm}{Type Theory}" -- {
         "\node{3cm}{Voevodsky's}" --[bend right=15] {
-          "\node{3cm}{Simplicial sets?}",
+          "\node{3cm}{Simplicial sets?}"[nope],
         },
         "\node{3cm}{Voevodsky's}" -- {
           "\node{2cm}{Univalence Axiom}" -- {
             "\node{2cm}{Weak equivalences}",
           },
           ""[sibling distance=0cm] -- {
-            "\node{3cm}{Per Martin-L\"of's}" --[bend right=10] {
+            "\node{3cm}{Per Martin-L\"of's}"[color=white,fill=yellow] --[bend right=5] {
               ""[sibling distance=2.2cm] -- {
-                Equality -- {
-                  "\node{3cm}{Propositional vs syntactic}"[color=white, fill=yellow],
-                  "\node{3cm}{Extensional vs intentional}"[color=white, fill=yellow],
-                  "\node{3cm}{(Higher) equality types}"
+                "\node{3cm}{Equality}"[color=white, fill=green] -- {
+                  "\node{3cm}{Propositional vs syntactic}"[color=white, fill=green],
+                  "\node{3cm}{Extensional vs intentional}"[color=white, fill=green],
+                  "\node{3cm}{(Higher) equality types}"[color=white, fill=green]
                 },
               },
             },
-            "\node{3cm}{Per Martin-L\"of's}" -- {
-              "\node{3cm}{Dependent sum/product}"[color=white, fill=yellow],
+            "\node{3cm}{Per Martin-L\"of's}"[color=white,fill=yellow] -- {
+              "\node{3cm}{Dependent sum}"[color=white, fill=green] -- {
+                "\node{3cm}{Dependent function}"[color=white, fill=green],
+              },
               "\node{3cm}{Inductive types}",
               "\node{3cm}{Classical type theory}" -- {
                 "\node{3cm}{1\textsuperscript{st} order and predicate logic}"[color=white, fill=green]
@@ -95,7 +105,7 @@
         },
       },
       "\node{2cm}{Homotopy}" --[bend left=0] "\node{2cm}{Weak equivalences}",
-      "\node{3cm}{Quillin model categories}" -- "\node{3cm}{Simplicial sets?}",
+      "\node{3cm}{Quillin model categories}" --[bend right=-10] "\node{3cm}{Simplicial sets?}",
     },
   };
 \end{tikzpicture}

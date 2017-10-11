@@ -108,6 +108,16 @@
 
 \problemnum{3}
 
+\begin{lemma*}
+	If $\wt{X}$ covers $X$ via $p:\wt{X}\to X$, then $p$ is an open map.
+\end{lemma*}
+% \begin{proof}
+% 	Let $\wt{U}\subseteq\wt{X}$ be open. By the definition of a covering space,
+%   there is a distinguished open cover $\braces{U_\alpha}$ of $X$. Then
+%   $p(\wt{U})$ is the subset of a union of some of these covering sets.
+%   Additionally, the intersection
+% \end{proof}
+
 \begin{proposition*}
 	Let $\wt{X}$ be a covering space with map $\wt{X}\to X$ and suppose
   $p^{-1}(x)$ is finite and nonempty for all $x\in X$. Then $X$ is compact
@@ -119,8 +129,9 @@
   and $y\coloneqq p(\wt{y})$. Since $X$ is Hausdorff, there exist non-overlapping
   neighborhoods $U$ of $x$ and $V$ of $y$. Call the intersections of these
   neighborhoods with the open cover guaranteed by the covering space $U'$ and
-  $V'$, respectively. Then $p^{-1}(U')$ and $p^{-1}(V')$ are open and distinct
-  in $\wt{X}$, and contain $\wt{x}$ and $\wt{y}$ respectively.
+  $V'$, respectively. Then $p^{-1}(U')$ and $p^{-1}(V')$ are disjoint unions of
+  open and distinct sets in $\wt{X}$, and contain $\wt{x}$ and $\wt{y}$
+  respectively.
 
 	($\Leftarrow$ Hausdorff) Assume $\wt{X}$ is Hausdorff. Let $x,y$ be
   distinct points in $X$. By the nonemptiness assumption, there exist
@@ -129,7 +140,9 @@
   unions of open sets. Let $\wt{U}_x,\wt{U}_y$ be the open sets containing
   $\wt{x}$ and $\wt{y}$, respectively. Since $\wt{X}$ is Hausdorff, there exist
   non-overlapping open sets $\wt{U}_x'$ and $\wt{U}_y'$ contained within
-  $\wt{U}_x$ and $\wt{U}_y$, respectively.
+  $\wt{U}_x$ and $\wt{U}_y$, respectively. Since homeomorphisms are open maps,
+  $p(\wt{U}_x')$ and $q(\wt{U}_y')$ are open in $X$ and contain $x$ and $y$,
+  respectively. 
 \end{proof}
 
 \end{document}
