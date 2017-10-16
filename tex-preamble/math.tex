@@ -7,9 +7,9 @@
   {\newcommand{\fontpath}{../tex-preamble/fonts}}
   {\newcommand{\fontpath}{../../tex-preamble/fonts}}
 
+\AtBeginDocument{\let\phi\varphi} % varphi with unicode-math
 \IfFileExists{\fontpath}{
   \usepackage{unicode-math}         % use OTF math fonts
-  \AtBeginDocument{\let\phi\varphi} % varphi with unicode-math
   %\AtBeginDocument{\let\epsilon\varepsilon}
   % \setmathfont[Path=\fontpath]{latinmodern-math.otf}
   \setmathfont[Path=\fontpath]{Asana-Math.otf}
@@ -99,20 +99,16 @@
 \newcommand{\RP}{\ensuremath{\R\hspace{-0.07em}\mathrm{P}}}
 
 % categories
-\newcommand{\I}{\ensuremath{\mathbf{I}}} % "interval groupoid"
-\newcommand{\Cat}{\ensuremath{\mathcal{C}\mathrm{at}}}
-\newcommand{\ComGrp}{\ensuremath{\mathcal{C}\mathrm{om}\mathcal{G}\mathrm{rp}}}
-\newcommand{\AbGrp}{\ensuremath{\mathcal{A}\mathrm{b}\mathcal{G}\mathrm{rp}}}
-\newcommand{\Grp}{\ensuremath{\mathcal{G}\mathrm{rp}}}
-\newcommand{\Grpd}{\ensuremath{\mathcal{G}\mathrm{rpd}}}
-\newcommand{\Mod}{\ensuremath{\mathcal{M}\mathrm{od}}}
-\newcommand{\Man}{\ensuremath{\mathcal{M}\mathrm{an}}}
-\newcommand{\Metric}{\ensuremath{\mathcal{M}\mathrm{etric}}}
-\newcommand{\Set}{\ensuremath{\mathcal{S}\mathrm{et}}}
-\newcommand{\Top}{\ensuremath{\mathcal{T}\!\mathrm{op}}}
-\newcommand{\homoTop}{\ensuremath{\mathrm{homo}\mathcal{T}\mathrm{op}}}
-\newcommand{\Vect}{\ensuremath{\mathcal{V}\mathrm{ect}}}
-\renewcommand{\phi}{\varphi}
+\DeclareMathOperator{\Set}{\mathbf{Set}}           % sets
+\DeclareMathOperator{\Cat}{\mathbf{Cat}}           % small categories
+\DeclareMathOperator{\Grpd}{\mathbf{Grpd}}         % small groupoids
+\DeclareMathOperator{\Mon}{\mathbf{Mon}}           % monoids
+\DeclareMathOperator{\Grp}{\mathbf{Grp}}           % groups
+\DeclareMathOperator{\AbGrp}{\mathbf{AbGrp}}       % abelian groups
+\DeclareMathOperator{\Top}{\mathbf{Top}}           % topological spaces
+\DeclareMathOperator{\Man}{\mathbf{Man}}           % topological manifolds
+\DeclareMathOperator{\Metric}{\mathbf{Metric}}     % metric spaces
+\DeclareMathOperator{\Vect}{\mathbf{Vect}}         % vector spaces
 
 % number theory
 \newcommand{\modulus}[1]{\; \left(\mathrm{mod}\; #1\right)}
@@ -154,10 +150,12 @@
 \DeclareMathOperator{\Stab}{Stab} % stabilizer
 \DeclareMathOperator{\Orb}{Orb}   % orbit
 \DeclareMathOperator{\Aut}{Aut}   % automorphisms
+\DeclareMathOperator{\Alt}{Alt}   % alternating group
 \DeclareMathOperator{\End}{End}   % endomorphisms
 \DeclareMathOperator{\Mat}{Mat}   % matrix ring
 \DeclareMathOperator{\Tr}{Trace}  % trace of a matrix
 \DeclareMathOperator{\im}{im}     % image
+\newcommand{\ab}{\mathbf{ab}}     % abelianization
 
 % statistics
 \DeclareMathOperator{\Var}{Var}

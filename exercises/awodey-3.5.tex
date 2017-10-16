@@ -1,0 +1,163 @@
+\documentclass[a5paper]{article}
+\input{../tex-preamble/amsthm.tex}
+\input{../tex-preamble/anki.tex}
+\input{../tex-preamble/general.tex}
+\input{../tex-preamble/math.tex}
+\input{../tex-preamble/problems.tex}
+\input{../tex-preamble/colors/tao-yang.tex}
+\geometry{
+  lmargin=1.5cm,
+  rmargin=1.5cm,
+  tmargin=2cm,
+  bmargin=2cm
+}
+
+\usepackage{tikz}
+\usetikzlibrary{cd}
+\usetikzlibrary{arrows,decorations.markings}
+
+\usepackage{stmaryrd}
+
+\usepackage{titling}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[L]{\theauthor}
+\fancyhead[C]{\thetitle}
+\fancyhead[R]{\thedate}
+
+\newcommand{\wt}{\widetilde}
+
+\begin{document}
+\title{Awodey: Duality}
+\author{Langston Barrett}
+\date{Fall 2017}
+
+\problemnum{2}
+\begin{theorem*}
+	The free monoid functor preserves binary coproducts.
+  Specifically, for any sets $A,B\in\Obj(\Set)$, if $\caF:\Set\to\Mon$ denotes
+  the free monoid functor, there is an isomorphism
+  \begin{equation*}
+    \caF(A)+\caF(B)\cong \caF(A+B)
+  \end{equation*}
+\end{theorem*}
+\begin{proof}
+  Let $f_A,f_B$ be given and label the inclusions into coproducts $i_A,i_B$ and
+  the inclusions of generators $j_A,j_B,j_{A+B}$ as in the following diagram:
+  \begin{center}
+    \begin{tikzcd}[sep=large, row sep=large, column sep=large] 
+      A \arrow[r, tail, "j_A"]
+        \arrow[dr, tail, "i_A"]
+        &
+        \caF(A) \arrow[drr, Rightarrow, bend left=15, "f_A"]
+        & {} & {}\\
+      {} & A+B \arrow[r, tail, "j_{A+B}"] & {} \caF(A+B) & N\\
+      B \arrow[r, tail, "j_B"]
+        \arrow[ur, tail, "i_B"]
+        & \caF(B) \arrow[urr, Rightarrow, bend right=15, "f_B"]
+        & {} & {}
+    \end{tikzcd}
+  \end{center}
+  Where double arrows denote arrows in $\Mon$, rather than just in $\Set$.
+  The UMP of the free monoid guarantees monoid homomorphisms
+  \begin{align*}
+    k_A:\caF(A)\rightarrowtail \caF(A+B) &&\text{induced by}&&j_{A+B}\circ i_A \\
+    k_B:\caF(B)\rightarrowtail \caF(A+B) &&\text{induced by}&&j_{A+B}\circ i_B
+  \end{align*}
+  such that
+  \begin{align}
+    |k_A| \circ j_A &= j_{A+B}\circ i_A \label{eq:ka} \\
+    |k_B| \circ j_B &= j_{A+B}\circ i_B \label{eq:kb}
+  \end{align}
+  uniquely. They are monos because they are equal as set maps to the composition
+  of two monos. The maps $|f_A|\circ j_A:A\to N$ and $|f_B|\circ j_B:B\to N$
+  induce a set map $g:A+B\to N$ such that
+  \begin{align}
+    g\circ i_A &= |f_A|\circ j_A \label{eq:ga} \\
+    g\circ i_B &= |f_B|\circ j_B \label{eq:gb}
+  \end{align}
+  So far, we have that the following diagram commutes:
+  \begin{center}
+    \begin{tikzcd}[sep=large, row sep=large, column sep=large] 
+      A \arrow[r, tail, "j_A"]
+        \arrow[dr, tail, "i_A"]
+        &
+        \caF(A) \arrow[drr, Rightarrow, bend left=15, "f_A"]
+                \arrow[dr, dashed, Rightarrow, "k_A"]
+        & {} & {}\\
+        {} & A+B \arrow[r, tail, "j_{A+B}"] \arrow[drru, dashed, bend right=20, "g"]
+        & \caF(A+B) % \arrow[r,dashed,Rightarrow, "h"]
+        & N\\
+      B \arrow[r, tail, "j_B"]
+        \arrow[ur, tail, "i_B"]
+        & \caF(B) \arrow[urr, Rightarrow, bend right=15, "f_B"]
+                  \arrow[ur, dashed, Rightarrow, "k_B"]
+        & {} & {}
+    \end{tikzcd}
+  \end{center}
+  The UMP of the free monoid produces a monoid homomorphism $h:\caF(A+B)\to N$
+  such that
+  \begin{equation}\label{eq:umph}
+    |h|\circ j_{A+B}=g
+  \end{equation}
+  It remains to show that
+  \begin{align*}
+    h\circ k_A = f_A &&\text{and}&& h\circ k_B = f_B
+  \end{align*}
+  We have
+  \begin{align*}
+    |h|\circ |k_A|\circ j_A
+    &= |h|\circ j_{A+B}\circ i_A &&\quad\text{Equation \eqref{eq:ka}}\\
+    &= g\circ i_A &&\quad\text{Equation \eqref{eq:umph}} \\
+    &= |f_A|\circ j_A &&\quad\text{Equation \eqref{eq:ga}}
+  \end{align*}
+  and
+  \begin{align*}
+    |h|\circ |k_B|\circ j_B
+    &= |h|\circ j_{A+B}\circ i_B &&\quad\text{Equation \eqref{eq:kb}}\\
+    &= g\circ i_B &&\quad\text{Equation \eqref{eq:umph}} \\
+    &= |f_B|\circ j_B &&\quad\text{Equation \eqref{eq:gb}}
+  \end{align*}
+  Which, combined with the uniqueness conditions of the respective UMPs, gives
+  the required equality.
+\end{proof}
+
+\problemnum{6}
+
+\begin{theorem*}
+	The category of monoids ($\Mon$) has all equalizers.
+\end{theorem*}
+\begin{proof}
+	(Equalizers) Let $A,B\in\Obj(\Mon)$ and
+  \begin{tikzcd}[cramped,sep=small] f_1,f_2:A
+    \arrow[r,yshift=2pt]\arrow[r,yshift=-2pt] & B \end{tikzcd}. We need to
+  give a monoid $E$ together with an arrow $e:E\rightarrowtail A$ satisfying
+  the UMP. As in $\Set$, the set $E$ is the subset of $A$ where $f_1$ and $f_2$
+  agree, and $e$ is the inclusion.
+  \begin{equation*}
+    E\coloneqq\braces{a\in A|f_1(a)=f_2(a)}
+  \end{equation*}
+  By definition, $f_1\circ e=f_2\circ e$. We need to show that this is in fact
+  an object of $\Mon$, i.e.\ a submonoid of $A$. Let $x,y\in E$, meaning
+  $f_1(x)=f_2(x)$ and $f_1(y)=f_2(y)$.
+  \begin{align*}
+    f_1(xy)
+    &= f_1(x)f_1(y)
+    &&\quad f_1\text{ is a homomorphism} \\
+    &= f_2(x)f_2(y)
+    &&\quad \text{Assumption on }x,y \\
+    &= f_2(xy)
+    &&\quad f_2\text{ is a homomorphism}
+  \end{align*}
+  Additionally, $E$ is non-empty, since by the definition of a monoid morphism,
+  $f_1(u_A)=f_2(u_A)=u_B$ where $u_A\in A,u_B\in B$ are the identities. It
+  remains to show that any other map that equalizes $f_1$ and $f_2$ factors
+  through $e$. Let $z:Z\to A$ such that $f_1\circ z=f_2\circ z$ and let
+  $x\in Z$. Then $f_1(z(x))=f_2(z(x))$, so $z(x)\in E$ (more specifically, there
+  is some $x'\in E$ such that $e(x')=z(x)$). Thus, $Z$ is a submonoid of $E$ and
+  $z$ factors through $e$ via the inclusion $Z\rightarrowtail E$.
+\end{proof}
+
+% \problemnum{7}
+
+\end{document}
