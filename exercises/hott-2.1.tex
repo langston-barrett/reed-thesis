@@ -1,0 +1,82 @@
+\documentclass[a5paper]{article}
+\input{./exercise-header.tex}
+\begin{document}
+\title{HoTT: Exercise 2.1.2}
+\author{Langston Barrett}
+\date{Fall 2017}
+
+\begin{lemma*}[Lemma 2.1.2]
+	For every type $A$ and every $x,y,z:A$ there is a function
+  \begin{equation*}
+    (x=y)\longrightarrow (y=z)\longrightarrow (x=z)
+  \end{equation*}
+  % Equivalently, the following type is inhabited:
+  % \begin{equation*}
+  %   \prod_{A:U}\prod_{x,y,z:A}(x=y)\to (y=z)\to (x=z)
+  % \end{equation*}
+\end{lemma*}
+\begin{proof}[Proof 2: Induction on $p$]
+	Define 
+  \begin{gather*}
+    D:\prod_{(x,y:A)}(x=y)\to U \\
+    D(x,y,p):\equiv\prod_{(z:A)}\prod_{(q:y=z)} (x=z)
+  \end{gather*}
+  Then
+  \begin{equation*}
+    D(x,x,\refl_x)\equiv \prod_{(z:A)}\prod_{(q:x=z)}(x=z)
+  \end{equation*}
+  Thus, we have
+  \begin{equation*}
+    d:\equiv\lambda x.\lambda z.\lambda q.q : \prod_{(x:A)} D(x,x,\refl_x)
+  \end{equation*}
+  So by induction, we have a function
+  \begin{equation*}
+    f:\prod_{(x,y:A)}\prod_{(p:x=y)} D(x,y,p)\equiv\prod_{(x,y:A)}\prod_{(p:x=y)}\prod_{(z:A)}\prod_{(q:y=z)}(x=z)
+  \end{equation*}
+  such that 
+  \begin{equation*}
+    f(x,x,\refl_x)\equiv \lambda z.\lambda q.q
+  \end{equation*}
+  In summary, we make the following judgement:
+  \begin{multline*}
+    \ind_{=_A}\Big({\prod_{(z:A)}\prod_{(q:y=z)} (x=z)},
+    {\lambda x.\lambda z.\lambda q.q}\Big) \\
+    :\prod_{(x,y:A)}\prod_{(p:x=y)}\prod_{(z:A)}\prod_{(q:y=z)}(x=z)
+  \end{multline*}
+\end{proof}
+
+\begin{proof}[Proof 3: Induction on $q$]
+	Define 
+  \begin{gather*}
+    D:\prod_{(y,z:A)}(y=z)\to U \\
+    D(y,z,p):\equiv\prod_{(x:A)}\prod_{(q:x=y)} (x=z)
+  \end{gather*}
+  Then
+  \begin{equation*}
+    D(y,y,\refl_y)\equiv \prod_{(x:A)}\prod_{(q:x=y)}(x=y)
+  \end{equation*}
+  Thus, we have
+  \begin{equation*}
+    d:\equiv\lambda y.\lambda x.\lambda q.q : \prod_{(y:A)} D(y,y,\refl_y)
+  \end{equation*}
+  So by induction, we have a function
+  \begin{equation*}
+    f:\prod_{(y,z:A)}\prod_{(p:y=z)} D(y,z,p)
+    \equiv\prod_{(y,z:A)}\prod_{(p:y=z)}\prod_{(x:A)}\prod_{(q:x=y)} (x=z)
+  \end{equation*}
+  such that 
+  \begin{equation*}
+    f(y,y,\refl_y)\equiv \lambda x.\lambda q.q
+  \end{equation*}
+  In summary, we make the following judgement:
+  \begin{multline*}
+    \ind_{=_A}\Big(\prod_{(x:A)}\prod_{(q:x=y)}(x=y),
+    y.\lambda x.\lambda q.q\Big) \\
+    :\prod_{(y,z:A)}\prod_{(p:y=z)}\prod_{(x:A)}\prod_{(q:x=y)} (x=z)
+  \end{multline*}
+\end{proof}
+
+The first proof, namely the one involving induction on both $p$ and $q$ appears
+in the text.
+
+\end{document}

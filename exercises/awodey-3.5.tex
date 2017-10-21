@@ -158,6 +158,59 @@
   $z$ factors through $e$ via the inclusion $Z\rightarrowtail E$.
 \end{proof}
 
-% \problemnum{7}
+\problemnum{7}
+
+\begin{theorem*}
+	The coproduct of projective objects is projective. 
+\end{theorem*}
+\begin{proof}
+  Let $\bfC$ be a category with binary coproducts and let $P_1,P_2\in\Obj(\bfC)$
+  be projective. Let $P_1+P_2$ denote their coproduct, and assume as given
+  $f:P_1+P_2\to X$ and $e:E\twoheadrightarrow X$. By the UMP of the coproduct,
+  we have
+  \begin{align*}
+    f_1:P_1&\longrightarrow X  &&\text{such that}&& f\circ i_1 = f_1 \\
+    f_2:P_2&\longrightarrow X  &&\text{such that}&& f\circ i_2 = f_2 
+  \end{align*}
+  and since $P_1$ and $P_2$ are projective, we get
+  \begin{align*}
+    \ov{f_1}:P_1\longrightarrow E &&\text{such that}&& e\circ \ov{f_1} = f_1 \\
+    \ov{f_2}:P_2\longrightarrow E &&\text{such that}&& e\circ \ov{f_2} = f_2
+  \end{align*}
+  which, by the UMP of the coproduct, yield
+  \begin{align*}
+    \ov{f}:P_1+P_2\longrightarrow E
+  \end{align*}
+  such that $\ov{f}\circ i_1=\ov{f_1}$ and $\ov{f}\circ i_2=\ov{f_2}$. All taken
+  together, the following diagram commutes:
+  \begin{center}
+    \begin{tikzcd}[row sep=large]
+      {} & X & {}\\
+      {} & E \arrow[u, twoheadrightarrow, "e"]& \\
+      P_1\arrow[r, "i_1", swap] \arrow[ur,dashed, "\ov{f_1}"]
+         \arrow[uur, dashed, "f_1", bend left=15] %
+      & P_1+P_2 \arrow[u, "\ov{f}"] &
+      P_2\arrow[l, "i_2"]\arrow[ul,dashed, "\ov{f_2}", swap]
+         \arrow[uul, dashed, "f_2", swap, bend right=15]
+    \end{tikzcd}
+  \end{center}
+  Reading off the diagram,
+  \begin{align*}
+    \ov{f} \circ i_1 = \ov{f_1}
+    &\implies (e\circ\ov{f})\circ i_1 = e\circ\ov{f_1}
+    &&\quad\text{Left composition with }e \\
+    &\implies (e\circ\ov{f})\circ i_1 = f_1
+    &&\quad\text{Mapping property of }\ov{f_1} \\
+    \ov{f} \circ i_2 = \ov{f_2}
+    &\implies (e\circ\ov{f})\circ i_2 = e\circ\ov{f_2}
+    &&\quad\text{Left composition with }e \\
+    &\implies (e\circ\ov{f})\circ i_2 = f_2
+    &&\quad\text{Mapping property of }\ov{f_2}
+  \end{align*}
+  However, by the UMP of the coproduct, $f$ is the unique map making the above
+  equations commute.
+  Thus, $e\circ\ov{f}=f$, which is exactly the mapping property of a
+  projective.
+\end{proof}
 
 \end{document}
