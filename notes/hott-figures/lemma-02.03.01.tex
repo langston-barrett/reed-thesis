@@ -1,13 +1,10 @@
 \RequirePackage{luatex85}
 \documentclass{standalone}
-\usepackage{tikz}
-\usetikzlibrary{calc}
-\usetikzlibrary{decorations}
-\usetikzlibrary{decorations.pathmorphing}
+\input{./figure-header.tex}
 \begin{document}
-\begin{tikzpicture}[yscale=.5,xscale=1]
+\begin{tikzpicture}
   \def\xshift{2}
-  \def\yheight{4}
+  \def\yheight{2}
 
   % P(x)
   \node[circle,draw,inner sep=0.5cm,label=above:{$P(x)$},xscale=1.5] (px) at (-\xshift,\yheight) {};
