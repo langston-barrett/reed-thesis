@@ -2,33 +2,28 @@
 \usepackage{amssymb}       % math characters
 \usepackage{mathtools}     % improvement on amsmath
 
-% Use better math fonts when available
-\IfFileExists{../tex-preamble/fonts/latinmodern-math.otf}
-  {\newcommand{\fontpath}{../tex-preamble/fonts}}
-  {\newcommand{\fontpath}{../../tex-preamble/fonts}}
+\usepackage{unicode-math}         % use OTF math fonts
+\AtBeginDocument{\let\epsilon\varepsilon}
+\setmathfont[math-style=ISO]{Tex Gyre Schola Math}
+\setmathfont[range=\mathup]{Tex Gyre Schola Math}
+\setmathfont[range=\mathcal]{Latin Modern Math}
+\setoperatorfont\mathup % operators should be set in math font
 
-\AtBeginDocument{\let\phi\varphi} % varphi with unicode-math
-\IfFileExists{\fontpath}{
-  \usepackage{unicode-math}         % use OTF math fonts
-  %\AtBeginDocument{\let\epsilon\varepsilon}
-  % \setmathfont[Path=\fontpath]{latinmodern-math.otf}
-  \setmathfont[Path=\fontpath]{Asana-Math.otf}
-  \setmathfont[Path=\fontpath,range=\setminus]{Asana-Math.otf}
-  \setmathfont[Path=\fontpath,range=\mathbb]{texgyretermes-math.otf}
-  \setmathfont[Path=\fontpath,range=\mathcal]{latinmodern-math.otf}
+% For some reason, Schola and Latin Modern are missing setminus
+\AtBeginDocument{\let\setminus\minus}
+% \setmathfont[range=\setminus]{Asana Math}
 
-  % fix xmapsto. only works with text above.
-  % https://github.com/wspr/unicode-math/issues/197
-  \ExplSyntaxOn
-  \RenewDocumentCommand \xmapsto { m } {
-    \mathrel {
-      \exp_after:wN \Uoverdelimiter \cs:w sym \__um_symfont_tl \cs_end: "21A6 {
-        \mkern 5mu \scan_stop: #1 \mkern 5mu \scan_stop:
-      }
+% fix xmapsto. only works with text above.
+% https://github.com/wspr/unicode-math/issues/197
+\ExplSyntaxOn
+\RenewDocumentCommand \xmapsto { m } {
+  \mathrel {
+    \exp_after:wN \Uoverdelimiter \cs:w sym \__um_symfont_tl \cs_end: "21A6 {
+      \mkern 5mu \scan_stop: #1 \mkern 5mu \scan_stop:
     }
   }
-  \ExplSyntaxOff
-}{}
+}
+\ExplSyntaxOff
 
 % general stuff
 \newcommand{\units}[1]{\;\mathrm{#1}}
@@ -118,7 +113,7 @@
 % make letters in different fonts (bold, blackboard, caligraphic, fraktur)
 % https://tex.stackexchange.com/questions/156196/newcommand-with-variable-name
 \newcommand{\mkltr}[1]{%
-    \expandafter\newcommand\csname bf#1\endcsname{\ensuremath{\mathbb #1}}
+    \expandafter\newcommand\csname bf#1\endcsname{\ensuremath{\mathbf #1}}
     \expandafter\newcommand\csname bb#1\endcsname{\ensuremath{\mathbb #1}}
     \expandafter\newcommand\csname ca#1\endcsname{\ensuremath{\mathcal #1}}
     \expandafter\newcommand\csname fr#1\endcsname{\ensuremath{\mathfrak #1}}
