@@ -55,6 +55,8 @@ Many of these didn't directly contribute to my understanding of HoTT so much as 
  * ["A Cubical Approach to Synthetic Homotopy Theory"](http://dlicata.web.wesleyan.edu/pubs/lb15cubicalsynth/lb15cubicalsynth.pdf) - Licata: Using "cubical" ideas to simplify proofs. [HoTT issue #689](https://github.com/HoTT/HoTT/issues/689) is a feature request from Mike Shulman to add this. Might be a good topic!
 
  * ["A Unification Algorithm for **Coq** Featuring Universe Polymorphism and Overloading"](https://people.mpi-sws.org/~beta/papers/unicoq.pdf) - Matthieu Sozeau: Readable even if you haven't heard of unification before. Good intuition behind how Coq fills in those `_`s.
+ 
+ * ["Homotopy Type Theory: A synthetic approach to higher equalities"](https://arxiv.org/pdf/1601.05035.pdf) - Michael Shulman: This one is a great complement to the HoTT book, it discusses the philosophical implications for the use of HoTT as a foundations, with a lengthy and accessible discussion of so-called "identifications".
 
 ### Other links
 
