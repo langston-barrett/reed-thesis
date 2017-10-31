@@ -3,10 +3,11 @@
 \usepackage{mathtools}     % improvement on amsmath
 
 \usepackage{unicode-math}         % use OTF math fonts
-\AtBeginDocument{\let\epsilon\varepsilon}
-\setmathfont[math-style=ISO]{Tex Gyre Schola Math}
-\setmathfont[range=\mathup]{Tex Gyre Schola Math}
-\setmathfont[range=\mathcal]{Latin Modern Math}
+% \setmathfont[math-style=ISO]{Tex Gyre Schola Math}
+% \setmathfont[range=\mathup]{Tex Gyre Schola Math}
+% \setmathfont[range=\mathcal]{Latin Modern Math}
+\setmathfont{Latin Modern Math}
+\setmathfont[range=\mathbb]{Tex Gyre Schola Math}
 \setoperatorfont\mathup % operators should be set in math font
 
 % For some reason, Schola and Latin Modern are missing setminus
@@ -25,90 +26,87 @@
 }
 \ExplSyntaxOff
 
-% general stuff
-\newcommand{\units}[1]{\;\mathrm{#1}}
-\newcommand{\dd}{\,\mathrm{d}}
-\newcommand{\ov}{\overline}
-\newcommand{\paren}[1]{\left(#1\right)}
-\newcommand{\braces}[1]{\left\{#1\right\}}
-\newcommand{\brackets}[1]{\left[#1\right]}
-\newcommand{\ceiling}[1]{\left\lceil{} #1 \right\rceil}
-\newcommand{\floor}[1]{\left\lfloor{} #1 \right\rfloor}
-\newcommand{\abs}[1]{\left| #1 \right|}
-\newcommand{\e}[1]{\cdot 10^{#1}}
-% \newcommand{\emf}{\mathcal{E}}
-\newcommand{\contradiction}{\Rightarrow\Leftarrow}
-\newcommand{\inv}[1]{\frac{1}{#1}}
-\newcommand{\tif}{\text{ if }}
-\newcommand{\totherwise}{\text{ otherwise }}
-% \newcommand{\mydef}{\textbf{Definition:}}
-% complex numbers
-\renewcommand{\Im}{\operatorname{Im}}
-\renewcommand{\Re}{\operatorname{Re}}
+% alternative characters
+\AtBeginDocument{\let\epsilon\varepsilon}
+\AtBeginDocument{\let\phi\varphi}
+\AtBeginDocument{\let\oldemptyset\emptyset{}}
+\AtBeginDocument{\let\emptyset\varnothing{}}
+
+% paired delimiters
+\DeclarePairedDelimiterX{\Abs}[1]{\lvert}{\rvert}{#1}
+\DeclarePairedDelimiterX{\Angle}[1]{\langle}{\rangl}{#1}
+\DeclarePairedDelimiterX{\Braces}[1]{\{}{\}}{#1}
+\DeclarePairedDelimiterX{\Brackets}[1]{[}{]}{#1}
+\DeclarePairedDelimiterX{\Ceiling}[1]{\lceil}{\rceil}{#1}
+\DeclarePairedDelimiterX{\Floor}[1]{\lfloor}{\rfloor}{#1}
+\DeclarePairedDelimiterX{\Norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\Paren}[1]{\lparen}{\rparen}{#1}
+
+% swap the starred and unstarred versions of paired delimiters
+\makeatletter % https://goo.gl/osSmHV
+\def\abs{\@ifstar{\Abs}{\Abs*}}
+\def\angle{\@ifstar{\Angle}{\Angle*}}
+\def\braces{\@ifstar{\Braces}{\Braces*}}
+\def\brackets{\@ifstar{\Brackets}{\Brackets*}}
+\def\ceiling{\@ifstar{\Ceiling}{\Ceiling*}}
+\def\floor{\@ifstar{\Floor}{\Floor*}}
+\def\norm{\@ifstar{\Norm}{\Norm*}}
+\def\paren{\@ifstar{\Paren}{\Paren*}}
+\makeatother
 
 % operators/functions
+% \DeclareMathOperator{\Im}{Im}        % complex numbers: real part
+% \DeclareMathOperator{\Re}{Re}        % complex numbers: imaginary part
+\DeclareMathOperator{\Var}{Var}         % statistics: variance
 \DeclareMathOperator{\ord}{ord}
-% \DeclareMathOperator{\image}{image}
-\DeclareMathOperator{\Int}{Int}
-\DeclareMathOperator{\Ext}{Ext}
+\DeclareMathOperator{\image}{image}     % general: image
+\DeclareMathOperator{\id}{id}           % general: identity function
+\DeclareMathOperator{\lcm}{lcm}         % general: least common multiple
+\DeclareMathOperator{\xor}{xor}         % general: exclusive or
+\DeclareMathOperator{\Int}{Int}         % topology: interior
+\DeclareMathOperator{\Ext}{Ext}         % topology: exterior
 \DeclareMathOperator{\Lim}{Lim}
-\DeclareMathOperator{\Bd}{Bd}
-\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\Bd}{Bd}           % topology: boundary
+\DeclareMathOperator{\oball}{B}         % topology: open ball
+\DeclareMathOperator{\cball}{\ov{B}}    % topology: closed ball
+\DeclareMathOperator{\sphere}{S}        % topology: sphere
 \DeclareMathOperator{\proj}{proj}
-\DeclareMathOperator{\xor}{xor}
-\DeclareMathOperator{\spanf}{span}
-\DeclareMathOperator{\id}{id}
-% linear
-\DeclareMathOperator{\col}{Col}
-\DeclareMathOperator{\row}{Row}
-\DeclareMathOperator{\nul}{Nul}
-\DeclareMathOperator{\rank}{rank}
-
-% set theory
-\newcommand{\xlongmapsto}[1]{\xmapsto{\,\,\, #1\,\,\,}}
-\newcommand{\xlongrightarrow}[1]{\xrightarrow{\,\,\, #1\,\,\,}}
-\newcommand{\union}{\mathop{\bigcup}}
-\newcommand{\disunion}{\mathop{\dot\bigcup}}
-\newcommand{\intersection}{\mathop{\bigcap}}
-\newcommand{\powerset}{\mathcal{P}}
-
-% analysis & calculus
-\usepackage{esint} % \oiint, etc
-\newcommand{\evalat}[2]{{\bigg|_{#1}^{#2}}}
-\newcommand{\ext}[1]{{#1}^{ext}}  % extension of function
-\DeclareMathOperator{\determinant}{det}
-\DeclareMathOperator{\oball}{B}
-\DeclareMathOperator{\cball}{\ov{B}}
-\DeclareMathOperator{\sphere}{S}
-\DeclareMathOperator{\divergence}{div}
-\DeclareMathOperator{\curl}{curl}
-
-% vectors
-\newcommand{\ihat}{\hat{\imath}}
-\newcommand{\jhat}{\hat{\jmath}}
-\newcommand{\khat}{\hat{k}}
-\newcommand{\lvec}[1]{\overrightarrow{#1}}
-\newcommand{\len}[1]{\left\| #1 \right\|}
-
-% topology
-\newcommand{\RP}{\ensuremath{\R\hspace{-0.07em}\mathrm{P}}}
-
-% categories
-\DeclareMathOperator{\Set}{\mathbf{Set}}           % sets
-\DeclareMathOperator{\Cat}{\mathbf{Cat}}           % small categories
-\DeclareMathOperator{\Grpd}{\mathbf{Grpd}}         % small groupoids
-\DeclareMathOperator{\Mon}{\mathbf{Mon}}           % monoids
-\DeclareMathOperator{\Grp}{\mathbf{Grp}}           % groups
-\DeclareMathOperator{\AbGrp}{\mathbf{AbGrp}}       % abelian groups
-\DeclareMathOperator{\Top}{\mathbf{Top}}           % topological spaces
-\DeclareMathOperator{\Man}{\mathbf{Man}}           % topological manifolds
-\DeclareMathOperator{\Metric}{\mathbf{Metric}}     % metric spaces
-\DeclareMathOperator{\Vect}{\mathbf{Vect}}         % vector spaces
-
-% number theory
-\newcommand{\modulus}[1]{\; \left(\mathrm{mod}\; #1\right)}
-\newcommand{\crash}[2]{\left(\frac{#1}{#2}\right)}
-\newcommand{\QED}{\begin{flushright}QED\end{flushright}}
+\DeclareMathOperator{\spanf}{span}      % linear: span
+\DeclareMathOperator{\col}{Col}         % linear: column space
+\DeclareMathOperator{\row}{Row}         % linear: row space
+\DeclareMathOperator{\nul}{Nul}         % linear: null space
+\DeclareMathOperator{\rank}{rank}       % linear: rank
+\DeclareMathOperator{\determinant}{det} % linear: determinant
+\DeclareMathOperator{\Alt}{Alt}         % linear: alternating group/square
+\DeclareMathOperator{\Sym}{Sym}         % linear: symmetric square
+\DeclareMathOperator{\Tr}{Trace}        % linear: trace of a matrix
+\DeclareMathOperator{\divergence}{div}  % multi: divergence
+\DeclareMathOperator{\curl}{curl}       % multi: curl
+\DeclareMathOperator{\characteristic}{char} % algebra: ring/field characteristic
+\DeclareMathOperator{\ann}{ann}         % algebra: the annihilator of a submodule
+\DeclareMathOperator{\GL}{GL}           % algebra: general linear group
+\DeclareMathOperator{\SL}{SL}           % algebra: special linear group
+\DeclareMathOperator{\GF}{GF}           % algebra: galois field
+\DeclareMathOperator{\Tor}{Tor}         % algebra: torsion elements/functor
+\DeclareMathOperator{\Stab}{Stab}       % algebra: stabilizer
+\DeclareMathOperator{\Orb}{Orb}         % algebra: orbit
+\DeclareMathOperator{\Mat}{Mat}         % algebra: matrix ring
+\DeclareMathOperator{\Res}{Res}         % algebra: restruction of a representation
+\DeclareMathOperator{\im}{im}           % algebra: image
+\DeclareMathOperator{\Aut}{Aut}         % algebra/cat: automorphisms
+\DeclareMathOperator{\End}{End}         % algebra/cat: endomorphisms
+\DeclareMathOperator{\Obj}{Obj}              % categories: objects of a category
+\DeclareMathOperator{\Hom}{Hom}              % categories: hom-sets
+\DeclareMathOperator{\Set}{\mathbf{Set}}     % categories: (small) sets
+\DeclareMathOperator{\Cat}{\mathbf{Cat}}     % categories: small categories
+\DeclareMathOperator{\Grpd}{\mathbf{Grpd}}   % categories: small groupoids
+\DeclareMathOperator{\Mon}{\mathbf{Mon}}     % categories: monoids
+\DeclareMathOperator{\Grp}{\mathbf{Grp}}     % categories: groups
+\DeclareMathOperator{\AbGrp}{\mathbf{AbGrp}} % categories: abelian groups
+\DeclareMathOperator{\Top}{\mathbf{Top}}     % categories: topological spaces
+\DeclareMathOperator{\Man}{\mathbf{Man}}     % categories: topological manifolds
+\DeclareMathOperator{\Met}{\mathbf{Metric}}  % categories: metric spaces
+\DeclareMathOperator{\Vect}{\mathbf{Vect}}   % categories: vector spaces
 
 % make letters in different fonts (bold, blackboard, caligraphic, fraktur)
 % https://tex.stackexchange.com/questions/156196/newcommand-with-variable-name
@@ -125,36 +123,49 @@
 
 \newcommand{\zn}{\mathbf{Z}_n}
 \newcommand{\zp}{\mathbf{Z}_p}
-\newcommand{\N}{\ensuremath{\mathbf{N}}}
-\newcommand{\Z}{\ensuremath{\mathbf{Z}}}
-\newcommand{\Q}{\ensuremath{\mathbf{Q}}}
-\newcommand{\R}{\ensuremath{\mathbf{R}}}
-\newcommand{\C}{\ensuremath{\mathbf{C}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\C}{\ensuremath{\mathbb{C}}}
+
+% general stuff
+\newcommand{\units}[1]{\;\mathrm{#1}}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\ov}{\overline}
+
+% set theory
+\newcommand{\xlongmapsto}[1]{\xmapsto{\,\,\, #1\,\,\,}}
+\newcommand{\xlongrightarrow}[1]{\xrightarrow{\,\,\, #1\,\,\,}}
+\newcommand{\union}{\mathop{\bigcup}}
+\newcommand{\disunion}{\mathop{\dot\bigcup}}
+\newcommand{\intersection}{\mathop{\bigcap}}
+\newcommand{\powerset}{\mathcal{P}}
+
+% analysis & calculus
+\usepackage{esint} % \oiint, etc
+\newcommand{\evalat}[2]{{\bigg|_{#1}^{#2}}}
+\newcommand{\ext}[1]{{#1}^{ext}}  % extension of function
+
+% vectors
+\newcommand{\ihat}{\hat{\imath}}
+\newcommand{\jhat}{\hat{\jmath}}
+\newcommand{\khat}{\hat{k}}
+\newcommand{\lvec}[1]{\overrightarrow{#1}}
+\newcommand{\len}[1]{\left\| #1 \right\|}
+
+% topology
+\newcommand{\RP}{\ensuremath{\R\hspace{-0.07em}\mathrm{P}}}
 
 % algebra
 \newcommand{\quotient}[2]{{\raisebox{.2em}{$#1$}\left/\raisebox{-.2em}{$#2$}\right.}}
-\newcommand{\GL}{\mathrm{GL}}     % general linear group
-\newcommand{\SL}{\mathrm{SL}}     % special linear group
 \renewcommand{\S}{\mathfrak{S}}   % symmetric group
-\DeclareMathOperator{\ann}{ann}   % the annihilator of a submodule
-\DeclareMathOperator{\Obj}{Obj}   % objects of a category
-\DeclareMathOperator{\Hom}{Hom}   % homomorphisms between modules
-\DeclareMathOperator{\Mor}{Mor}   % categorical morphisms
-\DeclareMathOperator{\characteristic}{char} % ring characteristic
-\DeclareMathOperator{\Tor}{Tor}   % torsion elements
-\DeclareMathOperator{\Stab}{Stab} % stabilizer
-\DeclareMathOperator{\Orb}{Orb}   % orbit
-\DeclareMathOperator{\Aut}{Aut}   % automorphisms
-\DeclareMathOperator{\Alt}{Alt}   % alternating group
-\DeclareMathOperator{\End}{End}   % endomorphisms
-\DeclareMathOperator{\Mat}{Mat}   % matrix ring
-\DeclareMathOperator{\Tr}{Trace}  % trace of a matrix
-\DeclareMathOperator{\im}{im}     % image
-\newcommand{\ab}{\mathbf{ab}}     % abelianization
+\newcommand{\ab}{\mathbf{ab}}     % algebra: abelianization
 
 % statistics
-\DeclareMathOperator{\Var}{Var}
-
-% nicer empty set
-\let\oldemptyset\emptyset{}
-\let\emptyset\varnothing{}
+% https://tex.stackexchange.com/questions/229023/expectation-operator#229029
+% expectation and covariance
+\DeclareMathOperator{\ExpOp}{Exp}
+\DeclareMathOperator{\CovOp}{Cov}
+\newcommand{\Exp}{\ExpOp\brackets*}
+\newcommand{\Cov}{\CovOp\brackets*}
