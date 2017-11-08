@@ -1,0 +1,507 @@
+\documentclass{beamer}
+
+%%% Packages
+% \usepackage{hyperref}
+\usepackage{./metropolis/beamerthememetropolis}
+
+%%% Fonts
+\usefonttheme{professionalfonts} % using non standard fonts for beamer
+\usepackage{fontspec}
+\usepackage[math]{iwona}
+\setmainfont[Ligatures=TeX]{Open Sans}
+\setmonofont[Scale=0.9]{DejaVu Sans Mono}
+\usepackage{prftree}
+
+%%% BibLaTeX with Biber
+\usepackage[backend=bibtex, citestyle=authoryear-comp]{biblatex}
+\addbibresource{references.bib}
+\renewcommand*{\bibfont}{\footnotesize}
+\nocite{*}
+
+% Other packages
+\input{../tex-preamble/math.tex}
+\usepackage{tikz}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{cd}
+\usetikzlibrary{arrows.meta}
+
+%%% Notes
+\setbeameroption{show notes} % show only notes works as well
+\setbeamertemplate{note page}[plain]
+
+%%% Document
+\begin{document}
+\title{Type Theory as Foundations for Math and Computer Science}
+\author{Langston Barrett}
+\institute{Reed College}
+\date{\today}
+
+\frame{\titlepage}
+
+\begin{frame}
+  \frametitle{Goals}
+
+  Takeaways:
+
+  \begin{itemize}
+    \itemsep0.4em
+    \item The distinctions between:
+      \begin{itemize}
+        \itemsep0em
+        \item syntax and semantics
+        \item object language and metalanguage
+        \item propositions and judgements
+        % \item first-order logic and set theory
+      \end{itemize}
+    \item A feel for (formal) Intuitionistic Propositional Logic
+    \item A feel for the typed $\mathbf{\lambda}$-calculus
+    \item That these two things aren't so different after all
+    \item An understanding of the consequences of the Curry-Howard correspondence
+  \end{itemize}
+
+  \note{
+    \begin{itemize}
+      \itemsep0em
+      \item I won't be fully formal. Don't take the systems I present and try
+        and run out and reason with them! The formal systems butchered in this
+        room stay in this room.
+      \item I'll give philosophical background
+      \item We don't learn much about fully formal reasoning, so I'll make an
+        attempt to introduce the notation and style of logic
+    \end{itemize}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Formal systems}
+
+  \begin{itemize}
+    \itemsep0.4em
+    \item A \textbf{deductive system} or \textbf{logic} (more generally, a
+      \textbf{formal system}) is a set of rules for manipulating symbols.
+    \item These symbols and their manipulations are given meaning by
+      interpretation.
+    \item Rules abstract common patterns of thought.
+    \item Concepts like truth and rational argument are \textit{prior} to formal
+      systems.
+    \item We evaluate formal systems based on our experience of the world.
+  \end{itemize}
+
+  \note{
+    \begin{itemize}
+      \itemsep0em
+      \item The formal system gives us syntax, interpretation gives us
+        semantics, or meaning.
+      \item Example: modus ponens. When it rains, the ground gets wet. It is
+        raining. (Draw picture :)
+      \item Example: trivial formal system. Everything is true/false!
+      \item Example: $(\N,+)$. The statements are equalities, the rules of
+        deduction are computation.
+      \item Example: ZFC. This is just one formal system, subject to analysis
+        like all others! We could use any other in its place! Note that we don't
+        actually ``do mathematics in ZFC''.
+      % \item For the next slide:
+      %   \begin{itemize}
+      %     \itemsep0em
+      %     \item How can we define
+      %   \end{itemize}
+    \end{itemize}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Object language and metalanguage}
+
+  \begin{itemize}
+    \itemsep0.4em
+    \item How can we dicuss or define logic(s)? We need logic to make sensible
+      definitions!
+    \item Syntactic elements of a logic are part of the \textbf{object language}.
+    \item When we discuss formal systems, we do so in a \textbf{metalanguage}.
+  \end{itemize}
+
+  \note{
+    \begin{itemize}
+      \itemsep0em
+      \item Example: The statement $2+2=4$ is in the object language of the
+        theory $(\N,+)$. The statement ``all statments in the formal system
+        $(\N,+)$ can be proven or disproven'' is in a metalangauge.
+      \item A metalanguage doesn't have to be formal, but it can be. We can talk
+        about what can be proved about Peano Arithmetic in ZFC.
+    \end{itemize}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Judgements, Proofs, and Propositions}
+
+  \begin{itemize}
+    \itemsep0.4em
+    \item A \textbf{judgement} (Martin-L\"of) or \textbf{assertion} (Russell) is
+      something that can be known. The act of judging is that of comprehending,
+      seeing, or coming to know something [\cite{martinlof1996meanings}].
+    \item A \textbf{proof} is that which justifies a judgement (makes it evident).
+    \item A \textbf{formal proof} is a manipulation of symbols according to the
+      rules of a fixed formal system. 
+    \item A \textbf{proposition} is a statement that is subject to proof
+      [\cite{martinlof1984book}].
+  \end{itemize}
+
+  \begin{center}
+    \begin{tikzpicture}
+      \node[ellipse,draw,thick] (T) at (0,0) {\Large $A$\,\, is true};
+      \node[circle,draw,thick,inner sep=0.20cm] (A) at (-0.9,0) {};
+      \node[] (P) at (-3.5,0) {Proposition};
+      \draw[->,>=stealth,thick] (P) to[] (A);
+      \node[] (J) at (3.5,0) {Judgement};
+      \draw[->,>=stealth,thick] (J) to[] (T);
+    \end{tikzpicture}
+  \end{center}
+
+  \note{
+    \begin{itemize}
+      \itemsep0em
+      \item Other judgements: ``$A$ is true right now'', ``$A$ can be achieved
+        from available resources''
+      \item If you're bored, ruminate on this question: Are the judgements ``$A$
+        is true'' and ``$A$ has a proof'' different? (Trick question: depends on
+        the formal system. What do you think the answer \textit{should} be?)
+      \item Questions so far?
+    \end{itemize}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Defining Intuitionistic Propositional Logic I}
+  We shall denote valid inferences like so:
+  \begin{displaymath}
+    \prftree[r]{}{\text{Hypotheses}}{\text{Conclusion}}
+  \end{displaymath}
+  The judgements of propositional logic:
+  \begin{enumerate}
+    \itemsep0.2em
+    \item $A$ is a proposition
+    \item $A$ is true
+  \end{enumerate}
+  Inferences will always be reflexive (and transitive). 
+  \begin{center}
+    \begin{minipage}[b]{0.4\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{A\text{ prop}}{A\text{ prop}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.4\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{A\text{ true}}{A\text{ true}}
+      \end{displaymath}
+    \end{minipage}
+  \end{center}
+
+  \note{
+    \begin{itemize}
+      \itemsep0em
+      \item I've made a mistake in the second inference here. Can you see it?
+        (We need $A$ prop).
+      \item Note that the ``above line/below line'' distinction is implication
+        on the ``meta-level'', whereas ($A$ implies $B$) is on the object level.
+      \item ``A'' is a metavariable. It ranges over all statements in the
+        object language.
+    \end{itemize}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Defining Intuitionistic Propositional Logic II}
+  We may form (among others) the following propositions from old ones:
+  \begin{center}
+    \begin{minipage}[b]{0.3\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{A\text{ prop}}{B\text{ prop}}
+          {(A\text{ and }B)\text{ prop}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.3\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{A\text{ prop}}{B\text{ prop}}
+          {(A\text{ or }B)\text{ prop}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.3\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{A\text{ prop}}{B\text{ prop}}
+          {(A\text{ implies }B)\text{ prop}}
+      \end{displaymath}
+    \end{minipage}
+  \end{center}
+  Two very special propositions:
+  \begin{center}
+    \begin{minipage}[b]{0.4\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{}{\text{True prop}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.4\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{}{\text{False prop}}
+      \end{displaymath}
+    \end{minipage}
+  \end{center}
+  Others may be defined.
+  \begin{align*}
+    \text{not }A &= A\text{ implies False} \\
+    A\text{ if and only if }B &= (A\text{ implies }B)\text{ and }(B\text{ implies }A)
+  \end{align*}
+  % \note{
+  %   \begin{itemize}
+  %     \itemsep0em
+  %     \item What do the variables range over?
+  %   \end{itemize}
+  % }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Defining Intuitionistic Propositional Logic III}
+  Assuming $A$ and $B$ are propositions,
+  \vspace{-1em}
+  \begin{center}
+    \begin{minipage}[b]{0.3\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{\text{True true}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.3\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{A\text{ true}}{B\text{ true}}
+          {(A\text{ and }B)\text{ true}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.3\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{A\text{ true}}{(A\text{ or }B)\text{ true}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.3\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{B\text{ true}}{(A\text{ or }B)\text{ true}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.3\linewidth}
+      \begin{displaymath}
+        % \prftree[r]{}{A\text{ true}}{A\text{ implies }B\text{ true}}
+        %   {B\text{ true}}
+        \prftree[r]{}{(A\text{ and }B)\text{ true}}{A\text{ true}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.3\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{(A\text{ and }B)\text{ true}}{B\text{ true}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.3\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{\text{False true}}{A\text{ true}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.6\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{(A\text{ implies }B)\text{ true}}{A\text{
+            true}}{B\text{ true}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{displaymath}
+      \prftree[r]{}{(A\text{ or }B)\text{ true}}{(A\text{ implies }C)\text{
+          true}}{(B\text{ implies }C)\text{ true}}
+        {C\text{ true}}
+    \end{displaymath}
+  \end{center}
+
+  \note{
+    \begin{itemize}
+      \itemsep0em
+      \item Can you find modus ponens?
+      \item Duality of introduction and elimination rules.
+      \item short proof: ($A$ and $B$) implies ($B$ and $A$)
+      \begin{displaymath}
+        \prftree[r]{}{
+          \prftree[r]{}{A\land B}{B}
+        }{
+          \prftree[r]{}{A\land B}{A}
+        }{B\land A}
+      \end{displaymath}
+      \item Constructive mathematics
+      \item Proof that $\lnot \lnot (A\lor \lnot A)$:
+        \begin{itemize}
+          \itemsep0em
+          \item Suffices to assume $\lnot (A\lor \lnot A)$ and prove $\bot$
+          \item Suffices to show $A\lor \lnot A$
+          \item Suffices to show $\lnot A$
+          \item Suffices to assume $A$ and prove $\bot$
+          \item However, if $A$, then $A\lor \lnot A$, contradiction!
+        \end{itemize}
+      
+      \item Questions so far?
+    \end{itemize}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Defining the $\lambda$-calculus}
+  The judgements of the $\lambda$-calculus:
+  \begin{enumerate}
+    \itemsep0.2em
+    \item $A$ is a type
+    \item $a$ is a term of type $A$ (written $a:A$)
+  \end{enumerate}
+  We have
+  \vspace{-1em}
+  \begin{center}
+    \begin{minipage}[b]{0.20\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{}{\emptyset\text{ type}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.15\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{}{\top\text{ type}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.30\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{A\text{ type}}{B\text{ type}}{A\times B\text{ type}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.25\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{A\text{ type}}{B\text{ type}}{A+B\text{ type}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.25\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{A\text{ type}}{B\text{ type}}{A\to B\text{ type}}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.15\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{}{():\top}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.25\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{a:A}{b:B}{(a,b):A\times B}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.25\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{a:A}{\operatorname{left}(a):A+B}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.30\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{a:A}{\operatorname{right}(b):A+B}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.25\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{a:A}{f:A\to B}{f a:B}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.20\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{p:A\times B}{\operatorname{proj}_1(p):A}
+      \end{displaymath}
+    \end{minipage}
+    \begin{minipage}[b]{0.20\linewidth}
+      \begin{displaymath}
+        \prftree[r]{}{p:A\times B}{\operatorname{proj}_2(p):B}
+      \end{displaymath}
+    \end{minipage}
+  \end{center}
+
+  \note{
+    \begin{itemize}
+      \itemsep0em
+      \item Example of computing with the $\lambda$-calculus: first introduce
+        function introduction:
+        \begin{itemize}
+          \itemsep0em
+          \item If $f$ is an expression containing $x$,
+          \item and whenever an expression $a:A$ is substituted for $x$ in $f$,
+            the result has type $B$,
+          \item then $\lambda x.f:A\to B$
+        \end{itemize}
+      Then if $f\coloneqq x+2$, $\lambda x.f=\lambda x.x+2:\N\to\N$
+      \item short proof: ($A$ and $B$) implies ($B$ and $A$)
+      \begin{displaymath}
+        \prftree[r]{}{
+          \prftree[r]{}{p:A\times B}{\operatorname{proj}_2 p:B}
+        }{
+          \prftree[r]{}{p:A\times B}{\operatorname{proj}_1 p:B}
+        }{\langle \operatorname{proj}_1 p, \operatorname{proj}_2p
+          \rangle:A\times B}
+      \end{displaymath}
+      \item Flip back and forth between slides a bunch
+    \end{itemize}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{The Curry-Howard Correspondence}
+
+  \begin{itemize}
+    % \itemsep0em
+    \item The judgement ``$A$ type'' corresponds to ``$A'$ prop''
+    \item The judgement ``$a:A$'' corresponds to ``$A'$ true'' (and $a$ is the
+      proof/evidence: we've internalized the notion of proof)
+  \end{itemize}
+  \vspace{-1em}
+  \begin{align*}
+    A\times B &\longleftrightarrow A\text{ and }B \\
+    A+B &\longleftrightarrow A\text{ or }B \\
+    A\to B &\longleftrightarrow A\text{ implies }B \\
+    \top &\longleftrightarrow \text{True} \\
+    \emptyset &\longleftrightarrow \text{False}
+  \end{align*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Consequences}
+
+  \begin{itemize}
+    \itemsep0em
+    \item The $\lambda$-calculus is a \textit{programming language}. 
+    \item Type-checking in the $\lambda$-calculus is decidable!
+    \item Proof assistants
+    \item Extraction of witnesses
+    \item Using the same language to perform and reason about computation
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Endnotes}
+  \begin{itemize}
+    \item Thank you!
+    \item Questions?
+    \item Extra topics:
+      \begin{itemize}
+        \item The question I asked about ``$A$ is true'' vs. ``$A$ has a proof''
+        \item Dependent types
+        \item What do the judgements \textit{mean}?
+        \item Free and bound variables
+      \end{itemize}
+    \item You can find these slides online at
+      \url{github.com/siddharthist/thesis/presentations}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+  \frametitle{References}
+
+  \printbibliography
+\end{frame}
+
+% TODO: references, where you can find these slides online
+
+\end{document}

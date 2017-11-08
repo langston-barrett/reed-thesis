@@ -2,29 +2,28 @@
 \usepackage{amssymb}       % math characters
 \usepackage{mathtools}     % improvement on amsmath
 
-\usepackage{unicode-math}         % use OTF math fonts
+% \usepackage{unicode-math}         % use OTF math fonts
+% \setoperatorfont\mathup % operators should be set in math font
+% \AtBeginDocument{\let\setminus\minus}
+
+% \ExplSyntaxOn % fix xmapsto. https://github.com/wspr/unicode-math/issues/197
+% \RenewDocumentCommand \xmapsto { m } {
+%   \mathrel {
+%     \exp_after:wN \Uoverdelimiter \cs:w sym \__um_symfont_tl \cs_end: "21A6 {
+%       \mkern 5mu \scan_stop: #1 \mkern 5mu \scan_stop:
+%     }
+%   }
+% }
+% \ExplSyntaxOff
+
 % \setmathfont[math-style=ISO]{Tex Gyre Schola Math}
 % \setmathfont[range=\mathup]{Tex Gyre Schola Math}
 % \setmathfont[range=\mathcal]{Latin Modern Math}
-\setmathfont{Latin Modern Math}
-\setmathfont[range=\mathbb]{Tex Gyre Schola Math}
-\setoperatorfont\mathup % operators should be set in math font
-
-% For some reason, Schola and Latin Modern are missing setminus
-\AtBeginDocument{\let\setminus\minus}
 % \setmathfont[range=\setminus]{Asana Math}
 
-% fix xmapsto. only works with text above.
-% https://github.com/wspr/unicode-math/issues/197
-\ExplSyntaxOn
-\RenewDocumentCommand \xmapsto { m } {
-  \mathrel {
-    \exp_after:wN \Uoverdelimiter \cs:w sym \__um_symfont_tl \cs_end: "21A6 {
-      \mkern 5mu \scan_stop: #1 \mkern 5mu \scan_stop:
-    }
-  }
-}
-\ExplSyntaxOff
+% \setmathfont{Latin Modern Math}
+% \setmathfont[range=\mathbb]{Tex Gyre Schola Math}
+% \setmathfont[range=\setminus]{Asana Math}
 
 % alternative characters
 \AtBeginDocument{\let\epsilon\varepsilon}
@@ -34,7 +33,7 @@
 
 % paired delimiters
 \DeclarePairedDelimiterX{\Abs}[1]{\lvert}{\rvert}{#1}
-\DeclarePairedDelimiterX{\Angle}[1]{\langle}{\rangl}{#1}
+\DeclarePairedDelimiterX{\Angle}[1]{\langle}{\rangle}{#1}
 \DeclarePairedDelimiterX{\Braces}[1]{\{}{\}}{#1}
 \DeclarePairedDelimiterX{\Brackets}[1]{[}{]}{#1}
 \DeclarePairedDelimiterX{\Ceiling}[1]{\lceil}{\rceil}{#1}
@@ -45,7 +44,7 @@
 % swap the starred and unstarred versions of paired delimiters
 \makeatletter % https://goo.gl/osSmHV
 \def\abs{\@ifstar{\Abs}{\Abs*}}
-\def\angle{\@ifstar{\Angle}{\Angle*}}
+\def\angles{\@ifstar{\Angle}{\Angle*}}
 \def\braces{\@ifstar{\Braces}{\Braces*}}
 \def\brackets{\@ifstar{\Brackets}{\Brackets*}}
 \def\ceiling{\@ifstar{\Ceiling}{\Ceiling*}}
@@ -91,7 +90,8 @@
 \DeclareMathOperator{\Stab}{Stab}       % algebra: stabilizer
 \DeclareMathOperator{\Orb}{Orb}         % algebra: orbit
 \DeclareMathOperator{\Mat}{Mat}         % algebra: matrix ring
-\DeclareMathOperator{\Res}{Res}         % algebra: restruction of a representation
+\DeclareMathOperator{\Res}{Res}         % algebra: restriction of a representation
+\DeclareMathOperator{\Ind}{Ind}         % algebra: induced representation
 \DeclareMathOperator{\im}{im}           % algebra: image
 \DeclareMathOperator{\Aut}{Aut}         % algebra/cat: automorphisms
 \DeclareMathOperator{\End}{End}         % algebra/cat: endomorphisms
@@ -105,8 +105,10 @@
 \DeclareMathOperator{\AbGrp}{\mathbf{AbGrp}} % categories: abelian groups
 \DeclareMathOperator{\Top}{\mathbf{Top}}     % categories: topological spaces
 \DeclareMathOperator{\Man}{\mathbf{Man}}     % categories: topological manifolds
+\DeclareMathOperator{\Mod}{\mathbf{-Mod}}     % categories: modules over a ring
 \DeclareMathOperator{\Met}{\mathbf{Metric}}  % categories: metric spaces
 \DeclareMathOperator{\Vect}{\mathbf{Vect}}   % categories: vector spaces
+\DeclareMathOperator{\Rep}{\mathbf{Rep}}     % categories: representations
 
 % make letters in different fonts (bold, blackboard, caligraphic, fraktur)
 % https://tex.stackexchange.com/questions/156196/newcommand-with-variable-name
