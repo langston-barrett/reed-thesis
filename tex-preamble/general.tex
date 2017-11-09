@@ -10,11 +10,7 @@
 % unclear whether to use Tinos or Liberation Serif. same design.
 \setmainfont[Ligatures=TeX]{Tinos}
 
-% date
-\usepackage{polyglossia}
-\usepackage[yyyymmdd]{datetime}
-\renewcommand{\dateseparator}{--}
-
+\usepackage{datetime2} % use yyyy--mm--dd date with \DTMtoday
 \usepackage{geometry}
 \geometry{
   lmargin=4cm,
@@ -40,6 +36,3 @@
 \usepackage{graphicx}
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 \usepackage{float} % image positioning
-
-% semicolon is mapped to \ in my editor
-\newcommand{\semicolon}{;}

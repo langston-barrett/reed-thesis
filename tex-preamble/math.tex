@@ -2,27 +2,27 @@
 \usepackage{amssymb}       % math characters
 \usepackage{mathtools}     % improvement on amsmath
 
-% \usepackage{unicode-math}         % use OTF math fonts
-% \setoperatorfont\mathup % operators should be set in math font
-% \AtBeginDocument{\let\setminus\minus}
+\usepackage{unicode-math}         % use OTF math fonts
+\setoperatorfont\mathup % operators should be set in math font
+\AtBeginDocument{\let\setminus\minus}
 
-% \ExplSyntaxOn % fix xmapsto. https://github.com/wspr/unicode-math/issues/197
-% \RenewDocumentCommand \xmapsto { m } {
-%   \mathrel {
-%     \exp_after:wN \Uoverdelimiter \cs:w sym \__um_symfont_tl \cs_end: "21A6 {
-%       \mkern 5mu \scan_stop: #1 \mkern 5mu \scan_stop:
-%     }
-%   }
-% }
-% \ExplSyntaxOff
+\ExplSyntaxOn % fix xmapsto. https://github.com/wspr/unicode-math/issues/197
+\RenewDocumentCommand \xmapsto { m } {
+  \mathrel {
+    \exp_after:wN \Uoverdelimiter \cs:w sym \__um_symfont_tl \cs_end: "21A6 {
+      \mkern 5mu \scan_stop: #1 \mkern 5mu \scan_stop:
+    }
+  }
+}
+\ExplSyntaxOff
 
 % \setmathfont[math-style=ISO]{Tex Gyre Schola Math}
 % \setmathfont[range=\mathup]{Tex Gyre Schola Math}
 % \setmathfont[range=\mathcal]{Latin Modern Math}
 % \setmathfont[range=\setminus]{Asana Math}
 
-% \setmathfont{Latin Modern Math}
-% \setmathfont[range=\mathbb]{Tex Gyre Schola Math}
+\setmathfont{Latin Modern Math}
+\setmathfont[range=\mathbb]{Tex Gyre Schola Math}
 % \setmathfont[range=\setminus]{Asana Math}
 
 % alternative characters

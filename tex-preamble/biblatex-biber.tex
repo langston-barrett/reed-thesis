@@ -1,0 +1,13 @@
+%%%% BibLaTeX with Biber
+
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+\usepackage[backend=bibtex, citestyle=authoryear-comp]{biblatex}
+\addbibresource{references.bib}
+\renewcommand*{\bibfont}{\footnotesize}
+\nocite{*}
+
+% This is due to a bug in biblatex: https://goo.gl/FRrPQu
+\makeatletter
+\def\blx@maxline{77}
+\makeatother
