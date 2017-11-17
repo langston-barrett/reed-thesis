@@ -7,6 +7,8 @@ This is a list of texts I ended up reading to learn about HoTT and related subje
  * ["Propositions as Types"](http://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf) - Wadler (12 pages): The best introduction to the Curry-Howard correspondence.
 
  * [On the Interpretation of Intuitionistic Logic](http://homepages.inf.ed.ac.uk/jmckinna/kolmogorov-1932.pdf) - Kolmogorov (1932, 7 pages): The Brouwer-Heyting-Kolmogorov interpretation is the basis for the Curry-Howard isomorphism. It states that we can reinterpret intuitionistic logic as related to "problems" and proofs as their "solutions" (programs).
+ 
+ * [A Brief Introduction to the Intuitionistic Propositional Calculus](https://www.classes.cs.uchicago.edu/archive/2003/spring/15300-1/intuitionism.pdf) - Stuart A. Kurtz (8 pages): A concise introduction to the Curry-Howard isomorphism from the point of view of IPL.
 
 ### Type Theory
 
@@ -52,11 +54,13 @@ Many of these didn't directly contribute to my understanding of HoTT so much as 
 
  * ["Pattern Matching Without K"](https://lirias.kuleuven.be/bitstream/123456789/452283/2/icfp14-cockxA.pdf): Dependent pattern matching requires axiom K, which is incompatible with univalence. Can we come up with a restricted version which doesn't use/require K?
 
- * ["A Cubical Approach to Synthetic Homotopy Theory"](http://dlicata.web.wesleyan.edu/pubs/lb15cubicalsynth/lb15cubicalsynth.pdf) - Licata: Using "cubical" ideas to simplify proofs. [HoTT issue #689](https://github.com/HoTT/HoTT/issues/689) is a feature request from Mike Shulman to add this. Might be a good topic!
+ * ["A Cubical Approach to Synthetic Homotopy Theory"](http://dlicata.web.wesleyan.edu/pubs/lb15cubicalsynth/lb15cubicalsynth.pdf) - Daniel Licata: Using "cubical" ideas to simplify proofs. [HoTT issue #689](https://github.com/HoTT/HoTT/issues/689) is a feature request from Mike Shulman to add this. Might be a good topic!
 
  * ["A Unification Algorithm for **Coq** Featuring Universe Polymorphism and Overloading"](https://people.mpi-sws.org/~beta/papers/unicoq.pdf) - Matthieu Sozeau: Readable even if you haven't heard of unification before. Good intuition behind how Coq fills in those `_`s.
  
  * ["Homotopy Type Theory: A synthetic approach to higher equalities"](https://arxiv.org/pdf/1601.05035.pdf) - Michael Shulman: This one is a great complement to the HoTT book, it discusses the philosophical implications for the use of HoTT as a foundations, with a lengthy and accessible discussion of so-called "identifications".
+ 
+ * ["A Proposition is the (Homotopy) Type of its Proofs"](https://www.andrew.cmu.edu/user/awodey/preprints/tait.pdf) - Steve Awodey: Short, non-mathematical introduction to HoTT. Talks about a "two dimensional universe" of mathematics, where one dimension is universe level ("size") and the other is h-level ("complexity"). Talks about the interval groupoid. Discusses "impredicative encoding" of HITs.
 
 ### Other links
 
