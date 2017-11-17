@@ -1,5 +1,4 @@
 \RequirePackage{luatex85}
-
 \documentclass[margin=5mm]{standalone}
 \usepackage{varwidth}
 \usepackage{tikz}
@@ -72,8 +71,8 @@
           "\node{3cm}{Simplicial sets?}"[nope],
         },
         "\node{3cm}{Voevodsky's}" -- {
-          "\node{2cm}{Univalence Axiom}" -- {
-            "\node{2cm}{Weak equivalences}",
+          "\node{2cm}{Univalence Axiom}"[color=white, fill=green] -- {
+            "\node{2cm}{Weak equivalences}"[color=white, fill=yellow],
           },
           ""[sibling distance=0cm] -- {
             "\node{3cm}{Per Martin-L\"of's}"[color=white,fill=yellow] --[bend right=5] {
@@ -95,16 +94,16 @@
               }
             }
           },
-          "\node{2cm}{Grothendieck Universes}",
+          "\node{2cm}{Grothendieck Universes}"[color=white, fill=green],
         },
         "\node{3cm}{Voevodsky's}" --[bend left=10] {
-          "\node{3cm}{$h$-levels}" -- {
-            "\node{3cm}{homotopy $n$-types}"
+          "\node{3cm}{$h$-levels}"[color=white, fill=yellow] -- {
+            "\node{3cm}{homotopy $n$-types}"[color=white, fill=yellow]
           },
           "\node{3cm}{Higher inductive types}",
         },
       },
-      "\node{2cm}{Homotopy}" --[bend left=0] "\node{2cm}{Weak equivalences}",
+      "\node{2cm}{Homotopy}" --[bend left=0] "\node{2cm}{Weak equivalences}"[color=white, fill=yellow],
       "\node{3cm}{Quillin model categories}" --[bend right=-10] "\node{3cm}{Simplicial sets?}",
     },
   };
