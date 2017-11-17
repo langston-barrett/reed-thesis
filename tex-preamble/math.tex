@@ -16,20 +16,18 @@
 }
 \ExplSyntaxOff
 
-% \setmathfont[math-style=ISO]{Tex Gyre Schola Math}
-% \setmathfont[range=\mathup]{Tex Gyre Schola Math}
-% \setmathfont[range=\mathcal]{Latin Modern Math}
-% \setmathfont[range=\setminus]{Asana Math}
-
+% Tex Gyre Schola Math -  unpretentious, serif (good for \mathbb)
+% Latin Modern Math -  update of Computer Modern, a little thicker (good for \mathcal)
+% Asana Math -  the only font with the correct \setminus
 \setmathfont{Latin Modern Math}
 \setmathfont[range=\mathbb]{Tex Gyre Schola Math}
 % \setmathfont[range=\setminus]{Asana Math}
 
 % alternative characters
-\AtBeginDocument{\let\epsilon\varepsilon}
-\AtBeginDocument{\let\phi\varphi}
-\AtBeginDocument{\let\oldemptyset\emptyset{}}
-\AtBeginDocument{\let\emptyset\varnothing{}}
+\let\epsilon\varepsilon
+\let\phi\varphi
+\let\oldemptyset\emptyset{}
+\let\emptyset\varnothing{}
 
 % paired delimiters
 \DeclarePairedDelimiterX{\Abs}[1]{\lvert}{\rvert}{#1}
@@ -123,8 +121,6 @@
 \mkltr Q \mkltr R \mkltr S \mkltr T \mkltr U \mkltr V \mkltr W \mkltr X
 \mkltr Y \mkltr Z
 
-\newcommand{\zn}{\mathbf{Z}_n}
-\newcommand{\zp}{\mathbf{Z}_p}
 \newcommand{\N}{\ensuremath{\mathbb{N}}}
 \newcommand{\Z}{\ensuremath{\mathbb{Z}}}
 \newcommand{\Q}{\ensuremath{\mathbb{Q}}}
@@ -132,8 +128,7 @@
 \newcommand{\C}{\ensuremath{\mathbb{C}}}
 
 % general stuff
-\newcommand{\units}[1]{\;\mathrm{#1}}
-\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\units}[1]{\;\text{#1}}
 \newcommand{\ov}{\overline}
 
 % set theory
@@ -145,16 +140,16 @@
 \newcommand{\powerset}{\mathcal{P}}
 
 % analysis & calculus
-\usepackage{esint} % \oiint, etc
+\usepackage{esint}                   % \oiint, etc
+\newcommand{\dd}{\,\mathrm{d}}       % differential operator (Leibniz notation)
 \newcommand{\evalat}[2]{{\bigg|_{#1}^{#2}}}
-\newcommand{\ext}[1]{{#1}^{ext}}  % extension of function
+\newcommand{\ext}[1]{{#1}^{ext}}     % extension of function
 
 % vectors
 \newcommand{\ihat}{\hat{\imath}}
 \newcommand{\jhat}{\hat{\jmath}}
 \newcommand{\khat}{\hat{k}}
 \newcommand{\lvec}[1]{\overrightarrow{#1}}
-\newcommand{\len}[1]{\left\| #1 \right\|}
 
 % topology
 \newcommand{\RP}{\ensuremath{\R\hspace{-0.07em}\mathrm{P}}}
