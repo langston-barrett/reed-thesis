@@ -61,6 +61,8 @@ Many of these didn't directly contribute to my understanding of HoTT so much as 
  * ["Homotopy Type Theory: A synthetic approach to higher equalities"](https://arxiv.org/pdf/1601.05035.pdf) - Michael Shulman: This one is a great complement to the HoTT book, it discusses the philosophical implications for the use of HoTT as a foundations, with a lengthy and accessible discussion of so-called "identifications".
  
  * ["A Proposition is the (Homotopy) Type of its Proofs"](https://www.andrew.cmu.edu/user/awodey/preprints/tait.pdf) - Steve Awodey: Short, non-mathematical introduction to HoTT. Talks about a "two dimensional universe" of mathematics, where one dimension is universe level ("size") and the other is h-level ("complexity"). Talks about the interval groupoid. Discusses "impredicative encoding" of HITs.
+ 
+ * ["100 years of Zermelo’s axiom of choice: what was the problem with it?"](https://link.springer.com/content/pdf/10.1007%2F978-1-4020-8926-8_10.pdf) - Martin-Lof: Talks about the axiom of choice in type theory. Great Bishop quote.
 
 ### Other links
 
