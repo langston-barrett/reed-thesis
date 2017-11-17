@@ -20,3 +20,11 @@ This repo is mostly for backup right now, it holds my notes and plans for my und
 ## A Note on Continuous Integration
 
 While I would've loved to use Travis CI to check Coq files and compile LaTeX, the time it takes to download and compile _either_ [HoTT/HoTT](https://github.com/HoTT/HoTT) _or_ TeXLive is prohibitive.
+
+## Work elsewhere
+
+For work I've done related to my thesis that isn't hosted here, see my work on:
+
+ * [HoTT/HoTT](https://github.com/HoTT/HoTT/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Asiddharthist%20)
+ * [UniMath/UniMath](https://github.com/UniMath/UniMath/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Asiddharthist%20)
+ * [HoTT/book](https://github.com/HoTT/book/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Asiddharthist%20)
