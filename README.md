@@ -2,7 +2,11 @@
 
 <!-- [![Build Status](https://travis-ci.org/siddharthist/reed-thesis.svg?branch=master)](https://travis-ci.org/siddharthist/reed-thesis) -->
 
-This repo is mostly for backup right now, it holds my notes and plans for my undergraduate thesis. The topic will hopefully be something in Homotopy Type Theory.
+This repo holds my undergraduate thesis, which is focused on adding "internal"
+M-types (and maybe W-types) to the [UniMath](https://github.com/UniMath/UniMath)
+library. See this paper for
+details:
+["Non-wellfounded Trees in Homotopy Type Theory"](https://arxiv.org/abs/1504.02949).
 
 ## Directory Structure
 
@@ -25,6 +29,7 @@ While I would've loved to use Travis CI to check Coq files and compile LaTeX, th
 
 For work I've done related to my thesis that isn't hosted here, see my work on:
 
+ * [siddharthist/write-yourself-a-scheme-in-agda](https://github.com/siddharthist/write-yourself-a-scheme-in-agda)
  * [HoTT/HoTT](https://github.com/HoTT/HoTT/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Asiddharthist%20)
  * [UniMath/UniMath](https://github.com/UniMath/UniMath/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Asiddharthist%20)
  * [HoTT/book](https://github.com/HoTT/book/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Asiddharthist%20)

@@ -63,6 +63,24 @@ Many of these didn't directly contribute to my understanding of HoTT so much as 
  * ["A Proposition is the (Homotopy) Type of its Proofs"](https://www.andrew.cmu.edu/user/awodey/preprints/tait.pdf) - Steve Awodey: Short, non-mathematical introduction to HoTT. Talks about a "two dimensional universe" of mathematics, where one dimension is universe level ("size") and the other is h-level ("complexity"). Talks about the interval groupoid. Discusses "impredicative encoding" of HITs.
  
  * ["100 years of Zermelo’s axiom of choice: what was the problem with it?"](https://link.springer.com/content/pdf/10.1007%2F978-1-4020-8926-8_10.pdf) - Martin-Lof: Talks about the axiom of choice in type theory. Great Bishop quote.
+ 
+ * [F-algebras](https://en.wikipedia.org/wiki/F-algebra#External_links):
+    - ["Categorical Programming with Inductive and Coinductive Types"](http://kodu.ut.ee/~varmo/papers/thesis.pdf): A thesis on initial algebras and final coalgebras for functors.
+    - ["Recursive Types for Free!"](http://homepages.inf.ed.ac.uk/wadler/papers/free-rectypes/free-rectypes.txt) - Wadler: An accessible introduction to initial algebras and final coalgebras for functors.
+ 
+ * ["An  introduction  to  univalent  foundations  for mathematicians"](https://faculty.math.illinois.edu/~dan/Papers/ium.pdf) - Grayson
+
+### W-types
+
+ * ["Non-wellfounded Trees in Homotopy Type Theory"](https://arxiv.org/abs/1504.02949): The main inspiration for this thesis.
+
+ * ["Representing inductively defined sets by wellorderings in Martin-Lof's type theory"](https://www.sciencedirect.com/science/article/pii/S0304397596001454) - Dybjer: "We prove that every strictly positive endofunctor on the category of [extensional types] has an initial algebra", and that these are W-types. Gives a breakdown of how to turn strictly positive functors into the form `Σ (a : A) (B a → X)`, and a few remarks on the intentional side.
+
+ * ["Inductive Types in Homotopy Type Theory"](https://arxiv.org/abs/1201.3898) - Awodey, Gambino, Sojakova: A great review of the status of W-types in extensional theories. Proves certain rules about W-types with propositional computation rules equivalent to the existence of an initial algebra for a polynomial functor. 
+
+ * ["Containers: Constructing strictly positive types"](http://www.sciencedirect.com/science/article/pii/S0304397505003373) - Abbott, Altenkirch, Ghani: Takes W-type thinking into the categorical setting, derives M-types from W-types.
+
+ * [_Intuitionistic Type Theory_](http://www.csie.ntu.edu.tw/~b94087/ITT.pdf) (1980, 55 pages): One of the later sections is on W-types. Not nearly as accessible as the other papers mentioned here.
 
 ### Other links
 
