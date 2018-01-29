@@ -23,31 +23,31 @@
   ]
   {
     "\node{3cm}{Homotopy Type Theory}" -- {
-      "\node{2cm}{Homotopy}" -- {
+      "\node{2cm}{Homotopy}"[nope] -- {
         "\node{2cm}{Category theory}"[color=white, fill=yellow, sibling distance=2.8cm],
-        "\node{3cm}{Loop spaces}",
+        "\node{3cm}{Loop spaces}"[nope],
         "\node{3cm}{Globular sets}"[sibling distance=0.5cm, nope] -- {
           "\node{3cm}{Presheafs}"[sibling distance=0.5cm, nope]
         },
         ""[sibling distance=0cm] -- {
         ""[sibling distance=0cm] -- {
         "\node{3cm}{Fibration}"[sibling distance=0.5cm] -- {
-          "\node{3cm}{Homotopy lifting property}",
-          "\node{3cm}{Fiber bundle}" -- {
+          "\node{3cm}{Homotopy lifting property}"[nope],
+          "\node{3cm}{Fiber bundle}"[nope] -- {
             "\node{3cm}{Covering space}"[color=white, fill=yellow, sibling distance=2.8cm]
           }
         },
         },
         },
         ""[sibling distance=0cm] -- {
-          "\node{3cm}{Weak $\infty$-groupoid}" -- {
+          "\node{3cm}{Weak $\infty$-groupoid}"[nope] -- {
             "\node{3cm}{Fundamental groupoid}"[color=white, fill=yellow],
             ""[sibling distance=0cm] -- {
             ""[sibling distance=0cm] -- {
-            "\node{3cm}{$\infty$-categories}" -- {
-              "\node{3cm}{Whiskering}",
-              "\node{3cm}{Vertical composition}",
-              "\node{3cm}{Horizontal composition}",
+            "\node{3cm}{$\infty$-categories}"[nope] -- {
+              "\node{3cm}{Whiskering}"[nope],
+              "\node{3cm}{Vertical composition}"[nope],
+              "\node{3cm}{Horizontal composition}"[nope],
             }
             }
             }
@@ -60,51 +60,56 @@
             "\node{2.2cm}{Grothendieck, Serre, Kan fibrations}"[nope],
           },
           "\node{3cm}{Weak factorization systems}"[nope] -- {
-            "\node{3cm}{Lifting properties}"
+            "\node{3cm}{Lifting properties}"[nope]
           },
         },
         },
         },
       },
-      "\node{3cm}{Type Theory}" -- {
-        "\node{3cm}{Voevodsky's}" --[bend right=15] {
-          "\node{3cm}{Simplicial sets?}"[nope],
+      "\node{3cm}{Univalent Type Theory}" -- {
+        "\node{2cm}{Univalence Axiom}"[color=white, fill=green] -- {
+          "\node{2cm}{Weak equivalences}"[color=white, fill=green],
         },
-        "\node{3cm}{Voevodsky's}" -- {
-          "\node{2cm}{Univalence Axiom}"[color=white, fill=green] -- {
-            "\node{2cm}{Weak equivalences}"[color=white, fill=yellow],
-          },
-          ""[sibling distance=0cm] -- {
-            "\node{3cm}{Per Martin-L\"of's}"[color=white,fill=yellow] --[bend right=5] {
-              ""[sibling distance=2.2cm] -- {
-                "\node{3cm}{Equality}"[color=white, fill=green] -- {
-                  "\node{3cm}{Propositional vs syntactic}"[color=white, fill=green],
-                  "\node{3cm}{Extensional vs intentional}"[color=white, fill=green],
-                  "\node{3cm}{(Higher) equality types}"[color=white, fill=green]
-                },
+        ""[sibling distance=0cm] -- {
+          "\node{3cm}{Per Martin-L\"of's}"[color=white,fill=green] --[bend right=5] {
+            ""[sibling distance=2.2cm] -- {
+              "\node{3cm}{Equality}"[color=white, fill=green] -- {
+                "\node{3cm}{Propositional vs syntactic}"[color=white, fill=green],
+                "\node{3cm}{Extensional vs intentional}"[color=white, fill=green],
+                "\node{3cm}{(Higher) equality types}"[color=white, fill=green]
               },
             },
-            "\node{3cm}{Per Martin-L\"of's}"[color=white,fill=yellow] -- {
-              "\node{3cm}{Dependent sum}"[color=white, fill=green] -- {
-                "\node{3cm}{Dependent function}"[color=white, fill=green],
+          },
+          "\node{3cm}{Per Martin-L\"of's}"[color=white,fill=green] -- {
+            "\node{3cm}{Dependent sum}"[color=white, fill=green] -- {
+              "\node{3cm}{Dependent function}"[color=white, fill=green],
+            },
+            "\node{3cm}{Classical type theory}"[color=white,fill=green] -- {
+              "\node{3cm}{1\textsuperscript{st} order and predicate logic}"[color=white, fill=green],
+              "\node{3cm}{System F}"[color=white, fill=green] -- {
+                "\node{3cm}{(G)ADTs}"[color=white, fill=green]
               },
-              "\node{3cm}{Inductive types}",
-              "\node{3cm}{Classical type theory}" -- {
-                "\node{3cm}{1\textsuperscript{st} order and predicate logic}"[color=white, fill=green]
+            },
+            ""[sibling distance=0cm] -- {
+            ""[sibling distance=0cm] -- {
+              "\node{3cm}{(Co)inductive types}"[color=white,fill=green] -- {
+                "\node{3cm}{$F$-(co)algebras}"[color=white, fill=yellow],
+                "\node{3cm}{W-types}"[color=white, fill=yellow],
+                "\node{3cm}{M-types}"[color=white, fill=yellow]
               }
             }
-          },
-          "\node{2cm}{Grothendieck Universes}"[color=white, fill=green],
+            }
+          }
         },
-        "\node{3cm}{Voevodsky's}" --[bend left=10] {
-          "\node{3cm}{$h$-levels}"[color=white, fill=yellow] -- {
-            "\node{3cm}{homotopy $n$-types}"[color=white, fill=yellow]
-          },
-          "\node{3cm}{Higher inductive types}",
-        },
+        "\node{2cm}{Grothendieck Universes}"[color=white, fill=green],
       },
-      "\node{2cm}{Homotopy}" --[bend left=0] "\node{2cm}{Weak equivalences}"[color=white, fill=yellow],
-      "\node{3cm}{Quillin model categories}" --[bend right=-10] "\node{3cm}{Simplicial sets?}",
+      "\node{3cm}{Univalent Type Theory}" --[bend left=10] {
+        "\node{3cm}{$h$-levels}"[color=white, fill=green] -- {
+          "\node{3cm}{homotopy $n$-types}"[color=white, fill=yellow]
+        },
+        "\node{3cm}{Higher inductive types}",
+      },
+      "\node{2cm}{Homotopy}"[color=white, fill=gray] --[bend left=0] "\node{2cm}{Weak equivalences}"[color=white, fill=green],
     },
   };
 \end{tikzpicture}
