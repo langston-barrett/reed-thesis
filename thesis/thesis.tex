@@ -19,7 +19,13 @@
 \input{../tex-preamble/amsthm.tex}
 \input{../tex-preamble/problems.tex}
 \newcommand{\abbreviation}[1]{\textbf{#1}} % abbreviations
+% Judgements
+\newcommand{\prop}{\hspace{0.4em}\text{prop}}
+\newcommand{\type}{\hspace{0.4em}\text{type}}
+\newcommand{\true}{\hspace{0.4em}\text{true}}
 \usepackage{makeidx}
+\usepackage{prftree}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% My stuff:
 
 \title{Deriving Coinductive Types in Univalent Type Theory}
 % \title{Bruh: $(A\simeq B)\simeq (A=_{\mathcal{U}}B)$}
@@ -182,14 +188,16 @@ Two judgements
 
 The strong normalization property
 
+\subsection{More complex types}
+\label{subsec:more-complex-types}
+
 \section{The Curry-Howard correspondence}
 \label{sec:the-curry-howard-correspondence}
 
+\cite{curry-howard}
+
 \subsection{The BHK interpretation}
 \label{subsec:the-bhk-interpretation}
-
-\subsection{On the law of the excluded middle}
-\label{subsec:on-the-law-of-the-excluded-middle}
 
 \chapter{Type theory}
 \label{chap:type-theory}
@@ -199,6 +207,63 @@ The strong normalization property
 
 \section{Dependent types}
 \label{sec:dependent-types}
+
+\subsection{$\Pi$-types}
+\label{subsec:pi-types}
+
+\subsubsection{On the law of the excluded middle}
+\label{subsubsec:on-the-law-of-the-excluded-middle}
+
+TODO: introduce the topic based on previous sections
+
+Consider functions with the following types:
+\begin{itemize}
+  \itemsep0em
+  \item $\texttt{dne}:\prod_{A:\caU}(A\to\bot\to\bot)\to A$
+  \item $\texttt{lem}:\prod_{A:\caU}A+(A\to\bot)$
+\end{itemize}
+What can we tell about these functions from their type signatures?
+The term \texttt{dne} takes as argument a term $x:A\to\bot\to\bot$,
+that is, a term showing that $A$ is not the empty type\footnote{More precisely,
+  $x$ demonstrates that $A$ is not \textit{isomorphic} or \textit{equivalent} to
+  $\bot$, in the sense of \ref{subsec:weak-equivalences}. If $A$ were isomorphic
+  to $\bot$, then that isomorphism would be an inhabitant of $A\to\bot$.}, and
+produces some element of $A$. This seems like a very tricky function to write:
+how can we give a term of type $A$ just by knowing $A$ has terms? We don't
+know what form data of type $A$ have! The function $\texttt{lem}$ seems
+similarly quagmired. Given a type $A$, this function either has to produce an
+element of it, or demonstrate that it is uninhabited. 
+
+As you may have already guessed, under the Curry-Howard correspondence, these
+functions correspond to the rule of double negation elimination
+(\texttt{dne})\index{Double negation elimination}
+and the law of excluded middle (\texttt{lem})\index{Law of excluded middle}:
+
+\begin{minipage}[b]{0.50\linewidth}
+  \centering
+  \begin{displaymath}
+    \prftree[r]{\footnotesize DNE}
+      {P\prop}{\lnot \lnot P\true}
+      {P\true}
+  \end{displaymath}
+\end{minipage}
+\begin{minipage}[b]{0.50\linewidth}
+  \centering
+  \begin{displaymath}
+    \prftree[r]{\footnotesize LEM}
+      {P\prop}
+      {P\lor\lnot P\true}
+  \end{displaymath}
+\end{minipage}
+\vspace{-0.3em}
+
+\noindent These are logically equivalent. To demonstrate with finality that
+these are not definable terms in any consistent type theory, consider the
+application of \texttt{lem} to a type \texttt{pnp} that corresponds to the
+$\textsc{P}\neq\textsc{NP}$ conjecture under the types-as-propositions
+interpretation. If \texttt{lem} existed, we could trivially solve this problem
+and make a million dollars! We need no recourse to philosophy to justify the
+constructive/intuitionistic logic of proof assistants: nothing else computes.
 
 \section{$h$-levels and truncation}
 \label{sec:$h$-levels and truncation}
