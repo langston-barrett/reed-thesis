@@ -1,0 +1,264 @@
+\documentclass[12pt,twoside]{reedthesis}
+\usepackage{graphicx} 
+\usepackage{booktabs,setspace} 
+% \usepackage{natbib}
+% Comment out the natbib line above and uncomment the following two lines to use the new 
+% biblatex-chicago style, for Chicago A. Also make some changes at the end where the 
+% bibliography is included. 
+%\usepackage{biblatex-chicago}
+%\bibliography{thesis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% While drafting:
+\usepackage{showlabels}
+% \usepackage{showidx}
+\let\oldindex\index
+\renewcommand{\index}[1]{\oldindex{#1}\marginpar{\footnotesize idx: #1}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% My stuff:
+\input{../tex-preamble/math.tex}
+\input{../tex-preamble/general.tex}
+\input{../tex-preamble/amsthm.tex}
+\input{../tex-preamble/problems.tex}
+\newcommand{\abbreviation}[1]{\textbf{#1}} % abbreviations
+\usepackage{makeidx}
+
+\title{Deriving Coinductive Types in Univalent Type Theory}
+% \title{Bruh: $(A\simeq B)\simeq (A=_{\mathcal{U}}B)$}
+\author{Langston Barrett}
+% The month and year that you submit your FINAL draft TO THE LIBRARY (May or December)
+\date{May 2018}
+\division{Mathematics and Natural Sciences}
+\advisor{Safia Chettih}
+\department{Mathematics}
+% if you're writing a thesis in an interdisciplinary major,
+% uncomment the line below and change the text as appropriate.
+% check the Senior Handbook if unsure.
+\thedivisionof{The Established Interdisciplinary Committee for}
+
+\setlength{\parskip}{0pt}
+\begin{document}
+
+\maketitle
+\frontmatter % this stuff will be roman-numbered
+\pagestyle{empty} % this removes page numbers from the frontmatter
+
+% Acknowledgements (Acceptable American spelling) are optional
+% So are Acknowledgments (proper English spelling)
+\chapter*{Acknowledgments}
+
+% The preface is optional
+% To remove it, comment it out or delete it.
+% \chapter*{Preface}
+% This thesis delves into highly interdisciplinary territory. I'll
+
+\chapter*{List of Abbreviations}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{ll}
+    \abbreviation{HoTT}  	&  Homotopy type theory \\
+    \abbreviation{UTT}  	&  Univalent type theory \\
+    \abbreviation{ITT}  	&  Intensional type theory \\
+    \abbreviation{FOL}  	&  First-order logic (Gentzen's natural deduction) \\
+  \end{tabular}
+\end{table}
+	
+\tableofcontents
+% if you want a list of tables, optional
+% \listoftables
+% if you want a list of figures, also optional
+% \listoffigures
+
+% If your abstract is longer than a page, there may be a formatting issue.
+\chapter*{Abstract}
+
+In this thesis, we explain Univalent type theory, a constructive and
+computationally meaningful foundational system for mathematics inspired by
+recent advances in the semantics of Per Martin-L\"of's intentional type theory.
+We first develop the classical Curry-Howard correspondence between (the
+constructive subset of) Gentzen's natural deducation and the $\lambda$-calculus.
+We proceed to explicate Martin-L\"of's theory of dependent types and the central
+modern development in type theory: Vladimir Voevodsky's Univalence principle. 
+We go on to examine the nature of coinduction within this theory, presenting a
+novel formalization of a recent result that M-types can be derived
+\textit{internally} in Univalent type theory.
+
+\chapter*{Dedication}
+
+\mainmatter % here the regular arabic numbering starts
+\pagestyle{fancyplain} % turns page numbering back on
+
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+\chaptermark{Introduction}
+\markboth{Introduction}{Introduction}
+
+\section*{A short history of discomfort in mathematics}
+
+% \subsection*{Trouble in Cantor's Paradise}
+
+In the early 20\textsuperscript{th} century, mathematicians had a problem. Often
+held up as the pinnacle of necessary, undoubtable, \textit{a priori} truth,
+their discipline was suffering from an embarrassing lack of certainty. The
+intricate arguments of advanced analysis left mathematicians unable to confirm
+nor deny each other's proofs. While Cantor's na\"ive set theory had unleashed a
+wave of paradoxes, the need for a rigorous logical foundation for higher
+mathematics was so great that the enterprise of axiomatic set theory was pursued
+headlong until some kind of consensus was reached. To make a long, rich story
+brutally short, virtually every modern paper in mathematics and computer
+science uses a combination of Gentzen's first-order logic (\abbreviation{FOL})
+and an axiomatization of sets called
+\abbreviation{ZFC}\index{ZFC}.\footnote{This ``consensus'' left out many
+  prominent schools of thought, such as the Intuitionists and constructivists, a
+  point we'll soon return to.} 
+
+Despite the apparent rigor of \abbreviation{FOL}+\abbreviation{ZFC},
+practitioners of the deductive sciences were still beset by issues of
+verifiability. Complexity, specialization and sheer length made modern proofs
+difficult to comprehend with the absolute certainty which is supposed to
+characterize these disciplines. In the 1970s, two teams of topologists proved
+contradictory results, and neither group could find the error in the other's
+proof \cite{kolata}. Wiles's famous proof of Fermat's last theorem was utterly
+unintelligible to the vast majority of mathematicians \cite{nyt}. The
+classification of the simple finite groups, one of the crowning achievements of
+modern mathematics, has a combined proof of over ten thousand pages. These
+examples illustrate merely a few of the practical epistemological challenges
+facing mathematicians, for a historical perspective see \cite{rigor-and-proof},
+and for a general overview see \cite{fidelity}.
+
+In 1990s, Fields medalist Vladimir Voevodsky grew concerned with the state
+of mathematical knowledge. In 1998, Carlos Simpson released a pre-print arguing
+that there was a major mistake in one of Voevodsky's papers. However, it was not
+clear whether Voevodsky had errored, or whether there was a flaw in Simpson's
+counterexample. In 1999, Pierre Deligne found a crucial mistake in Voevodsky's
+``Cohomological Theory of Presheaves with Transfers'', upon which he had based
+much of his work in the area of motivic cohomology. As he began to develop more
+and more complex arguments, Voevodsky wondered: ``And who would ensure that I
+did not forget something and did not make a mistake, if even the mistakes in
+much more simple arguments take years to uncover?'' \cite{voevodsky-ias}. 
+
+The problems facing Voevodsky and his peers seemed insurmountable.
+As the requisite attention span, memory, and capacity for detail required to
+understand new developments in higer mathematics reached inhuman proportions,
+where was he to turn? He would not find a solution in the realm of pure
+mathematics, but rather in one of the finest examples of collaboration between
+mathematicians, computer scientists, and philosophers: the modern proof
+assistant. % TODO: reword
+
+\section*{TODO}
+
+While much of the mathematical discipline was simply relieved to have ``solved''
+their foundational issues with axiomatic set theory, there remained a vocal
+opposition to the newly-adopted methods. Most mathematicians are dimly aware
+that there's some controversy about the Axiom of Choice (the ``C'' in
+\abbreviation{ZFC}) \cite{martin-lof-100-years}, you don't have to look further
+than \abbreviation{FOL} to find disagreements.
+
+\section*{Our contribution}
+
+(Co)inductive types and UniMath
+
+\chapter{Propositions and Types}
+\label{chap:propositions-and-types}
+
+\section{Natural deduction}
+\label{sec:natural-deduction}
+
+Formal systems, proof trees
+
+\section{The $\lambda$-calculus}
+\label{sec:the-lambda-calculus}
+
+\subsection{The untyped $\lambda$-calculus and computation}
+\label{subsec:the-untyped-lambda-calculus}
+
+The Church-Turing thesis
+
+$\beta$-reduction
+
+\subsection{The simply-typed $\lambda$-calculus}
+\label{subsec:the-simply-typed-lambda-calculus}
+
+Two judgements
+
+The strong normalization property
+
+\section{The Curry-Howard correspondence}
+\label{sec:the-curry-howard-correspondence}
+
+\subsection{The BHK interpretation}
+\label{subsec:the-bhk-interpretation}
+
+\subsection{On the law of the excluded middle}
+\label{subsec:on-the-law-of-the-excluded-middle}
+
+\chapter{Type theory}
+\label{chap:type-theory}
+
+\section{The identity type}
+\label{sec:the-identity-type}
+
+\section{Dependent types}
+\label{sec:dependent-types}
+
+\section{$h$-levels and truncation}
+\label{sec:$h$-levels and truncation}
+
+\section{Univalence}
+\label{sec:univalence}
+
+\subsection{Weak equivalences}
+\label{subsec:weak-equivalences}
+
+\subsection{The univalence axiom}
+\label{subsec:the-univalence-axiom}
+
+\chapter{Coinductive types in univalent type theory}
+\label{chap:coinductive-types-in-univalent-type-theory}
+
+\section{W and M}
+\label{sec:w-and-m}
+
+\section{Category theory}
+\label{sec:category-theory}
+
+\subsection{Basics}
+\label{subsec:basics}
+
+\subsection{Functor algebras}
+\label{subsec:functor-algebras}
+
+\section{Internalizing M-types}
+\label{sec:internalizing-m-types}
+
+\chapter*{Conclusion}
+\addcontentsline{toc}{chapter}{Conclusion}
+\chaptermark{Conclusion}
+\markboth{Conclusion}{Conclusion}
+\setcounter{chapter}{4}
+\setcounter{section}{0}
+
+
+%If you feel it necessary to include an appendix, it goes here.
+% \appendix
+% \chapter{The First Appendix}
+% \chapter{The Second Appendix, for Fun}
+
+\backmatter % backmatter makes the index and bibliography appear properly in the TOC
+
+% if you're using bibtex, the next line forces every entry in the bibtex file to be included
+% in your bibliography, regardless of whether or not you've cited it in the thesis.
+\nocite{*}
+
+%  \bibliographystyle{bsts/mla-good} % there are a variety of styles available; 
+%  \bibliographystyle{plainnat}
+% replace ``plainnat'' with the style of choice. You can refer to files in the bsts or APA 
+% subfolder, e.g. 
+% \bibliographystyle{APA/apa-good}  % or
+\bibliography{thesis}
+\bibliographystyle{plain}
+% Comment the above two lines and uncomment the next line to use biblatex-chicago.
+%\printbibliography[heading=bibintoc]
+
+% Finally, an index would go here... but it is also optional.
+\printindex
+\end{document}

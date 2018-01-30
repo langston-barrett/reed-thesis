@@ -1,0 +1,1552 @@
+% \iffalse meta-comment
+%
+% This is file `apacite.sty'.
+%
+% Copyright 1994-2005 Erik Meijer and any individual authors listed
+% elsewhere in this file.  All rights reserved.
+%
+% This file is part of the `apacite' package.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2003/12/01 or later.
+%
+% The list of all files belonging to the `apacite' package, with a
+% short description, is given in the file `manifest.txt'.
+%
+% \fi
+
+%% apacite.sty : citation and reference list according to APA manual
+%% Written by Erik Meijer <e.meijer@eco.rug.nl>
+%%
+%% Contains code adapted from
+%%   index.sty [1995/09/28 v4.1beta Improved index support (dmj)],
+%%   hyperref.dtx [6.71, 2000/10/04],
+%%   babel.def [2001/03/01, v3.7h],
+%%   backref.dtx [1.20, 2002/06/09],
+%% and code (used with permission) provided by others:
+%%   Ross Moore, Stefan Bj\"ork.
+
+\NeedsTeXFormat{LaTeX2e}[1998/06/01] % Should this be a later one?
+\ProvidesPackage{apacite}[2005/06/08 APA citation]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Default. The ``old'' version
+%%%   \def\@year@\BCAY#1#2#3{#3}
+%%% cannot exist jointly with this, so has to be moved to an option.
+\def\@year@\citeauthoryear#1#2#3{#3}
+
+\DeclareOption{BCAY}{% kept for compatibility with previous versions
+   \def\@year@\BCAY#1#2#3{#3}%
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%% Accent fix options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareOption{accentfix}{%
+  %
+  % A cedilla accent (\c{c}) in an author name used to lead
+  % to errors, only due to the checking whether subsequent authors
+  % in the same citation are equivalent. The same problem is
+  % anticipated with the \b{...} accent and the \d{...} accent
+  % and the \copyright symbol (will the latter turn up in an
+  % author name?), due to the same use of \crcr, cf. The TeXbook, p. 356.
+  %
+  % This fix therefore redefines these to sensible alternatives,
+  % only for comparison of authors, not for any real formatting.
+  % Therefore, the user should not notice this, apart from the
+  % lack of errors, of course. Therefore, it is also a default
+  % option. However, because I haven't tested this thoroughly, I give
+  % the user the option to turn it off (noaccentfix). The user
+  % is then responsible for fixing any error messages generated
+  % by such characters.
+  %
+  \def\b@APAC#1{#1\_}%              bar-under accent
+  \def\c@APAC#1{\accent'30 #1}%     cedilla accent
+  \def\d@APAC#1{#1.}%               dot-under accent
+  \def\copyright@APAC#1{copyright}% copyright symbol
+  \def\@pre@accentfix{%
+    %
+    % store original definitions
+    \let\old@b@APAC\b
+    \let\old@c@APAC\c
+    \let\old@d@APAC\d
+    \let\old@copyright@APAC\copyright
+    %
+    % redefine them
+    \let\b\b@APAC
+    \let\c\c@APAC
+    \let\d\d@APAC
+    \let\copyright\copyright@APAC
+  }%
+  \def\@post@accentfix{%
+    %
+    % restore original definitions
+    \let\b\old@b@APAC
+    \let\c\old@c@APAC
+    \let\d\old@d@APAC
+    \let\copyright\old@copyright@APAC
+  }%
+}
+
+\DeclareOption{noaccentfix}{%
+  %
+  % See accentfix above for description.
+  %
+  \let\@pre@accentfix\relax%
+  \let\@post@accentfix\relax%
+}
+%%% End Accent fix options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%% No Author Index option %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% The \if is necessary because packages can not be required here, so
+% we must handle the consequences of the index and noindex options
+% later.
+%
+\newif\if@APAC@index
+\DeclareOption{noindex}{\@APAC@indexfalse}%
+%
+%%%%%% End No Author Index option %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%% Author Index option %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\DeclareOption{index}{\@APAC@indextrue}%
+%
+%%%%%% End Author Index option %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%% Modifications of Author Index %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Standard index: from the index package
+\DeclareOption{stdindex}{%
+  %%
+  %% Index style as defined in the index package
+  %% [1995/09/28 v4.1beta Improved index support (dmj)],
+  %% which is the same code as in (v3.02, 15 September 1993),
+  %% i.e., without table of contents entry.
+  %%
+  \ExecuteOptions{index}%
+  \AtEndOfPackage{%
+    \@ifclassloaded{article}{%
+       \renewenvironment{theindex}{%
+           \edef\indexname{\the\@nameuse{idxtitle@\@indextype}}%
+           \if@twocolumn
+               \@restonecolfalse
+           \else
+               \@restonecoltrue
+           \fi
+           \columnseprule \z@
+           \columnsep 35\p@
+           \twocolumn[%
+               \section*{\indexname}%
+               \ifx\index@prologue\@empty\else
+                   \index@prologue
+                   \bigskip
+               \fi
+           ]%
+           \@mkboth{\MakeUppercase\indexname}%
+                   {\MakeUppercase\indexname}%
+           \thispagestyle{plain}%
+           \parindent\z@
+           \parskip\z@ \@plus .3\p@\relax
+           \let\item\@idxitem
+       }{%
+           \if@restonecol
+               \onecolumn
+           \else
+               \clearpage
+           \fi
+       }
+    }{%
+       \renewenvironment{theindex}{%
+           \edef\indexname{\the\@nameuse{idxtitle@\@indextype}}%
+           \if@twocolumn
+               \@restonecolfalse
+           \else
+               \@restonecoltrue
+           \fi
+           \columnseprule \z@
+           \columnsep 35\p@
+           \twocolumn[%
+               \@makeschapterhead{\indexname}%
+               \ifx\index@prologue\@empty\else
+                   \index@prologue
+                   \bigskip
+               \fi
+           ]%
+           \@mkboth{\MakeUppercase\indexname}%
+                   {\MakeUppercase\indexname}%
+           \thispagestyle{plain}%
+           \parindent\z@
+           \parskip\z@ \@plus .3\p@\relax
+           \let\item\@idxitem
+       }{%
+           \if@restonecol
+               \onecolumn
+           \else
+               \clearpage
+           \fi
+       }%
+    }%
+  }%
+}%
+%
+\DeclareOption{tocindex}{%
+  %%
+  %% Index style as with the stdindex option, but with an
+  %% added table of contents entry.
+  %%
+  \ExecuteOptions{index}%
+  \AtEndOfPackage{%
+    \@ifclassloaded{article}{%
+       \renewenvironment{theindex}{%
+           \edef\indexname{\the\@nameuse{idxtitle@\@indextype}}%
+           \if@twocolumn
+               \@restonecolfalse
+           \else
+               \@restonecoltrue
+           \fi
+           \columnseprule \z@
+           \columnsep 35\p@
+           \twocolumn[%
+               \section*{\indexname}%
+               \ifx\index@prologue\@empty\else
+                   \index@prologue
+                   \bigskip
+               \fi
+           ]%
+           \@mkboth{\MakeUppercase\indexname}%
+                   {\MakeUppercase\indexname}%
+           %
+           % the following line added by EM
+           \addcontentsline{toc}{section}{\indexname}%
+           %
+           \thispagestyle{plain}%
+           \parindent\z@
+           \parskip\z@ \@plus .3\p@\relax
+           \let\item\@idxitem
+       }{%
+           \if@restonecol
+               \onecolumn
+           \else
+               \clearpage
+           \fi
+       }
+    }{%
+       \renewenvironment{theindex}{%
+           \edef\indexname{\the\@nameuse{idxtitle@\@indextype}}%
+           \if@twocolumn
+               \@restonecolfalse
+           \else
+               \@restonecoltrue
+           \fi
+           \columnseprule \z@
+           \columnsep 35\p@
+           \twocolumn[%
+               \@makeschapterhead{\indexname}%
+               \ifx\index@prologue\@empty\else
+                   \index@prologue
+                   \bigskip
+               \fi
+           ]%
+           \@mkboth{\MakeUppercase\indexname}%
+                   {\MakeUppercase\indexname}%
+           %
+           % the following line added by EM
+           \addcontentsline{toc}{chapter}{\indexname}%
+           %
+           \thispagestyle{plain}%
+           \parindent\z@
+           \parskip\z@ \@plus .3\p@\relax
+           \let\item\@idxitem
+       }{%
+           \if@restonecol
+               \onecolumn
+           \else
+               \clearpage
+           \fi
+       }%
+    }%
+  }%
+}
+%
+\DeclareOption{emindex}{%
+  %%
+  %% My (EM) own favorite index style. Maybe you like it too.
+  %%
+  \ExecuteOptions{index}%
+  \AtEndOfPackage{%
+    %%
+    %% Redefine theindex such that automatically a chapter or section
+    %% title is generated, with a corresponding table of contents
+    %% entry. theindex is now in multicol environment.
+    %%
+    \RequirePackage{multicol}
+    \renewenvironment{theindex}{%
+        \edef\@indexname{\the\@nameuse{idxtitle@\@indextype}}%
+        \@ifundefined{chapter}%
+          {\section*{\@indexname}%
+           \addcontentsline{toc}{section}{\@indexname}%
+          }%
+          {\chapter*{\@indexname}%
+           \addcontentsline{toc}{chapter}{\@indexname}%
+          }%
+        \@mkboth{{\@indexname}}{{\@indexname}}% do we need this?
+        \parindent\z@
+        \parskip\z@ \@plus .3\p@\relax
+        \let\item\@idxitem
+        \setlength{\columnsep}{2em}
+        \small
+        \begin{multicols}{2}
+        \raggedright
+      }%
+      {\end{multicols}\normalsize
+      }%
+  }%
+}%
+%%%%%% End Modifications of Author Index %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%% Some options for the bibliography %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\newif\if@numberedbib
+\DeclareOption{numberedbib}{%
+  %
+  % The bibliography is a section or chapter with a number (e.g.,
+  % section 6 or chapter 10). I think this does not work (i.e., it is
+  % still unnumbered) when the section/chapter is in the backmatter.
+  %
+  \@numberedbibtrue
+}
+
+\DeclareOption{unnumberedbib}{%
+  %
+  % The bibliography is a section or chapter without a number (i.e.,
+  % a section* or chapter*). This is the default.
+  %
+  \@numberedbibfalse
+}
+
+\DeclareOption{sectionbib}{%
+  %
+  % The bibliography is a section. Typically used with the chapterbib
+  % package, then each chapter has a bibliography section. The
+  % nosectionbib option makes the bibliography a chapter (if chapters
+  % are defined). If none of these options are requested, apacite tries
+  % to guess the most logical choice. The bibliography is a section if
+  % chapters are not defined or if we are in the ``mainmatter'' of a
+  % document. Otherwise, it is a chapter.
+  %
+  \@ifundefined{@sectionbibtrue}{\newif\if@sectionbib}{}%
+  %
+  \@sectionbibtrue
+}
+
+\DeclareOption{nosectionbib}{%
+  %
+  % The bibliography is a chapter if chapters are defined
+  % (otherwise, it is always a section). See the description
+  % of the sectionbib option above for its usage.
+  %
+  \@ifundefined{@sectionbibfalse}{\newif\if@sectionbib}{}%
+  %
+  \@sectionbibfalse
+}
+
+\newif\if@tocbib
+\DeclareOption{tocbib}{%
+  %
+  % The bibliography in the table of contents, even if it's
+  % unnumbered. This is the default.
+  %
+  \@tocbibtrue
+}
+
+\DeclareOption{notocbib}{%
+  %
+  % The bibliography not in the table of contents if it's
+  % unnumbered. (Will be ignored if it's numbered.)
+  %
+  \@tocbibfalse
+}
+
+\DeclareOption{bibnewpage}{%
+  %
+  % The bibliography is started on a new page if it's a section.
+  % (Will be ignored if it's a chapter.)
+  %
+  \def\@bibnewpage{\bibnewpage}
+}
+
+\DeclareOption{nobibnewpage}{%
+  %
+  % The bibliography is started on the same page if it's a section.
+  % (Will be ignored if it's a chapter.)
+  %
+  \let\@bibnewpage\relax
+}
+
+
+%%%%%% End options for the bibliography %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%% Hyperref compatibility option %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% (This does not work completely satisfactory, so
+% is only a non-default option.)
+%
+\newif\if@hyper@APA@comp
+\DeclareOption{hyper}{%
+  \@hyper@APA@comptrue % hyperref compatibility option is on
+}
+%%%%%% End Hyperref compatibility option %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%% No Hyperref compatibility option %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% If the hyperref compatibility code is not desired.
+%
+\DeclareOption{nohyper}{%
+  \@hyper@APA@compfalse % hyperref compatibility option is off
+}
+%%%%%% End No Hyperref compatibility option %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%% Execute default options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\ExecuteOptions{accentfix,noindex,nohyper,unnumberedbib,tocbib,%
+                nobibnewpage}
+
+%%%%%% Execute user-requested options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\ProcessOptions
+
+%%%%%% Define author indexing stuff when requested
+%
+\newcommand{\authorindexname}{Author Index}
+\if@APAC@index
+   %
+   % Author index requested.
+   % Load \pkg{index} package.
+   %
+   \RequirePackage{index}[1995/09/28]
+   %
+   % Define Author Index.
+   % This may be changed in the preamble of the
+   % document (or in a user-provided package)
+   % by a \renewindex command.
+   %
+   \newindex{autx}{adx}{and}{\authorindexname}
+   %
+   % Author indexing command
+   %
+   \def\AX#1{%
+     \write\@auxout%
+       {\string\@writefile{autx}{%
+        \string\indexentry{\string#1}{\thepage}}}%
+%        \expandafter\string\expandafter\indexentry{#1}{\thepage}}}%
+   }
+   %
+\else
+   %
+   % No author index.
+   %
+   % Wait till \begin{document} for checking whether another
+   % package is loaded that defines \printindex.
+   %
+   \AtBeginDocument{%
+     \@ifundefined{printindex}%
+       {%% \printindex not defined. Define \printindex so that it
+         % suppresses the indexes.
+         \def\printindex{\@ifnextchar[{\check@printindex}{%
+                                       \check@printindex[]}}%
+         %
+         \def\check@printindex[#1]{\relax }%
+       }%
+       {% \printindex defined, so save its definition.
+         \let\orig@printindex\printindex
+         %
+         % Redefine \printindex so that it suppresses the author index
+         % but does not change other indexes.
+         % 1. If there is no optional argument, use the original
+         %    definition.
+         \def\printindex{\@ifnextchar[{\check@printindex}{\orig@printindex}}%
+         %
+         % 2. If there is an optional argument, check whether it is
+         %    equal to `autx'. If so, suppress this (author) index.
+         %    If not, use the original definition.
+         \def\check@printindex[#1]{%
+           % Use a clumsy way to check whether #1 = autx
+           % but seemingly more elegant ways somehow didn't work.
+           \expandafter\def\csname APAC@#1\endcsname{DUMMY}%
+           \@ifundefined{APAC@autx}%
+             {\orig@printindex[#1]}%
+             {\let\APAC@autx\@undefined}%
+         }%
+       }%
+   }%
+   %
+   % Empty author indexing command
+   %
+   \def\AX#1{}
+   %
+\fi
+
+
+%%%%%% Chapterbib compatibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% From the instructions of the chapterbib package.
+
+\@ifundefined{@extra@b@citeb}{\def\@extra@b@citeb{}}{}
+\gdef\@extra@binfo{}
+
+%%%%%% End Chapterbib compatibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Commands for specific types of @misc entries.
+%%% These are recognized by apacite.bst.
+\newcommand{\bibmessage}{Msg}
+\newcommand{\bibcomputerprogram}{Computer program}
+\newcommand{\bibcomputerprogrammanual}{Computer program manual}
+\newcommand{\bibcomputerprogramandmanual}{Computer program and manual}
+\newcommand{\bibcomputersoftware}{Computer software}
+\newcommand{\bibcomputersoftwaremanual}{Computer software manual}
+\newcommand{\bibcomputersoftwareandmanual}{Computer software and manual}
+\newcommand{\bibprogramminglanguage}{Programming language}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% The following commands are recognized by apacite.bst.
+%%% They denote that the publication date is unknown,
+%%% and that the type should be left empty (for @techreport, where
+%%% ``Tech. Rep.'' is the default type if the field is left empty).
+\newcommand{\bibnodate}{n.d.{}}
+\newcommand{\bibnotype}{}
+
+%%%%%%%%%%%%%%%%%%%%%
+% cite punctuations %
+%%%%%%%%%%%%%%%%%%%%%
+
+% text style of authors in-text citation
+%      (\cite,   \shortcite,   \fullcite,
+%       \citeA,  \shortciteA,  \fullciteA,
+%       \citeNP, \shortciteNP, \fullciteNP)
+\newcommand{\BAstyle}{}%
+
+% text style of authors in-text citation
+%      (\citeauthor, \shortciteauthor, \fullciteauthor)
+\newcommand{\BAastyle}{}%
+
+\newcommand{\BBOP}{(}   % open parenthesis
+\newcommand{\BBCP}{)}   % closing parenthesis
+\newcommand{\BAP}{ }    % after prefix, before first citation
+\newcommand{\BBAA}{\&}  % between authors in parentheses and ref. sec.
+\newcommand{\BBAB}{and} % between authors in text
+\newcommand{\BBAY}{, }  % between author(s) and year
+\newcommand{\BBYY}{, }  % between years of multiple citations with same author
+\newcommand{\BBC}{; }   % between cites
+\newcommand{\BBN}{, }   % before note
+\newcommand{\BBOQ}{}    % open quote for article title
+\newcommand{\BBCQ}{}    % closing quote for article title
+%
+\newcommand{\BCBT}{,}   % comma between authors in ref. sec
+                        % when no. of authors = 2
+\newcommand{\BCBL}{,}   % comma before last author
+\newcommand{\BAnd}{\&}  % for ``Ed. \& Trans.'' in ref. list
+%
+\newcommand{\BBA}{\BBAA}
+%
+\let\Bem\emph
+
+\newcommand{\APACciteatitle}[1]{``#1''}%  Format as article title in text
+\newcommand{\APACcitebtitle}[1]{{\em #1\/}}% Format as book title in text
+\newcommand{\APACSortNoop}[1]{} % Can be used to change the sorting order:
+                                % When put between a pair of braces at the
+                                % front of a field, the entry is sorted on
+                                % the argument of this command, but the
+                                % argument is never displayed.
+
+% Two commands that are used to trick natbib.
+\newcommand{\APACyear}[1]{{#1}}%
+\newcommand{\APACexlab}[1]{{#1}}%
+
+%
+% For multiple citations with same author-year.
+% (Kruskal, 1964a, 1964b)
+% The \protect is necessary when natbib is used.
+%
+\newcounter{BibCnt}
+\renewcommand{\theBibCnt}{\alph{BibCnt}}
+\newcommand{\BCnt}[1]{\setcounter{BibCnt}{#1}\protect\theBibCnt}
+%
+% In press, no date.
+% The \mbox prevents a line break at the hyphen.
+%
+\newcommand{\BCntIP}[1]{\setcounter{BibCnt}{#1}\mbox{-\protect\theBibCnt}}
+\newcommand{\BCntND}[1]{\setcounter{BibCnt}{#1}\mbox{-\protect\theBibCnt}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Labels, mostly for reference list %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\BOthers}[1]{et al.{}}    % ``others'', the argument contains a
+                                      % dot to suppress an additional one
+                                      % in the reference list
+\newcommand{\BOthersPeriod}[1]{et al.{}}% ``others'', the argument contains a
+                                      % dot to suppress an additional one
+                                      % in the reference list. The difference
+                                      % with \BOthers is that, if another
+                                      % string is used to define \BOthers,
+                                      % this one should always finish with a
+                                      % period and the previous one not
+                                      % necessarily (e.g., if explicit
+                                      % ``others'' is used).
+\newcommand{\BIP}{in press}           % used as year for in-press citations
+\newcommand{\BIn}{In}                 % for ``In '' editor...
+\newcommand{\BCHAP}{chap.{}}          % chapter
+\newcommand{\BCHAPS}{chap.{}}         % chapters
+\newcommand{\BED}{Ed.{}}              % editor
+\newcommand{\BEDS}{Eds.{}}            % editors
+\newcommand{\BTRANS}{Trans.{}}        % translator
+\newcommand{\BTRANSS}{Trans.{}}       % translators
+\newcommand{\BTRANSL}{trans.{}}       % translation, for the year field
+\newcommand{\BCHAIR}{Chair}           % chair of symposium
+\newcommand{\BCHAIRS}{Chairs}         % chairs
+\newcommand{\BVOL}{Vol.{}}            % volume
+\newcommand{\BVOLS}{Vols.{}}          % volumes
+\newcommand{\BNUM}{No.{}}             % number
+\newcommand{\BNUMS}{Nos.{}}           % numbers
+\newcommand{\BEd}{ed.{}}              % edition
+\newcommand{\BPG}{p.{}}               % page
+\newcommand{\BPGS}{pp.{}}             % pages
+\newcommand{\BTR}{Tech.\ Rep.{}}      % (default) technical report type name
+\newcommand{\BPhD}{Doctoral dissertation}
+                                      % (default) PhD thesis type name
+\newcommand{\BUPhD}{Unpublished doctoral dissertation}
+                                      % (default) unpublished PhD thesis
+                                      % type name
+\newcommand{\BMTh}{Master's thesis}   % (default) master's thesis type name
+\newcommand{\BUMTh}%
+    {Unpublished master's thesis}     % (default) unpublished
+                                      % master's thesis type name
+ \newcommand{\BBAth}{Undergraduate thesis} % (default) undergraduate thesis type name
+ \newcommand{\BUBAth}{Unpublished undergraduate thesis} % (default) undergraduate thesis type name)
+\newcommand{\BOWP}{Original work published}
+\newcommand{\BREPR}{Reprinted from}
+
+\def\refname{References}% Name of ref. list if it's a section.
+\def\bibname{References}% Name of ref. list if it's a chapter.
+%
+% An optional note just before the references in the reference list.
+% Defaults to nothing, but can be changed to a list of commands
+% (e.g., if author formatting should be different in the reference
+% list) and/or text (e.g., for an explanatory note).
+%
+\newcommand{\bibliographyprenote}{}
+
+%
+% Prenote used just before the references in the reference list
+% when a meta-analysis is reported.
+%
+\newcommand{\APACmetaprenote}{%
+  References marked with an asterisk indicate studies
+  included in the meta-analysis.}
+%
+% The star that's put in front of the entries used in the meta-analysis
+%
+\newcommand{\APACmetastar}{$\star$\ }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Load language dependent sections from an external file.
+%  (Based on code by Stefan Bj\"ork, 2004/12/25.)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AtBeginDocument{%
+    %
+    % Both babel and (n)german use \iflanguage to check the main
+    % language. They both also use \languagename, but that gives
+    % more problems with dialects. E.g., if \languagename = austrian
+    % then \iflanguage{german}{Yes}{No} gives Yes. This allows us
+    % to provide only .apc files for the language class without
+    % complicated code to check whether a certain dialect is used.
+    %
+    % Check whether \iflanguage is defined. If not, no language support
+    % is offered.
+    %
+  \@ifundefined{iflanguage}%
+    {\relax }%
+    {%  %
+        % Define a modification of \iflanguage that executes the "true"
+        % code if the language is defined and equal to the current
+        % language and does nothing otherwise. (Just \iflanguage gives
+        % an error if the language is not loaded.)
+        %
+       \def\APAC@iflang#1#2{%
+         \expandafter\ifx\csname l@#1\endcsname\relax
+         \else
+           \ifnum\csname l@#1\endcsname=\language
+             {#2}%
+           \fi
+         \fi
+       }%
+        % Define language support file. The \def instead of a direct \input
+        % is done to provide a mechanism to check whether a language file
+        % has been defined. The language files that are shipped with the
+        % current release are defined explicitly. If the requested language
+        % is not in this list, \languagename.apc is loaded if it exists.
+        %
+      \APAC@iflang{dutch}{\gdef\APAC@apcfile{dutch.apc}}%
+      \APAC@iflang{english}{\gdef\APAC@apcfile{english.apc}}%
+      \APAC@iflang{german}{\gdef\APAC@apcfile{german.apc}}%
+      \APAC@iflang{ngerman}{\gdef\APAC@apcfile{ngerman.apc}}%
+      \APAC@iflang{greek}{\gdef\APAC@apcfile{greek.apc}}%
+      \APAC@iflang{swedish}{\gdef\APAC@apcfile{swedish.apc}}%
+        %
+      \@ifundefined{APAC@apcfile}{%
+        \def\APAC@apcfile{\languagename.apc}}{\relax}%
+        %
+        % My teTeX under Cygwin automatically loads babel with
+        % default language "nohyphenation", so this language should
+        % revert to doing nothing. Strangely enough \iflanguage
+        % does not work correctly, so I'll use a trick. (Some trial
+        % and error, because babel.dtx states that there must be
+        % a '\string ' before the 'nohyphenation', but apparently in
+        % this situation it's the other way around.)
+        %
+      \edef\APAC@tmp{nohyphenation}%
+      \ifx\languagename\APAC@tmp
+      \else
+        \InputIfFileExists{\APAC@apcfile}{}{%
+          \PackageWarningNoLine{apacite}{%
+            Language definition file \APAC@apcfile\space not found.}}%
+      \fi
+      \let\APAC@tmp\@undefined
+    }%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Bibliography style parameters.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\bibnewpage{\clearpage}% apa.cls uses \newpage, change with \renewcommand
+\let\bibliographytypesize\normalsize
+%
+%%% declare four parameters
+\newskip{\bibleftmargin}
+\newskip{\bibindent}
+\newskip{\bibparsep}
+\newskip{\bibitemsep}
+%
+%%% and give them default values
+\bibleftmargin=2.5em
+\bibindent=-\bibleftmargin
+\bibparsep=0pt%
+\bibitemsep\z@ \@plus .3\p@\relax
+
+%
+% To force another order (in Part 1, Part 2 cases)
+% Actually, this is the same as \SortNoop used in the examples,
+% so I do not discuss this in the documentation. It should
+% not be considered part of apacite, but I keep it for backwards
+% compatibility.
+\newcommand{\bibphant}[1]{}
+
+%
+% Around 1998, I got error messages with accented characters
+% in author names. After some trial and error, I found out that
+% this works. However, later it was apparently not necessary anymore
+% (tests without it worked well), but I keep it because it's harmless
+% and I'm not sure enough.
+%
+\@ifundefined{accent@spacefactor}{\def\accent@spacefactor{}}{}
+
+%%%%%%%%%%%%%
+% citations %
+%%%%%%%%%%%%%
+
+\def\@lbibitem[#1]#2{%
+    \def\BBA{\BBAA}%
+    \item[\@biblabel{#1}]%
+    \if@filesw{%
+        \def\BBA{\string\BBA}%
+        \def\protect##1{\string ##1}%
+        \immediate\write\@auxout{\string\bibcite{#2}{#1}}%
+        \def\BBA{\BBAA}%
+    }%
+    \fi%
+    \ignorespaces%
+}
+
+% Year is separately handled by \Y@<citation key>
+\def\bibcite#1#2{%
+  \global\expandafter\def\csname b@#1\@extra@binfo\endcsname{#2}%        names
+  \global\expandafter\def\csname Y@#1\@extra@binfo\endcsname{\@year@#2}% year
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                   COMPATIBILITY WITH NATBIB                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\AtBeginDocument{%
+  \@ifpackageloaded{natbib}{%
+      %
+      % Redefine a natbib command. This may be ethically dubious, but
+      % without it, natbib simply cannot handle apacite-generated .bbl
+      % files. The only reason I can think of why both apacite.sty
+      % and natbib would be loaded is exactly the situation when you
+      % want to use natbib for the citations and apacite for the reference
+      % list. In this situation you would load apacite.sty, not for the
+      % citation commands, but for the punctuation commands and labels
+      % defined by apacite. In this situation, the redefinition below
+      % is necessary and therefore I do this here.
+      %
+    \def\NAT@parse@date#1#2#3#4#5#6@@{%
+        \def\NAT@year{{#1}}\def\NAT@exlab{{#2}}%
+    }%
+  }{}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                   COMPATIBILITY WITH HYPERREF                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Include experimental hyperref-compatibility code provided by Ross Moore,
+% if the hyper option is requested.
+\if@hyper@APA@comp% hyperref compatibility option is on
+  %
+  % accommodate both APA and other (e.g. hyperref) patchings of \bibcite
+  %
+  \def\bibcite@APA@other#1#2{%
+    \bibcite@other{#1}{#2}%
+      \expandafter\xdef\csname Y@#1\endcsname{\@year@#2}}%
+  \let\bibcite@APA\bibcite   % record the APA-only definition of \bibcite
+  %
+  % check via \AtBeginDocument as to whether \bibcite has been changed;
+  % if so, then correct the patching when the .aux file is read.
+  %
+  \AtBeginDocument{%
+    \ifx\bibcite\bibcite@APA\else
+     \immediate\write\@auxout{\string\install@other@APA}%
+    \fi }%
+  %
+  \def\install@other@APA{%
+    \ifx\bibcite\bibcite@APA\else
+     \let\bibcite@other\bibcite
+     \let\bibcite\bibcite@APA@other
+    \fi \let\install@other@APA\relax }%
+  %
+  % This command should not be needed; it allows the patch to be
+  % forced at an earlier time, if desired.
+  %
+  \def\installhyperAPA{%
+    \@ifpackageloaded{hyperref}{\install@other@APA}%
+      {\AtBeginDocument{\install@other@APA}}%
+  }%
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                   COMPATIBILITY WITH BABEL                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% COMMENTS FROM hyperref.dtx:
+%%
+%%    Package |babel| redefines \cmd{\bibcite} with
+%%    macro \cmd{\bbl@cite@choice}. It needs to be overwritten
+%%    to avoid the warning ``Label(s) may have changed.''.
+%%
+%% END COMMENTS
+%%
+%% Here, I (EM) literally insert the code mentioned above.
+%% Are the \begingroup and \endgroup necessary or even useful?
+%% The hyperref-compatibility patch above does a similar thing with
+%% \bibcite.
+%%
+
+\let\Hy@bibcite\bibcite
+\begingroup
+  \@ifundefined{bbl@cite@choice}{}{%
+    \g@addto@macro\bbl@cite@choice{%
+      \let\bibcite\Hy@bibcite
+    }%
+  }%
+\endgroup
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                   COMPATIBILITY WITH BACKREF                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% some code from backref.dtx, adapted by EM
+%%
+\AtBeginDocument{%
+  \@ifpackageloaded{backref}{%
+    \global\let\BRorg@citeapa\@@cite      % EM
+    \global\let\@@cite\BR@citeapa         % EM
+  }{}%
+}
+\def\BR@citeapa<#1>[#2]#3{%               % EM
+  \BRorg@citeapa<#1>[#2]{#3}%             % EM
+  \ifBR@verbose
+    \PackageInfo{backref}{back cite \string`#3\string'}% EM
+      % Am I allowed to define an info message of another package?
+      % It seems strange. But it's also strange to change `backref'
+      % into `apacite', because backref does the backreferencing,
+      % and the command is merely an adaptation of the corresponding
+      % backref command.
+  \fi
+  \Hy@backout{#3}%
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% First citation in multi-citation.
+\newif\if@F@cite\@F@citetrue
+
+% Two flags to denote whether only author or year must be cited or both.
+\newif\if@A@cite\@A@citefalse
+\newif\if@Y@cite\@Y@citefalse
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \cite<prefix>[postfix]{keys}
+% \fullcite<prefix>[postfix]{keys}
+% \shortcite<prefix>[postfix]{keys}
+%       writes \citation{keys} on .aux
+%       produces (prefix Authors1, Year1; Authors2, Year2; ..., postfix)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\cite{%
+    \def\BCAY##1##2##3{\BCA{##1}{##2}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##1}{##2}}%
+    \def\@BBOP{\BBOP}% % open parenthesis
+    \def\@BBCP{\BBCP}% % close parenthesis
+    \@ifnextchar<%     % >
+        {\@cite}%
+        {\@cite<>}%
+}
+
+\def\fullcite{%
+    \def\BCAY##1##2##3{\BCA{##1}{##1}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##1}{##1}}%
+    \def\@BBOP{\BBOP}% % open parenthesis
+    \def\@BBCP{\BBCP}% % close parenthesis
+    \@ifnextchar<%     % >
+        {\@cite}%
+        {\@cite<>}%
+}
+
+\def\shortcite{%
+    \def\BCAY##1##2##3{\BCA{##2}{##2}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##2}{##2}}%
+    \def\@BBOP{\BBOP}% % open parenthesis
+    \def\@BBCP{\BBCP}% % close parenthesis
+    \@ifnextchar<%     % >
+        {\@cite}%
+        {\@cite<>}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \citeNP<prefix>[postfix]{keys}
+% \fullciteNP<prefix>[postfix]{keys}
+% \shortciteNP<prefix>[postfix]{keys}
+%       writes \citation{keys} on .aux
+%       produces prefix Authors1, Year1; Authors2, Year2; ..., postfix
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\citeNP{%
+    \def\BCAY##1##2##3{\BCA{##1}{##2}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##1}{##2}}%
+    \def\@BBOP{}% % open parenthesis
+    \def\@BBCP{}% % close parenthesis
+    \@ifnextchar<%% >
+        {\@cite}%
+        {\@cite<>}%
+}
+
+\def\fullciteNP{%
+    \def\BCAY##1##2##3{\BCA{##1}{##1}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##1}{##1}}%
+    \def\@BBOP{}% % open parenthesis
+    \def\@BBCP{}% % close parenthesis
+    \@ifnextchar<%% >
+        {\@cite}%
+        {\@cite<>}%
+}
+
+\def\shortciteNP{%
+    \def\BCAY##1##2##3{\BCA{##2}{##2}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##2}{##2}}%
+    \def\@BBOP{}% % open parenthesis
+    \def\@BBCP{}% % close parenthesis
+    \@ifnextchar<%% >
+        {\@cite}%
+        {\@cite<>}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%       second layer of \cite command
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\@cite<#1>{%
+      %
+      % definition of some parameters
+      %
+    \def\@BAP{\BAP}%   % after precitation [=#1] before first citation
+    \def\@BBA{\BBAA}%  % `and' between authors
+    \def\@BBAY{\BBAY}% % between author and year
+    \def\@BAY{}%       % after year
+    \def\@BBY{\BBYY}%  % between years of multiple citations with same author
+    \def\@BBC{\BBC}%   % between cites
+    \def\@BBN{\BBN}%   % after last citation before note/postcitation [=#2]
+    \def\@BAstyle{\BAstyle}% text style of authors
+    \@A@citetrue%       % cite authors
+    \@Y@citetrue%       % cite years
+    \@ifnextchar[%      % ]
+        {\@@cite<#1>}%
+        {\@@cite<#1>[]}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \citeA<prefix>[postfix]{keys}
+% \fullciteA<prefix>[postfix]{keys}
+% \shortciteA<prefix>[postfix]{keys}
+%       writes \citation{keys} on .aux
+%       produces prefix Authors1 (Year1), ..., AuthorN (YearN, postfix)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\citeA{%
+    \def\BCAY##1##2##3{\BCA{##1}{##2}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##1}{##2}}%
+    \@ifnextchar<%          %>
+        {\@citeA}%
+        {\@citeA<>}%
+}
+
+\def\fullciteA{%
+    \def\BCAY##1##2##3{\BCA{##1}{##1}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##1}{##1}}%
+    \@ifnextchar<%          %>
+        {\@citeA}%
+        {\@citeA<>}%
+}
+
+\def\shortciteA{%
+    \def\BCAY##1##2##3{\BCA{##2}{##2}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##2}{##2}}%
+    \@ifnextchar<%          %>
+        {\@citeA}%
+        {\@citeA<>}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%       second layer of \citeA command
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\@citeA<#1>{%
+      %
+      % definition of some parameters
+      %
+    \def\@BBOP{}%      % open parenthesis
+    \def\@BAP{\BAP}%   % after precitation [=#1] before first citation
+    \def\@BBA{\BBAB}%  % `and' between authors
+    \def\@BBAY{ \BBOP}%% between author and year
+    \def\@BAY{\BBCP}%  % after year
+    \def\@BBY{\BBYY}%  % between years of multiple citations with same author
+    \def\@BBC{\BBC}%   % between cites
+    \def\@BBN{\BBN}%   % after last citation before note/postcitation [=#2]
+    \def\@BBCP{}%      % close parenthesis
+    \def\@BAstyle{\BAstyle}% text style of authors
+    \@A@citetrue%      % cite authors
+    \@Y@citetrue%      % cite years
+    \@ifnextchar[%     % ]
+        {\@@cite<#1>}%
+        {\@@cite<#1>[]}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \citeauthor<prefix>[postfix]{keys}
+% \fullciteauthor<prefix>[postfix]{keys}
+% \shortciteauthor<prefix>[postfix]{keys}
+%       writes \citation{keys} on .aux
+%       produces prefix Authors1, ..., AuthorsN, postfix
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\citeauthor{%
+    \def\BCAY##1##2##3{\BCA{##1}{##2}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##1}{##2}}%
+    \@ifnextchar<%    %>
+        {\@citeauthor}%
+        {\@citeauthor<>}%
+}
+
+\def\fullciteauthor{%
+    \def\BCAY##1##2##3{\BCA{##1}{##1}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##1}{##1}}%
+    \@ifnextchar<%    %>
+        {\@citeauthor}%
+        {\@citeauthor<>}%
+}
+
+\def\shortciteauthor{%
+    \def\BCAY##1##2##3{\BCA{##2}{##2}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##2}{##2}}%
+    \@ifnextchar<%    %>
+        {\@citeauthor}%
+        {\@citeauthor<>}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%       second layer of \citeauthor command
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\@citeauthor<#1>{%
+      %
+      % definition of some parameters
+      %
+    \def\@BBOP{}%      % open parenthesis
+    \def\@BAP{\BAP}%   % after precitation [=#1] before first citation
+    \def\@BBA{\BBAB}%  % `and' between authors
+    \def\@BBAY{}%      % between author and year
+    \def\@BAY{}%       % after year
+    \def\@BBY{}%       % between years of multiple citations with same author
+    \def\@BBC{\BBC}%   % between cites
+    \def\@BBN{\BBN}%   % after last citation before note/postcitation [=#2]
+    \def\@BBCP{}%      % close parenthesis
+    \def\@BAstyle{\BAastyle}% text style of authors
+    \@A@citetrue%      % cite authors
+    \@Y@citefalse%     % do not cite years
+    \@ifnextchar[%     % ]
+        {\@@cite<#1>}%
+        {\@@cite<#1>[]}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \citeyear<prefix>[postfix]{keys}
+%       writes \citation{keys} on .aux
+%       produces (prefix Year1, ..., YearN, postfix)
+%
+% \citeyearNP<prefix>[postfix]{keys}
+%       writes \citation{keys} on .aux
+%       produces prefix Year1, ..., YearN, postfix
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\citeyear{%
+    \def\BCAY##1##2##3{\BCA{##1}{##2}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##1}{##2}}%
+    \def\@BBOP{\BBOP}% % open parenthesis
+    \def\@BBCP{\BBCP}% % close parenthesis
+    \@ifnextchar<%     % >
+        {\@citeyear}%
+        {\@citeyear<>}%
+}
+
+\def\citeyearNP{%
+    \def\BCAY##1##2##3{\BCA{##1}{##2}}% kept for compat. with prev. versions
+    \def\citeauthoryear##1##2##3{\BCA{##1}{##2}}%
+    \def\@BBOP{}%   % open parenthesis
+    \def\@BBCP{}%   % close parenthesis
+    \@ifnextchar<%  % >
+        {\@citeyear}%
+        {\@citeyear<>}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%       second layer of \citeyear command
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\@citeyear<#1>{%
+      %
+      % definition of some parameters
+      %
+    \def\@BAP{\BAP}%   % after precitation [=#1] before first citation
+    \def\@BBA{}%       % `and' between authors
+    \def\@BBAY{}%      % between author and year
+    \def\@BAY{}%       % after year
+    \def\@BBY{\BBYY}%  % between years of multiple citations with same author
+    \def\@BBC{\BBC}%   % between cites
+    \def\@BBN{\BBN}%   % after last citation before note/postcitation [=#2]
+    \def\@BAstyle{}%   % text style of authors
+    \@A@citefalse%     % do not cite authors
+    \@Y@citetrue%      % cite years
+    \@ifnextchar[%     % ]
+        {\@@cite<#1>}%
+        {\@@cite<#1>[]}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% The core citation routines
+%% The following commands must have been defined:
+%%    \@BBOP        open parenthesis
+%%    \@BAP         after precitation [=#1] before first citation
+%%    \@BBA         `and' between authors
+%%    \@BBAY        between author and year
+%%    \@BAY         after year
+%%    \@BBY         between years of multiple citations with same author
+%%    \@BBC         between cites
+%%    \@BBN         after last citation before note/postcitation [=#2]
+%%    \@BBCP        close parenthesis
+%%    \@BAstyle     formatting style of authors (e. g., \scshape)
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Code to be executed if current author(s) equal previous
+\def\@ifauthorsequalc@de{%
+  \if@F@cite%
+     \@F@citefalse%
+  \else%
+     \if@Y@cite%
+        {\@BBY}%
+     \fi%
+  \fi%
+  \if@Y@cite%
+     {\csname Y@\@citeb\@extra@b@citeb\endcsname}%
+  \fi%
+}
+
+%%% Code to be executed if current author(s) do not equal previous
+\def\@ifauthorsunequalc@de{%
+  \if@F@cite%
+     \@F@citefalse%
+  \else%
+     \if@Y@cite%
+        {\@BAY}%
+     \fi%
+     {\@BBC}%
+  \fi%
+  \edef\@cite@undefined{?}%
+  \def\BBA{\@BBA}%
+  \if@A@cite%
+     {\csname b@\@citeb\@extra@b@citeb\endcsname}%
+     \if@Y@cite%
+        {\@BBAY}%
+     \fi%
+  \fi%
+  \if@Y@cite%
+     {\csname Y@\@citeb\@extra@b@citeb\endcsname}%
+  \fi%
+  \let\BBA\relax%
+}
+
+\def\@@cite<#1>[#2]#3{%
+      %
+      % write citation(s) to .aux file
+      %
+    \if@filesw{%
+        \immediate\write\@auxout{\string\citation{#3}}%
+    }%
+    \fi%
+      %
+      % the previous cite, for multiple citations with same author
+      %
+    \edef\@citeP{}%
+      %
+      % open parenthesis and precitation
+      %
+    {\@BBOP}%
+    \ifx\@empty#1%
+    \else%
+      {\ignorespaces #1\@BAP}%
+    \fi%
+      %
+      % loop over citation entries
+      %
+    \@for\@citeb:=#3\do{%
+          %
+          % check whether citation is defined
+          %
+        \@ifundefined{b@\@citeb\@extra@b@citeb}%
+          {\expandafter\def\csname b@\@citeb\@extra@b@citeb\endcsname{?}%
+           \expandafter\def\csname Y@\@citeb\@extra@b@citeb\endcsname{?}%
+           \@warning{Citation `\@citeb' on page \thepage\space undefined}%
+          }%%
+            % if citation is defined:
+            % check whether flag is set that identifies that
+            % this is not the first citation to the work
+            % if flag is not set, it will be set to DUMMY
+            % if this is the first citation to the work,
+            % the full citation is used; else the short version
+            % is used
+            %
+          {\@ifundefined{flag@\@citeb\@extra@b@citeb}%
+             {\global\expandafter
+              \def\csname flag@\@citeb\@extra@b@citeb\endcsname{DUMMY}%
+              \def\BCA##1##2{{\@BAstyle ##1}}%
+             }%
+             {\def\BCA##1##2{{\@BAstyle ##2}}%
+             }%
+          }%
+           % Check whether current author(s) is (are) equivalent
+           % to previous. If so, only year is cited in text
+           % and a \@BBY (probably comma and space) is inserted between
+           % the two years.
+           %
+           % Code differs depending on whether hyperref-compatibility
+           % option is loaded.
+        \if@hyper@APA@comp
+           % hyperref-compatibility option on
+           % (code provided by Ross Moore)
+             \expandafter\def\expandafter\B@my@dummy
+                   \expandafter{\csname b@\@citeb\@extra@b@citeb\endcsname}%
+             \expandafter\expandafter\expandafter
+             \ifx\expandafter\@citeP\B@my@dummy\relax%
+                 \@ifauthorsequalc@de
+             \else%
+                 \@ifauthorsunequalc@de
+             \fi%
+                % define previous citation-author as current
+                %
+             \expandafter\def\expandafter\@citeP
+                \expandafter{\csname b@\@citeb\@extra@b@citeb\endcsname}%
+           %
+        \else%
+           % else: hyperref-compatibility option off
+           % (code dating from theapa.sty)
+             \@pre@accentfix%  fix problems with cedilla-type accents
+             \edef\B@my@dummy{\csname b@\@citeb\@extra@b@citeb\endcsname}%
+             \@post@accentfix% return to old definitions
+             \ifx\@citeP\B@my@dummy%
+                 \@ifauthorsequalc@de
+             \else%
+                 \@ifauthorsunequalc@de
+             \fi%
+                % define previous citation-author as current
+                %
+             \@pre@accentfix%  fix problems with cedilla-type accents
+             \edef\@citeP{\csname b@\@citeb\@extra@b@citeb\endcsname}%
+             \@post@accentfix% return to old definitions
+           %
+        \fi
+        \let\BCA\relax%
+    }%%
+      % end loop over citation entries
+      % add note [=#2] and closing parenthesis
+      %
+    \ifx\@empty#2%
+    \else%
+      {\@BBN #2}%
+    \fi%
+    \if@Y@cite%
+       {\@BAY}%
+    \fi%
+    {\@BBCP}%
+      %
+      % define first citation true for next \@@cite
+      %
+    \@F@citetrue %
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \nocite{key} : entry in reference list, not in text
+%
+% This is a little different from \@@cite with
+%  \@A@citefalse and \@Y@citefalse
+% because of the `*' variant (cite all entries in bibfile)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\nocite#1{%
+    \@bsphack%
+    \if@filesw{%
+        \immediate\write\@auxout{\string\citation{#1}}}%
+    \fi%
+    \@for\@citeb:=#1\do{%
+        \@ifundefined{b@\@citeb\@extra@b@citeb}%
+          {\edef\B@my@dummy{*}%
+           \ifx\@citeb\B@my@dummy%
+           \else%
+             \@warning{Citation `\@citeb' on page \thepage\space undefined}%
+           \fi%
+          }%
+          {}% Removed flag-setting: a no-cite is not a cite,
+            % so a subsequent cite may be the first cite.
+    }%
+    \@esphack%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \nocitemeta{key} : entry in reference list, not in text,
+%                    for entries that are used in a meta-analysis.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\nocitemeta#1{%
+    \@bsphack%
+    \if@filesw{%
+        \immediate\write\@auxout{\string\citation{#1}}}%
+    \fi%
+      %
+    \global\def\APAC@metaprenote{\APACmetaprenote}%
+    \@for\@citeb:=#1\do{%
+        \@ifundefined{b@\@citeb\@extra@b@citeb}%
+          {\edef\B@my@dummy{*}%
+           \ifx\@citeb\B@my@dummy%
+           \else%
+             \@warning{Citation `\@citeb' on page \thepage\space undefined}%
+           \fi%
+          }%
+          { % Define meta-analysis flag for current item
+            %
+           \@ifundefined{flagmeta@\@citeb\@extra@b@citeb}%
+             {\global\expandafter
+              \def\csname flagmeta@\@citeb\@extra@b@citeb\endcsname{DUMMY}%
+             }%
+             {}%
+          }%
+    }%
+    \@esphack%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \APACinsertmetastar{key}: insert an asterisk before the names in the
+%     reference list for entries that are used in a meta-analysis.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\APACinsertmetastar#1{%
+    \@bsphack%
+    \@for\@citeb:=#1\do{%
+       \@ifundefined{flagmeta@\@citeb\@extra@b@citeb}%
+         {}% skip
+         {{\APACmetastar}}%
+      }%
+    \@esphack%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% No labels in the bibliography.
+%
+\def\@biblabel#1{}
+
+%
+\def\st@rtbibsection{%
+  \@bibnewpage%           start a new page if desired
+  \if@numberedbib%
+    \section{\refname}%   e.g.,   6. References
+  \else%
+    \section*{\refname}%  e.g.,   References
+    \if@tocbib%
+      \addcontentsline{toc}{section}{\refname}%
+    \fi%
+    \@ifundefined{chapter}
+      {\@mkboth{{\refname}}{{\refname}}}% do we need this? yep. why?
+      {\markright{{\refname}}}% do we need this? yep. why?
+    %
+  \fi%
+}%
+%
+\def\st@rtbibchapter{%
+  % here no \@bibnewpage, because it is assumed that
+  % the \chapter starts a new page
+  \if@numberedbib%
+    \chapter{\bibname}%   e.g.,   6. References
+  \else%
+    \chapter*{\bibname}%   e.g.,   References
+    \if@tocbib%
+      \addcontentsline{toc}{chapter}{\bibname}%
+    \fi%
+    \@mkboth{{\textsl{REFERENCES}}}{{\textsl{REFERENCES}}}% do we need this? yep. why?
+    %
+  \fi%
+}%
+%
+%
+\def\thebibliography#1{%
+    %
+    % Start the bibliography section or chapter
+    %
+  \@ifundefined{chapter}%
+    {\st@rtbibsection}%
+% else: chapter is defined
+    {\@ifundefined{@sectionbibtrue}%     we have to guess
+       {\@ifundefined{@mainmatterfalse}% check if mainmatter exists
+          {\st@rtbibchapter}%
+%       else: mainmatter is defined
+          {\if@mainmatter%
+             \st@rtbibsection% typically, a chapter-specific bibliogr.
+           \else%
+             \st@rtbibchapter% a bibliography at the end
+           \fi%
+          }%
+       }%
+       {% an explicit option has been chosen
+        %
+        \if@sectionbib%
+          \st@rtbibsection% bibliography is a section
+        \else%
+          \st@rtbibchapter% bibliography is a chapter
+        \fi%
+       }%
+    }%
+    %
+  \bibliographytypesize% e.g., to put the bibliography in \small type
+  \bibliographyprenote%  some explanatory note before the references
+  \@ifundefined{APAC@metaprenote}
+    {}% skip
+    {\APAC@metaprenote}
+    %
+  \list{\relax}{\labelsep=0em%
+%                 \parskip\z@ \@plus .3\p@\relax
+                \parsep=\bibparsep%
+                \itemsep=\bibitemsep%
+                \leftmargin=\bibleftmargin%
+                \itemindent=\bibindent}% changed to cope with 4th ed.
+   \def\newblock{\unskip\ \hskip .11em plus .33em minus .07em}%
+   \sloppy\clubpenalty4000\widowpenalty4000
+   \sfcode`\.=1000\relax
+}
+\def\endthebibliography{\endlist\normalsize}
+%
+% natbib redefines \thebibliography, which interferes a little
+% with our purposes. Therefore, add some patches.
+%
+\AtBeginDocument{%
+  \@ifpackageloaded{natbib}{%
+     \let\@oldbibpreamble\bibpreamble
+     \def\bibpreamble{% This goes wrong if \bibpreamble is redefined
+                      % later on, i.e., by the user, but I haven't thought
+                      % of a better hack yet.
+        \@oldbibpreamble%
+        \bibliographytypesize%
+        \bibliographyprenote%
+        \@ifundefined{APAC@metaprenote}
+          {}% skip
+          {\APAC@metaprenote}%
+     }%
+     \let\@old@endthebibliography\endthebibliography
+     \def\endthebibliography{\@old@endthebibliography%
+                             \normalsize}
+  }%
+  {}%
+}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% EOF apacite.sty
+%
+
