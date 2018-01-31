@@ -1,7 +1,7 @@
 Require Import HoTT.Basics.Overture.
 Require Import Coq.Unicode.Utf8.
 
-Global Set Universe Polymorphism. (* ?? *)
+Global Set Universe Polymorphism.
 
 (* ========================================= Exercise 1.1 *)
 
