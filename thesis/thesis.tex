@@ -1,4 +1,4 @@
-\documentclass[12pt,twoside]{reedthesis}
+\documentclass[12pt,twoside,draft]{reedthesis}
 \usepackage{graphicx} 
 \usepackage{booktabs,setspace} 
 % \usepackage{natbib}
@@ -10,21 +10,46 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% While drafting:
 \usepackage{showlabels}
+
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{TODO}{HTML}{EE8800}
+\newcommand{\TODO}[1]{\marginpar{\footnotesize\color{TODO}todo: #1}}
+
 % \usepackage{showidx}
 \let\oldindex\index
-\renewcommand{\index}[1]{\oldindex{#1}\marginpar{\footnotesize idx: #1}}
+\definecolor{index}{HTML}{0088EE}
+\renewcommand{\index}[1]{\oldindex{#1}\marginpar{\footnotesize\color{index}index: #1}}
+\newcommand{\indeX}[1]{\oldindex{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% My stuff:
 \input{../tex-preamble/math.tex}
 \input{../tex-preamble/general.tex}
 \input{../tex-preamble/amsthm.tex}
 \input{../tex-preamble/problems.tex}
-\newcommand{\abbreviation}[1]{\textbf{#1}} % abbreviations
+\newcommand{\abbreviation}[1]{\textbf{#1}\indeX{#1@\textbf{#1}}} % abbreviations
 % Judgements
 \newcommand{\prop}{\hspace{0.4em}\text{prop}}
 \newcommand{\type}{\hspace{0.4em}\text{type}}
 \newcommand{\true}{\hspace{0.4em}\text{true}}
 \usepackage{makeidx}
 \usepackage{prftree}
+\usepackage{tikz}
+\usetikzlibrary{cd}
+\tikzcdset{
+  arrow style=tikz,
+  arrows={line width=0.65pt},
+  >={stealth}
+}
+\newcommand{\comma}{,}
+
+\newcommand{\dual}[2]{
+  \begin{itemize}\renewcommand{\labelitemi}{$\circ$}
+    \itemsep0em
+    \item #1
+    \item #2
+   \end{itemize}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% My stuff:
 
 \title{Deriving Coinductive Types in Univalent Type Theory}
@@ -51,9 +76,9 @@
 % So are Acknowledgments (proper English spelling)
 \chapter*{Acknowledgments}
 
-% The preface is optional
+% The pcreface is optional
 % To remove it, comment it out or delete it.
-% \chapter*{Preface}
+% \chapter*{Pcreface}
 % This thesis delves into highly interdisciplinary territory. I'll
 
 \chapter*{List of Abbreviations}
@@ -61,13 +86,16 @@
 \begin{table}[h]
   \centering
   \begin{tabular}{ll}
-    \abbreviation{HoTT}  	&  Homotopy type theory \\
-    \abbreviation{UTT}  	&  Univalent type theory \\
-    \abbreviation{ITT}  	&  Intensional type theory \\
-    \abbreviation{FOL}  	&  First-order logic (Gentzen's natural deduction) \\
+    \textbf{HoTT}  	&  Homotopy type theory \\
+    \textbf{UTT}  	&  Univalent type theory \\
+    \textbf{ITT}  	&  Intensional type theory \\
+    \textbf{FOL}  	&  First-order logic (Gentzen's natural deduction) \\
   \end{tabular}
 \end{table}
 	
+% Depth to which to number and print sections in TOC
+\setcounter{tocdepth}{4}
+% \setcounter{secnumdepth}{2}
 \tableofcontents
 % if you want a list of tables, optional
 % \listoftables
@@ -113,7 +141,7 @@ headlong until some kind of consensus was reached. To make a long, rich story
 brutally short, virtually every modern paper in mathematics and computer
 science uses a combination of Gentzen's first-order logic (\abbreviation{FOL})
 and an axiomatization of sets called
-\abbreviation{ZFC}\index{ZFC}.\footnote{This ``consensus'' left out many
+\abbreviation{ZFC}.\footnote{This ``consensus'' left out many
   prominent schools of thought, such as the Intuitionists and constructivists, a
   point we'll soon return to.} 
 
@@ -148,7 +176,7 @@ understand new developments in higer mathematics reached inhuman proportions,
 where was he to turn? He would not find a solution in the realm of pure
 mathematics, but rather in one of the finest examples of collaboration between
 mathematicians, computer scientists, and philosophers: the modern proof
-assistant. % TODO: reword
+assistant. \TODO{reword}
 
 \section*{TODO}
 
@@ -208,13 +236,21 @@ The strong normalization property
 \section{Dependent types}
 \label{sec:dependent-types}
 
+Up to now, we have not considered the type of types. However, types are terms
+like any other, and every term has a type.
+
+\begin{definition}\label{def:universes}
+  All the types we have considered up to this point are members of a universe
+  $\caU_0$.
+\end{definition}
+
 \subsection{$\Pi$-types}
 \label{subsec:pi-types}
 
 \subsubsection{On the law of the excluded middle}
-\label{subsubsec:on-the-law-of-the-excluded-middle}
+\label{subsec:on-the-law-of-the-excluded-middle}
 
-TODO: introduce the topic based on previous sections
+\TODO{introduce the topic based on previous sections}
 
 Consider functions with the following types:
 \begin{itemize}
@@ -226,7 +262,7 @@ What can we tell about these functions from their type signatures?
 The term \texttt{dne} takes as argument a term $x:A\to\bot\to\bot$,
 that is, a term showing that $A$ is not the empty type\footnote{More precisely,
   $x$ demonstrates that $A$ is not \textit{isomorphic} or \textit{equivalent} to
-  $\bot$, in the sense of \ref{subsec:weak-equivalences}. If $A$ were isomorphic
+  $\bot$, in the sense of \cref{subsec:weak-equivalences}. If $A$ were isomorphic
   to $\bot$, then that isomorphism would be an inhabitant of $A\to\bot$.}, and
 produces some element of $A$. This seems like a very tricky function to write:
 how can we give a term of type $A$ just by knowing $A$ has terms? We don't
@@ -277,20 +313,343 @@ constructive/intuitionistic logic of proof assistants: nothing else computes.
 \subsection{The univalence axiom}
 \label{subsec:the-univalence-axiom}
 
+\chapter{Category theory}
+\label{chap:category-theory}
+
+Category theory presents a challange to set-theoretic mathematicians: the
+canonical example of a category is $\Set$, the collection of all sets. In
+\abbreviation{ZFC}+\abbreviation{FOL}, this category is undefinable\footnote{In
+  particular, its formation is prevented by the axiom of regularity
+  \cite{vonneumann}, which was included in \abbreviation{ZFC} to avoid the
+  paradoxes of Burali-Forti and Russell. The discovery of said paradoxes
+  motivated Bertrand Russell to invent something he called the ``theory of
+  types'' \cite{russell}.}.
+\Crefrange{sec:basics}{sec:functors-and-their-algebras}, 
+are willfully imprecise, we work with an abstract and undefined notion of
+``collection'', and adopt set-theoretic notation. See any textbook on category
+theory for information on how problems of size are dealt with set-theoretically.
+We will examine category theory within \abbreviation{UTT} in
+\cref{sec:type-theoretic-category-theory}.
+
+\section{Basics}
+\label{sec:basics}
+
+
+\TODO{Type theory and category theory are intimately connected via the
+      discipline of \textit{topos theory}}%\index{Topos theory}.}
+
+\begin{definition}
+	A \textbf{category}\index{Category} $\bfC$ consists of the following data:
+  \begin{itemize}
+    \itemsep-0.2em
+    \item a collection of \textbf{objects}, denoted $\Obj \bfC$,
+    \item for each pair of objects $A,B\in\Obj \bfC$, a collection of
+      \textbf{arrows} (or \textbf{morphisms}) between them, denoted
+        $\Hom_{\bfC}(A,B)$,
+    \item for each object $A\in\Obj \bfC$, a distinguished arrow
+      $\id_A\in\Hom_{\bfC}(A,A)$ called the
+      \textbf{identity}\index{Identity!Morphism}, and
+    \item for each triple of objects $A,B,C\in\Obj\bfC$, an operation \\
+      $\circ:\Hom_{\bfC}(B,C)\times\Hom_{\bfC}(A,B)\to\Hom_{\bfC}(A,C)$ called
+      \textbf{composition}\index{Composition!In a category}.
+  \end{itemize}
+  These data are subject to the following axioms:
+  \begin{enumerate}%[label=\Alph*.]
+    \itemsep-0.2em
+    \item composition is associative, and
+    \item the identity acts as a unit for composition.
+  \end{enumerate}
+  When the category in question is clear from context, one writes $f:A\to B$ for
+  $f\in\Hom_{\bfC}(A,B)$. 
+\end{definition}
+
+\begin{definition}\label{def:domain-and-codomain}
+  If $f\in\Hom_{\bfC}(A,B)$, then $A$ is the \textbf{domain}\index{Domain} or
+  \textbf{source}\index{Source} of $f$ and $B$ is the
+  \textbf{codomain}\index{Codomain} or \textbf{target}\index{Target} of $f$.
+\end{definition}
+
+\begin{example}
+  A student of mathematics will be familiar with the following categories:
+  \begin{itemize}
+    \itemsep-0.2em
+    \item $\Set$: The category with sets as objects, functions as morphisms, 
+      the usual composition of functions, and identity functions.
+    \item $\Grp$: The category of groups\index{Group} with group homomorphisms
+      as morphisms. Note that the identity function of sets is the required
+      identity morphism and that for any homomorphsisms $\phi:G\to H$ and
+      $\psi:H\to I$, the usual composition of functions defines a homomorphism
+      $\psi\circ \phi:G\to I$.
+    \item $\AbGrp$: The category of abelian groups (this can be considered a
+      \textbf{subcategory} of $\Grp$).
+    \item $F\dVect$: The category of vector spaces\index{Vector space} over a
+      field $F$ with linear transformations as morphisms.
+    \item For any group $(G,\circ,e)$, there is a corresponding category
+      $\underline{G}$ with a single object (denoted $\ast$) and
+      $\Hom_{\underline{G}}(\ast,\ast)\coloneqq G$. Composition is given by the
+      group operation.
+  \end{itemize}
+\end{example}
+
+\begin{definition}\label{def:isomorphism}
+	An \textbf{isomorphism}\index{Isomorphism!In a category} in $\bfC$ is an arrow
+  $f\in\Hom_{\bfC}(A,B)$ such that there exists an arrow $g\in\Hom_{\bfC}(B,A)$
+  such that $g\circ f=\id_A$ and $f\circ g=\id_B$. We call such a $g$ the
+  \textbf{inverse}\index{Inverse!In a category} of $f$.
+\end{definition}
+
+Just as with functions, inverses (should they exist) are unique.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[scale=2]
+    \node (A) [] {$\ast$};
+
+    \foreach \x in {1,2,3} 
+      \draw (A) edge [in={50*\x},out={40+50*\x},loop] node[above] {$g_\x$} (A);
+
+    \draw (A) edge [in=200,out=240,loop] node[below] {$\cdots$} (A);
+    \draw (A) edge [in=-60,out=-20,loop] node[below] {$e$} (A);
+  \end{tikzpicture}
+  \caption{
+    \label{fig:grp} A schematic of the category $\underline{G}$ for a
+    group $G$ with identity $e$ and elements $g_1,g_2,\ldots$. Compositions and
+    inverses not shown.
+  }
+\end{figure}
+
+\begin{definition}\label{def:commutative-diagram}
+  A commutative diagram is a way to visualize equations between arrows
+  involving composition. Technically a diagram in $\bfC$ is a directed graph
+  with vertices labeled by $\Obj\bfC$. If $e$ is an edge from $A$ to $B$, then it
+  is labeled by an arrow in $\Hom_\bfC(A,B)$. A diagram \textbf{commutes}, or is
+  commutative, if the composition of the arrows labeling the edges of any two
+  directed paths with the same endpoints are equal.
+  \TODO{better wording}
+\end{definition}
+
+\begin{example}\label{ex:commutative-diagram}
+	If $f\in\Hom_{\bfC}(A,B)$, $g\in\Hom_{\bfC}(B,C)$, $h\in\Hom_{\bfC}(A,C)$,
+  and $g\circ f=h$, then we may draw the following
+  \textbf{commutative triangle}:
+  \begin{center}
+    \begin{tikzcd}[column sep=large]
+      A \arrow[r, "f"] \arrow[dr, "h"] & B \arrow[d, "g"] \\
+      {}                               & C
+    \end{tikzcd}
+  \end{center}
+	If $f\in\Hom_{\bfC}(A,B)$, $g\in\Hom_{\bfC}(B,D)$, $h\in\Hom_{\bfC}(A,C)$,
+  $i\in\Hom_{\bfC}(C,D)$, and $g\circ f=i\circ h$, then we may draw the
+  following \textbf{commutative square}:
+  \begin{center}
+    \begin{tikzcd}[column sep=large]
+      A \arrow[r, "f"]  \arrow[d, "h"] & B \arrow[d, "g"] \\
+      C \arrow[r, "i"]                 & D
+    \end{tikzcd}
+  \end{center}
+\end{example}
+
+\section{Duality}
+\label{sec:duality}
+
+From now on, dual concepts and statements will be introduced in pairs, and
+typeset like so:
+
+\dual{
+  Concept
+}{
+  Co-concept
+}
+
+\section{Limits and colimits}
+\label{sec:limits-and-colimits}
+
+For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
+
+\begin{definition}\label{def:terminal-and-initial}
+  \
+  \vspace{-0.3em}\dual{
+    A \textbf{terminal object}\index{Terminal object} is an
+    object $\top\in\Obj\bfC$ such that for all $A\in\Obj\bfC$,
+    there is exactly one arrow $f:A\to\top$.
+  }{
+    An \textbf{initial object}\index{Initial object} is an
+    object $\bot\in\Obj\bfC$ such that for all $A\in\Obj\bfC$,
+    there is exactly one arrow $f:\bot\to A$.
+  }
+\end{definition}
+
+\begin{definition}\label{def:product-and-coproduct}
+  Given two objects $A,B\in\Obj\bfC$,
+  \vspace{-0.3em}\dual{
+    a \textbf{product}\index{Product!In a category} of $A$ and $B$
+    consists of an object $C\in\Obj\bfC$ together with arrows $p_1:C\to A$ and
+    $p_2:C\to B$ satisfying the following universal property:
+
+    For any other ``candidate product'' $D\in\Obj\bfC$ with arrows
+    $q_1:D\to A$ and $q_2:D\to B$, there is a unique arrow $u:D\to C$ making the
+    following diagram commute:
+    \begin{center}
+      \begin{tikzcd}[sep=large,ampersand replacement=\&]
+        {} \& D\arrow[dl,swap,"q_1"]\arrow[dr,"q_2"]
+              \arrow[d,dashed,"u"] \& {} \\
+        A \& C \arrow[l, "p_1"]\arrow[r,swap, "p_2"] \& B
+      \end{tikzcd}
+    \end{center}
+    If $C$ is a product of $A$ and $B$, we will denote it by $A\times B$, and
+    the unque arrow $u$ as $\langle f,g \rangle$.
+  }{
+    a \textbf{coproduct}\index{Coproduct!In a category} of $A$ and $B$
+    consists of an object $C\in\Obj\bfC$ together with arrows $i_1:A\to C$ and
+    $i_2:B\to C$ satisfying the following universal property:
+
+    For any other ``candidate coproduct'' $D\in\Obj\bfC$ with arrows
+    $j_1:A\to D$ and $j_2:B\to D$, there is a unique arrow $u:C\to D$ making the
+    following diagram commute:
+    \begin{center}
+      \begin{tikzcd}[sep=large,ampersand replacement=\&]
+        A \arrow[r, "i_1"{name=I1}]\arrow[dr, swap, "j_1"{name=F}]
+        \& C \arrow[d,dashed,"u"]
+        \& B\arrow[l, "i_2"{name=I2},swap]\arrow[dl,"j_2"{name=G}] \\
+        {} \& D \& {}
+      \end{tikzcd}
+    \end{center}
+    If $C$ is a coproduct of $A$ and $B$, we will denote it by $A+B$, and
+    the unque arrow $u$ as $[f,g]$.
+  }
+\end{definition}
+
+\section{Functors and their algebras}
+\label{sec:functors-and-their-algebras}
+
+\begin{definition}\label{def:functor}
+	A \textbf{functor}\index{Functor} $F$ between categories $\bfC$ and $\bfD$
+  consists of the following data:
+  \begin{itemize}
+    \itemsep-0.2em
+    \item a map $F_0:\Obj \bfC\to\Obj \bfD$ 
+    \item for each pair of objects $A,B\in\Obj C$, a map \\
+      $F_1:\Hom_{\bfC}(A,B) \to\Hom_{\bfD}(F_0(A),F_0(B))$ 
+  \end{itemize}
+  (We generally leave off the subscripts and parentheses when possible, denoting
+  the application by simply $FA$ or $Ff$.) These data are subject to the following
+  axioms:
+  \begin{enumerate}%[label=\Alph*.]
+    \itemsep-0.2em
+    \item functors preserve composition
+    \item $F\id_A=\id_{FA}$ for all $A\in\Obj C$.
+  \end{enumerate}
+  We denote a functor $F$ from $\bfC$ to $\bfD$ by $F:\bfC\to\bfD$.
+\end{definition}
+
+% TODO: product and coproduct functors, products?
+
+\begin{example}\label{ex:forget}
+  For each category of algebraic objects where the morphisms are the
+  corresponding type of homomorphism, there is a \textbf{forgetful functor},
+  generally denoted $U$, which takes sets with some structure to their
+  underlying sets and homomorphisms to the corresponding maps of sets. For
+  instance, there is a forgetful functor $U:\Grp\to\Set$.
+\end{example}
+
+\begin{example}\label{ex:identity-functor-cat}
+  For any category $\bfC$, there is an \textbf{identity
+  functor}\index{Identity!Functor} $\id_{\bfC}\bfC\to\bfC$ which acts as the
+  identity on objects and morphisms. The composition of functors is associative,
+  and there is a category $\Cat$ of ``small'' categories (it doesn't include
+  itself, for instance).
+\end{example}
+
+Since functors preserve sources, targets, and composition, they preserve
+commutative diagrams. If $f,g,h$ form a commutative triangle in $\bfC$, then
+their images under $F:\bfC\to\bfD$ do in $\bfD$:
+\begin{center}
+  \begin{tikzcd}[column sep=large]
+    A\arrow[dr, "f"]\arrow[dd, "h"]\arrow[rr,mapsto,"F"] & {} & F A
+    \arrow[dr, "F f"] \arrow[dd, near start, "F h", crossing over] & {} \\
+    {} & B\arrow[dl, "g"]\arrow[rr,near start, mapsto, "F", crossing over] & {}
+    & F B \arrow[dl, "F g"]\\
+    C \arrow[rr,mapsto,"F"]& {} & F C &  {}
+  \end{tikzcd}
+\end{center}
+Note however that it is possible that $FA=FB=FC$, as in a functor to a category
+with a single object. However, the equalties between composites still hold.
+One consequence is that functors preserve isomorphism.
+
+\begin{definition}\label{def:endofunctor}
+	An \textbf{endofunctor}\index{Functor!Endofunctor} is a functor with identical
+  domain and codomain.
+\end{definition}
+
+\begin{definition}\label{def:f-coalgebra}
+  \
+  \vspace{-0.3em}\dual{
+    An \textbf{algebra}\index{(Co)algebra for a functor} for an endofunctor
+    $F:\bfC\to\bfC$ (also called an $F$\textbf{-algebra}) is a pair
+    $(A,\alpha)$ of an object $A\in\Obj\bfC$ and an arrow $\alpha:FA\to A$.
+  }{
+    A \textbf{coalgebra} for an endofunctor
+    $F:\bfC\to\bfC$ (also called an $F$\textbf{-coalgebra}) is a pair
+    $(A,\alpha)$ of an object $A\in\Obj\bfC$ and an arrow $\alpha:A\to FA$
+    \cite{category-theory-for-computing-science}.
+  }
+\end{definition}
+
+For now, we will concentrate on properties of functor coalgebras, though all
+constructions in this section hold dually for algebras.
+
+\begin{definition}\label{def:coalgebra-morphism}
+  A \textbf{coalgebra morphism}\index{(Co)algebra morphism} from
+  $(A,\alpha)$ to $(B,\beta)$ is an arrow $f:A\to B$ such that the following
+  diagram commutes:
+  \begin{center}
+    \begin{tikzcd}
+      A  \arrow[d, "\alpha"] \arrow[r, "f"] & B \arrow[d, "\beta"] \\
+      FA \arrow[r, "Ff"] & FB
+    \end{tikzcd}
+  \end{center}
+\end{definition}
+
+Since $F$ is a functor, the composition of coalgebra morphisms is again a
+coalgebra morphism. In fact, $F$-coalgebras have all of the structure of a
+category, which we will call $F\Coalg$.\TODO{Proof?}
+
+\begin{definition}
+  \
+  \vspace{-0.3em}\dual{
+    An \textbf{initial $F$-algebra}\index{Initial algebra} is an initial
+    object of $F\Alg$.
+  }{
+    An \textbf{final $F$-coalgebra}\index{Final coalgebra} is a terminal
+    object of $F\Coalg$.
+  }
+\end{definition}
+
+\begin{example}
+	Consider the functor
+  \begin{align*}
+    F : \Set\longrightarrow \Set \\
+    F_0(A) \coloneqq 1+A \\
+    F_1(f) \coloneqq [\id_1, f]
+  \end{align*}
+  where 1 is a terminal object\index{Terminal object}, that is, any singleton
+  set. Suppose $(N,\eta)$ is an initial algebra for this functor. We can
+  transform the universal property of initiality into something a little more
+  useful. 
+\end{example}
+
+\section{Type theoretic category theory}
+\label{sec:type-theoretic-category-theory}
+
+Unfortunately, terminology varies between the three predominant sources
+on category theory in univalent type theory \cite{book} \cite{unimath}
+\cite{hott-lib}. 
+
 \chapter{Coinductive types in univalent type theory}
 \label{chap:coinductive-types-in-univalent-type-theory}
 
 \section{W and M}
 \label{sec:w-and-m}
-
-\section{Category theory}
-\label{sec:category-theory}
-
-\subsection{Basics}
-\label{subsec:basics}
-
-\subsection{Functor algebras}
-\label{subsec:functor-algebras}
 
 \section{Internalizing M-types}
 \label{sec:internalizing-m-types}
@@ -316,7 +675,7 @@ constructive/intuitionistic logic of proof assistants: nothing else computes.
 
 %  \bibliographystyle{bsts/mla-good} % there are a variety of styles available; 
 %  \bibliographystyle{plainnat}
-% replace ``plainnat'' with the style of choice. You can refer to files in the bsts or APA 
+% replace ``plainnat'' with the style of choice. You can crefer to files in the bsts or APA 
 % subfolder, e.g. 
 % \bibliographystyle{APA/apa-good}  % or
 \bibliography{thesis}
@@ -325,5 +684,7 @@ constructive/intuitionistic logic of proof assistants: nothing else computes.
 %\printbibliography[heading=bibintoc]
 
 % Finally, an index would go here... but it is also optional.
+\index{$\id$|see {Identity}}
+\index{$F$-algebra|see {Algebra for a functor}}
 \printindex
 \end{document}
