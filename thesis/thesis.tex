@@ -26,6 +26,7 @@
 \input{../tex-preamble/general.tex}
 \input{../tex-preamble/amsthm.tex}
 \input{../tex-preamble/problems.tex}
+\input{../tex-preamble/hott.tex}
 \newcommand{\abbreviation}[1]{\textbf{#1}\indeX{#1@\textbf{#1}}} % abbreviations
 % Judgements
 \newcommand{\prop}{\hspace{0.4em}\text{prop}}
@@ -40,8 +41,6 @@
   arrows={line width=0.65pt},
   >={stealth}
 }
-\newcommand{\comma}{,}
-
 \newcommand{\dual}[2]{
   \begin{itemize}\renewcommand{\labelitemi}{$\circ$}
     \itemsep0em
@@ -267,25 +266,25 @@ like any other, and every term has a type.
 Consider functions with the following types:
 \begin{itemize}
   \itemsep0em
-  \item $\texttt{dne}:\prod_{A:\caU}(A\to\bot\to\bot)\to A$
-  \item $\texttt{lem}:\prod_{A:\caU}A+(A\to\bot)$
+  \item $\mathsf{dne}:\prod_{A:\caU}(A\to\bot\to\bot)\to A$
+  \item $\mathsf{lem}:\prod_{A:\caU}A+(A\to\bot)$
 \end{itemize}
 What can we tell about these functions from their type signatures?
-The term \texttt{dne} takes as argument a term $x:A\to\bot\to\bot$,
+The term $\mathsf{dne}$ takes as argument a term $x:A\to\bot\to\bot$,
 that is, a term showing that $A$ is not the empty type\footnote{More precisely,
   $x$ demonstrates that $A$ is not \textit{isomorphic} or \textit{equivalent} to
   $\bot$, in the sense of \cref{subsec:weak-equivalences}. If $A$ were isomorphic
   to $\bot$, then that isomorphism would be an inhabitant of $A\to\bot$.}, and
 produces some element of $A$. This seems like a very tricky function to write:
 how can we give a term of type $A$ just by knowing $A$ has terms? We don't
-know what form data of type $A$ have! The function $\texttt{lem}$ seems
+know what form data of type $A$ have! The function $\mathsf{lem}$ seems
 similarly quagmired. Given a type $A$, this function either has to produce an
 element of it, or demonstrate that it is uninhabited. 
 
 As you may have already guessed, under the Curry-Howard correspondence, these
 functions correspond to the rule of double negation elimination
-(\texttt{dne})\index{Double negation elimination}
-and the law of excluded middle (\texttt{lem})\index{Law of excluded middle}:
+($\mathsf{dne}$)\index{Double negation elimination}
+and the law of excluded middle ($\mathsf{lem}$)\index{Law of excluded middle}:
 
 \begin{minipage}[b]{0.50\linewidth}
   \centering
@@ -307,9 +306,9 @@ and the law of excluded middle (\texttt{lem})\index{Law of excluded middle}:
 
 \noindent These are logically equivalent. To demonstrate with finality that
 these are not definable terms in any consistent type theory, consider the
-application of \texttt{lem} to a type \texttt{pnp} that corresponds to the
+application of $\mathsf{lem}$ to a type $\mathsf{pnp}$ that corresponds to the
 $\textsc{P}\neq\textsc{NP}$ conjecture under the types-as-propositions
-interpretation. If \texttt{lem} existed, we could trivially solve this problem
+interpretation. If $\mathsf{lem}$ existed, we could trivially solve this problem
 and make a million dollars! We need no recourse to philosophy to justify the
 constructive/intuitionistic logic of proof assistants: nothing else computes.
 
@@ -747,25 +746,21 @@ The following example is crucial to
   type with this property would look like in our favorite category $\caU$, the
   universe of small types in \abbreviation{ITT}!
 
-  Let $\operatorname{List}\N$ be the type of lists of natural numbers
+  Let \List{\N} be the type of lists of natural numbers
   as in \cref{subsubsec:lists}. To utilize the above property, we need
-  an arrow $\textbf{1}\to \operatorname{List}\N$, in other words, any inhabitant
-  of $\operatorname{List}\N$. Let's choose $[]$, the empty list.
-  We also need a function $\operatorname{List}\N\to \operatorname{List}\N$.
-  Choose $\lambda l.5::l$, the function that prepends $5$ to $l$. In summary, we
-  have:
+  to choose $A$, $f$, and $g$. Pick the following:
   \begin{itemize}
     \itemsep0em
-    \item $A:\equiv \operatorname{List}\N$
-    \item $f:\equiv \lambda x.[]$
-    \item $g:\equiv \lambda l.5::l$
+    \item $A:\equiv \List{\N}$
+    \item $f:\equiv \fun{x}{\nil}$
+    \item $g:\equiv \fun{l}{\cons(5,l)}$
   \end{itemize}
   From the universal property of $(N,[z,s])$, we get a function
-  $u:N\to \operatorname{List} A$ such that
+  $u:N\to \List{A}$ such that
   \begin{align*}
-    u(z) = []
+    u(z) = \nil
     &&\text{and}&&
-    u(s(n)) = 5::(u(n))
+    u(s(n)) = \cons(5, u(n))
   \end{align*}
   Look familiar yet? Indeed, one type with such a property is $\N$! In that
   case, $u$ is the function that, when given a number $n$, outputs a list of $5$s

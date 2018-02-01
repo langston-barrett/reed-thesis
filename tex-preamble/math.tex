@@ -2,25 +2,26 @@
 \usepackage{amssymb}       % math characters
 \usepackage{mathtools}     % improvement on amsmath
 
-\usepackage{unicode-math}         % use OTF math fonts
-\setoperatorfont\mathup % operators should be set in math font
-\AtBeginDocument{\let\setminus\minus}
+\usepackage{mathpazo}
+% \usepackage{unicode-math}         % use OTF math fonts
+% \setoperatorfont\mathup % operators should be set in math font
+% \AtBeginDocument{\let\setminus\minus}
 
-\ExplSyntaxOn % fix xmapsto. https://github.com/wspr/unicode-math/issues/197
-\RenewDocumentCommand \xmapsto { m } {
-  \mathrel {
-    \exp_after:wN \Uoverdelimiter \cs:w sym \__um_symfont_tl \cs_end: "21A6 {
-      \mkern 5mu \scan_stop: #1 \mkern 5mu \scan_stop:
-    }
-  }
-}
-\ExplSyntaxOff
+% \ExplSyntaxOn % fix xmapsto. https://github.com/wspr/unicode-math/issues/197
+% \RenewDocumentCommand \xmapsto { m } {
+%   \mathrel {
+%     \exp_after:wN \Uoverdelimiter \cs:w sym \__um_symfont_tl \cs_end: "21A6 {
+%       \mkern 5mu \scan_stop: #1 \mkern 5mu \scan_stop:
+%     }
+%   }
+% }
+% \ExplSyntaxOff
 
 % Tex Gyre Schola Math -  unpretentious, serif (good for \mathbb)
 % Latin Modern Math -  update of Computer Modern, a little thicker (good for \mathcal)
 % Asana Math -  the only font with the correct \setminus
-\setmathfont{Latin Modern Math}
-\setmathfont[range=\mathbb]{Tex Gyre Schola Math}
+% \setmathfont{Latin Modern Math}
+% \setmathfont[range=\mathbb]{Tex Gyre Schola Math}
 % \setmathfont[range=\setminus]{Asana Math}
 
 % A good, casual math font:
@@ -96,21 +97,25 @@
 \DeclareMathOperator{\im}{im}           % algebra: image
 \DeclareMathOperator{\Aut}{Aut}         % algebra/cat: automorphisms
 \DeclareMathOperator{\End}{End}         % algebra/cat: endomorphisms
-\DeclareMathOperator{\Obj}{Obj}              % categories: objects of a category
-\DeclareMathOperator{\Hom}{Hom}              % categories: hom-sets
-\DeclareMathOperator{\Set}{\mathbf{Set}}     % categories: (small) sets
-\DeclareMathOperator{\Cat}{\mathbf{Cat}}     % categories: small categories
-\DeclareMathOperator{\Grpd}{\mathbf{Grpd}}   % categories: small groupoids
-\DeclareMathOperator{\Mon}{\mathbf{Mon}}     % categories: monoids
-\DeclareMathOperator{\Grp}{\mathbf{Grp}}     % categories: groups
-\DeclareMathOperator{\AbGrp}{\mathbf{AbGrp}} % categories: abelian groups
-\DeclareMathOperator{\Top}{\mathbf{Top}}     % categories: topological spaces
-\DeclareMathOperator{\Man}{\mathbf{Man}}     % categories: topological manifolds
-\DeclareMathOperator{\Mod}{\mathbf{-Mod}}    % categories: modules over a ring
-\DeclareMathOperator{\Met}{\mathbf{Metric}}  % categories: metric spaces
-\DeclareMathOperator{\Vect}{\mathbf{Vect}}   % categories: vector spaces
-\DeclareMathOperator{\dVect}{\mathbf{-Vect}} % categories: vector spaces (with dash)
-\DeclareMathOperator{\Rep}{\mathbf{Rep}}     % categories: representations
+
+\newcommand{\DeclareCategory}[2]{\DeclareMathOperator{#1}{\mathbf{#2}}}
+\DeclareMathOperator{\Obj}{Obj}  % categories: objects of a category
+\DeclareMathOperator{\Hom}{Hom}  % categories: hom-sets
+\DeclareCategory{\Set}{Set}      % categories: (small) sets
+\DeclareCategory{\Cat}{Cat}      % categories: small categories
+\DeclareCategory{\Grpd}{Grpd}    % categories: small groupoids
+\DeclareCategory{\Mon}{Mon}      % categories: monoids
+\DeclareCategory{\Grp}{Grp}      % categories: groups
+\DeclareCategory{\AbGrp}{AbGrp}  % categories: abelian groups
+\DeclareCategory{\Top}{Top}      % categories: topological spaces
+\DeclareCategory{\Man}{Man}      % categories: topological manifolds
+\DeclareCategory{\Mod}{-Mod}     % categories: modules over a ring
+\DeclareCategory{\Met}{Metric}   % categories: metric spaces
+\DeclareCategory{\Vect}{Vect}    % categories: vector spaces
+\DeclareCategory{\dVect}{-Vect}  % categories: vector spaces (with dash)
+\DeclareCategory{\Rep}{Rep}      % categories: representations
+\DeclareCategory{\Alg}{-Alg}     % categories: functor algebras
+\DeclareCategory{\Coalg}{\kern-1pt-Coalg} % categories: functor algebras
 
 % make letters in different fonts (bold, blackboard, caligraphic, fraktur)
 % https://tex.stackexchange.com/questions/156196/newcommand-with-variable-name

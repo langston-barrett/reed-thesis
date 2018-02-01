@@ -1,2 +1,28 @@
-\DeclareMathOperator{\refl}{\mathtt{refl}}
-\DeclareMathOperator{\ind}{\mathtt{ind}}
+% \DeclareMathOperator{\refl}{\mathtt{refl}}
+% \DeclareMathOperator{\ind}{\mathtt{ind}}
+
+\newcommand{\fun}[2]{\lambda #1.#2}
+
+% some of this is based on HoTT/HoTT
+
+\newcommand{\emptytype}{\ensuremath{\mathbf{0}}}  % empty type
+\newcommand{\unittype}{\ensuremath{\mathbf{1}}}   % unit type
+\newcommand{\unitelem}{\ensuremath{1_{\unittype}}} % sole inhabitant of the unit type
+\newcommand{\booltype}{\ensuremath{\mathbf{2}}}   % two element type
+\newcommand{\btrue}{1_{\booltype}}                 % inhabitant of two element type
+\newcommand{\bfalse}{0_{\booltype}}                % inhabitant of two element type
+\newcommand{\inl}{\ensuremath{\mathsf{inl}}}
+\newcommand{\inr}{\ensuremath{\mathsf{inr}}}
+
+%%% Natural numbers
+\newcommand{\suc}{\mathsf{succ}}
+\newcommand{\add}{\mathsf{add}}
+
+%%% Lists
+\newcommand{\List}[1]{\ensuremath{\mathsf{List}(#1)}}
+\newcommand{\nil}{\ensuremath{\mathsf{nil}}}
+\newcommand{\cons}{\ensuremath{\mathsf{cons}}}
+
+%%% Function extensionality
+\newcommand{\funext}{\mathsf{funext}}
+\newcommand{\happly}{\mathsf{happly}}
