@@ -219,6 +219,18 @@ The strong normalization property
 \subsection{More complex types}
 \label{subsec:more-complex-types}
 
+\subsubsection{Product types}
+\label{subsubsec:product-types}
+
+\subsubsection{Coproduct types}
+\label{subsubsec:coproduct-types}
+
+\subsubsection{Natural numbers}
+\label{subsubsec:natural-numbers}
+
+\subsubsection{Lists}
+\label{subsubsec:lists}
+
 \section{The Curry-Howard correspondence}
 \label{sec:the-curry-howard-correspondence}
 
@@ -531,18 +543,31 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
     \item for each pair of objects $A,B\in\Obj C$, a map \\
       $F_1:\Hom_{\bfC}(A,B) \to\Hom_{\bfD}(F_0(A),F_0(B))$ 
   \end{itemize}
-  (We generally leave off the subscripts and parentheses when possible, denoting
-  the application by simply $FA$ or $Ff$.) These data are subject to the following
-  axioms:
+  These data are subject to the following axioms:
   \begin{enumerate}%[label=\Alph*.]
     \itemsep-0.2em
     \item functors preserve composition
-    \item $F\id_A=\id_{FA}$ for all $A\in\Obj C$.
+    \item $F(\id_A)=\id_{F(A)}$ for all $A\in\Obj C$.
   \end{enumerate}
-  We denote a functor $F$ from $\bfC$ to $\bfD$ by $F:\bfC\to\bfD$.
 \end{definition}
 
-% TODO: product and coproduct functors, products?
+We generally leave off the subscripts and parentheses when possible, denoting
+the application by simply $FA$ or $Ff$. A functor $F$ from $\bfC$ to
+$\bfD$ may be denoted $F:\bfC\to\bfD$. We may define functors without names
+using the following notation:
+\begin{align*}
+  \bfC &\longrightarrow \bfD \\
+  A    &\longmapsto_0 \ldots \\
+  f    &\longmapsto_1 \ldots
+\end{align*}
+
+\begin{example}\label{ex:identity-functor-cat}
+  For any category $\bfC$, there is an \textbf{identity
+  functor}\index{Identity!Functor} $\id_{\bfC}\bfC\to\bfC$ which acts as the
+  identity on objects and morphisms. The composition of functors is associative,
+  and there is a category $\Cat$ of ``small'' categories (it doesn't include
+  itself, for instance).
+\end{example}
 
 \begin{example}\label{ex:forget}
   For each category of algebraic objects where the morphisms are the
@@ -552,12 +577,24 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
   instance, there is a forgetful functor $U:\Grp\to\Set$.
 \end{example}
 
-\begin{example}\label{ex:identity-functor-cat}
-  For any category $\bfC$, there is an \textbf{identity
-  functor}\index{Identity!Functor} $\id_{\bfC}\bfC\to\bfC$ which acts as the
-  identity on objects and morphisms. The composition of functors is associative,
-  and there is a category $\Cat$ of ``small'' categories (it doesn't include
-  itself, for instance).
+\begin{example}\label{example:coproduct-functoriality}
+	If $\bfC$ has distinguished binary coproducts, then 
+  for any fixed $A,B\in\Obj\bfC$, one can define the following
+  functors:\footnote{Really, this is a consequence of the fact that $+$ is
+    what's called a \textbf{bifunctor}\indeX{Bifunctor}, but we don't need the
+    full power of that statement for our purposes.}
+  \begin{align*}
+    \begin{split}
+      \bfC &\longrightarrow \bfC \\
+      X    &\longmapsto_0 A + X \\
+      f    &\longmapsto_1 \id_A+f = [i_1, i_2\circ f]
+    \end{split}
+    \begin{split}
+      \bfC &\longrightarrow \bfC \\
+      Y    &\longmapsto_0 Y + B \\
+      g    &\longmapsto_1 g+\id_B = [i_1\circ g, i_2]
+    \end{split}
+  \end{align*}
 \end{example}
 
 Since functors preserve sources, targets, and composition, they preserve
@@ -625,17 +662,119 @@ category, which we will call $F\Coalg$.\TODO{Proof?}
   }
 \end{definition}
 
+The following example is crucial to
+\cref{chap:coinductive-types-in-univalent-type-theory}.
+
 \begin{example}
-	Consider the functor
+  Let $\bfC$ be a category with distinguished binary coproducts and a terminal
+  object $1$. Consider the functor
   \begin{align*}
-    F : \Set\longrightarrow \Set \\
-    F_0(A) \coloneqq 1+A \\
-    F_1(f) \coloneqq [\id_1, f]
+    F:\bfC &\longrightarrow \bfC  \\
+    A &\longmapsto_0 1+A \\
+    f &\longmapsto_1 \id_1+f
   \end{align*}
-  where 1 is a terminal object\index{Terminal object}, that is, any singleton
-  set. Suppose $(N,\eta)$ is an initial algebra for this functor. We can
-  transform the universal property of initiality into something a little more
-  useful. 
+  where 1 is a terminal object\index{Terminal object} and $+$ is the coproduct
+  bifunctor as in \ref{lemma:coproduct-functorality}. Let's examine
+  what it \textit{means} for some $F$-algebra $(N,\eta)$ to be initial. By
+  composing with the coproduct\index{Coproduct!In category theory} injections,
+  we can define
+  \begin{align*}
+    \begin{split}
+      z &: 1 \longrightarrow N \\
+      z &= \eta\circ i_1
+    \end{split}
+    \begin{split}
+      s &: 1 \longrightarrow N \\
+      s &= \eta\circ i_2
+    \end{split}
+  \end{align*}
+  so that $\eta=[z,s]$:
+  \begin{center}
+    \begin{tikzcd}[sep=large,ampersand replacement=\&]
+      1 \arrow[r, "i_1"{name=I1}]\arrow[dr, swap, "z"{name=F}]
+      \& 1+N \arrow[d,"\eta"]
+      \& N\arrow[l, "i_2"{name=I2},swap]\arrow[dl,"s"{name=G}] \\
+      {} \& N \& {}
+    \end{tikzcd}
+  \end{center}
+  Suppose we have another $F$-algebra $(A,\alpha)$, and we define $f,g$ by
+  composition as above so that $\alpha=[f,g]$. By initiality of $(N,\eta)$,
+  there is a unique arrow $u$ making the following diagram commute:
+  \newcommand{\eeeeeta}{[z,s]}
+  \newcommand{\aaaaalpha}{[f,g]}
+  \begin{center}
+    \begin{tikzcd}[sep=large]
+      1+N \arrow[r, dashed, "\id_1+u"]\arrow[d, "\eeeeeta"] & 1+A\arrow[d, "\aaaaalpha"]  \\
+      N \arrow[r, dashed, "u"] & A
+    \end{tikzcd}
+  \end{center}
+  By functoriality of the coproduct (\ref{example:coproduct-functoriality}), we can
+  compose along either the left- or right-hand paths in the above diagram.
+  The above square states $u\circ [z,s]= [f,g]\circ (\id_1+u)$. Precomposing
+  with $i_1:1\to 1+N$ yields
+  \begin{align*}
+    u\circ z = u\circ [z,s]\circ i_1
+    &= [f,g]\circ (\id_1+u) \circ i_1 
+    &&\quad\text{Above diagram} \\
+    &= [f,g]\circ [i_1,i_2\circ u] \circ i_1 
+    &&\quad\text{Definition of }+ \\
+    &= [f, g]\circ i_1 \\
+    &= f
+  \end{align*}
+  By similar reasoning, precomposing with $i_2$ yields
+  \begin{equation*}
+    u\circ s = u\circ [z,s] \circ i_2
+    = [f,g]\circ(\id_1+u)\circ i_2
+    = g\circ u.
+  \end{equation*}
+  Combining the above two equations, we have the following universal property
+  for $(N,\eta)$. For any object $A$ with arrows $f:1\to A$ and $g:A\to A$,
+  there is a unique arrow $u:N\to A$ making the following diagram commute:
+  \begin{center}
+    \begin{tikzcd}[sep=large]
+      1
+        \arrow[r, "z"]
+        \arrow[dr, swap, "f"]
+        & N \arrow[r, "s"] \arrow[d, "u", dashed]
+        & N \arrow[d, "u", dashed] \\
+      {}
+      & A \arrow[r, "g"]
+      & A
+    \end{tikzcd}
+  \end{center}
+  Well, we've successfully rephrased the property of initiality, but it seems
+  just as cryptic now as it was then. Let's see if we can figure out what an
+  type with this property would look like in our favorite category $\caU$, the
+  universe of small types in \abbreviation{ITT}!
+
+  Let $\operatorname{List}\N$ be the type of lists of natural numbers
+  as in \cref{subsubsec:lists}. To utilize the above property, we need
+  an arrow $\textbf{1}\to \operatorname{List}\N$, in other words, any inhabitant
+  of $\operatorname{List}\N$. Let's choose $[]$, the empty list.
+  We also need a function $\operatorname{List}\N\to \operatorname{List}\N$.
+  Choose $\lambda l.5::l$, the function that prepends $5$ to $l$. In summary, we
+  have:
+  \begin{itemize}
+    \itemsep0em
+    \item $A:\equiv \operatorname{List}\N$
+    \item $f:\equiv \lambda x.[]$
+    \item $g:\equiv \lambda l.5::l$
+  \end{itemize}
+  From the universal property of $(N,[z,s])$, we get a function
+  $u:N\to \operatorname{List} A$ such that
+  \begin{align*}
+    u(z) = []
+    &&\text{and}&&
+    u(s(n)) = 5::(u(n))
+  \end{align*}
+  Look familiar yet? Indeed, one type with such a property is $\N$! In that
+  case, $u$ is the function that, when given a number $n$, outputs a list of $5$s
+  with length $n$.\footnote{In $\Set$, $\N$ would be an initial algebra.
+    It makes sense to ask if this functor has an initial algebra in any
+    category with a terminal object and chosen binary coproducts, and in
+    general, such algebras are called \textbf{natural number objects} (NNOs) 
+    \cite{sketches}.
+  }
 \end{example}
 
 \section{Type theoretic category theory}
