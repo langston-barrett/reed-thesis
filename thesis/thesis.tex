@@ -41,6 +41,12 @@
   arrows={line width=0.65pt},
   >={stealth}
 }
+\newcommand{\software}[1]{{\textsc{#1}}\indeX{#1}}
+\newcommand{\Agda}{\software{Agda}}
+\newcommand{\UniMath}{\software{UniMath}}
+\newcommand{\Coq}{\software{Coq}}
+\newcommand{\MTypes}{\software{HoTT/M-Types}}
+
 \newcommand{\dual}[2]{
   \begin{itemize}\renewcommand{\labelitemi}{$\circ$}
     \itemsep0em
@@ -48,6 +54,13 @@
     \item #2
    \end{itemize}
 }
+
+\newcommand{\define}[1]{\textbf{#1}} % term being defined
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{tt-rule}[theorem]{Rule}
+
+\newcommand{\Coalgtype}{\ensuremath{\mathsf{Coalg}}}
+\newcommand{\Final}{\ensuremath{\mathsf{Final}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% My stuff:
 
@@ -244,6 +257,36 @@ The strong normalization property
 \section{The identity type}
 \label{sec:the-identity-type}
 
+\begin{tt-rule}\label{rule:id-elim}
+  The rule of \define{identity elimination} (in the \abbreviation{HoTT}
+  community, known as \define{path induction}) is as follows:\TODO{define id-elim}
+\end{tt-rule}
+
+\begin{lemma}[$\mathsf{ap}$]\label{lemma:ap}
+	\TODO{define ap}
+\end{lemma}
+
+\begin{lemma}[Transport]\label{lemma:transport}
+	\TODO{define transport}
+\end{lemma}
+
+\begin{notation}\label{notation:transport}
+  We will often curry\index{Curry} \transportname. If we have a family
+  $P:A\to\universe$ and a path $p:\propeq{A}{x}{y}$, we write $\transpor{P}{p}$
+  for $\lam{x}\transport{P}{p}{x}$.
+\end{notation}
+
+\begin{lemma}\label{lemma:transport-compose}
+	For $f:A\to B$, $P:B\to\universe$, and $p:\propeq{A}{x}{y}$, 
+  \begin{equation*}
+    \propeq{}{
+      \transpor{P\circ f}{p}
+    }{
+      \transpor{P}{\ap{f}{p}}
+    }
+  \end{equation*}
+\end{lemma}
+
 \section{Dependent types}
 \label{sec:dependent-types}
 
@@ -252,8 +295,40 @@ like any other, and every term has a type.
 
 \begin{definition}\label{def:universes}
   All the types we have considered up to this point are members of a universe
-  $\caU_0$.
+  \universei{0}.
 \end{definition}
+
+We now have the power to write an \textit{single} identity function that works
+for \textit{all} types.
+
+\begin{definition}\label{def:id-polymorphic}
+  The identity function is
+	\begin{align*}
+    \id :\pit{A:\universe}{A\to A} &&
+    \id \defeq \lam{A}\lam{a}a
+  \end{align*}
+  We will write its first argument as a subscript, as in $\id_{A}$.
+\end{definition}
+
+\begin{lemma}[Paths in $\Sigma$-types]\label{lemma:path-sigma}
+	If $x,y:\sigmat{a:A}{B(a)}$, then
+  \begin{equation*}
+    \weq{
+      (\propeq{}{x}{y})
+    }{
+      \sigmat{
+        p:\propeq{}{\appr{1}{x}}{\appr{1}{y}}
+      }{
+        \propeq{}{
+          \transport{}{p}{\appr{2}{x}}
+        }{
+          \appr{2}{y}
+        }
+      }
+    }.
+  \end{equation*}
+  \TODO{cite with page number}
+\end{lemma}
 
 \subsection{$\Pi$-types}
 \label{subsec:pi-types}
@@ -266,8 +341,8 @@ like any other, and every term has a type.
 Consider functions with the following types:
 \begin{itemize}
   \itemsep0em
-  \item $\mathsf{dne}:\prod_{A:\caU}(A\to\bot\to\bot)\to A$
-  \item $\mathsf{lem}:\prod_{A:\caU}A+(A\to\bot)$
+  \item $\mathsf{dne}:\pit{A:\universe}{(A\to\bot\to\bot)\to A}$
+  \item $\mathsf{lem}:\pit{A:\universe}{A+(A\to\bot)}$
 \end{itemize}
 What can we tell about these functions from their type signatures?
 The term $\mathsf{dne}$ takes as argument a term $x:A\to\bot\to\bot$,
@@ -321,8 +396,30 @@ constructive/intuitionistic logic of proof assistants: nothing else computes.
 \subsection{Weak equivalences}
 \label{subsec:weak-equivalences}
 
+\begin{notation}\label{notation:weq-coerce}
+  We may treat a weak equivalence as if it were a function and apply it to an
+  argument. This amounts to implicitly appling $\pr{1}$.
+\end{notation}
+
 \subsection{The univalence axiom}
 \label{subsec:the-univalence-axiom}
+
+\begin{definition}\label{def:ua}
+  \TODO{definintion}
+  It has the following computation rule:
+
+  Note that this rule holds up to \textit{propositional equality}. This is
+  because in \abbreviation{UTT}, univalence is indeed an \textit{axiom}. It has
+  no computational meaning. \TODO{mention CTT}
+\end{definition}
+
+\begin{theorem}[Function extensionality]\label{thm:funext}
+	Under the hypothesis of the univalence axiom, function extensionality holds,
+  i.e.\ there is a term
+  \begin{equation*}\label{eq:funext}
+    \funext:\pit{A,B\:\universe}{(\homot{f}{g})\to \propeq{}{f}{g}}
+  \end{equation*}
+\end{theorem}
 
 \chapter{Category theory}
 \label{chap:category-theory}
@@ -350,19 +447,19 @@ We will examine category theory within \abbreviation{UTT} in
       discipline of \textit{topos theory}}%\index{Topos theory}.}
 
 \begin{definition}
-	A \textbf{category}\index{Category} $\bfC$ consists of the following data:
+	A \define{category}\index{Category} $\bfC$ consists of the following data:
   \begin{itemize}
     \itemsep-0.2em
-    \item a collection of \textbf{objects}, denoted $\Obj \bfC$,
+    \item a collection of \define{objects}, denoted $\Obj \bfC$,
     \item for each pair of objects $A,B\in\Obj \bfC$, a collection of
-      \textbf{arrows} (or \textbf{morphisms}) between them, denoted
+      \define{arrows} (or \define{morphisms}) between them, denoted
         $\Hom_{\bfC}(A,B)$,
     \item for each object $A\in\Obj \bfC$, a distinguished arrow
       $\id_A\in\Hom_{\bfC}(A,A)$ called the
-      \textbf{identity}\index{Identity!Morphism}, and
+      \define{identity}\index{Identity!Morphism}, and
     \item for each triple of objects $A,B,C\in\Obj\bfC$, an operation \\
       $\circ:\Hom_{\bfC}(B,C)\times\Hom_{\bfC}(A,B)\to\Hom_{\bfC}(A,C)$ called
-      \textbf{composition}\index{Composition!In a category}.
+      \define{composition}\index{Composition!In a category}.
   \end{itemize}
   These data are subject to the following axioms:
   \begin{enumerate}%[label=\Alph*.]
@@ -375,9 +472,9 @@ We will examine category theory within \abbreviation{UTT} in
 \end{definition}
 
 \begin{definition}\label{def:domain-and-codomain}
-  If $f\in\Hom_{\bfC}(A,B)$, then $A$ is the \textbf{domain}\index{Domain} or
-  \textbf{source}\index{Source} of $f$ and $B$ is the
-  \textbf{codomain}\index{Codomain} or \textbf{target}\index{Target} of $f$.
+  If $f\in\Hom_{\bfC}(A,B)$, then $A$ is the \define{domain}\index{Domain} or
+  \define{source}\index{Source} of $f$ and $B$ is the
+  \define{codomain}\index{Codomain} or \define{target}\index{Target} of $f$.
 \end{definition}
 
 \begin{example}
@@ -392,7 +489,7 @@ We will examine category theory within \abbreviation{UTT} in
       $\psi:H\to I$, the usual composition of functions defines a homomorphism
       $\psi\circ \phi:G\to I$.
     \item $\AbGrp$: The category of abelian groups (this can be considered a
-      \textbf{subcategory} of $\Grp$).
+      \define{subcategory} of $\Grp$).
     \item $F\dVect$: The category of vector spaces\index{Vector space} over a
       field $F$ with linear transformations as morphisms.
     \item For any group $(G,\circ,e)$, there is a corresponding category
@@ -403,10 +500,10 @@ We will examine category theory within \abbreviation{UTT} in
 \end{example}
 
 \begin{definition}\label{def:isomorphism}
-	An \textbf{isomorphism}\index{Isomorphism!In a category} in $\bfC$ is an arrow
+	An \define{isomorphism}\index{Isomorphism!In a category} in $\bfC$ is an arrow
   $f\in\Hom_{\bfC}(A,B)$ such that there exists an arrow $g\in\Hom_{\bfC}(B,A)$
   such that $g\circ f=\id_A$ and $f\circ g=\id_B$. We call such a $g$ the
-  \textbf{inverse}\index{Inverse!In a category} of $f$.
+  \define{inverse}\index{Inverse!In a category} of $f$.
 \end{definition}
 
 Just as with functions, inverses (should they exist) are unique.
@@ -433,7 +530,7 @@ Just as with functions, inverses (should they exist) are unique.
   A commutative diagram is a way to visualize equations between arrows
   involving composition. Technically a diagram in $\bfC$ is a directed graph
   with vertices labeled by $\Obj\bfC$. If $e$ is an edge from $A$ to $B$, then it
-  is labeled by an arrow in $\Hom_\bfC(A,B)$. A diagram \textbf{commutes}, or is
+  is labeled by an arrow in $\Hom_\bfC(A,B)$. A diagram \define{commutes}, or is
   commutative, if the composition of the arrows labeling the edges of any two
   directed paths with the same endpoints are equal.
   \TODO{better wording}
@@ -442,7 +539,7 @@ Just as with functions, inverses (should they exist) are unique.
 \begin{example}\label{ex:commutative-diagram}
 	If $f\in\Hom_{\bfC}(A,B)$, $g\in\Hom_{\bfC}(B,C)$, $h\in\Hom_{\bfC}(A,C)$,
   and $g\circ f=h$, then we may draw the following
-  \textbf{commutative triangle}:
+  \define{commutative triangle}:
   \begin{center}
     \begin{tikzcd}[column sep=large]
       A \arrow[r, "f"] \arrow[dr, "h"] & B \arrow[d, "g"] \\
@@ -451,7 +548,7 @@ Just as with functions, inverses (should they exist) are unique.
   \end{center}
 	If $f\in\Hom_{\bfC}(A,B)$, $g\in\Hom_{\bfC}(B,D)$, $h\in\Hom_{\bfC}(A,C)$,
   $i\in\Hom_{\bfC}(C,D)$, and $g\circ f=i\circ h$, then we may draw the
-  following \textbf{commutative square}:
+  following \define{commutative square}:
   \begin{center}
     \begin{tikzcd}[column sep=large]
       A \arrow[r, "f"]  \arrow[d, "h"] & B \arrow[d, "g"] \\
@@ -480,20 +577,43 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \begin{definition}\label{def:terminal-and-initial}
   \
   \vspace{-0.3em}\dual{
-    A \textbf{terminal object}\index{Terminal object} is an
+    A \define{terminal object}\index{Terminal object} is an
     object $\top\in\Obj\bfC$ such that for all $A\in\Obj\bfC$,
     there is exactly one arrow $f:A\to\top$.
   }{
-    An \textbf{initial object}\index{Initial object} is an
+    An \define{initial object}\index{Initial object} is an
     object $\bot\in\Obj\bfC$ such that for all $A\in\Obj\bfC$,
     there is exactly one arrow $f:\bot\to A$.
   }
 \end{definition}
 
+\begin{remark}\label{remark:terminal-object-id-unique}
+	In particular, for a terminal object $\top$, $\id_\top$ is the only arrow
+  $\top\to\top$.\footnote{As noted in \cref{sec:duality}, this statement
+    holds for initial objects as well. From this point on, we will leave it
+    to the reader to construct the dual of a statement and infer its truth.}
+\end{remark}
+
+\begin{lemma}\label{lemma:terminal-unique}
+  Terminal objects are unique up to\footnote{For the non-mathematical reader:
+    When a mathematician says ``X is true up to $R$'' for some (equivalence)
+    relation $R$, it means that all objects related by $R$ are considered
+    equivalent. In this case, ``unique up to isomorphism'' means that there may
+    be other terminal objects, but all of them are mutually isomorphic.} a
+  specified isomorphism.
+\end{lemma}
+\begin{proof}
+	Suppose $A$ and $B$ are terminal objects.
+  There are unique arrows $f:A\to B$ and $g:B\to A$.
+  Then $g\circ f:A\to A$ and $f\circ g:B\to B$, but as per
+  \cref{remark:terminal-object-id-unique}\TODO{how to make this ``remark''?},
+  $g\circ f=\id_A$ and $f\circ g=\id_B$.
+\end{proof}
+
 \begin{definition}\label{def:product-and-coproduct}
   Given two objects $A,B\in\Obj\bfC$,
   \vspace{-0.3em}\dual{
-    a \textbf{product}\index{Product!In a category} of $A$ and $B$
+    a \define{product}\index{Product!In a category} of $A$ and $B$
     consists of an object $C\in\Obj\bfC$ together with arrows $p_1:C\to A$ and
     $p_2:C\to B$ satisfying the following universal property:
 
@@ -510,7 +630,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
     If $C$ is a product of $A$ and $B$, we will denote it by $A\times B$, and
     the unque arrow $u$ as $\langle f,g \rangle$.
   }{
-    a \textbf{coproduct}\index{Coproduct!In a category} of $A$ and $B$
+    a \define{coproduct}\index{Coproduct!In a category} of $A$ and $B$
     consists of an object $C\in\Obj\bfC$ together with arrows $i_1:A\to C$ and
     $i_2:B\to C$ satisfying the following universal property:
 
@@ -534,7 +654,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \label{sec:functors-and-their-algebras}
 
 \begin{definition}\label{def:functor}
-	A \textbf{functor}\index{Functor} $F$ between categories $\bfC$ and $\bfD$
+	A \define{functor}\index{Functor} $F$ between categories $\bfC$ and $\bfD$
   consists of the following data:
   \begin{itemize}
     \itemsep-0.2em
@@ -561,7 +681,7 @@ using the following notation:
 \end{align*}
 
 \begin{example}\label{ex:identity-functor-cat}
-  For any category $\bfC$, there is an \textbf{identity
+  For any category $\bfC$, there is an \define{identity
   functor}\index{Identity!Functor} $\id_{\bfC}\bfC\to\bfC$ which acts as the
   identity on objects and morphisms. The composition of functors is associative,
   and there is a category $\Cat$ of ``small'' categories (it doesn't include
@@ -570,7 +690,7 @@ using the following notation:
 
 \begin{example}\label{ex:forget}
   For each category of algebraic objects where the morphisms are the
-  corresponding type of homomorphism, there is a \textbf{forgetful functor},
+  corresponding type of homomorphism, there is a \define{forgetful functor},
   generally denoted $U$, which takes sets with some structure to their
   underlying sets and homomorphisms to the corresponding maps of sets. For
   instance, there is a forgetful functor $U:\Grp\to\Set$.
@@ -580,7 +700,7 @@ using the following notation:
 	If $\bfC$ has distinguished binary coproducts, then 
   for any fixed $A,B\in\Obj\bfC$, one can define the following
   functors:\footnote{Really, this is a consequence of the fact that $+$ is
-    what's called a \textbf{bifunctor}\indeX{Bifunctor}, but we don't need the
+    what's called a \define{bifunctor}\indeX{Bifunctor}, but we don't need the
     full power of that statement for our purposes.}
   \begin{align*}
     \begin{split}
@@ -613,19 +733,19 @@ with a single object. However, the equalties between composites still hold.
 One consequence is that functors preserve isomorphism.
 
 \begin{definition}\label{def:endofunctor}
-	An \textbf{endofunctor}\index{Functor!Endofunctor} is a functor with identical
+	An \define{endofunctor}\index{Functor!Endofunctor} is a functor with identical
   domain and codomain.
 \end{definition}
 
 \begin{definition}\label{def:f-coalgebra}
   \
   \vspace{-0.3em}\dual{
-    An \textbf{algebra}\index{(Co)algebra for a functor} for an endofunctor
-    $F:\bfC\to\bfC$ (also called an $F$\textbf{-algebra}) is a pair
+    An \define{algebra}\index{(Co)algebra for a functor} for an endofunctor
+    $F:\bfC\to\bfC$ (also called an $F$\define{-algebra}) is a pair
     $(A,\alpha)$ of an object $A\in\Obj\bfC$ and an arrow $\alpha:FA\to A$.
   }{
-    A \textbf{coalgebra} for an endofunctor
-    $F:\bfC\to\bfC$ (also called an $F$\textbf{-coalgebra}) is a pair
+    A \define{coalgebra} for an endofunctor
+    $F:\bfC\to\bfC$ (also called an $F$\define{-coalgebra}) is a pair
     $(A,\alpha)$ of an object $A\in\Obj\bfC$ and an arrow $\alpha:A\to FA$
     \cite{category-theory-for-computing-science}.
   }
@@ -635,7 +755,7 @@ For now, we will concentrate on properties of functor coalgebras, though all
 constructions in this section hold dually for algebras.
 
 \begin{definition}\label{def:coalgebra-morphism}
-  A \textbf{coalgebra morphism}\index{(Co)algebra morphism} from
+  A \define{coalgebra morphism}\index{(Co)algebra morphism} from
   $(A,\alpha)$ to $(B,\beta)$ is an arrow $f:A\to B$ such that the following
   diagram commutes:
   \begin{center}
@@ -653,10 +773,10 @@ category, which we will call $F\Coalg$.\TODO{Proof?}
 \begin{definition}
   \
   \vspace{-0.3em}\dual{
-    An \textbf{initial $F$-algebra}\index{Initial algebra} is an initial
+    An \define{initial $F$-algebra}\index{Initial algebra} is an initial
     object of $F\Alg$.
   }{
-    An \textbf{final $F$-coalgebra}\index{Final coalgebra} is a terminal
+    An \define{final $F$-coalgebra}\index{Final coalgebra} is a terminal
     object of $F\Coalg$.
   }
 \end{definition}
@@ -743,7 +863,7 @@ The following example is crucial to
   \end{center}
   Well, we've successfully rephrased the property of initiality, but it seems
   just as cryptic now as it was then. Let's see if we can figure out what an
-  type with this property would look like in our favorite category $\caU$, the
+  type with this property would look like in our favorite category \universe, the
   universe of small types in \abbreviation{ITT}!
 
   Let \List{\N} be the type of lists of natural numbers
@@ -752,8 +872,8 @@ The following example is crucial to
   \begin{itemize}
     \itemsep0em
     \item $A:\equiv \List{\N}$
-    \item $f:\equiv \fun{x}{\nil}$
-    \item $g:\equiv \fun{l}{\cons(5,l)}$
+    \item $f:\equiv \lam{x}{\nil}$
+    \item $g:\equiv \lam{l}{\cons(5,l)}$
   \end{itemize}
   From the universal property of $(N,[z,s])$, we get a function
   $u:N\to \List{A}$ such that
@@ -767,7 +887,7 @@ The following example is crucial to
   with length $n$.\footnote{In $\Set$, $\N$ would be an initial algebra.
     It makes sense to ask if this functor has an initial algebra in any
     category with a terminal object and chosen binary coproducts, and in
-    general, such algebras are called \textbf{natural number objects} (NNOs) 
+    general, such algebras are called \define{natural number objects} (NNOs) 
     \cite{sketches}.
   }
 \end{example}
@@ -781,6 +901,133 @@ on category theory in univalent type theory \cite{book} \cite{unimath}
 
 \chapter{Coinductive types in univalent type theory}
 \label{chap:coinductive-types-in-univalent-type-theory}
+
+\begin{notation}
+  Following \cite{non-wellfounded}, we will adopt the notation
+  $(X,\alpha)\Rightarrow (Y,\beta)$ or $X\Rightarrow Y$ to denote the type of
+  coalgebra morphisms from $(X,\alpha)$ to $(Y,\beta)$.
+\end{notation}
+
+\begin{definition}\label{def:polynomial-functor}
+  Given a signature $S\defeq (A,B)$, its associated \define{polynomial functor}
+  is the function
+  \begin{gather*}
+    P:\universe\to \universe \\
+    \apply{P_{A,B}}{X}\defeq\sigmat{a:A}{B(a)\to X}
+  \end{gather*}
+  We will regularly leave off the subscript for $P$.
+  The \define{action} of $P$ on functions is
+  \begin{gather*}
+    P^* : (X\to Y)\to P_{A,B}(X)\to P_{A,B}(Y) \\
+    \apply{P^*f}{(a,g)}\defeq (a,g\circ f).
+  \end{gather*}
+  \TODO{this isn't a functor}
+\end{definition}
+
+Fix a signature $S\defeq (A,B)$ and let $P$ be the associated polynomial functor.
+
+\begin{lemma}\label{lemma:polynomial-functor-transport}
+  For all $X,Y:\universe$ and $p:\propeq{}{X}{Y}$, 
+  \begin{equation*}
+    \propeq{}{
+      P^*\paren{\transpor{\id_{\universe}}{p}}
+    }{
+      \transpor{P}{p}
+    }
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+  Note that we're using \cref{notation:transport}. By the elimination rule for
+  the identity type, (\cref{rule:id-elim}), it suffices to assume that $X\jdeq
+  Y$ and that $p\jdeq\refl{X}$. Then
+  \begin{align*}
+    P^*\paren*{\transpor{\id_{\universe}}{p}}
+    &\jdeq P^*\paren*{\transpor{\id_{\universe}}{\refl{X}}}
+    &&\quad\text{Identity elimination} \\
+    &\jdeq P^*\paren{\id_X}
+    &&\quad\text{\Cref{lemma:transport}} \\
+    &\jdeq \lam{(a,f)}{(a,f\circ \id_X)}
+    &&\quad\text{\Cref{def:polynomial-functor}} \\
+    &\jdeq \lam{(a,f)}{(a,f)} \\
+    &\jdeq \id_{PX}
+    &&\quad\text{\Cref{def:id-polymorphic}} \\
+    &\jdeq \transpor{\id_{\universe}}{\refl{PX}}
+    &&\quad\text{\Cref{lemma:transport}} \\
+    &\jdeq \transpor{\id_{\universe}}{\ap{P}{\refl{X}}}
+    &&\quad\text{\Cref{lemma:ap}} \\
+    &\jdeq \transpor{P}{\refl{X}}
+    &&\quad\text{\Cref{lemma:transport-compose}} \\
+    &\jdeq \transpor{P}{p}
+    &&\quad\text{Identity elimination}
+  \end{align*}
+\end{proof}
+
+\begin{lemma}\label{lemma:algebra-iso-equiv}
+	If $(X,\alpha)$ and $(Y,\beta)$ are final $P$-coalgebras,
+  then the first projections of the unique coalgebra morphisms
+  $f:X\Rightarrow Y$ and $g:Y\Rightarrow X$ induce
+  an equivalence of types $\weq{X}{Y}$.
+\end{lemma}
+\begin{proof}
+  This proof is a standard categorical technique, much reminiscent of
+  \cref{lemma:terminal-unique}.
+	\TODO{proof}
+\end{proof}
+
+This proof appeared in the \Agda{} formalization of\cite{non-wellfounded},
+this is its first appearance ``de-formalized''.
+
+\begin{lemma}\label{lemma:final-colagebra-unique}
+  Any two final $P$-coalgebras are equal. In other words, the following type is
+  a proposition:
+  \begin{equation*}
+    \Final(S)\defeq
+    \sigmat{(X,\alpha):\Coalgtype(S)}{
+      \pit{(Y,\beta):\Coalgtype(S)}{\isContr((Y,\beta)\Rightarrow (X,\alpha))}
+    }
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+  Let:
+  \begin{itemize}
+    \itemsep0em
+    \item $(X,\alpha)$, $(Y,\beta)$ be final $P$-coalgebras,
+    \item $f:X\Rightarrow Y$ and $g:Y\Rightarrow X$ be the unique $P$-coalgebra
+      morphisms between them,
+    \item $q:\weq{X}{Y}$ the equivalence of types induced by $f$ and $g$
+      (\cref{lemma:algebra-iso-equiv}).
+  \end{itemize}
+  By univalence, there is a path
+    $\apply{\ua}{q}:\propeq{\universe}{X}{Y}$.\footnote{This
+    is our first (but not nearly our last) crucial use of univalence. Without an
+    equality, we couldn't \transportname{} $\alpha$ to $\beta$ in the next step.
+    This step also demonstrates that function extensionality alone doesn't
+    suffice.} 
+  To demonstrate that $\propeq{}{(X,\alpha)}{(Y,\beta)}$, we invoke the
+  characterization of paths in $\Sigma$-types, \cref{lemma:path-sigma}. It
+  remains to show
+  \begin{equation*}
+    \propeq{(Y\to PY)}{\transport{Z\mapsto PZ}{\apply{\ua}{q}}{\alpha}}{\beta}.
+  \end{equation*}
+  By function extensionality (\cref{thm:funext}), it suffices
+  to show that they are homotopic, that is, propositionally equal on all inputs. 
+
+  % Lemma 2 in HoTT/M-types
+  First, note that
+  \begin{align*}
+    \transpor{P}{p}
+    &= P^*\paren{\transpor{\id_{\universe}}{\apply{\ua}{q}}}
+    &&\quad\text{\Cref{lemma:polynomial-functor-transport}} \\
+    &= P^*q
+    &&\quad\text{\Cref{def:ua}} \\
+    &= P^*(\appr{1}{f})
+    &&\quad\text{\Cref{lemma:algebra-iso-equiv}}
+  \end{align*}
+  Note that the last step utilizes the idea of \textit{proof-relevant
+    mathematics}. Although we define $q$ within a proof, we can (consistently,
+  without cheating) refer to its definition from another proof. Also note the
+  use of \cref{notation:weq-coerce}.
+\end{proof}
 
 \section{W and M}
 \label{sec:w-and-m}
@@ -797,8 +1044,27 @@ on category theory in univalent type theory \cite{book} \cite{unimath}
 
 
 %If you feel it necessary to include an appendix, it goes here.
-% \appendix
-% \chapter{The First Appendix}
+\appendix
+\chapter{Cross-reference of names}
+
+The following table lists lemmas taken from \cite{book}.
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{c | c}
+    This thesis & The \abbreviation{HoTT} book \\ \hline
+    \Cref{def:ua} & Axiom 2.10.3
+  \end{tabular}
+\end{table}
+
+The following table compares the terminology used in this thesis to that in our
+\Coq{} formalization (under the column \UniMath{}) and that of the \Agda{} development
+of \cite{wellfounded-trees} (under the column \MTypes{}).
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{c | c | c }
+    This thesis & \UniMath{} & \MTypes{} \\ \hline
+  \end{tabular}
+\end{table}
 % \chapter{The Second Appendix, for Fun}
 
 \backmatter % backmatter makes the index and bibliography appear properly in the TOC

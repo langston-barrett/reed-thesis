@@ -1,7 +1,9 @@
 % \DeclareMathOperator{\refl}{\mathtt{refl}}
 % \DeclareMathOperator{\ind}{\mathtt{ind}}
 
-\newcommand{\fun}[2]{\lambda #1.#2}
+% one with more spacing. ideally, this would auto-adapt to surroundings
+\renewcommand{\:}{\hspace{0.3ex}:\hspace{0.3ex}}
+\newcommand{\lam}[2]{\lambda #1.#2}
 
 % some of this is based on HoTT/HoTT
 
@@ -13,6 +15,13 @@
 \newcommand{\bfalse}{0_{\booltype}}                % inhabitant of two element type
 \newcommand{\inl}{\ensuremath{\mathsf{inl}}}
 \newcommand{\inr}{\ensuremath{\mathsf{inr}}}
+\newcommand{\universe}{\ensuremath{\mathcal{U}}}         % universe type
+\newcommand{\universei}[1]{\ensuremath{\mathcal{U}_{#1}}}  % ith universe
+
+\newcommand{\sigmat}[2]{\ensuremath{\sum_{\paren{#1}}#2}}    % Σ-type
+\newcommand{\pr}[1]{\ensuremath{\mathsf{pr}_{#1}}}
+\newcommand{\pit}[2]{\ensuremath{\prod_{\paren{#1}}#2}}      % Π-type
+\newcommand{\refl}[1]{\ensuremath{\mathsf{refl}_{#1}}}      % reflexivity
 
 %%% Natural numbers
 \newcommand{\suc}{\mathsf{succ}}
@@ -26,3 +35,28 @@
 %%% Function extensionality
 \newcommand{\funext}{\mathsf{funext}}
 \newcommand{\happly}{\mathsf{happly}}
+
+\newcommand{\isContr}{\ensuremath{\mathsf{isContr}}}
+
+%%% Relations
+\newcommand{\jdeq}{\equiv}
+\newcommand{\defeq}{\vcentcolon\jdeq}
+\newcommand{\propeq}[3]{#2 =_{#1} #3}
+\newcommand{\weq}[2]{#1 \simeq #2}
+\newcommand{\homot}[2]{#1 \sim #2}
+
+\newcommand{\apspace}{\hspace{0.3em}}
+\newcommand{\apply}[2]{#1\apspace #2} % apply a function to its argument
+\newcommand{\appply}[3]{#1\apspace #2 \apspace #3}
+\newcommand{\appr}[2]{\apply{\pr{#1}}{#2}} % a combination of apply and pr
+
+\newcommand{\ap}[2]{\mathsf{ap}_{#1}{\paren{#2}}} % action on paths
+\newcommand{\ua}{\mathsf{ua}} % univalence axiom
+
+%%% Transport (covariant) %%%
+% \newcommand{\trans}[2]{\ensuremath{{#1}_{*}\mathopen{}\left({#2}\right)\mathclose{}}\xspace}
+% \let\Trans\trans
+% \newcommand{\transf}[1]{\ensuremath{{#1}_{*}}\xspace} % Without argument
+\newcommand{\transpor}[2]{\ensuremath{\mathsf{transport}^{#1}\paren{#2}}}
+\newcommand{\transport}[3]{\ensuremath{\mathsf{transport}^{#1}\paren{#2,#3}}}
+\newcommand{\transportname}{\ensuremath{\mathsf{transport}}}
