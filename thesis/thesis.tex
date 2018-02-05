@@ -925,6 +925,81 @@ on category theory in univalent type theory \cite{book} \cite{unimath}
 \end{definition}
 
 Fix a signature $S\defeq (A,B)$ and let $P$ be the associated polynomial functor.
+We will prove a few auxiliary lemmas on the way to the following result.
+This proof appeared in the \Agda{} formalization of \cite{non-wellfounded}, this
+is its first appearance ``de-formalized''.
+
+\begin{lemma}\label{lemma:final-colagebra-unique}
+  Any two final $P$-coalgebras are equal. In other words, the following type is
+  a proposition:
+  \begin{equation*}
+    \Final(S)\defeq
+    \sigmat{(X,\alpha):\Coalgtype(S)}{
+      \pit{(Y,\beta):\Coalgtype(S)}{\isContr((Y,\beta)\Rightarrow (X,\alpha))}
+    }
+  \end{equation*}
+\end{lemma}
+
+First, we'll show that their carriers are equivalent:
+
+\begin{lemma}\label{lemma:algebra-iso-equiv}
+	If $(X,\alpha)$ and $(Y,\beta)$ are final $P$-coalgebras,
+  then the first projections of the unique coalgebra morphisms
+  $f:X\Rightarrow Y$ and $g:Y\Rightarrow X$ induce
+  an equivalence of types $\weq{X}{Y}$.
+\end{lemma}
+\begin{proof}
+  This proof is a standard categorical technique, much reminiscent of
+  \cref{lemma:terminal-unique}.
+	\TODO{proof}
+\end{proof}
+
+We can then invoke the characterization of paths in $\Sigma$-types,
+\cref{lemma:path-sigma}. We'll need to demonstrate that the coalgebra map
+$\alpha:X\to FX$ is equal to $\beta:Y\to FY$ when transported along the path
+constructed in \cref{lemma:algebra-iso-equiv}.
+
+\begin{lemma}\label{lemma:polynomial-functor-transport}
+  For all $X,Y:\universe$, $F:\universe\to\universe$,
+  $f:X\to FX$, $g:Y\to FY$, and $p:\propeq{}{X}{Y}$, 
+  if for all $x:X$ we have
+  \begin{equation*}
+    \propeq{}{
+      \transport{F}{p}{\apply{f}{x}}
+    }{
+      g({\transport{\id_{\universe}}{p}{x}})
+    }
+  \end{equation*}
+  then $\propeq{}{\transport{Z\mapsto (Z\to FZ)}{p}{f}}{g}$.
+  That is, $f$ is equal to $g$ after being transported just when
+  applying $f$ and transporting the result is the same as transporting the 
+  input and applying $g$.
+\end{lemma}
+\begin{proof}
+  Using identity elimination (\cref{rule:id-elim}), it suffices to assume
+  $X\jdeq Y$ and $p\jdeq\refl{X}$. Then by the definition of transport
+  (\cref{lemma:transport}), our hypothesis becomes
+  \begin{align*}
+    &\propeq{}{
+      \transport{F}{p}{\apply{f}{x}}
+    }{
+      g({\transport{\id_{\universe}}{p}{x}})
+    } \\
+    &\implies
+    \propeq{}{
+      \transport{F}{\refl{X}}{\apply{f}{x}}
+    }{
+      g({\transport{\id_{\universe}}{\refl{X}}{x}})
+    } \\
+    &\implies
+    \propeq{}{\apply{f}{x}}{\apply{g}{x}}
+  \end{align*}
+  so by function extensionality $f=g$. Again by definition of transport,
+  $\transport{Z\mapsto (Z\to FZ)}{\refl{X}}{f} \jdeq f=g$.
+\end{proof}
+
+To complete the proof that the transported coalgebra maps are equal, we'll need
+the following auxiliary result:
 
 \begin{lemma}\label{lemma:polynomial-functor-transport}
   For all $X,Y:\universe$ and $p:\propeq{}{X}{Y}$, 
@@ -935,6 +1010,8 @@ Fix a signature $S\defeq (A,B)$ and let $P$ be the associated polynomial functor
       \transpor{P}{p}
     }
   \end{equation*}
+  Note that $P^*$ is applied to the function $\transpor{\id_{\universe}}{p}$
+  before it gets applied to its second argument.
 \end{lemma}
 \begin{proof}
   Note that we're using \cref{notation:transport}. By the elimination rule for
@@ -943,7 +1020,7 @@ Fix a signature $S\defeq (A,B)$ and let $P$ be the associated polynomial functor
   \begin{align*}
     P^*\paren*{\transpor{\id_{\universe}}{p}}
     &\jdeq P^*\paren*{\transpor{\id_{\universe}}{\refl{X}}}
-    &&\quad\text{Identity elimination} \\
+    &&\quad\text{Identity elim.} \\
     &\jdeq P^*\paren{\id_X}
     &&\quad\text{\Cref{lemma:transport}} \\
     &\jdeq \lam{(a,f)}{(a,f\circ \id_X)}
@@ -958,36 +1035,11 @@ Fix a signature $S\defeq (A,B)$ and let $P$ be the associated polynomial functor
     &\jdeq \transpor{P}{\refl{X}}
     &&\quad\text{\Cref{lemma:transport-compose}} \\
     &\jdeq \transpor{P}{p}
-    &&\quad\text{Identity elimination}
+    &&\quad\text{Identity elim.}
   \end{align*}
 \end{proof}
 
-\begin{lemma}\label{lemma:algebra-iso-equiv}
-	If $(X,\alpha)$ and $(Y,\beta)$ are final $P$-coalgebras,
-  then the first projections of the unique coalgebra morphisms
-  $f:X\Rightarrow Y$ and $g:Y\Rightarrow X$ induce
-  an equivalence of types $\weq{X}{Y}$.
-\end{lemma}
-\begin{proof}
-  This proof is a standard categorical technique, much reminiscent of
-  \cref{lemma:terminal-unique}.
-	\TODO{proof}
-\end{proof}
-
-This proof appeared in the \Agda{} formalization of\cite{non-wellfounded},
-this is its first appearance ``de-formalized''.
-
-\begin{lemma}\label{lemma:final-colagebra-unique}
-  Any two final $P$-coalgebras are equal. In other words, the following type is
-  a proposition:
-  \begin{equation*}
-    \Final(S)\defeq
-    \sigmat{(X,\alpha):\Coalgtype(S)}{
-      \pit{(Y,\beta):\Coalgtype(S)}{\isContr((Y,\beta)\Rightarrow (X,\alpha))}
-    }
-  \end{equation*}
-\end{lemma}
-\begin{proof}
+\begin{proof}[Proof of \cref{lemma:final-colagebra-unique}]
   Let:
   \begin{itemize}
     \itemsep0em
@@ -1007,15 +1059,21 @@ this is its first appearance ``de-formalized''.
   characterization of paths in $\Sigma$-types, \cref{lemma:path-sigma}. It
   remains to show
   \begin{equation*}
-    \propeq{(Y\to PY)}{\transport{Z\mapsto PZ}{\apply{\ua}{q}}{\alpha}}{\beta}.
+    \propeq{(Y\to PY)}{\transport{Z\mapsto (Z\to PZ)}{\apply{\ua}{q}}{\alpha}}{\beta}.
   \end{equation*}
-  By function extensionality (\cref{thm:funext}), it suffices
-  to show that they are homotopic, that is, propositionally equal on all inputs. 
-
+  but by \cref{lemma:polynomial-functor-transport}, it suffices to show that
+  for all $x:X$,
+  \begin{equation*}
+    \propeq{}{
+      \transport{P}{\apply{\ua}{q}}{\apply{\alpha}{x}}
+    }{
+      \beta(\transport{\id_\universe}{p}{x})
+    }.
+  \end{equation*}
   % Lemma 2 in HoTT/M-types
   First, note that
   \begin{align*}
-    \transpor{P}{p}
+    \transpor{P}{\apply{\ua}{q}}
     &= P^*\paren{\transpor{\id_{\universe}}{\apply{\ua}{q}}}
     &&\quad\text{\Cref{lemma:polynomial-functor-transport}} \\
     &= P^*q
@@ -1023,10 +1081,60 @@ this is its first appearance ``de-formalized''.
     &= P^*(\appr{1}{f})
     &&\quad\text{\Cref{lemma:algebra-iso-equiv}}
   \end{align*}
-  Note that the last step utilizes the idea of \textit{proof-relevant
-    mathematics}. Although we define $q$ within a proof, we can (consistently,
-  without cheating) refer to its definition from another proof. Also note the
-  use of \cref{notation:weq-coerce}.
+  The last step utilizes the idea of \textit{proof-relevant
+    mathematics}. Although we define $q$ within a proof, we can (without
+  cheating) refer to its definition from another proof. Also note the
+  use of \cref{notation:weq-coerce}. Working from the other side of the
+  equation, we can use the computational rule of univalence (\cref{def:ua}):
+  \begin{align*}
+    \beta(\transport{\id_\universe}{\apply{\ua}{q}}{x})
+    = \beta(\apply{q}{x})
+    = \beta({\appr{1}{f}}{x})
+  \end{align*}
+  Thus, we now want to demonstrate that
+  \begin{align*}
+    P^*(\appr{1}{f})(\alpha x) &=
+    \transport{P}{\apply{\ua}{q}}{\apply{\alpha}{x}} \\
+    &= \beta(\transport{\id_\universe}{p}{x}) \\
+    &= \beta({\appr{1}{f}}{x})
+  \end{align*}
+  However, this is exactly the condition that $f$ is a $P$-coalgebra morphism:
+  \TODO{reference definition}
+  \begin{center}
+    \begin{tikzcd}[column sep=large]
+      X  \arrow[d, "\alpha"] \arrow[r, "\appr{1}{f}"] & Y \arrow[d, "\beta"] \\
+      FX \arrow[r, "P^*(\appr{1}{f})"] & FY
+    \end{tikzcd}
+  \end{center}
+\end{proof}
+
+\begin{definition}\label{def:limitt}
+	Given a family of types $X:\N\to\universe$ and a family of functions
+  $\pi_n:X_{n+1}\to X_n$, the \define{limit} of $(X,\pi)$ is the type
+  \begin{equation*}
+    L(X,\pi)\defeq \sigmat{x:\pit{n:\N}{X_n}}{\pit{n:\N}\pi_nx_{n+1}=x_n}
+  \end{equation*}
+  We give special names to the projection maps for limits: $p \defeq \pr{1}$ and
+  $\beta \defeq \pr{2}$.
+\end{definition}
+
+\begin{lemma}\label{lemma:limitt-universal}
+	There is an equivalence of types
+  \begin{equation*}
+    \weq{(A\to L(X,\pi))}{
+      \sigmat{f:\pit{n:\N}A\to X_n}{\pit{n:\N}{\pi_n\circ f_{n+1}=f_n}}
+    }
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+	To give an equivalence, it suffices to give functions back and forth that
+  compose to the respective identities.\TODO{reference definition}
+  First, define
+  \begin{align*}
+    \phi &:(A\to L(X,\pi)) \to \sigmat{f:\pit{n:\N}A\to X_n}{\pit{n:\N}{\pi_n\circ f_{n+1}=f_n}} \\
+    \phi(g) &\defeq (\lam{n}\lam{a}p(\apply{g}{a}, n) , )
+  \end{align*}
+
 \end{proof}
 
 \section{W and M}
