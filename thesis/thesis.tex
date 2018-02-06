@@ -28,10 +28,11 @@
 \input{../tex-preamble/problems.tex}
 \input{../tex-preamble/hott.tex}
 \newcommand{\abbreviation}[1]{\textbf{#1}\indeX{#1@\textbf{#1}}} % abbreviations
-% Judgements
+% Judgments
 \newcommand{\prop}{\hspace{0.4em}\text{prop}}
 \newcommand{\type}{\hspace{0.4em}\text{type}}
 \newcommand{\true}{\hspace{0.4em}\text{true}}
+
 \usepackage{makeidx}
 \usepackage{prftree}
 \usepackage{tikz}
@@ -101,7 +102,9 @@
     \textbf{HoTT}  	&  Homotopy type theory \\
     \textbf{UTT}  	&  Univalent type theory \\
     \textbf{ITT}  	&  Intensional type theory \\
-    \textbf{FOL}  	&  First-order logic (Gentzen's natural deduction) \\
+    \textbf{FOL}  	&  Classical first-order logic \\
+    \textbf{IFOL}  	&  First-order logic (Gentzen's natural deduction) \\
+    \textbf{LC}  	  &  Church's untyped $\lambda$-calculus
   \end{tabular}
 \end{table}
 	
@@ -204,12 +207,243 @@ than \abbreviation{FOL} to find disagreements.
 (Co)inductive types and UniMath
 
 \chapter{Propositions and Types}
-\label{chap:propositions-and-types}
+\label[chapter]{chap:propositions-and-types}
 
-\section{Natural deduction}
+In this chapter, we will present several logical
+and computational frameworks of increasing complexity.
+We will begin with general remarks on discussing and defining formal systems in
+\cref{sec:discussing-logic}. \Cref{sec:natural-deduction} begins with an
+intuitionistic version of Gentzen's natural deduction
+\cite{gentzen1935untersuchungen} that we will call \abbreviation{IFOL}. As most
+mathematicians, computer scientists, and philosophers are quite familiar with
+some version of first-order logic, this section will focus on the introduction
+of notation and meta-logical concerns. In \cref{sec:the-lambda-calculus}, we
+will introduce Church's $\lambda$-calculus (typed and untyped). Finally, in
+\cref{sec:the-curry-howard-correspondence}, we will discuss the fundamental and
+harmonious relation between these systems known as the Curry-Howard
+correspondence.
+
+\section{Discussing logic}
+\label{sec:discussing-logic}
+
+The observant student of logic may notice a problem in the usual definition of
+implication: one usually defines $P\implies Q$ as ``if whenever $P$ is true,
+$Q$ is true, then $P\implies Q$ is true''. It seems that in order to understand
+implication, one must first understand implication! More perniciously,
+philosophers and mathematicians alike have argued that Skolem's
+``paradox''\footnote{The L\"owenheim-Skolem theorem states that
+  \abbreviation{ZFC} has a countable model. The paradox is that the statement
+  ``there are uncountable sets'' is (famously) a theorem of \abbreviation{ZFC},
+  Cantor's.} has deep and significant consequences \cite{skolem}. These
+misunderstandings both arise from a common root: the failure to distinguish
+between object language and metalanguage. In this section, we will attempt to
+mitigate some of the difficulties that arise when discussing and defining formal
+systems for logic and computation.
+
+\begin{definition}\label[definition]{def:object-meta-language}
+  When discussing or defining a formal language (most commonly, a
+  logico-deductive framework), we call that language the
+  \define{object language}\index{object language}. Our discussion takes place in
+  a \define{metalanguage}.
+\end{definition}
+
+\begin{example}
+  \
+  \begin{itemize}
+    \itemsep0em
+    \item In the statement ``\abbreviation{FOL} is complete, \abbreviation{FOL}
+      is the object language, and the metalanguage is English.
+    \item G\"odel's second incompleteness theorem is a statement in the
+      metalanguage of \abbreviation{FOL}+\abbreviation{ZFC}, about the object
+      language of Peano arithmetic.
+  \end{itemize}
+\end{example}
+
+\begin{definition}\label[definition]{def:metavariable}
+	A \define{metavariable}\index{Metavariable} is a variable meant to stand for
+  any well-formed expression of our object language.
+\end{definition}
+
+\begin{notation}
+  In imitation of various proof assistants, we will prefix metavariables with
+  question mark, e.g.\ $?a$.
+\end{notation}
+
+We will discuss metavariables and see many examples in the next section. 
+We will follow Martin-L\"of in defining our object languages in terms of
+judgments \cite{martin-lof-meanings}.
+
+\begin{definition}\label[definition]{def:judgment}
+	A \define{judgment}\index{Judgment} is something that may be known. A judgment
+  is \define{evident} if one does, in fact, know it.
+  A \define{hypothetical judgment}\index{Judgment!Hypothetical} is one that
+  holds under the assumption that some other judgments hold.
+\end{definition}
+
+\begin{example}
+  Judgment is inherently a meta-theoretical notion.
+	We can (and will) make the following kinds of judgments:
+  \begin{itemize}
+    \itemsep0em
+    \item $P$ is a well-formed formula 
+    \item if $P$ and $Q$ are well-formed formulae, then $P\land Q$ is a
+      well-formed formula (this judgment is hypothetical)
+    \item $P$ is true
+    \item the variable $x$ is free (resp.\ bound) in $P$ 
+  \end{itemize}
+  If one is working in a formal metalanguage, judgments may be defined
+  inductively in it.
+\end{example}
+
+\begin{notation}\label[notation]{notation:proof-tree}
+  The premises and conclusions of proofs or rules of deduction are always
+  judgments. If we can deduce a conclusion $B$ from premises $A_1,\ldots,A_n$
+  via some rule R (again: $A_1,\ldots,A_n$ and $B$ are judgments, not terms of
+  an object language), we will write
+  \begin{displaymath}
+    \prftree[r]{\footnotesize R}
+      {A_1}{A_2}{\ldots}{A_n}
+      {B}
+  \end{displaymath}
+  In this way, we can write proofs as wellfounded trees with the conclusion as
+  their root.
+\end{notation}
+
+\begin{notation}\label[notation]{notation:sequent}
+  If $B$ is a hypothetical judgment holding under assumptions $A_1,\ldots,A_n$,
+  we denote this by $A_1,\ldots,A_n\vdash B$ (this is called Gentzen's
+  \define{sequent notation}, $\vdash$ can be read ``entails''). A hypothetical
+  judgment of this form is distinguished from the deduction of $B$ from premises
+  $A_1,\ldots,A_n$ (shown in \cref{notation:proof-tree}).
+
+  To denote some arbitrary set of hypotheses, we will use capital Greek letters
+  $\Gamma$ and $\Theta$. Our notions of entailment will always allow for
+  \define{reflexivity} and \define{weakening}, which are the following
+  meta-rules (where $J$ and $K$ stand for judgments):
+  \begin{align*}
+    \prftree[r]{}{}
+      {J\vdash J}
+    &&
+    \prftree[r]{}
+      {\Gamma\vdash J}
+      {\Gamma,K\vdash J}
+  \end{align*}
+  When something is derivable under no (and so by weakening, any) hypotheses, we
+  may leave off the $\vdash$. 
+\end{notation}
+
+\begin{notation}
+  We denote the substitution of a term $t$ for all free occurrences variable $v$
+  in an expression $e$ by $e[v\coloneqq t]$. We will not deal directly with the
+  issues of variable capture, scoping, and substitution here, for a rigorous
+  treatment see any thorough textbook on logic.
+\end{notation}
+
+\section{Intuitionistic natural deduction}
 \label{sec:natural-deduction}
 
-Formal systems, proof trees
+With these notations, we can quickly and uniformly define \abbreviation{IFOL}. 
+Let $v,w,\ldots$ denote a countable set of
+\define{variables}\index{Variable!In \abbreviation{IFOL}}. The first judgment of
+natural deduction is that some term $?a$ represents a proposition (more
+narrowly, is a well-formed formula). We will denote this $?a\prop$.
+
+The following are the \define{formation rules}\index{Formation!In
+\abbreviation{IFOL}}, they tell us what counts as a well-formed
+formula:\footnote{For the less logically-versed reader:
+  $\top$ is read ``true'', $\bot$ is read ``false'',
+  $\lnot$ is read ``not'', $\lor$ is read ``or'',
+  $\land$ is read ``and'', $\implies$ is read ``implies'', $\forall$ is read
+  ``for all'', and $\exists$ is read ``there exists''.
+  The rules for deriving truth will justify these readings.}\addtolength{\jot}{1em}
+\begin{gather*}
+  \prftree[r]{}{}{\vdash\top\prop}
+  \qquad
+  \prftree[r]{}{}{\vdash\bot\prop}
+  \qquad
+  \prftree[r]{}
+    {?a\prop}
+    {\lnot ?a\prop} \\
+  \prftree[r]{}
+     {?a\prop}{?b\prop}
+     {?a\implies ?b\prop}
+  \qquad
+  \prftree[r]{}
+     {?a\prop}{?b\prop}
+     {?a\land ?b\prop}
+  \qquad
+  \prftree[r]{}
+     {?a\prop}{?b\prop}
+     {?a\lor ?b\prop} \\
+  \qquad
+  \prftree[r]{}
+     {?a\prop}{v\notin\FV(?a)}
+     {\forall v.?a}
+  \qquad
+  \prftree[r]{}
+     {?a\prop}{v\notin\FV(?a)}
+     {\exists v.?a}
+\end{gather*}
+The hypothesis $v\notin\FV(?a)$ involves another kind of judgment: that $v$ is
+not a free variable of $?a$. Intuitively, this just means that if $v$ appears at
+all in $?a$, it is already ``bound'' by appearing just after a $\forall$ or
+$\exists$. Again, we won't deal with such issues with much care here.
+
+Our final judgment is $?a\true$, and represents the truth of a formula.
+The following are the \define{introduction rules}\index{Introduction rules!In
+  \abbreviation{IFOL}}, they tell us how to prove formulae.
+\begin{gather*}
+  \prftree[r]{\footnotesize $\top$-intro}
+    {}
+    {\top\true}
+  \qquad
+  \prftree[r]{\footnotesize $\bot$-intro}
+    {?a\prop}{?a\true}{\lnot ?a\true}
+    {\bot\true} \\
+  \prftree[r]{\footnotesize $\lor$-intro-l}
+    {?a\prop}{?b\prop}{?a\true}
+    {?a\lor?b\true}
+  \qquad
+  \prftree[r]{\footnotesize $\lor$-intro-r}
+    {?a\prop}{?b\prop}{?b\true}
+    {?a\lor?b\true} \\
+  \prftree[r]{\footnotesize $\land$-intro}
+    {?a\prop}{?b\prop}{?a\true}{?b\true}
+    {?a\land?b\true} \\
+  \prftree[r]{\footnotesize $\Rightarrow$-intro}
+    {?a\prop}{?b\prop}{?a\true\vdash ?b\true}
+    {?a\implies?b\true} \\
+  \qquad
+  \prftree[r]{\footnotesize $\exists$-intro}
+    {?a\prop}{?a\true}{v\in\BV(a)}
+    {\exists w.?a[v\coloneqq w]}
+\end{gather*}
+Since the introduction rule for $\forall$ involves a complex hypothetical
+judgment, we leave it out here.
+
+% To define the rules for introducing quantifiers, we must deal with the issue of
+% free and bound variables. Our second judgment expresses that $v$ is a free variable
+% of $?a$, denoted $v\in\FV(?a)$. For the sake of brevity, metavariables in the
+% following are implicitly assumed to be propositions:
+% \begin{gather*}
+%   \prftree[r]{}
+%      {v\in \FV(?a)}
+%      {v\in \FV(?a\land ?b\prop)}
+%   \qquad
+%   \prftree[r]{}
+%      {v\in \FV(?b)}
+%      {v\in \FV(?a\land ?b\prop)} \\
+%   \prftree[r]{}
+%      {v\in \FV(?a)}
+%      {v\in \FV(?a\lor ?b\prop)}
+%   \qquad
+%   \prftree[r]{}
+%      {v\in \FV(?b)}
+%      {v\in \FV(?a\lor ?b\prop)}
+% \end{gather*}
+
+The second (and final) judgment in \abbreviation{IFOL} is that a sentence is
+true. 
 
 \section{The $\lambda$-calculus}
 \label{sec:the-lambda-calculus}
@@ -224,7 +458,7 @@ $\beta$-reduction
 \subsection{The simply-typed $\lambda$-calculus}
 \label{subsec:the-simply-typed-lambda-calculus}
 
-Two judgements
+Two judgments
 
 The strong normalization property
 
@@ -257,26 +491,26 @@ The strong normalization property
 \section{The identity type}
 \label{sec:the-identity-type}
 
-\begin{tt-rule}\label{rule:id-elim}
+\begin{tt-rule}\label[rule]{rule:id-elim}
   The rule of \define{identity elimination} (in the \abbreviation{HoTT}
   community, known as \define{path induction}) is as follows:\TODO{define id-elim}
 \end{tt-rule}
 
-\begin{lemma}[$\mathsf{ap}$]\label{lemma:ap}
+\begin{lemma}[$\mathsf{ap}$]\label[lemma]{lemma:ap}
 	\TODO{define ap}
 \end{lemma}
 
-\begin{lemma}[Transport]\label{lemma:transport}
+\begin{lemma}[Transport]\label[lemma]{lemma:transport}
 	\TODO{define transport}
 \end{lemma}
 
-\begin{notation}\label{notation:transport}
+\begin{notation}\label[notation]{notation:transport}
   We will often curry\index{Curry} \transportname. If we have a family
   $P:A\to\universe$ and a path $p:\propeq{A}{x}{y}$, we write $\transpor{P}{p}$
   for $\lam{x}\transport{P}{p}{x}$.
 \end{notation}
 
-\begin{lemma}\label{lemma:transport-compose}
+\begin{lemma}\label[lemma]{lemma:transport-compose}
 	For $f:A\to B$, $P:B\to\universe$, and $p:\propeq{A}{x}{y}$, 
   \begin{equation*}
     \propeq{}{
@@ -293,7 +527,7 @@ The strong normalization property
 Up to now, we have not considered the type of types. However, types are terms
 like any other, and every term has a type.
 
-\begin{definition}\label{def:universes}
+\begin{definition}\label[definition]{def:universes}
   All the types we have considered up to this point are members of a universe
   \universei{0}.
 \end{definition}
@@ -301,7 +535,7 @@ like any other, and every term has a type.
 We now have the power to write an \textit{single} identity function that works
 for \textit{all} types.
 
-\begin{definition}\label{def:id-polymorphic}
+\begin{definition}\label[definition]{def:id-polymorphic}
   The identity function is
 	\begin{align*}
     \id :\pit{A:\universe}{A\to A} &&
@@ -310,7 +544,7 @@ for \textit{all} types.
   We will write its first argument as a subscript, as in $\id_{A}$.
 \end{definition}
 
-\begin{lemma}[Paths in $\Sigma$-types]\label{lemma:path-sigma}
+\begin{lemma}[Paths in $\Sigma$-types]\label[lemma]{lemma:path-sigma}
 	If $x,y:\sigmat{a:A}{B(a)}$, then
   \begin{equation*}
     \weq{
@@ -396,7 +630,7 @@ constructive/intuitionistic logic of proof assistants: nothing else computes.
 \subsection{Weak equivalences}
 \label{subsec:weak-equivalences}
 
-\begin{notation}\label{notation:weq-coerce}
+\begin{notation}\label[notation]{notation:weq-coerce}
   We may treat a weak equivalence as if it were a function and apply it to an
   argument. This amounts to implicitly appling $\pr{1}$.
 \end{notation}
@@ -404,7 +638,7 @@ constructive/intuitionistic logic of proof assistants: nothing else computes.
 \subsection{The univalence axiom}
 \label{subsec:the-univalence-axiom}
 
-\begin{definition}\label{def:ua}
+\begin{definition}\label[definition]{def:ua}
   \TODO{definintion}
   It has the following computation rule:
 
@@ -413,7 +647,7 @@ constructive/intuitionistic logic of proof assistants: nothing else computes.
   no computational meaning. \TODO{mention CTT}
 \end{definition}
 
-\begin{theorem}[Function extensionality]\label{thm:funext}
+\begin{theorem}[Function extensionality]\label[theorem]{thm:funext}
 	Under the hypothesis of the univalence axiom, function extensionality holds,
   i.e.\ there is a term
   \begin{equation*}\label{eq:funext}
@@ -471,7 +705,7 @@ We will examine category theory within \abbreviation{UTT} in
   $f\in\Hom_{\bfC}(A,B)$. 
 \end{definition}
 
-\begin{definition}\label{def:domain-and-codomain}
+\begin{definition}\label[definition]{def:domain-and-codomain}
   If $f\in\Hom_{\bfC}(A,B)$, then $A$ is the \define{domain}\index{Domain} or
   \define{source}\index{Source} of $f$ and $B$ is the
   \define{codomain}\index{Codomain} or \define{target}\index{Target} of $f$.
@@ -499,7 +733,7 @@ We will examine category theory within \abbreviation{UTT} in
   \end{itemize}
 \end{example}
 
-\begin{definition}\label{def:isomorphism}
+\begin{definition}\label[definition]{def:isomorphism}
 	An \define{isomorphism}\index{Isomorphism!In a category} in $\bfC$ is an arrow
   $f\in\Hom_{\bfC}(A,B)$ such that there exists an arrow $g\in\Hom_{\bfC}(B,A)$
   such that $g\circ f=\id_A$ and $f\circ g=\id_B$. We call such a $g$ the
@@ -526,7 +760,7 @@ Just as with functions, inverses (should they exist) are unique.
   }
 \end{figure}
 
-\begin{definition}\label{def:commutative-diagram}
+\begin{definition}\label[definition]{def:commutative-diagram}
   A commutative diagram is a way to visualize equations between arrows
   involving composition. Technically a diagram in $\bfC$ is a directed graph
   with vertices labeled by $\Obj\bfC$. If $e$ is an edge from $A$ to $B$, then it
@@ -536,7 +770,7 @@ Just as with functions, inverses (should they exist) are unique.
   \TODO{better wording}
 \end{definition}
 
-\begin{example}\label{ex:commutative-diagram}
+\begin{example}\label[example]{ex:commutative-diagram}
 	If $f\in\Hom_{\bfC}(A,B)$, $g\in\Hom_{\bfC}(B,C)$, $h\in\Hom_{\bfC}(A,C)$,
   and $g\circ f=h$, then we may draw the following
   \define{commutative triangle}:
@@ -574,7 +808,7 @@ typeset like so:
 
 For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 
-\begin{definition}\label{def:terminal-and-initial}
+\begin{definition}\label[definition]{def:terminal-and-initial}
   \
   \vspace{-0.3em}\dual{
     A \define{terminal object}\index{Terminal object} is an
@@ -587,14 +821,14 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
   }
 \end{definition}
 
-\begin{remark}\label{remark:terminal-object-id-unique}
+\begin{remark}\label[remark]{remark:terminal-object-id-unique}
 	In particular, for a terminal object $\top$, $\id_\top$ is the only arrow
   $\top\to\top$.\footnote{As noted in \cref{sec:duality}, this statement
     holds for initial objects as well. From this point on, we will leave it
     to the reader to construct the dual of a statement and infer its truth.}
 \end{remark}
 
-\begin{lemma}\label{lemma:terminal-unique}
+\begin{lemma}\label[lemma]{lemma:terminal-unique}
   Terminal objects are unique up to\footnote{For the non-mathematical reader:
     When a mathematician says ``X is true up to $R$'' for some (equivalence)
     relation $R$, it means that all objects related by $R$ are considered
@@ -610,7 +844,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
   $g\circ f=\id_A$ and $f\circ g=\id_B$.
 \end{proof}
 
-\begin{definition}\label{def:product-and-coproduct}
+\begin{definition}\label[definition]{def:product-and-coproduct}
   Given two objects $A,B\in\Obj\bfC$,
   \vspace{-0.3em}\dual{
     a \define{product}\index{Product!In a category} of $A$ and $B$
@@ -653,7 +887,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \section{Functors and their algebras}
 \label{sec:functors-and-their-algebras}
 
-\begin{definition}\label{def:functor}
+\begin{definition}\label[definition]{def:functor}
 	A \define{functor}\index{Functor} $F$ between categories $\bfC$ and $\bfD$
   consists of the following data:
   \begin{itemize}
@@ -680,7 +914,7 @@ using the following notation:
   f    &\longmapsto_1 \ldots
 \end{align*}
 
-\begin{example}\label{ex:identity-functor-cat}
+\begin{example}\label[example]{ex:identity-functor-cat}
   For any category $\bfC$, there is an \define{identity
   functor}\index{Identity!Functor} $\id_{\bfC}\bfC\to\bfC$ which acts as the
   identity on objects and morphisms. The composition of functors is associative,
@@ -688,7 +922,7 @@ using the following notation:
   itself, for instance).
 \end{example}
 
-\begin{example}\label{ex:forget}
+\begin{example}\label[example]{ex:forget}
   For each category of algebraic objects where the morphisms are the
   corresponding type of homomorphism, there is a \define{forgetful functor},
   generally denoted $U$, which takes sets with some structure to their
@@ -696,7 +930,7 @@ using the following notation:
   instance, there is a forgetful functor $U:\Grp\to\Set$.
 \end{example}
 
-\begin{example}\label{example:coproduct-functoriality}
+\begin{example}\label[example]{ex:coproduct-functoriality}
 	If $\bfC$ has distinguished binary coproducts, then 
   for any fixed $A,B\in\Obj\bfC$, one can define the following
   functors:\footnote{Really, this is a consequence of the fact that $+$ is
@@ -732,12 +966,12 @@ Note however that it is possible that $FA=FB=FC$, as in a functor to a category
 with a single object. However, the equalties between composites still hold.
 One consequence is that functors preserve isomorphism.
 
-\begin{definition}\label{def:endofunctor}
+\begin{definition}\label[definition]{def:endofunctor}
 	An \define{endofunctor}\index{Functor!Endofunctor} is a functor with identical
   domain and codomain.
 \end{definition}
 
-\begin{definition}\label{def:f-coalgebra}
+\begin{definition}\label[definition]{def:f-coalgebra}
   \
   \vspace{-0.3em}\dual{
     An \define{algebra}\index{(Co)algebra for a functor} for an endofunctor
@@ -754,7 +988,7 @@ One consequence is that functors preserve isomorphism.
 For now, we will concentrate on properties of functor coalgebras, though all
 constructions in this section hold dually for algebras.
 
-\begin{definition}\label{def:coalgebra-morphism}
+\begin{definition}\label[definition]{def:coalgebra-morphism}
   A \define{coalgebra morphism}\index{(Co)algebra morphism} from
   $(A,\alpha)$ to $(B,\beta)$ is an arrow $f:A\to B$ such that the following
   diagram commutes:
@@ -784,7 +1018,7 @@ category, which we will call $F\Coalg$.\TODO{Proof?}
 The following example is crucial to
 \cref{chap:coinductive-types-in-univalent-type-theory}.
 
-\begin{example}
+\begin{example}\label[example]{ex:nat}
   Let $\bfC$ be a category with distinguished binary coproducts and a terminal
   object $1$. Consider the functor
   \begin{align*}
@@ -793,7 +1027,7 @@ The following example is crucial to
     f &\longmapsto_1 \id_1+f
   \end{align*}
   where 1 is a terminal object\index{Terminal object} and $+$ is the coproduct
-  bifunctor as in \ref{lemma:coproduct-functorality}. Let's examine
+  bifunctor as in \cref{ex:coproduct-functoriality}. Let's examine
   what it \textit{means} for some $F$-algebra $(N,\eta)$ to be initial. By
   composing with the coproduct\index{Coproduct!In category theory} injections,
   we can define
@@ -908,7 +1142,7 @@ on category theory in univalent type theory \cite{book} \cite{unimath}
   coalgebra morphisms from $(X,\alpha)$ to $(Y,\beta)$.
 \end{notation}
 
-\begin{definition}\label{def:polynomial-functor}
+\begin{definition}\label[definition]{def:polynomial-functor}
   Given a signature $S\defeq (A,B)$, its associated \define{polynomial functor}
   is the function
   \begin{gather*}
@@ -929,7 +1163,7 @@ We will prove a few auxiliary lemmas on the way to the following result.
 This proof appeared in the \Agda{} formalization of \cite{non-wellfounded}, this
 is its first appearance ``de-formalized''.
 
-\begin{lemma}\label{lemma:final-colagebra-unique}
+\begin{lemma}\label[lemma]{lemma:final-colagebra-unique}
   Any two final $P$-coalgebras are equal. In other words, the following type is
   a proposition:
   \begin{equation*}
@@ -942,7 +1176,7 @@ is its first appearance ``de-formalized''.
 
 First, we'll show that their carriers are equivalent:
 
-\begin{lemma}\label{lemma:algebra-iso-equiv}
+\begin{lemma}\label[lemma]{lemma:algebra-iso-equiv}
 	If $(X,\alpha)$ and $(Y,\beta)$ are final $P$-coalgebras,
   then the first projections of the unique coalgebra morphisms
   $f:X\Rightarrow Y$ and $g:Y\Rightarrow X$ induce
@@ -959,7 +1193,7 @@ We can then invoke the characterization of paths in $\Sigma$-types,
 $\alpha:X\to FX$ is equal to $\beta:Y\to FY$ when transported along the path
 constructed in \cref{lemma:algebra-iso-equiv}.
 
-\begin{lemma}\label{lemma:polynomial-functor-transport}
+\begin{lemma}\label[lemma]{lemma:polynomial-functor-transport}
   For all $X,Y:\universe$, $F:\universe\to\universe$,
   $f:X\to FX$, $g:Y\to FY$, and $p:\propeq{}{X}{Y}$, 
   if for all $x:X$ we have
@@ -1001,7 +1235,7 @@ constructed in \cref{lemma:algebra-iso-equiv}.
 To complete the proof that the transported coalgebra maps are equal, we'll need
 the following auxiliary result:
 
-\begin{lemma}\label{lemma:polynomial-functor-transport}
+\begin{lemma}\label[lemma]{lemma:polynomial-functor-transport}
   For all $X,Y:\universe$ and $p:\propeq{}{X}{Y}$, 
   \begin{equation*}
     \propeq{}{
@@ -1108,7 +1342,7 @@ the following auxiliary result:
   \end{center}
 \end{proof}
 
-\begin{definition}\label{def:limitt}
+\begin{definition}\label[definition]{def:limitt}
 	Given a family of types $X:\N\to\universe$ and a family of functions
   $\pi_n:X_{n+1}\to X_n$, the \define{limit} of $(X,\pi)$ is the type
   \begin{equation*}
@@ -1118,7 +1352,7 @@ the following auxiliary result:
   $\beta \defeq \pr{2}$.
 \end{definition}
 
-\begin{lemma}\label{lemma:limitt-universal}
+\begin{lemma}\label[lemma]{lemma:limitt-universal}
 	There is an equivalence of types
   \begin{equation*}
     \weq{(A\to L(X,\pi))}{
@@ -1130,11 +1364,38 @@ the following auxiliary result:
 	To give an equivalence, it suffices to give functions back and forth that
   compose to the respective identities.\TODO{reference definition}
   First, define
-  \begin{align*}
-    \phi &:(A\to L(X,\pi)) \to \sigmat{f:\pit{n:\N}A\to X_n}{\pit{n:\N}{\pi_n\circ f_{n+1}=f_n}} \\
-    \phi(g) &\defeq (\lam{n}\lam{a}p(\apply{g}{a}, n) , )
-  \end{align*}
+  \begin{gather*}
+    \phi :(A\to L(X,\pi)) \longrightarrow \sigmat{f:\pit{n:\N}A\to X_n}{\pit{n:\N}{\pi_n\circ f_{n+1}=f_n}} \\
+    \phi(g) \defeq
+    \dpair{\lam{n}\lam{a}\appply{p}{(\apply{g}{a})}{n}}
+          {\lam{n}\appply{\beta}{(\apply{g}{a})}{n})}
+  \intertext{and}
+    \psi : \paren*[\bigg]{\sigmat{f:\pit{n:\N}A\to X_n}{\pit{n:\N}{\pi_n\circ f_{n+1}=f_n}}}
+          \to A\to L(X,\pi) \\
+    \psi((f; h)) \defeq \lam{a:A} \dpair{\lam{n}\appply{f}{n}{a}}{h}
+  \end{gather*}
+  Their composites are judgmentally equal to the appropriate identities.
+  \TODO{should I include proof?}
+\end{proof}
 
+\begin{lemma}\label[lemma]{lemma:cochains}
+	If $X:\N\to\universe$ is a family of types, $\rho:\pit{n:\N}{X_n\to X_{n+1}}$ is a
+  family of functions, and
+  \begin{equation*}
+    Z\defeq \sigmat{x:\pit{n:\N}X_n}{\pit{n:\N}x_{n+1}=\rho_n(x_n)},
+  \end{equation*}
+  then $\weq{Z}{X_0}$, that is, limits of cochains are entirely determined by
+  the first element.
+\end{lemma}
+\begin{proof}
+  Consider again the functor of \cref{ex:nat}, specialized to the case of
+  $\bfC\defeq\universe$:
+  \begin{gather*}
+    G:\universe \longrightarrow \universe  \\
+    G(W) \defeq 1+W
+  \end{gather*}
+  A $G$-algebra is given by a type $W:\universe$, a point in $W$, and a function
+  $W\to W$.
 \end{proof}
 
 \section{W and M}
@@ -1166,7 +1427,7 @@ The following table lists lemmas taken from \cite{book}.
 
 The following table compares the terminology used in this thesis to that in our
 \Coq{} formalization (under the column \UniMath{}) and that of the \Agda{} development
-of \cite{wellfounded-trees} (under the column \MTypes{}).
+of \cite{non-wellfounded} (under the column \MTypes{}).
 \begin{table}[ht]
   \centering
   \begin{tabular}{c | c | c }
