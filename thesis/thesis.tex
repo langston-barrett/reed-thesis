@@ -26,15 +26,11 @@
 \input{../tex-preamble/general.tex}
 \input{../tex-preamble/amsthm.tex}
 \input{../tex-preamble/problems.tex}
+\input{../tex-preamble/logic.tex}
 \input{../tex-preamble/hott.tex}
 \newcommand{\abbreviation}[1]{\textbf{#1}\indeX{#1@\textbf{#1}}} % abbreviations
-% Judgments
-\newcommand{\prop}{\hspace{0.4em}\text{prop}}
-\newcommand{\type}{\hspace{0.4em}\text{type}}
-\newcommand{\true}{\hspace{0.4em}\text{true}}
-
 \usepackage{makeidx}
-\usepackage{prftree}
+\usepackage{prftree}\setlength{\prfinterspace}{1.2em}
 \usepackage{tikz}
 \usetikzlibrary{cd}
 \tikzcdset{
@@ -103,7 +99,7 @@
     \textbf{UTT}  	&  Univalent type theory \\
     \textbf{ITT}  	&  Intensional type theory \\
     \textbf{FOL}  	&  Classical first-order logic \\
-    \textbf{IFOL}  	&  First-order logic (Gentzen's natural deduction) \\
+    \textbf{IPL}  	&  Intuitionistic propositional logic \\
     \textbf{LC}  	  &  Church's untyped $\lambda$-calculus
   \end{tabular}
 \end{table}
@@ -214,7 +210,7 @@ and computational frameworks of increasing complexity.
 We will begin with general remarks on discussing and defining formal systems in
 \cref{sec:discussing-logic}. \Cref{sec:natural-deduction} begins with an
 intuitionistic version of Gentzen's natural deduction
-\cite{gentzen1935untersuchungen} that we will call \abbreviation{IFOL}. As most
+\cite{gentzen1935untersuchungen} that we will call \abbreviation{IPL}. As most
 mathematicians, computer scientists, and philosophers are quite familiar with
 some version of first-order logic, this section will focus on the introduction
 of notation and meta-logical concerns. In \cref{sec:the-lambda-calculus}, we
@@ -227,8 +223,8 @@ correspondence.
 \label{sec:discussing-logic}
 
 The observant student of logic may notice a problem in the usual definition of
-implication: one usually defines $P\implies Q$ as ``if whenever $P$ is true,
-$Q$ is true, then $P\implies Q$ is true''. It seems that in order to understand
+implication: one usually defines $P\Rightarrow Q$ as ``if whenever $P$ is true,
+$Q$ is true, then $P\Rightarrow Q$ is true''. It seems that in order to understand
 implication, one must first understand implication! More perniciously,
 philosophers and mathematicians alike have argued that Skolem's
 ``paradox''\footnote{The L\"owenheim-Skolem theorem states that
@@ -251,7 +247,7 @@ systems for logic and computation.
   \
   \begin{itemize}
     \itemsep0em
-    \item In the statement ``\abbreviation{FOL} is complete, \abbreviation{FOL}
+    \item In the statement ``\abbreviation{FOL} is complete'', \abbreviation{FOL}
       is the object language, and the metalanguage is English.
     \item G\"odel's second incompleteness theorem is a statement in the
       metalanguage of \abbreviation{FOL}+\abbreviation{ZFC}, about the object
@@ -266,30 +262,35 @@ systems for logic and computation.
 
 \begin{notation}
   In imitation of various proof assistants, we will prefix metavariables with
-  question mark, e.g.\ $?a$.
+  question mark, e.g.\ $\mvar{a}$.
 \end{notation}
 
 We will discuss metavariables and see many examples in the next section. 
 We will follow Martin-L\"of in defining our object languages in terms of
-judgments \cite{martin-lof-meanings}.
+judgments \cite{martin-lof-meanings}, and touch on some of the relevant meaning
+explanations \cite{martin-lof-constructive}. See \cite{modal-judgment} for a
+more through exposition of these concepts.
 
 \begin{definition}\label[definition]{def:judgment}
-	A \define{judgment}\index{Judgment} is something that may be known. A judgment
-  is \define{evident} if one does, in fact, know it.
+	A \define{judgment}\index{Judgment} is something that could be known. A
+  judgment is \define{evident} if one does, in fact, know it.
+  A \define{proof} evidence for a judgment.
   A \define{hypothetical judgment}\index{Judgment!Hypothetical} is one that
   holds under the assumption that some other judgments hold.
 \end{definition}
 
 \begin{example}
-  Judgment is inherently a meta-theoretical notion.
-	We can (and will) make the following kinds of judgments:
+  Here are some examples of common judgments in logic:
   \begin{itemize}
     \itemsep0em
-    \item $P$ is a well-formed formula 
-    \item if $P$ and $Q$ are well-formed formulae, then $P\land Q$ is a
-      well-formed formula (this judgment is hypothetical)
-    \item $P$ is true
-    \item the variable $x$ is free (resp.\ bound) in $P$ 
+    \item $\mvar{a}$ is a well-formed formula 
+    \item $\mvar{a}$ is a proposition
+    \item if $\mvar{a}$ and $\mvar{b}$ are propositions, then
+      $\mvar{a}\land \mvar{b}$ is a proposition (this judgment is hypothetical)
+    \item $\mvar{a}$ will happen in the future
+    \item $\mvar{a}$ is a program with type $\mvar{t}$
+    \item $\mvar{a}$ is true
+    \item the variable $\mvar{v}$ is free (resp.\ bound) in $\mvar{a}$ 
   \end{itemize}
   If one is working in a formal metalanguage, judgments may be defined
   inductively in it.
@@ -305,28 +306,36 @@ judgments \cite{martin-lof-meanings}.
       {A_1}{A_2}{\ldots}{A_n}
       {B}
   \end{displaymath}
-  In this way, we can write proofs as wellfounded trees with the conclusion as
-  their root.
+  Iterating this notation, we can write long derivations as wellfounded trees
+  with the conclusion as their root.
 \end{notation}
 
 \begin{notation}\label[notation]{notation:sequent}
   If $B$ is a hypothetical judgment holding under assumptions $A_1,\ldots,A_n$,
-  we denote this by $A_1,\ldots,A_n\vdash B$ (this is called Gentzen's
-  \define{sequent notation}, $\vdash$ can be read ``entails''). A hypothetical
+  we denote this by $A_1,\ldots,A_n\vdash B$.\footnote{This is called Gentzen's
+  \define{sequent notation}, $\vdash$ can be read ``entails''.} A hypothetical
   judgment of this form is distinguished from the deduction of $B$ from premises
   $A_1,\ldots,A_n$ (shown in \cref{notation:proof-tree}).
 
-  To denote some arbitrary set of hypotheses, we will use capital Greek letters
-  $\Gamma$ and $\Theta$. Our notions of entailment will always allow for
-  \define{reflexivity} and \define{weakening}, which are the following
-  meta-rules (where $J$ and $K$ stand for judgments):
+  To denote some arbitrary sequence of hypotheses, we will use capital Greek
+  letters $\Gamma$ and $\Theta$. Our notions of entailment will always allow for
+  \define{reflexivity}, \define{weakening}, and
+  \define{substitution},\footnote{Crucially, we won't
+    always allow for \define{interchange}, which allows one to reorder the
+    hypotheses. Weakening and exchange are two of the \define{structural rules} of
+    entailment.} which are the following meta-rules (where $J$ and $K$ stand for
+  judgments):
   \begin{align*}
     \prftree[r]{}{}
-      {J\vdash J}
+      {\Gamma,J,\Theta\vdash J}
     &&
     \prftree[r]{}
       {\Gamma\vdash J}
       {\Gamma,K\vdash J}
+    &&
+    \prftree[r]{}
+      {\Gamma,K,\Theta\vdash J}{\Gamma\vdash K}
+      {\Gamma,\Theta\vdash J}
   \end{align*}
   When something is derivable under no (and so by weakening, any) hypotheses, we
   may leave off the $\vdash$. 
@@ -339,111 +348,162 @@ judgments \cite{martin-lof-meanings}.
   treatment see any thorough textbook on logic.
 \end{notation}
 
-\section{Intuitionistic natural deduction}
+\section{Intuitionistic propositional logic}
 \label{sec:natural-deduction}
 
-With these notations, we can quickly and uniformly define \abbreviation{IFOL}. 
-Let $v,w,\ldots$ denote a countable set of
-\define{variables}\index{Variable!In \abbreviation{IFOL}}. The first judgment of
-natural deduction is that some term $?a$ represents a proposition (more
-narrowly, is a well-formed formula). We will denote this $?a\prop$.
-
-The following are the \define{formation rules}\index{Formation!In
-\abbreviation{IFOL}}, they tell us what counts as a well-formed
-formula:\footnote{For the less logically-versed reader:
-  $\top$ is read ``true'', $\bot$ is read ``false'',
+With these notations, we are prepared to define \abbreviation{IPL}. 
+The first judgment of natural deduction is that some term $\mvar{a}$ represents
+a proposition (for example, all well-formed formulae represent propositions). We
+will denote this $\prop{\mvar{a}}$. The following are the \define{formation
+rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
+  logically-versed reader: $\top$ is read ``true'', $\bot$ is read ``false'',
   $\lnot$ is read ``not'', $\lor$ is read ``or'',
-  $\land$ is read ``and'', $\implies$ is read ``implies'', $\forall$ is read
+  $\land$ is read ``and'', $\Rightarrow$ is read ``implies'', $\forall$ is read
   ``for all'', and $\exists$ is read ``there exists''.
-  The rules for deriving truth will justify these readings.}\addtolength{\jot}{1em}
+  The rules for deriving truth will justify these readings.}\newlength{\oldjot}\setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
 \begin{gather*}
-  \prftree[r]{}{}{\vdash\top\prop}
+  \prftree[r]{}{}{\prop{\top}}
   \qquad
-  \prftree[r]{}{}{\vdash\bot\prop}
-  \qquad
-  \prftree[r]{}
-    {?a\prop}
-    {\lnot ?a\prop} \\
-  \prftree[r]{}
-     {?a\prop}{?b\prop}
-     {?a\implies ?b\prop}
+  \prftree[r]{}{}{\prop{\bot}}
   \qquad
   \prftree[r]{}
-     {?a\prop}{?b\prop}
-     {?a\land ?b\prop}
+    {\prop{\mvar{a}}}
+    {\prop{\lnot \mvar{a}}} \\
+  \prftree[r]{}
+     {\prop{\mvar{a}}}{\prop{\mvar{b}}}
+     {\prop{\mvar{a}\Rightarrow \mvar{b}}}
   \qquad
   \prftree[r]{}
-     {?a\prop}{?b\prop}
-     {?a\lor ?b\prop} \\
+     {\prop{\mvar{a}}}{\prop{\mvar{b}}}
+     {\prop{\mvar{a}\land \mvar{b}}}
   \qquad
   \prftree[r]{}
-     {?a\prop}{v\notin\FV(?a)}
-     {\forall v.?a}
-  \qquad
-  \prftree[r]{}
-     {?a\prop}{v\notin\FV(?a)}
-     {\exists v.?a}
-\end{gather*}
-The hypothesis $v\notin\FV(?a)$ involves another kind of judgment: that $v$ is
-not a free variable of $?a$. Intuitively, this just means that if $v$ appears at
-all in $?a$, it is already ``bound'' by appearing just after a $\forall$ or
-$\exists$. Again, we won't deal with such issues with much care here.
+     {\prop{\mvar{a}}}{\prop{\mvar{b}}}
+     {\prop{\mvar{a}\lor \mvar{b}}} \\
+  % \prftree[r]{}
+  %    {\mvar{a}\prop}{v\notin\FV(\mvar{a})}
+  %    {\forall v.\mvar{a}}
+  % \qquad
+  % \prftree[r]{}
+  %    {\mvar{a}\prop}{v\notin\FV(\mvar{a})}
+  %    {\exists v.\mvar{a}}
+\end{gather*}\setlength{\jot}{\oldjot}
+% The hypothesis $v\notin\FV(\mvar{a})$ involves another kind of judgment: that $v$ is
+% not a free variable of $\mvar{a}$. Intuitively, this just means that if $v$ appears at
+% all in $\mvar{a}$, it is already ``bound'' by appearing just after a $\forall$ or
+% $\exists$. Again, we won't deal with such issues with much care here.
 
-Our final judgment is $?a\true$, and represents the truth of a formula.
-The following are the \define{introduction rules}\index{Introduction rules!In
-  \abbreviation{IFOL}}, they tell us how to prove formulae.
-\begin{gather*}
-  \prftree[r]{\footnotesize $\top$-intro}
-    {}
-    {\top\true}
-  \qquad
-  \prftree[r]{\footnotesize $\bot$-intro}
-    {?a\prop}{?a\true}{\lnot ?a\true}
-    {\bot\true} \\
-  \prftree[r]{\footnotesize $\lor$-intro-l}
-    {?a\prop}{?b\prop}{?a\true}
-    {?a\lor?b\true}
-  \qquad
-  \prftree[r]{\footnotesize $\lor$-intro-r}
-    {?a\prop}{?b\prop}{?b\true}
-    {?a\lor?b\true} \\
-  \prftree[r]{\footnotesize $\land$-intro}
-    {?a\prop}{?b\prop}{?a\true}{?b\true}
-    {?a\land?b\true} \\
-  \prftree[r]{\footnotesize $\Rightarrow$-intro}
-    {?a\prop}{?b\prop}{?a\true\vdash ?b\true}
-    {?a\implies?b\true} \\
-  \qquad
-  \prftree[r]{\footnotesize $\exists$-intro}
-    {?a\prop}{?a\true}{v\in\BV(a)}
-    {\exists w.?a[v\coloneqq w]}
-\end{gather*}
-Since the introduction rule for $\forall$ involves a complex hypothetical
-judgment, we leave it out here.
+Martin-L\"of said ``The meaning of a proposition is determined by [...] what
+counts as a verification of it'' \cite{martin-lof-meanings}. Paraphrasing,
+he follows the constructivist view and identifies (as we will identify) the
+\textit{truth} of a proposition with having a \textit{proof} of it. Thus, to
+understand the meanings of the above judgments, we must define the judgment
+``$\mvar{p}:\mvar{a}$'', read ``$\mvar{p}$ is a proof of $\mvar{a}$''. The
+ways of proving a proposition are called \define{introduction rules}.
+
+The symbol $\top$ represents the trivially true proposition. Accordingly, we
+give it a trivial proof (with a weird name which will make sense later):
+\begin{equation*}
+  \prftree[r]{}{}{\unitelem:\top}.
+\end{equation*}
+How do we know a conjunction? Intuitively, we know (have a proof of) $\mvar{a}$
+and $\mvar{b}$ (written $\mvar{a}\land\mvar{b}$) just when we know (have a proof
+of) both $\mvar{a}$ and $\mvar{b}$. In symbols,
+\begin{equation*}
+  \prftree[r]{}
+     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
+     {\intro{\land}(\mvar{p},\mvar{q}):\mvar{a}\land\mvar{b}}.
+\end{equation*}
+What about disjunction? There are two ways to know $\mvar{a}$ or
+$\mvar{b}$ (written $\mvar{a}\lor\mvar{b}$). We can either know $\mvar{a}$ or
+know $\mvar{b}$. Correspondingly, we have two introduction rules:
+\begin{align*}
+  \prftree[r]{}
+     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}}
+     {\introl{\lor}(\mvar{p}):\mvar{a}\lor\mvar{b}}
+  &&\text{and}&&
+  \prftree[r]{}
+     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{b}}
+     {\intror{\lor}(\mvar{p}):\mvar{a}\lor\mvar{b}}.
+\end{align*}
+The symbol $\bot$ represents falsehood. We say a logic is
+\define{consistent}\index{Consistency} if it cannot prove falsehood (a highly
+desirable property!). We can only derive falsehood from a contradiction:
+\begin{equation*}
+  \prftree[r]{}
+    {\prop{\mvar{a}}}{\mvar{p}:\mvar{a}}{\mvar{q}:\lnot\mvar{a}}
+    {\intro{\bot}(\mvar{p},\mvar{q}):\bot}.
+\end{equation*}
+What does it mean to know a negation? We'll define
+$\lnot\mvar{a}\defeq \mvar{a}\Rightarrow\bot$ and instead worry about how to prove
+implication. When do we know $\mvar{a}\Rightarrow\mvar{b}$? An implication is
+true just when we have a hypothetical judgment where the hypothesis is the
+antecedent and the conclusion is the consequent. Implication allows us to
+\textit{internalize} the meta-theoretical notion of hypothetical judgments by
+turning them into non-hypothetical ones:
+\begin{equation*}
+  \prftree[r]{}
+     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}\vdash \mvar{q}:\mvar{b}}
+     {\vdash\intro{(\Rightarrow)}(\mvar{p},\mvar{q}):\mvar{a}\Rightarrow\mvar{b}}.
+\end{equation*}
+
+\begin{definition}\label[definition]{def:valid-theorem}
+  If know that under no hypotheses $\mvar{a}$ is a proposition and has a proof,
+  then we may judge that $\mvar{a}$ is \define{valid}:
+  \begin{equation*}
+    \prftree[r]{}
+      {\vdash\prop{\mvar{a}}}{\vdash\mvar{p}:\mvar{a}}
+      {\valid{\mvar{a}}}.
+  \end{equation*}
+  In this case, we say that $\mvar{a}$ is a \define{theorem} of \abbreviation{IPL}.
+\end{definition}
+
+Finally, we need to know how to use our knowledge of a proposition in a
+derivation; we need \define{elimination rules}. These should be dual to our
+introduction rules: we should be able to extract the same amount of information
+from a proposition that went into its proof.
+
+For conjunction, we should be able to recover proofs of both conjuncts:
+\begin{align*}
+  \prftree[r]{}
+     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}\land\mvar{b}}
+     {\eliml{\land}(p):\mvar{a}},
+  &&
+  \prftree[r]{}
+     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}\land\mvar{b}}
+     {\elimr{\land}(p):\mvar{a}}.
+\end{align*}
+If both disjuncts imply a hypothesis, so does their disjunction:
+\begin{align*}
+  \prftree[r]{}
+    {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\prop{\mvar{c}}}
+    {\mvar{p}:\mvar{a}\Rightarrow \mvar{c}}
+    {\mvar{q}:\mvar{b}\Rightarrow \mvar{c}}
+    {\mvar{r}:\mvar{a}\lor\mvar{c}}
+    {\elim{\lor}(p,q,r):\mvar{c}},
+\end{align*}
+
 
 % To define the rules for introducing quantifiers, we must deal with the issue of
 % free and bound variables. Our second judgment expresses that $v$ is a free variable
-% of $?a$, denoted $v\in\FV(?a)$. For the sake of brevity, metavariables in the
+% of $\mvar{a}$, denoted $v\in\FV(\mvar{a})$. For the sake of brevity, metavariables in the
 % following are implicitly assumed to be propositions:
 % \begin{gather*}
 %   \prftree[r]{}
-%      {v\in \FV(?a)}
-%      {v\in \FV(?a\land ?b\prop)}
+%      {v\in \FV(\mvar{a})}
+%      {v\in \FV(\mvar{a}\land \mvar{b}\prop)}
 %   \qquad
 %   \prftree[r]{}
-%      {v\in \FV(?b)}
-%      {v\in \FV(?a\land ?b\prop)} \\
+%      {v\in \FV(\mvar{b})}
+%      {v\in \FV(\mvar{a}\land \mvar{b}\prop)} \\
 %   \prftree[r]{}
-%      {v\in \FV(?a)}
-%      {v\in \FV(?a\lor ?b\prop)}
+%      {v\in \FV(\mvar{a})}
+%      {v\in \FV(\mvar{a}\lor \mvar{b}\prop)}
 %   \qquad
 %   \prftree[r]{}
-%      {v\in \FV(?b)}
-%      {v\in \FV(?a\lor ?b\prop)}
+%      {v\in \FV(\mvar{b})}
+%      {v\in \FV(\mvar{a}\lor \mvar{b}\prop)}
 % \end{gather*}
-
-The second (and final) judgment in \abbreviation{IFOL} is that a sentence is
-true. 
 
 \section{The $\lambda$-calculus}
 \label{sec:the-lambda-calculus}
@@ -593,22 +653,23 @@ element of it, or demonstrate that it is uninhabited.
 As you may have already guessed, under the Curry-Howard correspondence, these
 functions correspond to the rule of double negation elimination
 ($\mathsf{dne}$)\index{Double negation elimination}
-and the law of excluded middle ($\mathsf{lem}$)\index{Law of excluded middle}:
+and the law of excluded middle ($\mathsf{lem}$)\index{Law of excluded middle}
+(from the principle \textit{Tertium Non Datur}):
 
 \begin{minipage}[b]{0.50\linewidth}
   \centering
   \begin{displaymath}
     \prftree[r]{\footnotesize DNE}
-      {P\prop}{\lnot \lnot P\true}
-      {P\true}
+      {\prop{P}}{\true{\lnot\lnot P}}
+      {\true{P}}
   \end{displaymath}
 \end{minipage}
 \begin{minipage}[b]{0.50\linewidth}
   \centering
   \begin{displaymath}
     \prftree[r]{\footnotesize LEM}
-      {P\prop}
-      {P\lor\lnot P\true}
+      {\prop{P}}
+      {\true{P\lor\lnot P}}
   \end{displaymath}
 \end{minipage}
 \vspace{-0.3em}
