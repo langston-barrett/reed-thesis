@@ -46,7 +46,7 @@
 \newcommand{\MTypes}{\software{HoTT/M-Types}}
 
 \newcommand{\dual}[2]{
-  \begin{itemize}\renewcommand{\labelitemi}{$\circ$}
+  \begin{itemize}\renewcommand{\labelitemi}{$∘$}
     \itemsep0em
     \item #1
     \item #2
@@ -96,7 +96,7 @@
     \textbf{ITT}  	&  Intensional type theory \\
     \textbf{FOL}  	&  Classical first-order logic \\
     \textbf{IPL}  	&  Intuitionistic propositional logic \\
-    \textbf{LC}  	  &  Church's untyped $\lambda$-calculus
+    \textbf{LC}  	  &  Church's untyped λ-calculus
   \end{tabular}
 \end{table}
 	
@@ -115,7 +115,7 @@ In this thesis, we explain Univalent type theory, a constructive and
 computationally meaningful foundational system for mathematics inspired by
 recent advances in the semantics of Per Martin-L\"of's intentional type theory.
 We first develop the classical Curry-Howard correspondence between (the
-constructive subset of) Gentzen's natural deducation and the $\lambda$-calculus.
+constructive subset of) Gentzen's natural deducation and the λ-calculus.
 We proceed to explicate Martin-L\"of's theory of dependent types and the central
 modern development in type theory: Vladimir Voevodsky's Univalence principle. 
 We go on to examine the nature of coinduction within this theory, presenting a
@@ -209,7 +209,7 @@ mathematicians, computer scientists, and philosophers are familiar with
 some version of first-order logic, this section will focus on the introduction
 of notation, meta-logical concerns, and the key differences between
 \abbreviation{IPL} and \abbreviation{FOL}. In \cref{sec:the-lambda-calculus}, we
-will introduce Church's $\lambda$-calculus (typed and untyped). Finally, in
+will introduce Church's λ-calculus (typed and untyped). Finally, in
 \cref{sec:the-curry-howard-correspondence}, we will discuss the fundamental and
 harmonious relation between these systems known as the Curry-Howard
 correspondence.
@@ -246,8 +246,8 @@ taking a different approach in presentation that may complement this work,
 \label{sec:discussing-logic}
 
 The observant student of logic may notice a problem in the usual definition of
-implication: one usually defines $P\rightarrow Q$ as ``if whenever $P$ is true,
-$Q$ is true, then $P\rightarrow Q$ is true''. It seems that in order to understand
+implication: one usually defines $P→ Q$ as ``if whenever $P$ is true,
+$Q$ is true, then $P→ Q$ is true''. It seems that in order to understand
 implication, one must first understand implication! More perniciously,
 philosophers and mathematicians alike have argued that Skolem's
 ``paradox''\footnote{The L\"owenheim-Skolem theorem states that
@@ -351,35 +351,35 @@ of metavariables.
 
 \begin{notation}\label[notation]{notation:sequent}
   If $B$ is a hypothetical judgment holding under assumptions $A_1,\ldots,A_n$,
-  we denote this by $A_1,\ldots,A_n\vdash B$.\footnote{This is called Gentzen's
-  \define{sequent notation}, $\vdash$ can be read ``(syntactically) entails''.}
+  we denote this by $A_1,\ldots,A_n⊢ B$.\footnote{This is called Gentzen's
+  \define{sequent notation}, $⊢$ can be read ``(syntactically) entails''.}
   A hypothetical judgment of this form is distinguished from the deduction of
   $B$ from premises $A_1,\ldots,A_n$ (shown in \cref{notation:proof-tree}).
 
   To denote some arbitrary sequence of hypotheses, we will use capital Greek
-  letters $\Gamma$, $\Delta$, and $\Theta$. Our notions of entailment will
+  letters $Γ$, $Δ$, and $Θ$. Our notions of entailment will
   always allow for \define{reflexivity}, \define{weakening}, \define{contraction},
   \define{substitution}, and \cref{sec:ipl} will allow for \define{exchange}, 
   which are the following meta-rules (where $J$, $K$, and $L$ stand for judgments):
   \newlength{\oldjot}\setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
   \begin{gather*}
     \prftree[r]{\footnotesize refl}{}
-      {\Gamma,J,\Delta\vdash J}
+      {Γ,J,Δ ⊢ J}
     \qquad
     \prftree[r]{\footnotesize weak}
-      {\Gamma\vdash J}
-      {\Gamma,K\vdash J}
+      {Γ ⊢ J}
+      {Γ,K ⊢ J}
     \qquad
     \prftree[r]{\footnotesize contr}
-      {\Gamma,K,\Delta,K,\Theta\vdash J}
-      {\Gamma,K,\Delta,\Theta\vdash J} \\
+      {Γ,K,Δ,K,Θ ⊢ J}
+      {Γ,K,Δ,Θ ⊢ J} \\
     \prftree[r]{\footnotesize subst}
-      {\Gamma,K,\Delta\vdash J}{\Gamma\vdash K}
-      {\Gamma,\Delta\vdash J}
+      {Γ,K,Δ ⊢ J}{Γ ⊢ K}
+      {Γ,Δ ⊢ J}
     \qquad
     \prftree[r]{\footnotesize ex}
-      {\Gamma,J,\Delta,K,\Theta \vdash L}
-      {\Gamma,K,\Delta,J,\Theta \vdash L}
+      {Γ,J,Δ,K,Θ ⊢ L}
+      {Γ,K,Δ,J,Θ ⊢ L}
   \end{gather*}
   \setlength{\jot}{\oldjot}
 \end{notation}
@@ -404,48 +404,48 @@ Since \abbreviation{IPL} is supposed to be a logic, we better have a notion of a
 proposition.\footnote{Why do we judge that terms are propositions, instead of
   well-formed formulae? Propositions are strictly more general. With
   hypothetical judgments, we can have a judgment of the form
-  $\true{\mvar{a}}\vdash \prop{\mvar{b}}$, expressing that $\mvar{b}$ is a
+  $\true{\mvar{a}}⊢ \prop{\mvar{b}}$, expressing that $\mvar{b}$ is a
   proposition \textit{under the assumption that $\mvar{a}$ is true}. We will
   need such expressive power in \cref{chap:type-theory}. This is also why we
   refrain from specifying our syntax via formal BNF (or similar) grammars.}
 Indeed, we denote the judgment that some term $\mvar{a}$ represents a
 proposition by $\prop{\mvar{a}}$. The following are the \define{formation
 rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
-  logically-versed reader: $\top$ is read ``true'', $\bot$ is read ``false'',
+  logically-versed reader: $⊤$ is read ``true'', $⊥$ is read ``false'',
   $\lnot$ is read ``not'', $\lor$ is read ``or'',
-  $\land$ is read ``and'', $\rightarrow$ is read ``implies'', $\forall$ is read
-  ``for all'', and $\exists$ is read ``there exists''.
+  $\land$ is read ``and'', $→$ is read ``implies'', $∀$ is read
+  ``for all'', and $∃$ is read ``there exists''.
   The rules for deriving truth will justify these readings.}
 \begin{gather*}
-  \prftree[r]{}{}{\Gamma\vdash\prop{\top}}
+  \prftree[r]{}{}{Γ⊢\prop{⊤}}
   \qquad
-  \prftree[r]{}{}{\Gamma\vdash\prop{\bot}}
-  \qquad
-  \prftree[r]{}
-    {\prop{\Gamma\vdash\mvar{a}}}
-    {\prop{\Gamma\vdash\lnot \mvar{a}}} \\
-  \prftree[r]{}
-     {\Gamma\vdash\prop{\mvar{a}}}{\Gamma\vdash\prop{\mvar{b}}}
-     {\Gamma\vdash\prop{\mvar{a}\rightarrow \mvar{b}}}
+  \prftree[r]{}{}{Γ⊢\prop{⊥}}
   \qquad
   \prftree[r]{}
-     {\Gamma\vdash\prop{\mvar{a}}}{\Gamma\vdash\prop{\mvar{b}}}
-     {\Gamma\vdash\prop{\mvar{a}\land \mvar{b}}} \\
+    {\prop{Γ⊢\mvar{a}}}
+    {\prop{Γ⊢\lnot \mvar{a}}} \\
   \prftree[r]{}
-     {\Gamma\vdash\prop{\mvar{a}}}{\Gamma\vdash\prop{\mvar{b}}}
-     {\Gamma\vdash\prop{\mvar{a}\lor \mvar{b}}}
+     {Γ⊢\prop{\mvar{a}}}{Γ⊢\prop{\mvar{b}}}
+     {Γ⊢\prop{\mvar{a}→ \mvar{b}}}
+  \qquad
+  \prftree[r]{}
+     {Γ⊢\prop{\mvar{a}}}{Γ⊢\prop{\mvar{b}}}
+     {Γ⊢\prop{\mvar{a}\land \mvar{b}}} \\
+  \prftree[r]{}
+     {Γ⊢\prop{\mvar{a}}}{Γ⊢\prop{\mvar{b}}}
+     {Γ⊢\prop{\mvar{a}\lor \mvar{b}}}
   % \prftree[r]{}
-  %    {\mvar{a}\prop}{v\notin\FV(\mvar{a})}
-  %    {\forall v.\mvar{a}}
+  %    {\mvar{a}\prop}{v∉\FV(\mvar{a})}
+  %    {∀ v.\mvar{a}}
   % \qquad
   % \prftree[r]{}
-  %    {\mvar{a}\prop}{v\notin\FV(\mvar{a})}
-  %    {\exists v.\mvar{a}}
+  %    {\mvar{a}\prop}{v∉\FV(\mvar{a})}
+  %    {∃ v.\mvar{a}}
 \end{gather*}\setlength{\jot}{\oldjot}
-% The hypothesis $v\notin\FV(\mvar{a})$ involves another kind of judgment: that $v$ is
+% The hypothesis $v∉\FV(\mvar{a})$ involves another kind of judgment: that $v$ is
 % not a free variable of $\mvar{a}$. Intuitively, this just means that if $v$ appears at
-% all in $\mvar{a}$, it is already ``bound'' by appearing just after a $\forall$ or
-% $\exists$. Again, we won't deal with such issues with much care here.
+% all in $\mvar{a}$, it is already ``bound'' by appearing just after a $∀$ or
+% $∃$. Again, we won't deal with such issues with much care here.
 
 \subsection{Introduction rules}
 \label{subsec:ipl-intro}
@@ -458,10 +458,10 @@ understand the meanings of the formation rules, we must define the judgment
 ``$\mvar{p}:\mvar{a}$'', read ``$\mvar{p}$ is a proof of $\mvar{a}$''. The
 ways of proving a proposition are called \define{introduction rules}.
 
-The symbol $\top$ represents the trivially true proposition. Accordingly, we
+The symbol $⊤$ represents the trivially true proposition. Accordingly, we
 give it a trivial proof (with a weird name which will make sense later):
 \begin{equation*}
-  \prftree[r]{}{}{𝛤Γ\vdash\unitelem:\top}.
+  \prftree[r]{}{}{𝛤Γ⊢\unitelem:⊤}.
 \end{equation*}
 
 How do we know a conjunction? Intuitively, we know (have a proof of) $\mvar{a}$
@@ -485,32 +485,32 @@ know $\mvar{b}$. Correspondingly, we have two introduction rules:
      {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{b}}
      {\apply{\inr}{\mvar{p}}:\mvar{a}\lor\mvar{b}}.
 \end{align*}
-The symbol $\bot$ represents falsehood. We say a logic is
+The symbol $⊥$ represents falsehood. We say a logic is
 \define{consistent}\index{Consistency} if it cannot prove falsehood (a highly
-desirable property!). To this end, we have no introduction rule for $\bot$.
+desirable property!). To this end, we have no introduction rule for $⊥$.
 
 What does it mean to know a negation? We'll define
-$\lnot\mvar{a}\defeq \mvar{a}\rightarrow\bot$ and instead worry about when we
+$\lnot\mvar{a}\defeq \mvar{a}→⊥$ and instead worry about when we
 know an implication.\footnote{This definition suggests the following ``derived
-  introduction rule'' for $\bot$:
+  introduction rule'' for $⊥$:
   \begin{equation*}
     \prftree[r]{}
       {\prop{\mvar{a}}}{\mvar{p}:\mvar{a}}{\mvar{q}:\lnot\mvar{a}}
-      {\ttfun{whoops!}(\mvar{p},\mvar{q}):\bot}.
+      {\ttfun{whoops!}(\mvar{p},\mvar{q}):⊥}.
   \end{equation*}
-  The derivation of this rule from the elimination rule for $\rightarrow$
+  The derivation of this rule from the elimination rule for $→$
   (\cref{subsec:ipl-elim}) is immediate.}
 An implication is true just when we have a hypothetical judgment where the
 hypothesis is the antecedent and the conclusion is the consequent. Implication
 allows us to \textit{internalize}\index{Internalizing!Hypothetical judgments}
 the meta-theoretical notion of hypothetical judgments by turning them into
-non-hypothetical ones. To define the introduction rule for $\rightarrow$, we
+non-hypothetical ones. To define the introduction rule for $→$, we
 assume the presence of a countably-infinite set of \define{variables}
 $v,w,\ldots$
 \begin{equation*}
   \prftree[r]{}
-     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\Gamma,\mvar{p}:\mvar{a},\Theta\vdash \mvar{q}:\mvar{b}}
-     {\Gamma,\Theta\vdash\lam{v}\mvar{q}[\mvar{p}\coloneqq v]:\mvar{a}\rightarrow\mvar{b}}.
+     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{Γ,\mvar{p}:\mvar{a},Θ⊢ \mvar{q}:\mvar{b}}
+     {Γ,Θ⊢\λ{v}{\mvar{q}[\mvar{p}\coloneqq v]}:\mvar{a}→\mvar{b}}.
 \end{equation*}
 
 \begin{definition}\label[definition]{def:valid-theorem}
@@ -519,8 +519,8 @@ $v,w,\ldots$
   \abbreviation{IPL}}:
   \begin{equation*}
     \prftree[r]{}
-      {\vdash\prop{\mvar{a}}}{\vdash\mvar{p}:\mvar{a}}
-      {\vdash\valid{\mvar{a}}}.
+      {⊢\prop{\mvar{a}}}{⊢\mvar{p}:\mvar{a}}
+      {⊢\valid{\mvar{a}}}.
   \end{equation*}
   In this case, we say that $\mvar{a}$ is a \define{theorem}\index{Theorem!Of
   \abbreviation{IPL}} of \abbreviation{IPL}.
@@ -551,8 +551,8 @@ If both disjuncts imply a hypothesis, so does their disjunction:
 \begin{align*}
   \prftree[r]{}
     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\prop{\mvar{c}}}
-    {\mvar{p}:\mvar{a}\rightarrow \mvar{c}}
-    {\mvar{q}:\mvar{b}\rightarrow \mvar{c}}
+    {\mvar{p}:\mvar{a}→ \mvar{c}}
+    {\mvar{q}:\mvar{b}→ \mvar{c}}
     {\mvar{r}:\mvar{a}\lor\mvar{b}}
     {\apppply{\case}{\mvar{p}}{\mvar{q}}{\mvar{r}}:\mvar{c}}.
 \end{align*}
@@ -563,19 +563,19 @@ deduce the consequence:
 \begin{align*}
   \prftree[r]{}
     {\prop{\mvar{a}}}{\prop{\mvar{b}}}
-    {\mvar{p}:\mvar{a}\rightarrow \mvar{b}}
+    {\mvar{p}:\mvar{a}→ \mvar{b}}
     {\mvar{q}:\mvar{a}}
     {\apply{\mvar{p}}{\mvar{q}}:\mvar{b}}.
 \end{align*}
 The elimination rule for falsehood comes from the principle
 \textit{ex falso quod libet}, ``from falsehood anything follows''. If we've been
-able to prove $\bot$, our whole logic is bankrupt and we can derive anything we
+able to prove $⊥$, our whole logic is bankrupt and we can derive anything we
 please: 
 \begin{align*}
   \prftree[r]{}
     {\prop{\mvar{a}}}
-    {\mvar{p}:\bot}
-    {\apply{\rec_{\bot}}{\mvar{p}}:\mvar{a}}.
+    {\mvar{p}:⊥}
+    {\apply{\rec_{⊥}}{\mvar{p}}:\mvar{a}}.
 \end{align*}
 
 At this point, we'll begin to see some full proofs. Since these quickly become
@@ -584,7 +584,7 @@ represent propositions.
 
 \begin{example}\label[example]{ex:ipl-and-comm}
   The following proves the classical tautology that $\land$ is commutative:
-  $\mvar{a}\land\mvar{b}\vdash \mvar{b}\land\mvar{a}$.
+  $\mvar{a}\land\mvar{b}⊢ \mvar{b}\land\mvar{a}$.
   \begin{equation*}
     \prftree[r]{}
       {\prftree[r]{}
@@ -626,7 +626,7 @@ represent propositions.
     \itemsep0em
     \item for brevity, we abbreviate our hypothesis
       $\mvar{h}:\lnot(\mvar{a}\lor\lnot \mvar{a})$ as $\mvar{h}:H$
-    \item $\lnot\mvar{a}\equiv \mvar{a}\rightarrow\bot$
+    \item $\lnot\mvar{a}\equiv \mvar{a}→⊥$
   \end{itemize}
   \begin{center}
   \noindent\makebox[\textwidth]{%
@@ -638,22 +638,22 @@ represent propositions.
               {\prftree[r]{\footnotesize weak}
                 {\prftree[r]{}
                   {\prftree[r]{\footnotesize refl}
-                    {\mvar{p}:\mvar{a}\vdash\mvar{p}:\mvar{a}}}
-                  {\mvar{p}:\mvar{a}\vdash\apply{\inl}{\mvar{p}}:\mvar{a}\lor\lnot\mvar{a}}}
-                {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\apply{\inl}{\mvar{p}}:\mvar{a}\lor\lnot\mvar{a}}}
+                    {\mvar{p}:\mvar{a}⊢\mvar{p}:\mvar{a}}}
+                  {\mvar{p}:\mvar{a}⊢\apply{\inl}{\mvar{p}}:\mvar{a}\lor\lnot\mvar{a}}}
+                {\mvar{p}:\mvar{a},\mvar{h}:H⊢\apply{\inl}{\mvar{p}}:\mvar{a}\lor\lnot\mvar{a}}}
               {\prftree[r]{\footnotesize ex}
                 {\prftree[r]{\footnotesize weak}
                   {\prftree[r]{\footnotesize refl}
-                    {\mvar{h}:H\vdash\mvar{h}:H}}
-                  {\mvar{h}:H,\mvar{p}:\mvar{a}\vdash\mvar{h}:H}}
-                {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\mvar{h}:H}}
-              {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\apply{\mvar{h}}{(\apply{\inl}{\mvar{p}})}:\bot}}
-            {\mvar{h}:H\vdash\lam{v}\apply{\mvar{h}}{(\apply{\inl}{v})}:\lnot\mvar{a}}}
-          {\mvar{h}:H\vdash\apply{\inr}{(\lam{v}\apply{\mvar{h}}{(\apply{\inl}{v})})}:\mvar{a}\lor\lnot \mvar{a}}}
+                    {\mvar{h}:H⊢\mvar{h}:H}}
+                  {\mvar{h}:H,\mvar{p}:\mvar{a}⊢\mvar{h}:H}}
+                {\mvar{p}:\mvar{a},\mvar{h}:H⊢\mvar{h}:H}}
+              {\mvar{p}:\mvar{a},\mvar{h}:H⊢\apply{\mvar{h}}{(\apply{\inl}{\mvar{p}})}:⊥}}
+            {\mvar{h}:H⊢\λ{v}\apply{\mvar{h}}{(\apply{\inl}{v})}:\lnot\mvar{a}}}
+          {\mvar{h}:H⊢\apply{\inr}{(\λ{v}\apply{\mvar{h}}{(\apply{\inl}{v})})}:\mvar{a}\lor\lnot \mvar{a}}}
         {\prftree[r]{\footnotesize refl}
-          {\mvar{h}:H\vdash\mvar{h}:H}}
-        {\mvar{h}:H\vdash \apply{\mvar{h}}{(\inr(\lam{v}\apply{\mvar{h}}{(\apply{\inl}{v})}))}:\bot}}
-      {\vdash\lam{w}\apply{w}{(\inr(\lam{v}\apply{w}{(\apply{\inl}{v})}))}:\lnot (\lnot(\mvar{a}\lor\lnot \mvar{a}))}
+          {\mvar{h}:H⊢\mvar{h}:H}}
+        {\mvar{h}:H⊢ \apply{\mvar{h}}{(\inr(\λ{v}\apply{\mvar{h}}{(\apply{\inl}{v})}))}:⊥}}
+      {⊢\λ{w}\apply{w}{(\inr(\λ{v}\apply{w}{(\apply{\inl}{v})}))}:\lnot (\lnot(\mvar{a}\lor\lnot \mvar{a}))}
   }
   \end{center}
   The law of the excluded middle will be discussed further in \cref{subsec:on-lem}.
@@ -675,10 +675,10 @@ represent propositions.
       {\apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
   \end{equation*}
   Well, it certainly had to end with an application of implication eliimination
-  to hypotheses of the form $\mvar{b}$ and $\mvar{b}\rightarrow \mvar{d}$:
+  to hypotheses of the form $\mvar{b}$ and $\mvar{b}→ \mvar{d}$:
   \begin{equation*}
     \prftree[r]{}
-      {\mvar{r}:\mvar{b}\rightarrow\mvar{d}}
+      {\mvar{r}:\mvar{b}→\mvar{d}}
       {\prftree[r]{}
         {?}
         {\appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
@@ -689,7 +689,7 @@ represent propositions.
   $\mvar{b}\land \mvar{c}$ for some $\mvar{c}$:
   \begin{equation*}
     \prftree[r]{}
-      {\mvar{r}:\mvar{b}\rightarrow\mvar{d}}
+      {\mvar{r}:\mvar{b}→\mvar{d}}
       {\prftree[r]{}
         {\prftree[r]{}
           {?}
@@ -698,13 +698,13 @@ represent propositions.
       {\apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
   \end{equation*}
   which itself had to be applied to proofs of $\mvar{a}$ and
-  $\mvar{a}\rightarrow\mvar{b}\land\mvar{c}$ for some $\mvar{a}$:
+  $\mvar{a}→\mvar{b}\land\mvar{c}$ for some $\mvar{a}$:
   \begin{equation*}
     \prftree[r]{}
-      {\mvar{r}:\mvar{b}\rightarrow\mvar{d}}
+      {\mvar{r}:\mvar{b}→\mvar{d}}
       {\prftree[r]{}
         {\prftree[r]{}
-          {\mvar{p}:\mvar{a}\rightarrow(\mvar{b}\land\mvar{c})}
+          {\mvar{p}:\mvar{a}→(\mvar{b}\land\mvar{c})}
           {\mvar{q}:\mvar{a}}
           {\apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
         {\appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
@@ -755,31 +755,31 @@ affirmative.
   $\mvar{p}\jdeq\mvar{q}:mvar{a}$, is the least congruence closed under the
   following
   \define{computation rules}\index{Computation rules!In \abbreviation{IPL}}
-  (also called \define{$\beta$-rules}):
+  (also called \define{$β$-rules}):
   \setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
   \begin{gather*}
-    {\prftree[r]{\footnotesize $\land\beta_{\text{l}}$}
+    {\prftree[r]{\footnotesize $\landβ_{\text{l}}$}
       {\mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
       {\appr{1}{(\mvar{p},\mvar{q})}\jdeq \mvar{p}:\mvar{a}}}
     \qquad
-    {\prftree[r]{\footnotesize $\land\beta_{\text{r}}$}
+    {\prftree[r]{\footnotesize $\landβ_{\text{r}}$}
       {\mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
       {\appr{2}{(\mvar{p},\mvar{q})}:\mvar{b}}} \\
-    {\prftree[r]{\footnotesize $(\rightarrow)\beta$}
-      {\mvar{p}:\mvar{a}\vdash\mvar{q}\jdeq \mvar{q}:\mvar{b}}
+    {\prftree[r]{\footnotesize $(→)β$}
+      {\mvar{p}:\mvar{a}⊢\mvar{q}\jdeq \mvar{q}:\mvar{b}}
       {\mvar{r}:\mvar{a}}
-      {\apply{(\lam{v}\mvar{q})}{\mvar{r}}\jdeq
+      {\apply{(\λ{v}\mvar{q})}{\mvar{r}}\jdeq
         \mvar{q}[v\coloneqq\mvar{r}]:\mvar{b}}} \\
-    {\prftree[r]{\footnotesize $\lor\beta_{\text{l}}$}
-      {\mvar{p}:\mvar{a}\rightarrow\mvar{c}}
-      {\mvar{q}:\mvar{b}\rightarrow\mvar{c}}
+    {\prftree[r]{\footnotesize $\lorβ_{\text{l}}$}
+      {\mvar{p}:\mvar{a}→\mvar{c}}
+      {\mvar{q}:\mvar{b}→\mvar{c}}
       {\mvar{r}:\mvar{a}}
       {\apppply{\case}{\mvar{p}}{\mvar{q}}{(\apply{\inl}{\mvar{r}})}\jdeq
         \apply{\mvar{p}}{\mvar{r}}:\mvar{c}}} 
     \qquad
-    {\prftree[r]{\footnotesize $\lor\beta_{\text{r}}$}
-      {\mvar{p}:\mvar{a}\rightarrow\mvar{c}}
-      {\mvar{q}:\mvar{b}\rightarrow\mvar{c}}
+    {\prftree[r]{\footnotesize $\lorβ_{\text{r}}$}
+      {\mvar{p}:\mvar{a}→\mvar{c}}
+      {\mvar{q}:\mvar{b}→\mvar{c}}
       {\mvar{r}:\mvar{b}}
       {\apppply{\case}{\mvar{p}}{\mvar{q}}{(\apply{\inr}{\mvar{r}})}\jdeq
         \apply{\mvar{q}}{\mvar{r}}:\mvar{c}}}
@@ -788,8 +788,8 @@ affirmative.
   (Recall \cref{notation:substitution} for the meaning of
   $\mvar{q}[v\coloneqq\mvar{r}]$). Since the elimination rule for
   falsehood (\cref{subsec:ipl-elim}) gives back a proof of an arbitrary
-  proposition (which is not in general one of the ``inputs'' to $\intro{\bot}$),
-  there's no corresponding $\beta$-rule.
+  proposition (which is not in general one of the ``inputs'' to $\intro{⊥}$),
+  there's no corresponding $β$-rule.
 \end{definition}
 
 % To define the rules for introducing quantifiers, we must deal with the issue of
@@ -824,17 +824,17 @@ with Frege's \textit{Begriffsschrift}, the Burali-Forti antimony unraveled
 na\"ive set theories, and Girard's paradox revealed a fatal flaw in
 Martin-L\"of's early attempts at dependent type theory.
 
-\section{The $\lambda$-calculus}
+\section{The λ-calculus}
 \label{sec:the-lambda-calculus}
 
-\subsection{The untyped $\lambda$-calculus and computation}
+\subsection{The untyped λ-calculus and computation}
 \label{subsec:the-untyped-lambda-calculus}
 
 The Church-Turing thesis
 
-$\beta$-reduction
+$β$-reduction
 
-\subsection{The simply-typed $\lambda$-calculus}
+\subsection{The simply-typed λ-calculus}
 \label{subsec:the-simply-typed-lambda-calculus}
 
 Two judgments
@@ -886,14 +886,14 @@ The strong normalization property
 \begin{notation}\label[notation]{notation:transport}
   We will often curry\index{Curry} \transportname. If we have a family
   $P:A\to\universe$ and a path $p:\propeq{A}{x}{y}$, we write $\transpor{P}{p}$
-  for $\lam{x}\transport{P}{p}{x}$.
+  for $\λ{x}\transport{P}{p}{x}$.
 \end{notation}
 
 \begin{lemma}\label[lemma]{lemma:transport-compose}
 	For $f:A\to B$, $P:B\to\universe$, and $p:\propeq{A}{x}{y}$, 
   \begin{equation*}
     \propeq{}{
-      \transpor{P\circ f}{p}
+      \transpor{P∘ f}{p}
     }{
       \transpor{P}{\ap{f}{p}}
     }
@@ -917,19 +917,19 @@ for \textit{all} types.
 \begin{definition}\label[definition]{def:id-polymorphic}
   The identity function is
 	\begin{align*}
-    \id :\pit{A:\universe}{A\to A} &&
-    \id \defeq \lam{A}\lam{a}a
+    \id :\∏{A:\universe}{A\to A} &&
+    \id \defeq \λ{A}{\λ{a}{a}}
   \end{align*}
   We will write its first argument as a subscript, as in $\id_{A}$.
 \end{definition}
 
-\begin{lemma}[Paths in $\Sigma$-types]\label[lemma]{lemma:path-sigma}
-	If $x,y:\sigmat{a:A}{B(a)}$, then
+\begin{lemma}[Paths in $Σ$-types]\label[lemma]{lemma:path-sigma}
+	If $x,y:\∑{a:A}{B(a)}$, then
   \begin{equation*}
     \weq{
       (\propeq{}{x}{y})
     }{
-      \sigmat{
+      \∑{
         p:\propeq{}{\appr{1}{x}}{\appr{1}{y}}
       }{
         \propeq{}{
@@ -943,7 +943,7 @@ for \textit{all} types.
   \TODO{cite with page number}
 \end{lemma}
 
-\subsection{$\Pi$-types}
+\subsection{$Π$-types}
 \label{subsec:pi-types}
 
 \subsubsection{On the law of the excluded middle}
@@ -954,15 +954,15 @@ for \textit{all} types.
 Consider functions with the following types:
 \begin{itemize}
   \itemsep0em
-  \item $\ttfun{dne}:\pit{A:\universe}{(A\to\bot\to\bot)\to A}$
-  \item $\ttfun{lem}:\pit{A:\universe}{A+(A\to\bot)}$
+  \item $\ttfun{dne}:\∏{A:\universe}{(A\to⊥\to⊥)\to A}$
+  \item $\ttfun{lem}:\∏{A:\universe}{A+(A\to⊥)}$
 \end{itemize}
 What can we tell about these functions from their type signatures?
-The term $\ttfun{dne}$ takes as argument a term $x:A\to\bot\to\bot$,
+The term $\ttfun{dne}$ takes as argument a term $x:A\to⊥\to⊥$,
 that is, a term showing that $A$ is not the empty type\footnote{More precisely,
   $x$ demonstrates that $A$ is not \textit{isomorphic} or \textit{equivalent} to
-  $\bot$, in the sense of \cref{subsec:weak-equivalences}. If $A$ were isomorphic
-  to $\bot$, then that isomorphism would be an inhabitant of $A\to\bot$.}, and
+  $⊥$, in the sense of \cref{subsec:weak-equivalences}. If $A$ were isomorphic
+  to $⊥$, then that isomorphism would be an inhabitant of $A\to⊥$.}, and
 produces some element of $A$. This seems like a very tricky function to write:
 how can we give a term of type $A$ just by knowing $A$ has terms? We don't
 know what form data of type $A$ have! The function $\ttfun{lem}$ seems
@@ -1013,7 +1013,7 @@ assistants: nothing else computes.
 	Under the hypothesis of the univalence axiom, function extensionality holds,
   i.e.\ there is a term
   \begin{equation*}\label{eq:funext}
-    \funext:\pit{A,B\:\universe}{(\homot{f}{g})\to \propeq{}{f}{g}}
+    \funext:\∏{A,B\:\universe}{(\homot{f}{g})\to \propeq{}{f}{g}}
   \end{equation*}
 \end{theorem}
 
@@ -1054,7 +1054,7 @@ We will examine category theory within \abbreviation{UTT} in
       $\id_A\in\Hom_{\bfC}(A,A)$ called the
       \define{identity}\index{Identity!Morphism}, and
     \item for each triple of objects $A,B,C\in\Obj\bfC$, an operation \\
-      $\circ:\Hom_{\bfC}(B,C)\times\Hom_{\bfC}(A,B)\to\Hom_{\bfC}(A,C)$ called
+      $∘:\Hom_{\bfC}(B,C)\times\Hom_{\bfC}(A,B)\to\Hom_{\bfC}(A,C)$ called
       \define{composition}\index{Composition!In a category}.
   \end{itemize}
   These data are subject to the following axioms:
@@ -1081,16 +1081,16 @@ We will examine category theory within \abbreviation{UTT} in
       the usual composition of functions, and identity functions.
     \item $\Grp$: The category of groups\index{Group} with group homomorphisms
       as morphisms. Note that the identity function of sets is the required
-      identity morphism and that for any homomorphsisms $\phi:G\to H$ and
-      $\psi:H\to I$, the usual composition of functions defines a homomorphism
-      $\psi\circ \phi:G\to I$.
+      identity morphism and that for any homomorphsisms $ϕ:G\to H$ and
+      $ψ:H\to I$, the usual composition of functions defines a homomorphism
+      $ψ∘ ϕ:G\to I$.
     \item $\AbGrp$: The category of abelian groups (this can be considered a
       \define{subcategory} of $\Grp$).
     \item $F\dVect$: The category of vector spaces\index{Vector space} over a
       field $F$ with linear transformations as morphisms.
-    \item For any group $(G,\circ,e)$, there is a corresponding category
-      $\underline{G}$ with a single object (denoted $\ast$) and
-      $\Hom_{\underline{G}}(\ast,\ast)\coloneqq G$. Composition is given by the
+    \item For any group $(G,∘,e)$, there is a corresponding category
+      $\underline{G}$ with a single object (denoted $∗$) and
+      $\Hom_{\underline{G}}(∗,∗)\coloneqq G$. Composition is given by the
       group operation.
   \end{itemize}
 \end{example}
@@ -1098,7 +1098,7 @@ We will examine category theory within \abbreviation{UTT} in
 \begin{definition}\label[definition]{def:isomorphism}
 	An \define{isomorphism}\index{Isomorphism!In a category} in $\bfC$ is an arrow
   $f\in\Hom_{\bfC}(A,B)$ such that there exists an arrow $g\in\Hom_{\bfC}(B,A)$
-  such that $g\circ f=\id_A$ and $f\circ g=\id_B$. We call such a $g$ the
+  such that $g∘ f=\id_A$ and $f∘ g=\id_B$. We call such a $g$ the
   \define{inverse}\index{Inverse!In a category} of $f$.
 \end{definition}
 
@@ -1107,7 +1107,7 @@ Just as with functions, inverses (should they exist) are unique.
 \begin{figure}[ht]
   \centering
   \begin{tikzpicture}[scale=2]
-    \node (A) [] {$\ast$};
+    \node (A) [] {$∗$};
 
     \foreach \x in {1,2,3} 
       \draw (A) edge [in={50*\x},out={40+50*\x},loop] node[above] {$g_\x$} (A);
@@ -1134,7 +1134,7 @@ Just as with functions, inverses (should they exist) are unique.
 
 \begin{example}\label[example]{ex:commutative-diagram}
 	If $f\in\Hom_{\bfC}(A,B)$, $g\in\Hom_{\bfC}(B,C)$, $h\in\Hom_{\bfC}(A,C)$,
-  and $g\circ f=h$, then we may draw the following
+  and $g∘ f=h$, then we may draw the following
   \define{commutative triangle}:
   \begin{center}
     \begin{tikzcd}[column sep=large]
@@ -1143,7 +1143,7 @@ Just as with functions, inverses (should they exist) are unique.
     \end{tikzcd}
   \end{center}
 	If $f\in\Hom_{\bfC}(A,B)$, $g\in\Hom_{\bfC}(B,D)$, $h\in\Hom_{\bfC}(A,C)$,
-  $i\in\Hom_{\bfC}(C,D)$, and $g\circ f=i\circ h$, then we may draw the
+  $i\in\Hom_{\bfC}(C,D)$, and $g∘ f=i∘ h$, then we may draw the
   following \define{commutative square}:
   \begin{center}
     \begin{tikzcd}[column sep=large]
@@ -1174,18 +1174,18 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
   \
   \vspace{-0.3em}\dual{
     A \define{terminal object}\index{Terminal object} is an
-    object $\top\in\Obj\bfC$ such that for all $A\in\Obj\bfC$,
-    there is exactly one arrow $f:A\to\top$.
+    object $⊤\in\Obj\bfC$ such that for all $A\in\Obj\bfC$,
+    there is exactly one arrow $f:A\to⊤$.
   }{
     An \define{initial object}\index{Initial object} is an
-    object $\bot\in\Obj\bfC$ such that for all $A\in\Obj\bfC$,
-    there is exactly one arrow $f:\bot\to A$.
+    object $⊥\in\Obj\bfC$ such that for all $A\in\Obj\bfC$,
+    there is exactly one arrow $f:⊥\to A$.
   }
 \end{definition}
 
 \begin{remark}\label[remark]{remark:terminal-object-id-unique}
-	In particular, for a terminal object $\top$, $\id_\top$ is the only arrow
-  $\top\to\top$.\footnote{As noted in \cref{sec:duality}, this statement
+	In particular, for a terminal object $⊤$, $\id_⊤$ is the only arrow
+  $⊤\to⊤$.\footnote{As noted in \cref{sec:duality}, this statement
     holds for initial objects as well. From this point on, we will leave it
     to the reader to construct the dual of a statement and infer its truth.}
 \end{remark}
@@ -1196,9 +1196,9 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \begin{proof}
 	Suppose $A$ and $B$ are terminal objects.
   There are unique arrows $f:A\to B$ and $g:B\to A$.
-  Then $g\circ f:A\to A$ and $f\circ g:B\to B$, but as per
+  Then $g∘ f:A\to A$ and $f∘ g:B\to B$, but as per
   \cref{remark:terminal-object-id-unique}\TODO{how to make this ``remark''?},
-  $g\circ f=\id_A$ and $f\circ g=\id_B$.
+  $g∘ f=\id_A$ and $f∘ g=\id_B$.
 \end{proof}
 
 \begin{definition}\label[definition]{def:product-and-coproduct}
@@ -1266,9 +1266,9 @@ the application by simply $FA$ or $Ff$. A functor $F$ from $\bfC$ to
 $\bfD$ may be denoted $F:\bfC\to\bfD$. We may define functors without names
 using the following notation:
 \begin{align*}
-  \bfC &\longrightarrow \bfD \\
-  A    &\longmapsto_0 \ldots \\
-  f    &\longmapsto_1 \ldots
+  \bfC &⟶ \bfD \\
+  A    &⟼_0 \ldots \\
+  f    &⟼_1 \ldots
 \end{align*}
 
 \begin{example}\label[example]{ex:identity-functor-cat}
@@ -1295,14 +1295,14 @@ using the following notation:
     full power of that statement for our purposes.}
   \begin{align*}
     \begin{split}
-      \bfC &\longrightarrow \bfC \\
-      X    &\longmapsto_0 A + X \\
-      f    &\longmapsto_1 \id_A+f = [i_1, i_2\circ f]
+      \bfC &⟶ \bfC \\
+      X    &⟼_0 A + X \\
+      f    &⟼_1 \id_A+f = [i_1, i_2∘ f]
     \end{split}
     \begin{split}
-      \bfC &\longrightarrow \bfC \\
-      Y    &\longmapsto_0 Y + B \\
-      g    &\longmapsto_1 g+\id_B = [i_1\circ g, i_2]
+      \bfC &⟶ \bfC \\
+      Y    &⟼_0 Y + B \\
+      g    &⟼_1 g+\id_B = [i_1∘ g, i_2]
     \end{split}
   \end{align*}
 \end{example}
@@ -1333,11 +1333,11 @@ One consequence is that functors preserve isomorphism.
   \vspace{-0.3em}\dual{
     An \define{algebra}\index{(Co)algebra for a functor} for an endofunctor
     $F:\bfC\to\bfC$ (also called an $F$\define{-algebra}) is a pair
-    $(A,\alpha)$ of an object $A\in\Obj\bfC$ and an arrow $\alpha:FA\to A$.
+    $(A,α)$ of an object $A\in\Obj\bfC$ and an arrow $α:FA\to A$.
   }{
     A \define{coalgebra} for an endofunctor
     $F:\bfC\to\bfC$ (also called an $F$\define{-coalgebra}) is a pair
-    $(A,\alpha)$ of an object $A\in\Obj\bfC$ and an arrow $\alpha:A\to FA$
+    $(A,α)$ of an object $A\in\Obj\bfC$ and an arrow $α:A\to FA$
     \cite{category-theory-for-computing-science}.
   }
 \end{definition}
@@ -1347,11 +1347,11 @@ constructions in this section hold dually for algebras.
 
 \begin{definition}\label[definition]{def:coalgebra-morphism}
   A \define{coalgebra morphism}\index{(Co)algebra morphism} from
-  $(A,\alpha)$ to $(B,\beta)$ is an arrow $f:A\to B$ such that the following
+  $(A,α)$ to $(B,β)$ is an arrow $f:A\to B$ such that the following
   diagram commutes:
   \begin{center}
     \begin{tikzcd}
-      A  \arrow[d, "\alpha"] \arrow[r, "f"] & B \arrow[d, "\beta"] \\
+      A  \arrow[d, "α"] \arrow[r, "f"] & B \arrow[d, "β"] \\
       FA \arrow[r, "Ff"] & FB
     \end{tikzcd}
   \end{center}
@@ -1379,36 +1379,36 @@ The following example is crucial to
   Let $\bfC$ be a category with distinguished binary coproducts and a terminal
   object $1$. Consider the functor
   \begin{align*}
-    F:\bfC &\longrightarrow \bfC  \\
-    A &\longmapsto_0 1+A \\
-    f &\longmapsto_1 \id_1+f
+    F:\bfC &⟶ \bfC  \\
+    A &⟼_0 1+A \\
+    f &⟼_1 \id_1+f
   \end{align*}
   where 1 is a terminal object\index{Terminal object} and $+$ is the coproduct
   bifunctor as in \cref{ex:coproduct-functoriality}. Let's examine
-  what it \textit{means} for some $F$-algebra $(N,\eta)$ to be initial. By
+  what it \textit{means} for some $F$-algebra $(N,η)$ to be initial. By
   composing with the coproduct\index{Coproduct!In category theory} injections,
   we can define
   \begin{align*}
     \begin{split}
-      z &: 1 \longrightarrow N \\
-      z &= \eta\circ i_1
+      z &: 1 ⟶ N \\
+      z &= η∘ i_1
     \end{split}
     \begin{split}
-      s &: 1 \longrightarrow N \\
-      s &= \eta\circ i_2
+      s &: 1 ⟶ N \\
+      s &= η∘ i_2
     \end{split}
   \end{align*}
-  so that $\eta=[z,s]$:
+  so that $η=[z,s]$:
   \begin{center}
     \begin{tikzcd}[sep=large,ampersand replacement=\&]
       1 \arrow[r, "i_1"{name=I1}]\arrow[dr, swap, "z"{name=F}]
-      \& 1+N \arrow[d,"\eta"]
+      \& 1+N \arrow[d,"η"]
       \& N\arrow[l, "i_2"{name=I2},swap]\arrow[dl,"s"{name=G}] \\
       {} \& N \& {}
     \end{tikzcd}
   \end{center}
-  Suppose we have another $F$-algebra $(A,\alpha)$, and we define $f,g$ by
-  composition as above so that $\alpha=[f,g]$. By initiality of $(N,\eta)$,
+  Suppose we have another $F$-algebra $(A,α)$, and we define $f,g$ by
+  composition as above so that $α=[f,g]$. By initiality of $(N,η)$,
   there is a unique arrow $u$ making the following diagram commute:
   \newcommand{\eeeeeta}{[z,s]}
   \newcommand{\aaaaalpha}{[f,g]}
@@ -1420,25 +1420,25 @@ The following example is crucial to
   \end{center}
   By functoriality of the coproduct (\ref{example:coproduct-functoriality}), we can
   compose along either the left- or right-hand paths in the above diagram.
-  The above square states $u\circ [z,s]= [f,g]\circ (\id_1+u)$. Precomposing
+  The above square states $u∘ [z,s]= [f,g]∘ (\id_1+u)$. Precomposing
   with $i_1:1\to 1+N$ yields
   \begin{align*}
-    u\circ z = u\circ [z,s]\circ i_1
-    &= [f,g]\circ (\id_1+u) \circ i_1 
-    &&\quad\text{Above diagram} \\
-    &= [f,g]\circ [i_1,i_2\circ u] \circ i_1 
-    &&\quad\text{Definition of }+ \\
-    &= [f, g]\circ i_1 \\
+    u∘ z = u∘ [z,s]∘ i_1
+    &= [f,g]∘ (\id_1+u) ∘ i_1 
+    && \text{Above diagram} \\
+    &= [f,g]∘ [i_1,i_2∘ u] ∘ i_1 
+    && \text{Definition of }+ \\
+    &= [f, g]∘ i_1 \\
     &= f
   \end{align*}
   By similar reasoning, precomposing with $i_2$ yields
   \begin{equation*}
-    u\circ s = u\circ [z,s] \circ i_2
-    = [f,g]\circ(\id_1+u)\circ i_2
-    = g\circ u.
+    u∘ s = u∘ [z,s] ∘ i_2
+    = [f,g]∘(\id_1+u)∘ i_2
+    = g∘ u.
   \end{equation*}
   Combining the above two equations, we have the following universal property
-  for $(N,\eta)$. For any object $A$ with arrows $f:1\to A$ and $g:A\to A$,
+  for $(N,η)$. For any object $A$ with arrows $f:1\to A$ and $g:A\to A$,
   there is a unique arrow $u:N\to A$ making the following diagram commute:
   \begin{center}
     \begin{tikzcd}[sep=large]
@@ -1463,8 +1463,8 @@ The following example is crucial to
   \begin{itemize}
     \itemsep0em
     \item $A:\equiv \List{\N}$
-    \item $f:\equiv \lam{x}{\nil}$
-    \item $g:\equiv \lam{l}{\cons(5,l)}$
+    \item $f:\equiv \λ{x}{\nil}$
+    \item $g:\equiv \λ{l}{\cons(5,l)}$
   \end{itemize}
   From the universal property of $(N,[z,s])$, we get a function
   $u:N\to \List{A}$ such that
@@ -1495,8 +1495,8 @@ on category theory in univalent type theory \cite{book} \cite{unimath}
 
 \begin{notation}
   Following \cite{non-wellfounded}, we will adopt the notation
-  $(X,\alpha)\Rightarrow (Y,\beta)$ or $X\Rightarrow Y$ to denote the type of
-  coalgebra morphisms from $(X,\alpha)$ to $(Y,\beta)$.
+  $(X,α)⇒ (Y,β)$ or $X⇒ Y$ to denote the type of
+  coalgebra morphisms from $(X,α)$ to $(Y,β)$.
 \end{notation}
 
 \begin{definition}\label[definition]{def:polynomial-functor}
@@ -1504,13 +1504,13 @@ on category theory in univalent type theory \cite{book} \cite{unimath}
   is the function
   \begin{gather*}
     P:\universe\to \universe \\
-    \apply{P_{A,B}}{X}\defeq\sigmat{a:A}{B(a)\to X}
+    \apply{P_{A,B}}{X}\defeq\∑{a:A}{B(a)\to X}
   \end{gather*}
   We will regularly leave off the subscript for $P$.
   The \define{action} of $P$ on functions is
   \begin{gather*}
     P^* : (X\to Y)\to P_{A,B}(X)\to P_{A,B}(Y) \\
-    \apply{P^*f}{(a,g)}\defeq (a,g\circ f).
+    \apply{P^*f}{(a,g)}\defeq (a,g∘ f).
   \end{gather*}
   \TODO{this isn't a functor}
 \end{definition}
@@ -1525,8 +1525,8 @@ is its first appearance ``de-formalized''.
   a proposition:
   \begin{equation*}
     \Final(S)\defeq
-    \sigmat{(X,\alpha):\Coalgtype(S)}{
-      \pit{(Y,\beta):\Coalgtype(S)}{\isContr((Y,\beta)\Rightarrow (X,\alpha))}
+    \∑{(X,α):\Coalgtype(S)}{
+      \∏{(Y,β):\Coalgtype(S)}{\isContr((Y,β)⇒ (X,α))}
     }
   \end{equation*}
 \end{lemma}
@@ -1534,9 +1534,9 @@ is its first appearance ``de-formalized''.
 First, we'll show that their carriers are equivalent:
 
 \begin{lemma}\label[lemma]{lemma:algebra-iso-equiv}
-	If $(X,\alpha)$ and $(Y,\beta)$ are final $P$-coalgebras,
+	If $(X,α)$ and $(Y,β)$ are final $P$-coalgebras,
   then the first projections of the unique coalgebra morphisms
-  $f:X\Rightarrow Y$ and $g:Y\Rightarrow X$ induce
+  $f:X⇒ Y$ and $g:Y⇒ X$ induce
   an equivalence of types $\weq{X}{Y}$.
 \end{lemma}
 \begin{proof}
@@ -1545,9 +1545,9 @@ First, we'll show that their carriers are equivalent:
 	\TODO{proof}
 \end{proof}
 
-We can then invoke the characterization of paths in $\Sigma$-types,
+We can then invoke the characterization of paths in $Σ$-types,
 \cref{lemma:path-sigma}. We'll need to demonstrate that the coalgebra map
-$\alpha:X\to FX$ is equal to $\beta:Y\to FY$ when transported along the path
+$α:X\to FX$ is equal to $β:Y\to FY$ when transported along the path
 constructed in \cref{lemma:algebra-iso-equiv}.
 
 \begin{lemma}\label[lemma]{lemma:polynomial-functor-transport}
@@ -1561,7 +1561,7 @@ constructed in \cref{lemma:algebra-iso-equiv}.
       g({\transport{\id_{\universe}}{p}{x}})
     }
   \end{equation*}
-  then $\propeq{}{\transport{Z\mapsto (Z\to FZ)}{p}{f}}{g}$.
+  then $\propeq{}{\transport{Z↦ (Z\to FZ)}{p}{f}}{g}$.
   That is, $f$ is equal to $g$ after being transported just when
   applying $f$ and transporting the result is the same as transporting the 
   input and applying $g$.
@@ -1586,7 +1586,7 @@ constructed in \cref{lemma:algebra-iso-equiv}.
     \propeq{}{\apply{f}{x}}{\apply{g}{x}}
   \end{align*}
   so by function extensionality $f=g$. Again by definition of transport,
-  $\transport{Z\mapsto (Z\to FZ)}{\refl{X}}{f} \jdeq f=g$.
+  $\transport{Z↦ (Z\to FZ)}{\refl{X}}{f} \jdeq f=g$.
 \end{proof}
 
 To complete the proof that the transported coalgebra maps are equal, we'll need
@@ -1611,22 +1611,22 @@ the following auxiliary result:
   \begin{align*}
     P^*\paren*{\transpor{\id_{\universe}}{p}}
     &\jdeq P^*\paren*{\transpor{\id_{\universe}}{\refl{X}}}
-    &&\quad\text{Identity elim.} \\
+    && \text{Identity elim.} \\
     &\jdeq P^*\paren{\id_X}
-    &&\quad\text{\Cref{lemma:transport}} \\
-    &\jdeq \lam{(a,f)}{(a,f\circ \id_X)}
-    &&\quad\text{\Cref{def:polynomial-functor}} \\
-    &\jdeq \lam{(a,f)}{(a,f)} \\
+    && \text{\Cref{lemma:transport}} \\
+    &\jdeq \λ{(a,f)}{(a,f∘ \id_X)}
+    && \text{\Cref{def:polynomial-functor}} \\
+    &\jdeq \λ{(a,f)}{(a,f)} \\
     &\jdeq \id_{PX}
-    &&\quad\text{\Cref{def:id-polymorphic}} \\
+    && \text{\Cref{def:id-polymorphic}} \\
     &\jdeq \transpor{\id_{\universe}}{\refl{PX}}
-    &&\quad\text{\Cref{lemma:transport}} \\
+    && \text{\Cref{lemma:transport}} \\
     &\jdeq \transpor{\id_{\universe}}{\ap{P}{\refl{X}}}
-    &&\quad\text{\Cref{lemma:ap}} \\
+    && \text{\Cref{lemma:ap}} \\
     &\jdeq \transpor{P}{\refl{X}}
-    &&\quad\text{\Cref{lemma:transport-compose}} \\
+    && \text{\Cref{lemma:transport-compose}} \\
     &\jdeq \transpor{P}{p}
-    &&\quad\text{Identity elim.}
+    && \text{Identity elim.}
   \end{align*}
 \end{proof}
 
@@ -1634,8 +1634,8 @@ the following auxiliary result:
   Let:
   \begin{itemize}
     \itemsep0em
-    \item $(X,\alpha)$, $(Y,\beta)$ be final $P$-coalgebras,
-    \item $f:X\Rightarrow Y$ and $g:Y\Rightarrow X$ be the unique $P$-coalgebra
+    \item $(X,α)$, $(Y,β)$ be final $P$-coalgebras,
+    \item $f:X⇒ Y$ and $g:Y⇒ X$ be the unique $P$-coalgebra
       morphisms between them,
     \item $q:\weq{X}{Y}$ the equivalence of types induced by $f$ and $g$
       (\cref{lemma:algebra-iso-equiv}).
@@ -1643,22 +1643,22 @@ the following auxiliary result:
   By univalence, there is a path
     $\apply{\ua}{q}:\propeq{\universe}{X}{Y}$.\footnote{This
     is our first (but not nearly our last) crucial use of univalence. Without an
-    equality, we couldn't \transportname{} $\alpha$ to $\beta$ in the next step.
+    equality, we couldn't \transportname{} $α$ to $β$ in the next step.
     This step also demonstrates that function extensionality alone doesn't
     suffice.} 
-  To demonstrate that $\propeq{}{(X,\alpha)}{(Y,\beta)}$, we invoke the
-  characterization of paths in $\Sigma$-types, \cref{lemma:path-sigma}. It
+  To demonstrate that $\propeq{}{(X,α)}{(Y,β)}$, we invoke the
+  characterization of paths in $Σ$-types, \cref{lemma:path-sigma}. It
   remains to show
   \begin{equation*}
-    \propeq{(Y\to PY)}{\transport{Z\mapsto (Z\to PZ)}{\apply{\ua}{q}}{\alpha}}{\beta}.
+    \propeq{(Y\to PY)}{\transport{Z↦ (Z\to PZ)}{\apply{\ua}{q}}{α}}{β}.
   \end{equation*}
   but by \cref{lemma:polynomial-functor-transport}, it suffices to show that
   for all $x:X$,
   \begin{equation*}
     \propeq{}{
-      \transport{P}{\apply{\ua}{q}}{\apply{\alpha}{x}}
+      \transport{P}{\apply{\ua}{q}}{\apply{α}{x}}
     }{
-      \beta(\transport{\id_\universe}{p}{x})
+      β(\transport{\id_\universe}{p}{x})
     }.
   \end{equation*}
   % Lemma 2 in HoTT/M-types
@@ -1666,11 +1666,11 @@ the following auxiliary result:
   \begin{align*}
     \transpor{P}{\apply{\ua}{q}}
     &= P^*\paren{\transpor{\id_{\universe}}{\apply{\ua}{q}}}
-    &&\quad\text{\Cref{lemma:polynomial-functor-transport}} \\
+    && \text{\Cref{lemma:polynomial-functor-transport}} \\
     &= P^*q
-    &&\quad\text{\Cref{def:ua}} \\
+    && \text{\Cref{def:ua}} \\
     &= P^*(\appr{1}{f})
-    &&\quad\text{\Cref{lemma:algebra-iso-equiv}}
+    && \text{\Cref{lemma:algebra-iso-equiv}}
   \end{align*}
   The last step utilizes the idea of \textit{proof-relevant
     mathematics}. Although we define $q$ within a proof, we can (without
@@ -1678,22 +1678,22 @@ the following auxiliary result:
   use of \cref{notation:weq-coerce}. Working from the other side of the
   equation, we can use the computational rule of univalence (\cref{def:ua}):
   \begin{align*}
-    \beta(\transport{\id_\universe}{\apply{\ua}{q}}{x})
-    = \beta(\apply{q}{x})
-    = \beta({\appr{1}{f}}{x})
+    β(\transport{\id_\universe}{\apply{\ua}{q}}{x})
+    = β(\apply{q}{x})
+    = β({\appr{1}{f}}{x})
   \end{align*}
   Thus, we now want to demonstrate that
   \begin{align*}
-    P^*(\appr{1}{f})(\alpha x) &=
-    \transport{P}{\apply{\ua}{q}}{\apply{\alpha}{x}} \\
-    &= \beta(\transport{\id_\universe}{p}{x}) \\
-    &= \beta({\appr{1}{f}}{x})
+    P^*(\appr{1}{f})(α x) &=
+    \transport{P}{\apply{\ua}{q}}{\apply{α}{x}} \\
+    &= β(\transport{\id_\universe}{p}{x}) \\
+    &= β({\appr{1}{f}}{x})
   \end{align*}
   However, this is exactly the condition that $f$ is a $P$-coalgebra morphism:
   \TODO{reference definition}
   \begin{center}
     \begin{tikzcd}[column sep=large]
-      X  \arrow[d, "\alpha"] \arrow[r, "\appr{1}{f}"] & Y \arrow[d, "\beta"] \\
+      X  \arrow[d, "α"] \arrow[r, "\appr{1}{f}"] & Y \arrow[d, "β"] \\
       FX \arrow[r, "P^*(\appr{1}{f})"] & FY
     \end{tikzcd}
   \end{center}
@@ -1701,20 +1701,18 @@ the following auxiliary result:
 
 \begin{definition}\label[definition]{def:limitt}
 	Given a family of types $X:\N\to\universe$ and a family of functions
-  $\pi_n:X_{n+1}\to X_n$, the \define{limit} of $(X,\pi)$ is the type
+  $π_n:X_{n+1}\to X_n$, the \define{limit} of $(X,π)$ is the type
   \begin{equation*}
-    L(X,\pi)\defeq \sigmat{x:\pit{n:\N}{X_n}}{\pit{n:\N}\pi_nx_{n+1}=x_n}
+    L(X,π)\defeq \∑{x:\∏{n:\N}{X_n}}{\∏{n:\N}π_nx_{n+1}=x_n}
   \end{equation*}
   We give special names to the projection maps for limits: $p \defeq \pr{1}$ and
-  $\beta \defeq \pr{2}$.
+  $β \defeq \pr{2}$.
 \end{definition}
 
 \begin{lemma}\label[lemma]{lemma:limitt-universal}
 	There is an equivalence of types
   \begin{equation*}
-    \weq{(A\to L(X,\pi))}{
-      \sigmat{f:\pit{n:\N}A\to X_n}{\pit{n:\N}{\pi_n\circ f_{n+1}=f_n}}
-    }
+    \weq{(A\to L(X,π))}{\∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{π_n∘ f_{n+1}=f_n}}}
   \end{equation*}
 \end{lemma}
 \begin{proof}
@@ -1722,24 +1720,24 @@ the following auxiliary result:
   compose to the respective identities.\TODO{reference definition}
   First, define
   \begin{gather*}
-    \phi :(A\to L(X,\pi)) \longrightarrow \sigmat{f:\pit{n:\N}A\to X_n}{\pit{n:\N}{\pi_n\circ f_{n+1}=f_n}} \\
-    \phi(g) \defeq
-    \dpair{\lam{n}\lam{a}\appply{p}{(\apply{g}{a})}{n}}
-          {\lam{n}\appply{\beta}{(\apply{g}{a})}{n})}
+    ϕ :(A\to L(X,π)) ⟶ \∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{π_n∘ f_{n+1}=f_n}} \\
+    ϕ(g) \defeq
+    \dpair{\λ{n}\λ{a}\appply{p}{(\apply{g}{a})}{n}}
+          {\λ{n}\appply{β}{(\apply{g}{a})}{n})}
   \intertext{and}
-    \psi : \paren*[\bigg]{\sigmat{f:\pit{n:\N}A\to X_n}{\pit{n:\N}{\pi_n\circ f_{n+1}=f_n}}}
-          \to A\to L(X,\pi) \\
-    \psi((f; h)) \defeq \lam{a:A} \dpair{\lam{n}\appply{f}{n}{a}}{h}
+    ψ : \paren*[\bigg]{\∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{π_n∘ f_{n+1}=f_n}}}
+          \to A\to L(X,π) \\
+    ψ((f; h)) \defeq \λ{a:A} \dpair{\λ{n}\appply{f}{n}{a}}{h}
   \end{gather*}
   Their composites are judgmentally equal to the appropriate identities.
   \TODO{should I include proof?}
 \end{proof}
 
 \begin{lemma}\label[lemma]{lemma:cochains}
-	If $X:\N\to\universe$ is a family of types, $\rho:\pit{n:\N}{X_n\to X_{n+1}}$ is a
+	If $X:\N\to\universe$ is a family of types, $ρ:\∏{n:\N}{X_n\to X_{n+1}}$ is a
   family of functions, and
   \begin{equation*}
-    Z\defeq \sigmat{x:\pit{n:\N}X_n}{\pit{n:\N}x_{n+1}=\rho_n(x_n)},
+    Z\defeq \∑{x:\∏{n:\N}X_n}{\∏{n:\N}x_{n+1}=ρ_n(x_n)},
   \end{equation*}
   then $\weq{Z}{X_0}$, that is, limits of cochains are entirely determined by
   the first element.
@@ -1748,7 +1746,7 @@ the following auxiliary result:
   Consider again the functor of \cref{ex:nat}, specialized to the case of
   $\bfC\defeq\universe$:
   \begin{gather*}
-    G:\universe \longrightarrow \universe  \\
+    G:\universe ⟶ \universe  \\
     G(W) \defeq 1+W
   \end{gather*}
   A $G$-algebra is given by a type $W:\universe$, a point in $W$, and a function
@@ -1814,3 +1812,4 @@ of \cite{non-wellfounded} (under the column \MTypes{}).
 \index{$F$-algebra|see {Algebra for a functor}}
 \printindex
 \end{document}
+
