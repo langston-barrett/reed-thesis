@@ -28,6 +28,7 @@
 \input{../tex-preamble/problems.tex}
 \input{../tex-preamble/logic.tex}
 \input{../tex-preamble/hott.tex}
+\usepackage{rotating}
 \newcommand{\abbreviation}[1]{\textbf{#1}\indeX{#1@\textbf{#1}}} % abbreviations
 \usepackage{makeidx}
 \usepackage{prftree}\setlength{\prfinterspace}{1.2em}
@@ -208,7 +209,7 @@ than \abbreviation{FOL} to find disagreements.
 In this chapter, we will present several logical
 and computational frameworks of increasing complexity.
 We will begin with general remarks on discussing and defining formal systems in
-\cref{sec:discussing-logic}. \Cref{sec:natural-deduction} begins with an
+\cref{sec:discussing-logic}. \Cref{sec:ipl} begins with an
 intuitionistic version of Gentzen's natural deduction
 \cite{gentzen1935untersuchungen} that we will call \abbreviation{IPL}. As most
 mathematicians, computer scientists, and philosophers are quite familiar with
@@ -265,11 +266,11 @@ systems for logic and computation.
   question mark, e.g.\ $\mvar{a}$.
 \end{notation}
 
-We will discuss metavariables and see many examples in the next section. 
-We will follow Martin-L\"of in defining our object languages in terms of
-judgments \cite{martin-lof-meanings}, and touch on some of the relevant meaning
-explanations \cite{martin-lof-constructive}. See \cite{modal-judgment} for a
-more through exposition of these concepts.
+See \cref{fig:structure}, \cref{ex:judgments}, and \cref{sec:ipl} for examples
+of metavariables. We will follow Martin-L\"of in defining our object languages
+in terms of judgments \cite{martin-lof-meanings}, and touch on some of the
+relevant meaning explanations \cite{martin-lof-constructive}. See
+\cite{modal-judgment} for a more through exposition of these concepts.
 
 \begin{definition}\label[definition]{def:judgment}
 	A \define{judgment}\index{Judgment} is something that could be known. A
@@ -279,11 +280,13 @@ more through exposition of these concepts.
   holds under the assumption that some other judgments hold.
 \end{definition}
 
-\begin{example}
+\begin{example}\label[example]{ex:judgments}
   Here are some examples of common judgments in logic:
   \begin{itemize}
     \itemsep0em
-    \item $\mvar{a}$ is a well-formed formula 
+    \item $\mvar{a}$ is a well-formed formula\footnote{The metavariables in
+        these examples are to be understood as ranging over well-formed
+        expressions of some unspecified object language.}
     \item $\mvar{a}$ is a proposition
     \item if $\mvar{a}$ and $\mvar{b}$ are propositions, then
       $\mvar{a}\land \mvar{b}$ is a proposition (this judgment is hypothetical)
@@ -295,6 +298,22 @@ more through exposition of these concepts.
   If one is working in a formal metalanguage, judgments may be defined
   inductively in it.
 \end{example}
+
+\begin{figure}
+  \centering
+  \begin{equation*}
+    \overbrace{\text{I know} \overbrace{\underbrace{\mvar{A}}_{\text{Expression}}\text{ is true}}^{\text{Judgment}}}^{\text{Evident judgment}}
+  \end{equation*}
+  \caption{\label{fig:structure}The structure of a judgment}
+\end{figure}
+
+\begin{figure}
+  \centering
+  % TODO
+  % \begin{tikzpicture}
+  % \end{tikzpicture}
+  \caption{\label{fig:structure}Nested languages, formal and informal}
+\end{figure}
 
 \begin{notation}\label[notation]{notation:proof-tree}
   The premises and conclusions of proofs or rules of deduction are always
@@ -326,14 +345,14 @@ more through exposition of these concepts.
     entailment.} which are the following meta-rules (where $J$ and $K$ stand for
   judgments):
   \begin{align*}
-    \prftree[r]{}{}
+    \prftree[r]{\footnotesize refl}{}
       {\Gamma,J,\Theta\vdash J}
     &&
-    \prftree[r]{}
+    \prftree[r]{\footnotesize weak}
       {\Gamma\vdash J}
       {\Gamma,K\vdash J}
     &&
-    \prftree[r]{}
+    \prftree[r]{\footnotesize subst}
       {\Gamma,K,\Theta\vdash J}{\Gamma\vdash K}
       {\Gamma,\Theta\vdash J}
   \end{align*}
@@ -349,8 +368,8 @@ more through exposition of these concepts.
 \end{notation}
 
 \section{Intuitionistic propositional logic}
-\label{sec:natural-deduction}
-
+\label{sec:ipl}
+\newlength{\oldjot}\setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
 With these notations, we are prepared to define \abbreviation{IPL}. 
 The first judgment of natural deduction is that some term $\mvar{a}$ represents
 a proposition (for example, all well-formed formulae represent propositions). We
@@ -360,7 +379,7 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
   $\lnot$ is read ``not'', $\lor$ is read ``or'',
   $\land$ is read ``and'', $\Rightarrow$ is read ``implies'', $\forall$ is read
   ``for all'', and $\exists$ is read ``there exists''.
-  The rules for deriving truth will justify these readings.}\newlength{\oldjot}\setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
+  The rules for deriving truth will justify these readings.}
 \begin{gather*}
   \prftree[r]{}{}{\prop{\top}}
   \qquad
@@ -379,7 +398,7 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
   \qquad
   \prftree[r]{}
      {\prop{\mvar{a}}}{\prop{\mvar{b}}}
-     {\prop{\mvar{a}\lor \mvar{b}}} \\
+     {\prop{\mvar{a}\lor \mvar{b}}}
   % \prftree[r]{}
   %    {\mvar{a}\prop}{v\notin\FV(\mvar{a})}
   %    {\forall v.\mvar{a}}
@@ -443,8 +462,8 @@ antecedent and the conclusion is the consequent. Implication allows us to
 turning them into non-hypothetical ones:
 \begin{equation*}
   \prftree[r]{}
-     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}\vdash \mvar{q}:\mvar{b}}
-     {\vdash\intro{(\Rightarrow)}(\mvar{p},\mvar{q}):\mvar{a}\Rightarrow\mvar{b}}.
+     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\Gamma,\mvar{p}:\mvar{a},\Theta\vdash \mvar{q}:\mvar{b}}
+     {\Gamma,\Theta\vdash\intro{(\Rightarrow)}(\mvar{p},\mvar{q}):\mvar{a}\Rightarrow\mvar{b}}.
 \end{equation*}
 
 \begin{definition}\label[definition]{def:valid-theorem}
@@ -453,7 +472,7 @@ turning them into non-hypothetical ones:
   \begin{equation*}
     \prftree[r]{}
       {\vdash\prop{\mvar{a}}}{\vdash\mvar{p}:\mvar{a}}
-      {\valid{\mvar{a}}}.
+      {\vdash\valid{\mvar{a}}}.
   \end{equation*}
   In this case, we say that $\mvar{a}$ is a \define{theorem} of \abbreviation{IPL}.
 \end{definition}
@@ -479,10 +498,111 @@ If both disjuncts imply a hypothesis, so does their disjunction:
     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\prop{\mvar{c}}}
     {\mvar{p}:\mvar{a}\Rightarrow \mvar{c}}
     {\mvar{q}:\mvar{b}\Rightarrow \mvar{c}}
-    {\mvar{r}:\mvar{a}\lor\mvar{c}}
-    {\elim{\lor}(p,q,r):\mvar{c}},
+    {\mvar{r}:\mvar{a}\lor\mvar{b}}
+    {\elim{\lor}(p,q,r):\mvar{c}}.
+\end{align*}
+The elimination rule for implication has the common name \define{modus ponens},
+and expresses the idea that, if we had a hypothetical judgment and then come to
+know all of the hypotheses, we can deduce the consequence:
+\begin{align*}
+  \prftree[r]{}
+    {\prop{\mvar{a}}}{\prop{\mvar{b}}}
+    {\mvar{p}:\mvar{a}\Rightarrow \mvar{b}}
+    {\mvar{q}:\mvar{a}}
+    {\elim{(\Rightarrow)}(p,q):\mvar{b}}.
+\end{align*}
+The elimination rule for falsehood comes from the principle
+\textit{ex falso quod libet}, ``from falsehood anything follows''. If we've been
+able to prove $\bot$, our whole logic is bankrupt and we can derive anything we
+please: 
+\begin{align*}
+  \prftree[r]{}
+    {\prop{\mvar{a}}}
+    {\mvar{p}:\bot}
+    {\elim{\bot}(p):\mvar{a}}.
 \end{align*}
 
+\begin{example}\label[example]{ex:ipl-and-comm}
+  The following proves the classical tautology that $\land$ is commutative:
+  $\mvar{a}\land\mvar{b}\vdash \mvar{b}\land\mvar{a}$.
+  \begin{equation*}
+    \prftree[r]{}
+      {\prftree[r]{}
+        {\mvar{p}:\mvar{a}\land\mvar{b}}
+        {\elimr{\land}(\mvar{p}):\mvar{b}}}
+      {\prftree[r]{}
+        {\mvar{p}:\mvar{a}\land\mvar{b}}
+        {\eliml{\land}(\mvar{p}):\mvar{a}}}
+      {\intro{\land}(\elimr{\land}(\mvar{p}),\eliml{\land}(\mvar{p})):\mvar{b}\land\mvar{a}}
+  \end{equation*}
+  This also serves as a short verification that the introduction and elimination
+  rules for conjunction complement one another well. As we can see, the 
+  \define{proof objects}, which are what comes before the $:$, always summarize
+  the full proof tree.\TODO{analytic/synthetic}
+\end{example}
+
+\begin{definition}\label[definition]{def:lem-dne}
+  The \define{law of the excluded middle}\index{Law of excluded middle} (from
+  the syllogistic principle \textit{tertium non datur}, ``no third is given'')
+  is the following rule of deduction:
+  \begin{equation*}
+    \prftree[r]{\footnotesize LEM}
+      {\prop{\mvar{a}}}
+      {\mathsf{lem}(\mvar{a}):\true{\mvar{a}\lor\lnot\mvar{a}}}.
+  \end{equation*}
+  It is inter-derivable with the rule of \define{double negation elimination}:
+  \index{Double negation elimination}
+  \begin{equation*}
+    \prftree[r]{\footnotesize DNE}
+      {\prop{\mvar{a}}}{\mvar{p}:\lnot\lnot\mvar{a}}
+      {\mathsf{dne}(\mvar{p}):\mvar{a}}.
+  \end{equation*}
+\end{definition}
+
+\begin{example}\label[example]{ex:ipl-not-not-lem}
+  A crucial consequence of the definition of \abbreviation{IPL} is that the law
+  of excluded middle doesn't hold universally. However, we can demonstrate that
+  its negation doesn't either. See \cref{fig:lem-refute} for details, keeping
+  the following in mind:
+  \begin{itemize}
+    \itemsep0em
+    \item for brevity, we abbreviate our hypothesis
+      $\mvar{h}:\lnot(\mvar{a}\lor\lnot \mvar{a})$ as $\mvar{h}:H$
+    \item we do not name the proof terms
+    \item $\lnot\mvar{a}\equiv \mvar{a}\Rightarrow\bot$
+    \item the proof uses exchange (see footnote to \cref{notation:sequent}),
+      which we haven't discussed the rules for
+  \end{itemize}
+  The law of the excluded middle will be discussed further in \cref{subsec:on-lem}.
+  \TODO{cite bob harper}
+\end{example}
+\begin{figure}[ht]
+  \centering
+  \begin{sideways}
+    \prftree[r]{}
+      {\prftree[r]{}
+        {\prftree[r]{}
+          {\prftree[r]{}
+            {\prftree[r]{}
+              {\prftree[r]{\footnotesize weak}
+                {\prftree[r]{}
+                  {\prftree[r]{\footnotesize refl}
+                    {\mvar{p}:\mvar{a}\vdash\mvar{p}:\mvar{a}}}
+                  {\mvar{p}:\mvar{a}\vdash\introl{\lor}(\mvar{p}):\mvar{a}\lor\lnot\mvar{a}}}
+                {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\introl{\lor}(\mvar{p}):\mvar{a}\lor\lnot\mvar{a}}}
+              {\prftree[r]{\footnotesize weak, refl}
+                {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\mvar{h}:\lnot(\mvar{a}\lor\lnot \mvar{a})}}
+              {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\intro{\bot}(\introl{\lor}(\mvar{p}),\mvar{h}):\bot}}
+            {\mvar{h}:H\vdash\intro{(\Rightarrow)}(\mvar{p},\intro{\bot}(\introl{\lor}(\mvar{p}),\mvar{h})):\lnot\mvar{a}}}
+          {\mvar{h}:H\vdash\intror{\lor}(\intro{(\Rightarrow)}(\mvar{p},\intro{\bot}(\introl{\lor}(\mvar{p}),\mvar{h}))):\mvar{a}\lor\lnot \mvar{a}}}
+        {\prftree[r]{\footnotesize refl}
+          {\mvar{h}:H\vdash\mvar{h}:\lnot(\mvar{a}\lor\lnot \mvar{a})}}
+        {\mvar{h}:H\vdash \intro{\bot}(\intror{\lor}(\intro{(\Rightarrow)}(\mvar{p},\intro{\bot}(\introl{\lor}(\mvar{p}),\mvar{h}))),\mvar{h}):\bot}}
+      {\intro{(\Rightarrow)}(\mvar{h}, \intro{\bot}(\intror{\lor}(\intro{(\Rightarrow)}(\mvar{p},\intro{\bot}(\introl{\lor}(\mvar{p}),\mvar{h}))),\mvar{h})):\lnot (\lnot(\mvar{a}\lor\lnot \mvar{a}))}
+  \end{sideways}
+  \caption{\label{fig:lem-refute} A proof that the law of the excluded middle is
+    not refuted in IPL.}
+\end{figure}
 
 % To define the rules for introducing quantifiers, we must deal with the issue of
 % free and bound variables. Our second judgment expresses that $v$ is a free variable
@@ -628,7 +748,7 @@ for \textit{all} types.
 \label{subsec:pi-types}
 
 \subsubsection{On the law of the excluded middle}
-\label{subsec:on-the-law-of-the-excluded-middle}
+\label{subsec:on-lem}
 
 \TODO{introduce the topic based on previous sections}
 
@@ -654,33 +774,15 @@ As you may have already guessed, under the Curry-Howard correspondence, these
 functions correspond to the rule of double negation elimination
 ($\mathsf{dne}$)\index{Double negation elimination}
 and the law of excluded middle ($\mathsf{lem}$)\index{Law of excluded middle}
-(from the principle \textit{Tertium Non Datur}):
+\cref{def:lem-dne}.
 
-\begin{minipage}[b]{0.50\linewidth}
-  \centering
-  \begin{displaymath}
-    \prftree[r]{\footnotesize DNE}
-      {\prop{P}}{\true{\lnot\lnot P}}
-      {\true{P}}
-  \end{displaymath}
-\end{minipage}
-\begin{minipage}[b]{0.50\linewidth}
-  \centering
-  \begin{displaymath}
-    \prftree[r]{\footnotesize LEM}
-      {\prop{P}}
-      {\true{P\lor\lnot P}}
-  \end{displaymath}
-\end{minipage}
-\vspace{-0.3em}
-
-\noindent These are logically equivalent. To demonstrate with finality that
-these are not definable terms in any consistent type theory, consider the
-application of $\mathsf{lem}$ to a type $\mathsf{pnp}$ that corresponds to the
-$\textsc{P}\neq\textsc{NP}$ conjecture under the types-as-propositions
-interpretation. If $\mathsf{lem}$ existed, we could trivially solve this problem
-and make a million dollars! We need no recourse to philosophy to justify the
-constructive/intuitionistic logic of proof assistants: nothing else computes.
+To demonstrate with finality that these are not definable terms in any
+consistent type theory, consider the application of $\mathsf{lem}$ to a type
+$\mathsf{pnp}$ that corresponds to the $\textsc{P}\neq\textsc{NP}$ conjecture
+under the types-as-propositions interpretation. If $\mathsf{lem}$ existed, we
+could trivially solve this problem and make a million dollars! We need no
+recourse to philosophy to justify the constructive/intuitionistic logic of proof
+assistants: nothing else computes.
 
 \section{$h$-levels and truncation}
 \label{sec:$h$-levels and truncation}
