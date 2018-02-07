@@ -63,16 +63,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% My stuff:
 
 \title{Deriving Coinductive Types in Univalent Type Theory}
-% \title{Bruh: $(A\simeq B)\simeq (A=_{\mathcal{U}}B)$}
 \author{Langston Barrett}
-% The month and year that you submit your FINAL draft TO THE LIBRARY (May or December)
 \date{May 2018}
 \division{Mathematics and Natural Sciences}
 \advisor{Safia Chettih}
 \department{Mathematics}
-% if you're writing a thesis in an interdisciplinary major,
-% uncomment the line below and change the text as appropriate.
-% check the Senior Handbook if unsure.
 \thedivisionof{The Established Interdisciplinary Committee for}
 
 \setlength{\parskip}{0pt}
@@ -114,7 +109,6 @@
 % if you want a list of figures, also optional
 % \listoffigures
 
-% If your abstract is longer than a page, there may be a formatting issue.
 \chapter*{Abstract}
 
 In this thesis, we explain Univalent type theory, a constructive and
@@ -206,13 +200,12 @@ than \abbreviation{FOL} to find disagreements.
 \chapter{Propositions and Types}
 \label[chapter]{chap:propositions-and-types}
 
-In this chapter, we will present several logical
-and computational frameworks of increasing complexity.
+In this chapter, we will present a logical and a computational framework.
 We will begin with general remarks on discussing and defining formal systems in
 \cref{sec:discussing-logic}. \Cref{sec:ipl} begins with an
-intuitionistic version of Gentzen's natural deduction
-\cite{gentzen1935untersuchungen} that we will call \abbreviation{IPL}. As most
-mathematicians, computer scientists, and philosophers are quite familiar with
+intuitionistic, proof-relevant version of Gentzen's natural deduction
+\cite{gentzen1935untersuchungen} called \abbreviation{IPL}. As most
+mathematicians, computer scientists, and philosophers are familiar with
 some version of first-order logic, this section will focus on the introduction
 of notation, meta-logical concerns, and the key differences between
 \abbreviation{IPL} and \abbreviation{FOL}. In \cref{sec:the-lambda-calculus}, we
@@ -232,6 +225,10 @@ The presentation of \crefrange{sec:ipl}{sec:the-lambda-calculus} is influenced b
 Philip Wadler \cite{wadler-propositions}, Frank Pfenning's lecture notes for
 ``Constructive Logic'', and Robert Harper's lectures on
 \abbreviation{HoTT}.\TODO{citation}
+
+Two recent Reed graduates wrote theses on the Curry-Howard correspondence, both
+taking a different approach in presentation that may complement this work,
+\cite{curry-howard-reed-thesis} and \cite{process-calculi-reed-thesis}.
 
 \begin{notation}\label[notation]{notation:parens}
   Throughout this thesis, we will omit parentheses when applying function-like
@@ -256,11 +253,11 @@ philosophers and mathematicians alike have argued that Skolem's
 ``paradox''\footnote{The L\"owenheim-Skolem theorem states that
   \abbreviation{ZFC} has a countable model. The paradox is that the statement
   ``there are uncountable sets'' is (famously) a theorem of \abbreviation{ZFC},
-  Cantor's.} has deep and significant consequences \cite{skolem}. These
-misunderstandings both arise from a common root: the failure to distinguish
-between object language and metalanguage. In this section, we will attempt to
-mitigate some of the difficulties that arise when discussing and defining formal
-systems for logic and computation.
+  Cantor's.} has deep and significant consequences for the philosophy of
+mathematics \cite{skolem}. These misunderstandings both arise from a common
+root: the failure to distinguish between object language and metalanguage. In
+this section, we will attempt to mitigate some of the difficulties that arise
+when discussing and defining formal systems for logic and computation.
 
 \begin{definition}\label[definition]{def:object-meta-language}
   When discussing or defining a formal language (most commonly, a
@@ -355,32 +352,36 @@ of metavariables.
 \begin{notation}\label[notation]{notation:sequent}
   If $B$ is a hypothetical judgment holding under assumptions $A_1,\ldots,A_n$,
   we denote this by $A_1,\ldots,A_n\vdash B$.\footnote{This is called Gentzen's
-  \define{sequent notation}, $\vdash$ can be read ``entails''.} A hypothetical
-  judgment of this form is distinguished from the deduction of $B$ from premises
-  $A_1,\ldots,A_n$ (shown in \cref{notation:proof-tree}).
+  \define{sequent notation}, $\vdash$ can be read ``(syntactically) entails''.}
+  A hypothetical judgment of this form is distinguished from the deduction of
+  $B$ from premises $A_1,\ldots,A_n$ (shown in \cref{notation:proof-tree}).
 
   To denote some arbitrary sequence of hypotheses, we will use capital Greek
-  letters $\Gamma$ and $\Theta$. Our notions of entailment will always allow for
-  \define{reflexivity}, \define{weakening}, and
-  \define{substitution},\footnote{Crucially, we won't
-    always allow for \define{interchange}, which allows one to reorder the
-    hypotheses. Weakening and exchange are two of the \define{structural rules} of
-    entailment.} which are the following meta-rules (where $J$ and $K$ stand for
-  judgments):
-  \begin{align*}
+  letters $\Gamma$, $\Delta$, and $\Theta$. Our notions of entailment will
+  always allow for \define{reflexivity}, \define{weakening}, \define{contraction},
+  \define{substitution}, and \cref{sec:ipl} will allow for \define{exchange}, 
+  which are the following meta-rules (where $J$, $K$, and $L$ stand for judgments):
+  \newlength{\oldjot}\setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
+  \begin{gather*}
     \prftree[r]{\footnotesize refl}{}
-      {\Gamma,J,\Theta\vdash J}
-    &&
+      {\Gamma,J,\Delta\vdash J}
+    \qquad
     \prftree[r]{\footnotesize weak}
       {\Gamma\vdash J}
       {\Gamma,K\vdash J}
-    &&
+    \qquad
+    \prftree[r]{\footnotesize contr}
+      {\Gamma,K,\Delta,K,\Theta\vdash J}
+      {\Gamma,K,\Delta,\Theta\vdash J} \\
     \prftree[r]{\footnotesize subst}
-      {\Gamma,K,\Theta\vdash J}{\Gamma\vdash K}
-      {\Gamma,\Theta\vdash J}
-  \end{align*}
-  When something is derivable under no (and so by weakening, any) hypotheses, we
-  may leave off the $\vdash$. 
+      {\Gamma,K,\Delta\vdash J}{\Gamma\vdash K}
+      {\Gamma,\Delta\vdash J}
+    \qquad
+    \prftree[r]{\footnotesize ex}
+      {\Gamma,J,\Delta,K,\Theta \vdash L}
+      {\Gamma,K,\Delta,J,\Theta \vdash L}
+  \end{gather*}
+  \setlength{\jot}{\oldjot}
 \end{notation}
 
 \begin{notation}\label[notation]{notation:substitution}
@@ -398,7 +399,7 @@ With these notations, we are prepared to define \abbreviation{IPL}.
 \subsection{Formation rules}
 \label{subsec:ipl-form}
 
-\newlength{\oldjot}\setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
+\setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
 Since \abbreviation{IPL} is supposed to be a logic, we better have a notion of a
 proposition.\footnote{Why do we judge that terms are propositions, instead of
   well-formed formulae? Propositions are strictly more general. With
@@ -416,24 +417,23 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
   ``for all'', and $\exists$ is read ``there exists''.
   The rules for deriving truth will justify these readings.}
 \begin{gather*}
-  \prftree[r]{}{}{\prop{\top}}
+  \prftree[r]{}{}{\Gamma\vdash\prop{\top}}
   \qquad
-  \prftree[r]{}{}{\prop{\bot}}
-  \qquad
-  \prftree[r]{}
-    {\prop{\mvar{a}}}
-    {\prop{\lnot \mvar{a}}} \\
-  \prftree[r]{}
-     {\prop{\mvar{a}}}{\prop{\mvar{b}}}
-     {\prop{\mvar{a}\rightarrow \mvar{b}}}
+  \prftree[r]{}{}{\Gamma\vdash\prop{\bot}}
   \qquad
   \prftree[r]{}
-     {\prop{\mvar{a}}}{\prop{\mvar{b}}}
-     {\prop{\mvar{a}\land \mvar{b}}}
+    {\prop{\Gamma\vdash\mvar{a}}}
+    {\prop{\Gamma\vdash\lnot \mvar{a}}} \\
+  \prftree[r]{}
+     {\Gamma\vdash\prop{\mvar{a}}}{\Gamma\vdash\prop{\mvar{b}}}
+     {\Gamma\vdash\prop{\mvar{a}\rightarrow \mvar{b}}}
   \qquad
   \prftree[r]{}
-     {\prop{\mvar{a}}}{\prop{\mvar{b}}}
-     {\prop{\mvar{a}\lor \mvar{b}}}
+     {\Gamma\vdash\prop{\mvar{a}}}{\Gamma\vdash\prop{\mvar{b}}}
+     {\Gamma\vdash\prop{\mvar{a}\land \mvar{b}}} \\
+  \prftree[r]{}
+     {\Gamma\vdash\prop{\mvar{a}}}{\Gamma\vdash\prop{\mvar{b}}}
+     {\Gamma\vdash\prop{\mvar{a}\lor \mvar{b}}}
   % \prftree[r]{}
   %    {\mvar{a}\prop}{v\notin\FV(\mvar{a})}
   %    {\forall v.\mvar{a}}
@@ -461,7 +461,7 @@ ways of proving a proposition are called \define{introduction rules}.
 The symbol $\top$ represents the trivially true proposition. Accordingly, we
 give it a trivial proof (with a weird name which will make sense later):
 \begin{equation*}
-  \prftree[r]{}{}{\unitelem:\top}.
+  \prftree[r]{}{}{𝛤Γ\vdash\unitelem:\top}.
 \end{equation*}
 
 How do we know a conjunction? Intuitively, we know (have a proof of) $\mvar{a}$
@@ -627,8 +627,6 @@ represent propositions.
     \item for brevity, we abbreviate our hypothesis
       $\mvar{h}:\lnot(\mvar{a}\lor\lnot \mvar{a})$ as $\mvar{h}:H$
     \item $\lnot\mvar{a}\equiv \mvar{a}\rightarrow\bot$
-    \item the proof uses exchange (see footnote to \cref{notation:sequent}),
-      which we haven't discussed the rules for
   \end{itemize}
   \begin{center}
   \noindent\makebox[\textwidth]{%
@@ -643,9 +641,11 @@ represent propositions.
                     {\mvar{p}:\mvar{a}\vdash\mvar{p}:\mvar{a}}}
                   {\mvar{p}:\mvar{a}\vdash\apply{\inl}{\mvar{p}}:\mvar{a}\lor\lnot\mvar{a}}}
                 {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\apply{\inl}{\mvar{p}}:\mvar{a}\lor\lnot\mvar{a}}}
-              {\prftree[r]{\footnotesize weak}
-                {\prftree[r]{\footnotesize refl}
-                  {\mvar{h}:H\vdash\mvar{h}:H}}
+              {\prftree[r]{\footnotesize ex}
+                {\prftree[r]{\footnotesize weak}
+                  {\prftree[r]{\footnotesize refl}
+                    {\mvar{h}:H\vdash\mvar{h}:H}}
+                  {\mvar{h}:H,\mvar{p}:\mvar{a}\vdash\mvar{h}:H}}
                 {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\mvar{h}:H}}
               {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\apply{\mvar{h}}{(\apply{\inl}{\mvar{p}})}:\bot}}
             {\mvar{h}:H\vdash\lam{v}\apply{\mvar{h}}{(\apply{\inl}{v})}:\lnot\mvar{a}}}
