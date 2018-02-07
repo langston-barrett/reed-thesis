@@ -1,0 +1,32 @@
+% requires
+
+% one with more spacing. ideally, this would auto-adapt to surroundings
+\renewcommand{\:}{\hspace{0.3ex}:\hspace{0.3ex}}
+
+\definecolor{mvar}{HTML}{22CC00}
+\newcommand{\mvar}[1]{{\color{mvar} #1}}          % TODO: capitalize
+
+\newcommand{\FV}{\ensuremath{\mathsf{FV}}}
+\newcommand{\BV}{\ensuremath{\mathsf{BV}}}
+
+% application
+\newcommand{\apspace}{\hspace{0.25em}}
+\newcommand{\apply}[2]{#1\apspace #2} % apply a function to its argument
+\newcommand{\appply}[3]{#1\apspace #2 \apspace #3}
+\newcommand{\apppply}[4]{#1\apspace #2 \apspace #3 \apspace #4}
+\newcommand{\appppply}[5]{#1\apspace #2 \apspace #3 \apspace #4 \apspace #5}
+
+% application
+\newcommand{\lam}[2]{\lambda #1.\apspace#2}               % λ-abstraction
+
+% Judgments
+\newcommand{\judgment}[2]{#2\hspace{0.4em}\text{#1}}
+\newcommand{\prop}[1]{\judgment{prop}{#1}}
+\newcommand{\type}[1]{\judgment{type}{#1}}
+\newcommand{\true}[1]{\judgment{true}{#1}}
+\newcommand{\valid}[1]{\judgment{valid}{#1}}
+\newcommand{\intro}[1]{#1\text{-intro}}
+\newcommand{\intror}[1]{#1\text{-intro}_{\text{r}}}
+\newcommand{\elim}[1]{#1\text{-elim}}
+\newcommand{\eliml}[1]{#1\text{-elim}_{\text{l}}}
+\newcommand{\elimr}[1]{#1\text{-elim}_{\text{r}}}

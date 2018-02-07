@@ -1,11 +1,11 @@
-% \DeclareMathOperator{\refl}{\mathtt{refl}}
-% \DeclareMathOperator{\ind}{\mathtt{ind}}
-
-% one with more spacing. ideally, this would auto-adapt to surroundings
-\renewcommand{\:}{\hspace{0.3ex}:\hspace{0.3ex}}
-\newcommand{\lam}[2]{\lambda #1.#2}
-
+% requires logic.tex
 % some of this is based on HoTT/HoTT
+
+\newcommand{\ttfun}[1]{\ensuremath{\mathsf{#1}}}  % type-theoretic functions
+
+% recurors
+\newcommand{\case}{\ttfun{case}}
+\newcommand{\rec}{\ttfun{rec}}
 
 \newcommand{\emptytype}{\ensuremath{\mathbf{0}}}  % empty type
 \newcommand{\unittype}{\ensuremath{\mathbf{1}}}   % unit type
@@ -13,30 +13,31 @@
 \newcommand{\booltype}{\ensuremath{\mathbf{2}}}   % two element type
 \newcommand{\btrue}{1_{\booltype}}                 % inhabitant of two element type
 \newcommand{\bfalse}{0_{\booltype}}                % inhabitant of two element type
-\newcommand{\inl}{\ensuremath{\mathsf{inl}}}
-\newcommand{\inr}{\ensuremath{\mathsf{inr}}}
+\newcommand{\inl}{\ttfun{inl}}
+\newcommand{\inr}{\ttfun{inr}}
 \newcommand{\universe}{\ensuremath{\mathcal{U}}}         % universe type
 \newcommand{\universei}[1]{\ensuremath{\mathcal{U}_{#1}}}  % ith universe
 
-\newcommand{\sigmat}[2]{\ensuremath{\sum_{\paren{#1}}#2}}    % Σ-type
-\newcommand{\pr}[1]{\ensuremath{\mathsf{pr}_{#1}}}
-\newcommand{\pit}[2]{\ensuremath{\prod_{\paren{#1}}#2}}      % Π-type
-\newcommand{\refl}[1]{\ensuremath{\mathsf{refl}_{#1}}}      % reflexivity
+\newcommand{\sigmat}[2]{\ensuremath{\sum_{\paren*{#1}}#2}}    % Σ-type
+\newcommand{\dpair}[2]{\ensuremath{\paren{#1\hspace{0.1em};#2}}} % Σ-pair
+\newcommand{\pr}[1]{\ttfun{pr}_{#1}}
+\newcommand{\pit}[2]{\ensuremath{\prod_{\paren*{#1}}#2}}      % Π-type
+\newcommand{\refl}[1]{\ttfun{refl}_{#1}}      % reflexivity
 
 %%% Natural numbers
 \newcommand{\suc}{\mathsf{succ}}
 \newcommand{\add}{\mathsf{add}}
 
 %%% Lists
-\newcommand{\List}[1]{\ensuremath{\mathsf{List}(#1)}}
-\newcommand{\nil}{\ensuremath{\mathsf{nil}}}
-\newcommand{\cons}{\ensuremath{\mathsf{cons}}}
+\newcommand{\List}[1]{\ttfun{List}(#1)}
+\newcommand{\nil}{\ttfun{nil}}
+\newcommand{\cons}{\ttfun{cons}}
 
 %%% Function extensionality
 \newcommand{\funext}{\mathsf{funext}}
 \newcommand{\happly}{\mathsf{happly}}
 
-\newcommand{\isContr}{\ensuremath{\mathsf{isContr}}}
+\newcommand{\isContr}{\ttfun{isContr}}
 
 %%% Relations
 \newcommand{\jdeq}{\equiv}
@@ -45,9 +46,6 @@
 \newcommand{\weq}[2]{#1 \simeq #2}
 \newcommand{\homot}[2]{#1 \sim #2}
 
-\newcommand{\apspace}{\hspace{0.3em}}
-\newcommand{\apply}[2]{#1\apspace #2} % apply a function to its argument
-\newcommand{\appply}[3]{#1\apspace #2 \apspace #3}
 \newcommand{\appr}[2]{\apply{\pr{#1}}{#2}} % a combination of apply and pr
 
 \newcommand{\ap}[2]{\mathsf{ap}_{#1}{\paren{#2}}} % action on paths
@@ -57,6 +55,6 @@
 % \newcommand{\trans}[2]{\ensuremath{{#1}_{*}\mathopen{}\left({#2}\right)\mathclose{}}\xspace}
 % \let\Trans\trans
 % \newcommand{\transf}[1]{\ensuremath{{#1}_{*}}\xspace} % Without argument
-\newcommand{\transpor}[2]{\ensuremath{\mathsf{transport}^{#1}\paren{#2}}}
-\newcommand{\transport}[3]{\ensuremath{\mathsf{transport}^{#1}\paren{#2,#3}}}
-\newcommand{\transportname}{\ensuremath{\mathsf{transport}}}
+\newcommand{\transpor}[2]{\ttfun{transport}^{#1}\paren{#2}}
+\newcommand{\transport}[3]{\ttfun{transport}^{#1}\paren{#2,#3}}
+\newcommand{\transportname}{\ttfun{transport}}
