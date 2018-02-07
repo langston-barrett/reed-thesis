@@ -57,8 +57,8 @@
 \newtheorem{notation}[theorem]{Notation}
 \newtheorem{tt-rule}[theorem]{Rule}
 
-\newcommand{\Coalgtype}{\ensuremath{\mathsf{Coalg}}}
-\newcommand{\Final}{\ensuremath{\mathsf{Final}}}
+\newcommand{\Coalgtype}{\ensuremath{\ttfun{Coalg}}}
+\newcommand{\Final}{\ensuremath{\ttfun{Final}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% My stuff:
 
@@ -214,18 +214,43 @@ intuitionistic version of Gentzen's natural deduction
 \cite{gentzen1935untersuchungen} that we will call \abbreviation{IPL}. As most
 mathematicians, computer scientists, and philosophers are quite familiar with
 some version of first-order logic, this section will focus on the introduction
-of notation and meta-logical concerns. In \cref{sec:the-lambda-calculus}, we
+of notation, meta-logical concerns, and the key differences between
+\abbreviation{IPL} and \abbreviation{FOL}. In \cref{sec:the-lambda-calculus}, we
 will introduce Church's $\lambda$-calculus (typed and untyped). Finally, in
 \cref{sec:the-curry-howard-correspondence}, we will discuss the fundamental and
 harmonious relation between these systems known as the Curry-Howard
 correspondence.
 
+The vocabulary of \cref{sec:discussing-logic} is due to Martin-L\"of. He
+emphasized the importance of the notion of judgment (\cref{def:judgment})
+\cite{martin-lof-meanings} and justified the rules of his type theory
+by meaning explanations \cite{martin-lof-constructive}, which we will imitate
+in \cref{subsec:ipl-intro}. See \cite{modal-judgment} for a similar application
+of Martin-L\"of vocabulary to predicate logic.
+
+The presentation of \crefrange{sec:ipl}{sec:the-lambda-calculus} is influenced by
+Philip Wadler \cite{wadler-propositions}, Frank Pfenning's lecture notes for
+``Constructive Logic'', and Robert Harper's lectures on
+\abbreviation{HoTT}.\TODO{citation}
+
+\begin{notation}\label[notation]{notation:parens}
+  Throughout this thesis, we will omit parentheses when applying function-like
+  constructions wherever this results in no ambiguity. Function application is
+  left-associative. For example, for function-like constructions $f$, $g$, $h$,
+  and $i$ we have
+  \begin{align*}
+    \apply{f}{h}=f(h) &&
+    f(\apply{g}{h})=f(g(h)) && \appply{f}{(\apply{g}{i})}{h}=f(g(i))(h)
+  \end{align*}
+  and so on.
+\end{notation}
+
 \section{Discussing logic}
 \label{sec:discussing-logic}
 
 The observant student of logic may notice a problem in the usual definition of
-implication: one usually defines $P\Rightarrow Q$ as ``if whenever $P$ is true,
-$Q$ is true, then $P\Rightarrow Q$ is true''. It seems that in order to understand
+implication: one usually defines $P\rightarrow Q$ as ``if whenever $P$ is true,
+$Q$ is true, then $P\rightarrow Q$ is true''. It seems that in order to understand
 implication, one must first understand implication! More perniciously,
 philosophers and mathematicians alike have argued that Skolem's
 ``paradox''\footnote{The L\"owenheim-Skolem theorem states that
@@ -267,10 +292,7 @@ systems for logic and computation.
 \end{notation}
 
 See \cref{fig:structure}, \cref{ex:judgments}, and \cref{sec:ipl} for examples
-of metavariables. We will follow Martin-L\"of in defining our object languages
-in terms of judgments \cite{martin-lof-meanings}, and touch on some of the
-relevant meaning explanations \cite{martin-lof-constructive}. See
-\cite{modal-judgment} for a more through exposition of these concepts.
+of metavariables. 
 
 \begin{definition}\label[definition]{def:judgment}
 	A \define{judgment}\index{Judgment} is something that could be known. A
@@ -304,7 +326,8 @@ relevant meaning explanations \cite{martin-lof-constructive}. See
   \begin{equation*}
     \overbrace{\text{I know} \overbrace{\underbrace{\mvar{A}}_{\text{Expression}}\text{ is true}}^{\text{Judgment}}}^{\text{Evident judgment}}
   \end{equation*}
-  \caption{\label{fig:structure}The structure of a judgment}
+  \caption{\label{fig:structure}The structure of a judgment (transcribed
+    from \cite{martin-lof-meanings})}
 \end{figure}
 
 \begin{figure}
@@ -360,7 +383,7 @@ relevant meaning explanations \cite{martin-lof-constructive}. See
   may leave off the $\vdash$. 
 \end{notation}
 
-\begin{notation}
+\begin{notation}\label[notation]{notation:substitution}
   We denote the substitution of a term $t$ for all free occurrences variable $v$
   in an expression $e$ by $e[v\coloneqq t]$. We will not deal directly with the
   issues of variable capture, scoping, and substitution here, for a rigorous
@@ -369,15 +392,27 @@ relevant meaning explanations \cite{martin-lof-constructive}. See
 
 \section{Intuitionistic propositional logic}
 \label{sec:ipl}
-\newlength{\oldjot}\setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
+
 With these notations, we are prepared to define \abbreviation{IPL}. 
-The first judgment of natural deduction is that some term $\mvar{a}$ represents
-a proposition (for example, all well-formed formulae represent propositions). We
-will denote this $\prop{\mvar{a}}$. The following are the \define{formation
+
+\subsection{Formation rules}
+\label{subsec:ipl-form}
+
+\newlength{\oldjot}\setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
+Since \abbreviation{IPL} is supposed to be a logic, we better have a notion of a
+proposition.\footnote{Why do we judge that terms are propositions, instead of
+  well-formed formulae? Propositions are strictly more general. With
+  hypothetical judgments, we can have a judgment of the form
+  $\true{\mvar{a}}\vdash \prop{\mvar{b}}$, expressing that $\mvar{b}$ is a
+  proposition \textit{under the assumption that $\mvar{a}$ is true}. We will
+  need such expressive power in \cref{chap:type-theory}. This is also why we
+  refrain from specifying our syntax via formal BNF (or similar) grammars.}
+Indeed, we denote the judgment that some term $\mvar{a}$ represents a
+proposition by $\prop{\mvar{a}}$. The following are the \define{formation
 rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
   logically-versed reader: $\top$ is read ``true'', $\bot$ is read ``false'',
   $\lnot$ is read ``not'', $\lor$ is read ``or'',
-  $\land$ is read ``and'', $\Rightarrow$ is read ``implies'', $\forall$ is read
+  $\land$ is read ``and'', $\rightarrow$ is read ``implies'', $\forall$ is read
   ``for all'', and $\exists$ is read ``there exists''.
   The rules for deriving truth will justify these readings.}
 \begin{gather*}
@@ -390,7 +425,7 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
     {\prop{\lnot \mvar{a}}} \\
   \prftree[r]{}
      {\prop{\mvar{a}}}{\prop{\mvar{b}}}
-     {\prop{\mvar{a}\Rightarrow \mvar{b}}}
+     {\prop{\mvar{a}\rightarrow \mvar{b}}}
   \qquad
   \prftree[r]{}
      {\prop{\mvar{a}}}{\prop{\mvar{b}}}
@@ -412,11 +447,14 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
 % all in $\mvar{a}$, it is already ``bound'' by appearing just after a $\forall$ or
 % $\exists$. Again, we won't deal with such issues with much care here.
 
+\subsection{Introduction rules}
+\label{subsec:ipl-intro}
+
 Martin-L\"of said ``The meaning of a proposition is determined by [...] what
 counts as a verification of it'' \cite{martin-lof-meanings}. Paraphrasing,
 he follows the constructivist view and identifies (as we will identify) the
 \textit{truth} of a proposition with having a \textit{proof} of it. Thus, to
-understand the meanings of the above judgments, we must define the judgment
+understand the meanings of the formation rules, we must define the judgment
 ``$\mvar{p}:\mvar{a}$'', read ``$\mvar{p}$ is a proof of $\mvar{a}$''. The
 ways of proving a proposition are called \define{introduction rules}.
 
@@ -425,91 +463,109 @@ give it a trivial proof (with a weird name which will make sense later):
 \begin{equation*}
   \prftree[r]{}{}{\unitelem:\top}.
 \end{equation*}
+
 How do we know a conjunction? Intuitively, we know (have a proof of) $\mvar{a}$
 and $\mvar{b}$ (written $\mvar{a}\land\mvar{b}$) just when we know (have a proof
 of) both $\mvar{a}$ and $\mvar{b}$. In symbols,
 \begin{equation*}
   \prftree[r]{}
      {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
-     {\intro{\land}(\mvar{p},\mvar{q}):\mvar{a}\land\mvar{b}}.
+     {(\mvar{p},\mvar{q}):\mvar{a}\land\mvar{b}}.
 \end{equation*}
+
 What about disjunction? There are two ways to know $\mvar{a}$ or
 $\mvar{b}$ (written $\mvar{a}\lor\mvar{b}$). We can either know $\mvar{a}$ or
 know $\mvar{b}$. Correspondingly, we have two introduction rules:
 \begin{align*}
   \prftree[r]{}
      {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}}
-     {\introl{\lor}(\mvar{p}):\mvar{a}\lor\mvar{b}}
+     {\apply{\inl}{\mvar{p}}:\mvar{a}\lor\mvar{b}}
   &&\text{and}&&
   \prftree[r]{}
      {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{b}}
-     {\intror{\lor}(\mvar{p}):\mvar{a}\lor\mvar{b}}.
+     {\apply{\inr}{\mvar{p}}:\mvar{a}\lor\mvar{b}}.
 \end{align*}
 The symbol $\bot$ represents falsehood. We say a logic is
 \define{consistent}\index{Consistency} if it cannot prove falsehood (a highly
-desirable property!). We can only derive falsehood from a contradiction:
-\begin{equation*}
-  \prftree[r]{}
-    {\prop{\mvar{a}}}{\mvar{p}:\mvar{a}}{\mvar{q}:\lnot\mvar{a}}
-    {\intro{\bot}(\mvar{p},\mvar{q}):\bot}.
-\end{equation*}
+desirable property!). To this end, we have no introduction rule for $\bot$.
+
 What does it mean to know a negation? We'll define
-$\lnot\mvar{a}\defeq \mvar{a}\Rightarrow\bot$ and instead worry about how to prove
-implication. When do we know $\mvar{a}\Rightarrow\mvar{b}$? An implication is
-true just when we have a hypothetical judgment where the hypothesis is the
-antecedent and the conclusion is the consequent. Implication allows us to
-\textit{internalize} the meta-theoretical notion of hypothetical judgments by
-turning them into non-hypothetical ones:
+$\lnot\mvar{a}\defeq \mvar{a}\rightarrow\bot$ and instead worry about when we
+know an implication.\footnote{This definition suggests the following ``derived
+  introduction rule'' for $\bot$:
+  \begin{equation*}
+    \prftree[r]{}
+      {\prop{\mvar{a}}}{\mvar{p}:\mvar{a}}{\mvar{q}:\lnot\mvar{a}}
+      {\ttfun{whoops!}(\mvar{p},\mvar{q}):\bot}.
+  \end{equation*}
+  The derivation of this rule from the elimination rule for $\rightarrow$
+  (\cref{subsec:ipl-elim}) is immediate.}
+An implication is true just when we have a hypothetical judgment where the
+hypothesis is the antecedent and the conclusion is the consequent. Implication
+allows us to \textit{internalize}\index{Internalizing!Hypothetical judgments}
+the meta-theoretical notion of hypothetical judgments by turning them into
+non-hypothetical ones. To define the introduction rule for $\rightarrow$, we
+assume the presence of a countably-infinite set of \define{variables}
+$v,w,\ldots$
 \begin{equation*}
   \prftree[r]{}
      {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\Gamma,\mvar{p}:\mvar{a},\Theta\vdash \mvar{q}:\mvar{b}}
-     {\Gamma,\Theta\vdash\intro{(\Rightarrow)}(\mvar{p},\mvar{q}):\mvar{a}\Rightarrow\mvar{b}}.
+     {\Gamma,\Theta\vdash\lam{v}\mvar{q}[\mvar{p}\coloneqq v]:\mvar{a}\rightarrow\mvar{b}}.
 \end{equation*}
 
 \begin{definition}\label[definition]{def:valid-theorem}
   If know that under no hypotheses $\mvar{a}$ is a proposition and has a proof,
-  then we may judge that $\mvar{a}$ is \define{valid}:
+  then we may judge that $\mvar{a}$ is \define{valid}\index{Valid!In
+  \abbreviation{IPL}}:
   \begin{equation*}
     \prftree[r]{}
       {\vdash\prop{\mvar{a}}}{\vdash\mvar{p}:\mvar{a}}
       {\vdash\valid{\mvar{a}}}.
   \end{equation*}
-  In this case, we say that $\mvar{a}$ is a \define{theorem} of \abbreviation{IPL}.
+  In this case, we say that $\mvar{a}$ is a \define{theorem}\index{Theorem!Of
+  \abbreviation{IPL}} of \abbreviation{IPL}.
 \end{definition}
 
-Finally, we need to know how to use our knowledge of a proposition in a
-derivation; we need \define{elimination rules}. These should be dual to our
+\subsection{Elimination rules}
+\label{subsec:ipl-elim}
+
+Once we know a judgment, how do we use it in a derivation?
+We need \define{elimination rules}. These should be dual to our
 introduction rules: we should be able to extract the same amount of information
-from a proposition that went into its proof.
+from a proposition that went into its proof.\footnote{The feature that our
+  elimination rules extract enough (resp.\ not too much) information is called
+  \define{local completeness}\indeX{Completeness!Local} (resp \define{local
+  soundness}\indeX{Soundness!Local}).}
 
 For conjunction, we should be able to recover proofs of both conjuncts:
 \begin{align*}
   \prftree[r]{}
      {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}\land\mvar{b}}
-     {\eliml{\land}(p):\mvar{a}},
+     {\appr{1}\mvar{p}:\mvar{a}},
   &&
   \prftree[r]{}
      {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}\land\mvar{b}}
-     {\elimr{\land}(p):\mvar{a}}.
+     {\appr{2}\mvar{p}:\mvar{a}}.
 \end{align*}
 If both disjuncts imply a hypothesis, so does their disjunction:
 \begin{align*}
   \prftree[r]{}
     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\prop{\mvar{c}}}
-    {\mvar{p}:\mvar{a}\Rightarrow \mvar{c}}
-    {\mvar{q}:\mvar{b}\Rightarrow \mvar{c}}
+    {\mvar{p}:\mvar{a}\rightarrow \mvar{c}}
+    {\mvar{q}:\mvar{b}\rightarrow \mvar{c}}
     {\mvar{r}:\mvar{a}\lor\mvar{b}}
-    {\elim{\lor}(p,q,r):\mvar{c}}.
+    {\apppply{\case}{\mvar{p}}{\mvar{q}}{\mvar{r}}:\mvar{c}}.
 \end{align*}
-The elimination rule for implication has the common name \define{modus ponens},
-and expresses the idea that, if we had a hypothetical judgment and then come to
-know all of the hypotheses, we can deduce the consequence:
+The elimination rule for implication has the common name
+\define{modus ponens}\index{Modus ponens}, and expresses the idea that, if we
+had a hypothetical judgment and then come to know all of the hypotheses, we can
+deduce the consequence:
 \begin{align*}
   \prftree[r]{}
     {\prop{\mvar{a}}}{\prop{\mvar{b}}}
-    {\mvar{p}:\mvar{a}\Rightarrow \mvar{b}}
+    {\mvar{p}:\mvar{a}\rightarrow \mvar{b}}
     {\mvar{q}:\mvar{a}}
-    {\elim{(\Rightarrow)}(p,q):\mvar{b}}.
+    {\apply{\mvar{p}}{\mvar{q}}:\mvar{b}}.
 \end{align*}
 The elimination rule for falsehood comes from the principle
 \textit{ex falso quod libet}, ``from falsehood anything follows''. If we've been
@@ -519,8 +575,12 @@ please:
   \prftree[r]{}
     {\prop{\mvar{a}}}
     {\mvar{p}:\bot}
-    {\elim{\bot}(p):\mvar{a}}.
+    {\apply{\rec_{\bot}}{\mvar{p}}:\mvar{a}}.
 \end{align*}
+
+At this point, we'll begin to see some full proofs. Since these quickly become
+unmanageably large, we'll implicitly hypothesize that all metavariables involved
+represent propositions.
 
 \begin{example}\label[example]{ex:ipl-and-comm}
   The following proves the classical tautology that $\land$ is commutative:
@@ -529,16 +589,14 @@ please:
     \prftree[r]{}
       {\prftree[r]{}
         {\mvar{p}:\mvar{a}\land\mvar{b}}
-        {\elimr{\land}(\mvar{p}):\mvar{b}}}
+        {\appr{2}{\mvar{p}}:\mvar{b}}}
       {\prftree[r]{}
         {\mvar{p}:\mvar{a}\land\mvar{b}}
-        {\eliml{\land}(\mvar{p}):\mvar{a}}}
-      {\intro{\land}(\elimr{\land}(\mvar{p}),\eliml{\land}(\mvar{p})):\mvar{b}\land\mvar{a}}
+        {\appr{1}{\mvar{p}}:\mvar{a}}}
+      {(\appr{2}{\mvar{p}},\appr{1}{\mvar{p}}):\mvar{b}\land\mvar{a}}
   \end{equation*}
-  This also serves as a short verification that the introduction and elimination
-  rules for conjunction complement one another well. As we can see, the 
-  \define{proof objects}, which are what comes before the $:$, always summarize
-  the full proof tree.\TODO{analytic/synthetic}
+  This derivation serves as a verification that the introduction and
+  elimination rules for conjunction complement one another well.
 \end{example}
 
 \begin{definition}\label[definition]{def:lem-dne}
@@ -548,37 +606,32 @@ please:
   \begin{equation*}
     \prftree[r]{\footnotesize LEM}
       {\prop{\mvar{a}}}
-      {\mathsf{lem}(\mvar{a}):\true{\mvar{a}\lor\lnot\mvar{a}}}.
+      {\apply{\ttfun{lem}}{\mvar{a}}:\true{\mvar{a}\lor\lnot\mvar{a}}}.
   \end{equation*}
   It is inter-derivable with the rule of \define{double negation elimination}:
   \index{Double negation elimination}
   \begin{equation*}
     \prftree[r]{\footnotesize DNE}
       {\prop{\mvar{a}}}{\mvar{p}:\lnot\lnot\mvar{a}}
-      {\mathsf{dne}(\mvar{p}):\mvar{a}}.
+      {\apply{\ttfun{dne}}{\mvar{p}}:\mvar{a}}.
   \end{equation*}
 \end{definition}
 
 \begin{example}\label[example]{ex:ipl-not-not-lem}
   A crucial consequence of the definition of \abbreviation{IPL} is that the law
   of excluded middle doesn't hold universally. However, we can demonstrate that
-  its negation doesn't either. See \cref{fig:lem-refute} for details, keeping
-  the following in mind:
+  its negation doesn't either. While reading this proof, keep the following in
+  mind:
   \begin{itemize}
     \itemsep0em
     \item for brevity, we abbreviate our hypothesis
       $\mvar{h}:\lnot(\mvar{a}\lor\lnot \mvar{a})$ as $\mvar{h}:H$
-    \item we do not name the proof terms
-    \item $\lnot\mvar{a}\equiv \mvar{a}\Rightarrow\bot$
+    \item $\lnot\mvar{a}\equiv \mvar{a}\rightarrow\bot$
     \item the proof uses exchange (see footnote to \cref{notation:sequent}),
       which we haven't discussed the rules for
   \end{itemize}
-  The law of the excluded middle will be discussed further in \cref{subsec:on-lem}.
-  \TODO{cite bob harper}
-\end{example}
-\begin{figure}[ht]
-  \centering
-  \begin{sideways}
+  \begin{center}
+  \noindent\makebox[\textwidth]{%
     \prftree[r]{}
       {\prftree[r]{}
         {\prftree[r]{}
@@ -588,21 +641,156 @@ please:
                 {\prftree[r]{}
                   {\prftree[r]{\footnotesize refl}
                     {\mvar{p}:\mvar{a}\vdash\mvar{p}:\mvar{a}}}
-                  {\mvar{p}:\mvar{a}\vdash\introl{\lor}(\mvar{p}):\mvar{a}\lor\lnot\mvar{a}}}
-                {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\introl{\lor}(\mvar{p}):\mvar{a}\lor\lnot\mvar{a}}}
-              {\prftree[r]{\footnotesize weak, refl}
-                {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\mvar{h}:\lnot(\mvar{a}\lor\lnot \mvar{a})}}
-              {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\intro{\bot}(\introl{\lor}(\mvar{p}),\mvar{h}):\bot}}
-            {\mvar{h}:H\vdash\intro{(\Rightarrow)}(\mvar{p},\intro{\bot}(\introl{\lor}(\mvar{p}),\mvar{h})):\lnot\mvar{a}}}
-          {\mvar{h}:H\vdash\intror{\lor}(\intro{(\Rightarrow)}(\mvar{p},\intro{\bot}(\introl{\lor}(\mvar{p}),\mvar{h}))):\mvar{a}\lor\lnot \mvar{a}}}
+                  {\mvar{p}:\mvar{a}\vdash\apply{\inl}{\mvar{p}}:\mvar{a}\lor\lnot\mvar{a}}}
+                {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\apply{\inl}{\mvar{p}}:\mvar{a}\lor\lnot\mvar{a}}}
+              {\prftree[r]{\footnotesize weak}
+                {\prftree[r]{\footnotesize refl}
+                  {\mvar{h}:H\vdash\mvar{h}:H}}
+                {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\mvar{h}:H}}
+              {\mvar{p}:\mvar{a},\mvar{h}:H\vdash\apply{\mvar{h}}{(\apply{\inl}{\mvar{p}})}:\bot}}
+            {\mvar{h}:H\vdash\lam{v}\apply{\mvar{h}}{(\apply{\inl}{v})}:\lnot\mvar{a}}}
+          {\mvar{h}:H\vdash\apply{\inr}{(\lam{v}\apply{\mvar{h}}{(\apply{\inl}{v})})}:\mvar{a}\lor\lnot \mvar{a}}}
         {\prftree[r]{\footnotesize refl}
-          {\mvar{h}:H\vdash\mvar{h}:\lnot(\mvar{a}\lor\lnot \mvar{a})}}
-        {\mvar{h}:H\vdash \intro{\bot}(\intror{\lor}(\intro{(\Rightarrow)}(\mvar{p},\intro{\bot}(\introl{\lor}(\mvar{p}),\mvar{h}))),\mvar{h}):\bot}}
-      {\intro{(\Rightarrow)}(\mvar{h}, \intro{\bot}(\intror{\lor}(\intro{(\Rightarrow)}(\mvar{p},\intro{\bot}(\introl{\lor}(\mvar{p}),\mvar{h}))),\mvar{h})):\lnot (\lnot(\mvar{a}\lor\lnot \mvar{a}))}
-  \end{sideways}
-  \caption{\label{fig:lem-refute} A proof that the law of the excluded middle is
-    not refuted in IPL.}
-\end{figure}
+          {\mvar{h}:H\vdash\mvar{h}:H}}
+        {\mvar{h}:H\vdash \apply{\mvar{h}}{(\inr(\lam{v}\apply{\mvar{h}}{(\apply{\inl}{v})}))}:\bot}}
+      {\vdash\lam{w}\apply{w}{(\inr(\lam{v}\apply{w}{(\apply{\inl}{v})}))}:\lnot (\lnot(\mvar{a}\lor\lnot \mvar{a}))}
+  }
+  \end{center}
+  The law of the excluded middle will be discussed further in \cref{subsec:on-lem}.
+  \TODO{cite bob harper}
+\end{example}
+
+\subsection{Computation rules and judgmental equality}
+\label{subsec:ipl-compute}
+
+\begin{remark}\label[remark]{rmk:reverse-proof}
+  As we can see in \cref{ex:ipl-and-comm}, and \cref{fig:lem-refute},
+  derivations in \abbreviation{IPL} end with a \define{proof term} which
+  summarizes the whole proof tree (modulo some actions on hypotheses, which we've
+  excluded for brevity). To demonstrate this, let's attempt to reconstruct a
+  proof tree based on a judgment including such a term. Suppose your friend
+  tells you they apprehended the following hypothetical judgment
+  in a dream, but upon waking, couldn't recall the derivation:
+  \begin{equation*}
+      {\apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+  \end{equation*}
+  Well, it certainly had to end with an application of implication eliimination
+  to hypotheses of the form $\mvar{b}$ and $\mvar{b}\rightarrow \mvar{d}$:
+  \begin{equation*}
+    \prftree[r]{}
+      {\mvar{r}:\mvar{b}\rightarrow\mvar{d}}
+      {\prftree[r]{}
+        {?}
+        {\appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+      {\apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+  \end{equation*}
+  and if the term of type $\mvar{b}$ was produced from the application of
+  $\pr{1}$, the term it was applied to had to be a proof of
+  $\mvar{b}\land \mvar{c}$ for some $\mvar{c}$:
+  \begin{equation*}
+    \prftree[r]{}
+      {\mvar{r}:\mvar{b}\rightarrow\mvar{d}}
+      {\prftree[r]{}
+        {\prftree[r]{}
+          {?}
+          {\apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
+        {\appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+      {\apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+  \end{equation*}
+  which itself had to be applied to proofs of $\mvar{a}$ and
+  $\mvar{a}\rightarrow\mvar{b}\land\mvar{c}$ for some $\mvar{a}$:
+  \begin{equation*}
+    \prftree[r]{}
+      {\mvar{r}:\mvar{b}\rightarrow\mvar{d}}
+      {\prftree[r]{}
+        {\prftree[r]{}
+          {\mvar{p}:\mvar{a}\rightarrow(\mvar{b}\land\mvar{c})}
+          {\mvar{q}:\mvar{a}}
+          {\apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
+        {\appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+      {\apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+  \end{equation*}
+  At this point, we can (un)deduce no further. The form of the judgment allowed
+  us no discretion; this is the only derivation (up to\footnote{For the
+    non-mathematical reader: When a mathematician says ``X is true up to $R$''
+    for some (equivalence) relation $R$, it means that all objects related by $R$
+    are considered equivalent. In this case, ``unique up to isomorphism'' means that
+    there may be other terminal objects, but all of them are mutually isomorphic.}
+  renaming of metavariables) that could have produced that conclusion.
+\end{remark}
+
+The proof term in longer arguments is often cumbersome, and we might wonder if
+there are any benefits to internalizing\index{Internalizing!Proofs} the notion
+of proof. The answer to this question will play a critical role in
+\cref{sec:curry-howard}, and it is essentially the following: when we
+internalize proof, we can give formal rules for reducing our
+proof terms.\footnote{On the philosophical side, Martin-L\"of made a fascinating
+  and convincing argument that judgments involving proof terms are analytic,
+  whereas proof-irrelevant mathematical arguments are synthetic: one must go
+  beyond conceptual analysis and view the proof to be convinced of them
+  \cite{martin-lof-analytic}.} By \cref{rmk:reverse-proof}, this is as good as
+giving an algorithm that converts unnecessarily complex to some normal form.
+
+What kind of proofs can be reduced? Consider the following example:
+\begin{equation*}
+  {\prftree[r]{}
+    {\prftree[r]{}
+      {\mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
+      {(\mvar{p},\mvar{q}):\mvar{a}\land\mvar{b}}}
+    {\appr{1}{(\mvar{p},\mvar{q})}:\mvar{a}}}.
+\end{equation*}
+This derivation could be eliminated entirely: we had a proof of $\mvar{a}$ to
+begin with! This is an instance of a general pattern: whenever we have an
+elimination rule for a connective just after its introduction, by the symmetry
+between such rules, we can avoid the circumlocution and cut straight to the
+conclusion.
+
+Do such shortcuts result in \textit{the same} proof? To phrase this
+question precisely, one needs a notion of equality for proof terms.
+And Gentzen's notion was define it just so he could answer this question in the
+affirmative.
+
+\begin{definition}\label[definition]{def:jdeq-ipl}
+	\define{Judgmental equality} of proof terms, denoted
+  $\mvar{p}\jdeq\mvar{q}:mvar{a}$, is the least congruence closed under the
+  following
+  \define{computation rules}\index{Computation rules!In \abbreviation{IPL}}
+  (also called \define{$\beta$-rules}):
+  \setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
+  \begin{gather*}
+    {\prftree[r]{\footnotesize $\land\beta_{\text{l}}$}
+      {\mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
+      {\appr{1}{(\mvar{p},\mvar{q})}\jdeq \mvar{p}:\mvar{a}}}
+    \qquad
+    {\prftree[r]{\footnotesize $\land\beta_{\text{r}}$}
+      {\mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
+      {\appr{2}{(\mvar{p},\mvar{q})}:\mvar{b}}} \\
+    {\prftree[r]{\footnotesize $(\rightarrow)\beta$}
+      {\mvar{p}:\mvar{a}\vdash\mvar{q}\jdeq \mvar{q}:\mvar{b}}
+      {\mvar{r}:\mvar{a}}
+      {\apply{(\lam{v}\mvar{q})}{\mvar{r}}\jdeq
+        \mvar{q}[v\coloneqq\mvar{r}]:\mvar{b}}} \\
+    {\prftree[r]{\footnotesize $\lor\beta_{\text{l}}$}
+      {\mvar{p}:\mvar{a}\rightarrow\mvar{c}}
+      {\mvar{q}:\mvar{b}\rightarrow\mvar{c}}
+      {\mvar{r}:\mvar{a}}
+      {\apppply{\case}{\mvar{p}}{\mvar{q}}{(\apply{\inl}{\mvar{r}})}\jdeq
+        \apply{\mvar{p}}{\mvar{r}}:\mvar{c}}} 
+    \qquad
+    {\prftree[r]{\footnotesize $\lor\beta_{\text{r}}$}
+      {\mvar{p}:\mvar{a}\rightarrow\mvar{c}}
+      {\mvar{q}:\mvar{b}\rightarrow\mvar{c}}
+      {\mvar{r}:\mvar{b}}
+      {\apppply{\case}{\mvar{p}}{\mvar{q}}{(\apply{\inr}{\mvar{r}})}\jdeq
+        \apply{\mvar{q}}{\mvar{r}}:\mvar{c}}}
+  \end{gather*}
+  \setlength{\jot}{\oldjot}
+  (Recall \cref{notation:substitution} for the meaning of
+  $\mvar{q}[v\coloneqq\mvar{r}]$). Since the elimination rule for
+  falsehood (\cref{subsec:ipl-elim}) gives back a proof of an arbitrary
+  proposition (which is not in general one of the ``inputs'' to $\intro{\bot}$),
+  there's no corresponding $\beta$-rule.
+\end{definition}
 
 % To define the rules for introducing quantifiers, we must deal with the issue of
 % free and bound variables. Our second judgment expresses that $v$ is a free variable
@@ -624,6 +812,17 @@ please:
 %      {v\in \FV(\mvar{b})}
 %      {v\in \FV(\mvar{a}\lor \mvar{b}\prop)}
 % \end{gather*}
+
+\subsection{Unicity rules}
+\label{subsec:ipl-uni}
+
+Just because a logic doesn't give us an easy way to do something unexpected
+doesn't mean it can't be done. The prime example is proving a contradiction.
+History is filled with deductive systems that were thought to be sound, but
+were shown to be useless by some clever argument. Russell's paradox dispensed
+with Frege's \textit{Begriffsschrift}, the Burali-Forti antimony unraveled
+na\"ive set theories, and Girard's paradox revealed a fatal flaw in
+Martin-L\"of's early attempts at dependent type theory.
 
 \section{The $\lambda$-calculus}
 \label{sec:the-lambda-calculus}
@@ -658,7 +857,7 @@ The strong normalization property
 \label{subsubsec:lists}
 
 \section{The Curry-Howard correspondence}
-\label{sec:the-curry-howard-correspondence}
+\label{sec:curry-howard}
 
 \cite{curry-howard}
 
@@ -676,7 +875,7 @@ The strong normalization property
   community, known as \define{path induction}) is as follows:\TODO{define id-elim}
 \end{tt-rule}
 
-\begin{lemma}[$\mathsf{ap}$]\label[lemma]{lemma:ap}
+\begin{lemma}[$\ttfun{ap}$]\label[lemma]{lemma:ap}
 	\TODO{define ap}
 \end{lemma}
 
@@ -755,31 +954,31 @@ for \textit{all} types.
 Consider functions with the following types:
 \begin{itemize}
   \itemsep0em
-  \item $\mathsf{dne}:\pit{A:\universe}{(A\to\bot\to\bot)\to A}$
-  \item $\mathsf{lem}:\pit{A:\universe}{A+(A\to\bot)}$
+  \item $\ttfun{dne}:\pit{A:\universe}{(A\to\bot\to\bot)\to A}$
+  \item $\ttfun{lem}:\pit{A:\universe}{A+(A\to\bot)}$
 \end{itemize}
 What can we tell about these functions from their type signatures?
-The term $\mathsf{dne}$ takes as argument a term $x:A\to\bot\to\bot$,
+The term $\ttfun{dne}$ takes as argument a term $x:A\to\bot\to\bot$,
 that is, a term showing that $A$ is not the empty type\footnote{More precisely,
   $x$ demonstrates that $A$ is not \textit{isomorphic} or \textit{equivalent} to
   $\bot$, in the sense of \cref{subsec:weak-equivalences}. If $A$ were isomorphic
   to $\bot$, then that isomorphism would be an inhabitant of $A\to\bot$.}, and
 produces some element of $A$. This seems like a very tricky function to write:
 how can we give a term of type $A$ just by knowing $A$ has terms? We don't
-know what form data of type $A$ have! The function $\mathsf{lem}$ seems
+know what form data of type $A$ have! The function $\ttfun{lem}$ seems
 similarly quagmired. Given a type $A$, this function either has to produce an
 element of it, or demonstrate that it is uninhabited. 
 
 As you may have already guessed, under the Curry-Howard correspondence, these
 functions correspond to the rule of double negation elimination
-($\mathsf{dne}$)\index{Double negation elimination}
-and the law of excluded middle ($\mathsf{lem}$)\index{Law of excluded middle}
+($\ttfun{dne}$)\index{Double negation elimination}
+and the law of excluded middle ($\ttfun{lem}$)\index{Law of excluded middle}
 \cref{def:lem-dne}.
 
 To demonstrate with finality that these are not definable terms in any
-consistent type theory, consider the application of $\mathsf{lem}$ to a type
-$\mathsf{pnp}$ that corresponds to the $\textsc{P}\neq\textsc{NP}$ conjecture
-under the types-as-propositions interpretation. If $\mathsf{lem}$ existed, we
+consistent type theory, consider the application of $\ttfun{lem}$ to a type
+$\ttfun{pnp}$ that corresponds to the $\textsc{P}\neq\textsc{NP}$ conjecture
+under the types-as-propositions interpretation. If $\ttfun{lem}$ existed, we
 could trivially solve this problem and make a million dollars! We need no
 recourse to philosophy to justify the constructive/intuitionistic logic of proof
 assistants: nothing else computes.
@@ -992,12 +1191,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \end{remark}
 
 \begin{lemma}\label[lemma]{lemma:terminal-unique}
-  Terminal objects are unique up to\footnote{For the non-mathematical reader:
-    When a mathematician says ``X is true up to $R$'' for some (equivalence)
-    relation $R$, it means that all objects related by $R$ are considered
-    equivalent. In this case, ``unique up to isomorphism'' means that there may
-    be other terminal objects, but all of them are mutually isomorphic.} a
-  specified isomorphism.
+  Terminal objects are unique up to a specified isomorphism.
 \end{lemma}
 \begin{proof}
 	Suppose $A$ and $B$ are terminal objects.
