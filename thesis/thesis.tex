@@ -45,6 +45,17 @@
 \newcommand{\Coq}{\software{Coq}}
 \newcommand{\MTypes}{\software{HoTT/M-Types}}
 
+% Gather environments with more interline spacing
+\usepackage{environ}
+\newlength{\oldjot}
+\NewEnviron{gatherjot}{%
+  \setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
+  \begin{gather*}
+    \BODY
+  \end{gather*}
+  \setlength{\jot}{\oldjot}
+}
+
 \newcommand{\dual}[2]{
   \begin{itemize}\renewcommand{\labelitemi}{$∘$}
     \itemsep0em
@@ -340,13 +351,23 @@ of metavariables.
   judgments. If we can deduce a conclusion $B$ from premises $A_1,\ldots,A_n$
   via some rule R (again: $A_1,\ldots,A_n$ and $B$ are judgments, not terms of
   an object language), we will write
-  \begin{displaymath}
+  \begin{align*}
     \prftree[r]{\footnotesize R}
       {A_1}{A_2}{\ldots}{A_n}
       {B}
-  \end{displaymath}
+    &&\text{or}&&
+    \prftree[r]{\footnotesize R}
+      {\prftree[r, noline]{}
+        {A_1}
+        {A_2}}
+      {\prftree[r, noline]{}
+        {A_3}
+        {A_4}}
+      {\ldots}{A_n}
+      {B}.
+  \end{align*}
   Iterating this notation, we can write long derivations as wellfounded trees
-  with the conclusion as their root.
+  with the conclusion as their root. 
 \end{notation}
 
 \begin{notation}\label[notation]{notation:sequent}
@@ -361,8 +382,7 @@ of metavariables.
   always allow for \define{reflexivity}, \define{weakening}, \define{contraction},
   \define{substitution}, and \cref{sec:ipl} will allow for \define{exchange}, 
   which are the following meta-rules (where $J$, $K$, and $L$ stand for judgments):
-  \newlength{\oldjot}\setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
-  \begin{gather*}
+  \begin{gatherjot}
     \prftree[r]{\footnotesize refl}{}
       {Γ,J,Δ ⊢ J}
     \qquad
@@ -380,8 +400,7 @@ of metavariables.
     \prftree[r]{\footnotesize ex}
       {Γ,J,Δ,K,Θ ⊢ L}
       {Γ,K,Δ,J,Θ ⊢ L}
-  \end{gather*}
-  \setlength{\jot}{\oldjot}
+  \end{gatherjot}
 \end{notation}
 
 \begin{notation}\label[notation]{notation:substitution}
@@ -399,7 +418,6 @@ With these notations, we are prepared to define \abbreviation{IPL}.
 \subsection{Formation rules}
 \label{subsec:ipl-form}
 
-\setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
 Since \abbreviation{IPL} is supposed to be a logic, we better have a notion of a
 proposition.\footnote{Why do we judge that terms are propositions, instead of
   well-formed formulae? Propositions are strictly more general. With
@@ -416,7 +434,7 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
   $\land$ is read ``and'', $→$ is read ``implies'', $∀$ is read
   ``for all'', and $∃$ is read ``there exists''.
   The rules for deriving truth will justify these readings.}
-\begin{gather*}
+\begin{gatherjot}
   \prftree[r]{}{}{Γ⊢\prop{⊤}}
   \qquad
   \prftree[r]{}{}{Γ⊢\prop{⊥}}
@@ -425,15 +443,22 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
     {\prop{Γ⊢\mvar{a}}}
     {\prop{Γ⊢\lnot \mvar{a}}} \\
   \prftree[r]{}
-     {Γ⊢\prop{\mvar{a}}}{Γ⊢\prop{\mvar{b}}}
-     {Γ⊢\prop{\mvar{a}→ \mvar{b}}}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ⊢\prop{\mvar{a}→\mvar{b}}} 
   \qquad
   \prftree[r]{}
-     {Γ⊢\prop{\mvar{a}}}{Γ⊢\prop{\mvar{b}}}
-     {Γ⊢\prop{\mvar{a}\land \mvar{b}}} \\
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ⊢\prop{\mvar{a}\land \mvar{b}}} 
+  \qquad
   \prftree[r]{}
-     {Γ⊢\prop{\mvar{a}}}{Γ⊢\prop{\mvar{b}}}
-     {Γ⊢\prop{\mvar{a}\lor \mvar{b}}}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ⊢\prop{\mvar{a}\lor\mvar{b}}} \\
   % \prftree[r]{}
   %    {\mvar{a}\prop}{v∉\FV(\mvar{a})}
   %    {∀ v.\mvar{a}}
@@ -441,7 +466,7 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
   % \prftree[r]{}
   %    {\mvar{a}\prop}{v∉\FV(\mvar{a})}
   %    {∃ v.\mvar{a}}
-\end{gather*}\setlength{\jot}{\oldjot}
+\end{gatherjot}
 % The hypothesis $v∉\FV(\mvar{a})$ involves another kind of judgment: that $v$ is
 % not a free variable of $\mvar{a}$. Intuitively, this just means that if $v$ appears at
 % all in $\mvar{a}$, it is already ``bound'' by appearing just after a $∀$ or
@@ -461,7 +486,7 @@ ways of proving a proposition are called \define{introduction rules}.
 The symbol $⊤$ represents the trivially true proposition. Accordingly, we
 give it a trivial proof (with a weird name which will make sense later):
 \begin{equation*}
-  \prftree[r]{}{}{𝛤Γ⊢\unitelem:⊤}.
+  \prftree[r]{}{}{Γ ⊢ \unitelem:⊤}.
 \end{equation*}
 
 How do we know a conjunction? Intuitively, we know (have a proof of) $\mvar{a}$
@@ -469,8 +494,9 @@ and $\mvar{b}$ (written $\mvar{a}\land\mvar{b}$) just when we know (have a proof
 of) both $\mvar{a}$ and $\mvar{b}$. In symbols,
 \begin{equation*}
   \prftree[r]{}
-     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
-     {(\mvar{p},\mvar{q}):\mvar{a}\land\mvar{b}}.
+    {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \prop{\mvar{b}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}}{Γ ⊢ \mvar{q}:\mvar{b}}
+    {Γ ⊢ (\mvar{p},\mvar{q}):\mvar{a}\land\mvar{b}}.
 \end{equation*}
 
 What about disjunction? There are two ways to know $\mvar{a}$ or
@@ -478,12 +504,18 @@ $\mvar{b}$ (written $\mvar{a}\lor\mvar{b}$). We can either know $\mvar{a}$ or
 know $\mvar{b}$. Correspondingly, we have two introduction rules:
 \begin{align*}
   \prftree[r]{}
-     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}}
-     {\apply{\inl}{\mvar{p}}:\mvar{a}\lor\mvar{b}}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}}
+    {Γ ⊢ \apply{\inl}{\mvar{p}}:\mvar{a}\lor\mvar{b}}
   &&\text{and}&&
   \prftree[r]{}
-     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{b}}
-     {\apply{\inr}{\mvar{p}}:\mvar{a}\lor\mvar{b}}.
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{b}}
+    {Γ ⊢ \apply{\inr}{\mvar{p}}:\mvar{a}\lor\mvar{b}}.
 \end{align*}
 The symbol $⊥$ represents falsehood. We say a logic is
 \define{consistent}\index{Consistency} if it cannot prove falsehood (a highly
@@ -495,8 +527,8 @@ know an implication.\footnote{This definition suggests the following ``derived
   introduction rule'' for $⊥$:
   \begin{equation*}
     \prftree[r]{}
-      {\prop{\mvar{a}}}{\mvar{p}:\mvar{a}}{\mvar{q}:\lnot\mvar{a}}
-      {\ttfun{whoops!}(\mvar{p},\mvar{q}):⊥}.
+      {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \mvar{p}:\mvar{a}}{Γ ⊢ \mvar{q}:\lnot\mvar{a}}
+      {Γ ⊢ \ttfun{whoops!}(\mvar{p},\mvar{q}):⊥}.
   \end{equation*}
   The derivation of this rule from the elimination rule for $→$
   (\cref{subsec:ipl-elim}) is immediate.}
@@ -509,8 +541,9 @@ assume the presence of a countably-infinite set of \define{variables}
 $v,w,\ldots$
 \begin{equation*}
   \prftree[r]{}
-     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{Γ,\mvar{p}:\mvar{a},Θ⊢ \mvar{q}:\mvar{b}}
-     {Γ,Θ⊢\λ{v}{\mvar{q}[\mvar{p}\coloneqq v]}:\mvar{a}→\mvar{b}}.
+    {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \prop{\mvar{b}}}
+    {Γ,\mvar{p}:\mvar{a},Δ⊢ \mvar{q}:\mvar{b}}
+    {Γ,Δ⊢\λ{v}{\mvar{q}[\mvar{p}\coloneqq v]}:\mvar{a}→\mvar{b}}.
 \end{equation*}
 
 \begin{definition}\label[definition]{def:valid-theorem}
@@ -540,21 +573,32 @@ from a proposition that went into its proof.\footnote{The feature that our
 For conjunction, we should be able to recover proofs of both conjuncts:
 \begin{align*}
   \prftree[r]{}
-     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}\land\mvar{b}}
-     {\appr{1}\mvar{p}:\mvar{a}},
-  &&
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}\land\mvar{b}}
+    {Γ ⊢ \appr{1}\mvar{p}:\mvar{a}} 
+  &&\text{and}&&
   \prftree[r]{}
-     {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\mvar{p}:\mvar{a}\land\mvar{b}}
-     {\appr{2}\mvar{p}:\mvar{a}}.
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}\land\mvar{b}}
+    {Γ ⊢ \appr{2}\mvar{p}:\mvar{b}}.
 \end{align*}
 If both disjuncts imply a hypothesis, so does their disjunction:
 \begin{align*}
   \prftree[r]{}
-    {\prop{\mvar{a}}}{\prop{\mvar{b}}}{\prop{\mvar{c}}}
-    {\mvar{p}:\mvar{a}→ \mvar{c}}
-    {\mvar{q}:\mvar{b}→ \mvar{c}}
-    {\mvar{r}:\mvar{a}\lor\mvar{b}}
-    {\apppply{\case}{\mvar{p}}{\mvar{q}}{\mvar{r}}:\mvar{c}}.
+    {\prftree[r, noline]{}
+      {\prftree[r, noline]{}
+        {Γ ⊢ \prop{\mvar{a}}}
+        {Γ ⊢ \prop{\mvar{b}}}}
+      {Γ ⊢ \prop{\mvar{c}}}}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
+      {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
+    {Γ ⊢ \mvar{r}:\mvar{a}\lor\mvar{b}}
+    {Γ ⊢ \apppply{\case}{\mvar{p}}{\mvar{q}}{\mvar{r}}:\mvar{c}}.
 \end{align*}
 The elimination rule for implication has the common name
 \define{modus ponens}\index{Modus ponens}, and expresses the idea that, if we
@@ -562,10 +606,10 @@ had a hypothetical judgment and then come to know all of the hypotheses, we can
 deduce the consequence:
 \begin{align*}
   \prftree[r]{}
-    {\prop{\mvar{a}}}{\prop{\mvar{b}}}
-    {\mvar{p}:\mvar{a}→ \mvar{b}}
-    {\mvar{q}:\mvar{a}}
-    {\apply{\mvar{p}}{\mvar{q}}:\mvar{b}}.
+    {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \prop{\mvar{b}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}→ \mvar{b}}
+    {Γ ⊢ \mvar{q}:\mvar{a}}
+    {Γ ⊢ \apply{\mvar{p}}{\mvar{q}}:\mvar{b}}.
 \end{align*}
 The elimination rule for falsehood comes from the principle
 \textit{ex falso quod libet}, ``from falsehood anything follows''. If we've been
@@ -573,9 +617,9 @@ able to prove $⊥$, our whole logic is bankrupt and we can derive anything we
 please: 
 \begin{align*}
   \prftree[r]{}
-    {\prop{\mvar{a}}}
-    {\mvar{p}:⊥}
-    {\apply{\rec_{⊥}}{\mvar{p}}:\mvar{a}}.
+    {Γ ⊢ \prop{\mvar{a}}}
+    {Γ ⊢ \mvar{p}:⊥}
+    {Γ ⊢ \apply{\rec_{⊥}}{\mvar{p}}:\mvar{a}}.
 \end{align*}
 
 At this point, we'll begin to see some full proofs. Since these quickly become
@@ -588,12 +632,12 @@ represent propositions.
   \begin{equation*}
     \prftree[r]{}
       {\prftree[r]{}
-        {\mvar{p}:\mvar{a}\land\mvar{b}}
-        {\appr{2}{\mvar{p}}:\mvar{b}}}
+        {Γ ⊢ \mvar{p}:\mvar{a}\land\mvar{b}}
+        {Γ ⊢ \appr{2}{\mvar{p}}:\mvar{b}}}
       {\prftree[r]{}
-        {\mvar{p}:\mvar{a}\land\mvar{b}}
-        {\appr{1}{\mvar{p}}:\mvar{a}}}
-      {(\appr{2}{\mvar{p}},\appr{1}{\mvar{p}}):\mvar{b}\land\mvar{a}}
+        {Γ ⊢ \mvar{p}:\mvar{a}\land\mvar{b}}
+        {Γ ⊢ \appr{1}{\mvar{p}}:\mvar{a}}}
+      {Γ ⊢ (\appr{2}{\mvar{p}},\appr{1}{\mvar{p}}):\mvar{b}\land\mvar{a}}
   \end{equation*}
   This derivation serves as a verification that the introduction and
   elimination rules for conjunction complement one another well.
@@ -605,22 +649,22 @@ represent propositions.
   is the following rule of deduction:
   \begin{equation*}
     \prftree[r]{\footnotesize LEM}
-      {\prop{\mvar{a}}}
-      {\apply{\ttfun{lem}}{\mvar{a}}:\true{\mvar{a}\lor\lnot\mvar{a}}}.
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \apply{\ttfun{lem}}{\mvar{a}}:\true{\mvar{a}\lor\lnot\mvar{a}}}.
   \end{equation*}
   It is inter-derivable with the rule of \define{double negation elimination}:
   \index{Double negation elimination}
   \begin{equation*}
     \prftree[r]{\footnotesize DNE}
-      {\prop{\mvar{a}}}{\mvar{p}:\lnot\lnot\mvar{a}}
-      {\apply{\ttfun{dne}}{\mvar{p}}:\mvar{a}}.
+      {Γ ⊢ \prop{\mvar{a}}}{\mvar{p}:\lnot\lnot\mvar{a}}
+      {Γ ⊢ \apply{\ttfun{dne}}{\mvar{p}}:\mvar{a}}.
   \end{equation*}
 \end{definition}
 
 \begin{example}\label[example]{ex:ipl-not-not-lem}
   A crucial consequence of the definition of \abbreviation{IPL} is that the law
-  of excluded middle doesn't hold universally. However, we can demonstrate that
-  its negation doesn't either. While reading this proof, keep the following in
+  of excluded middle isn't a theorem. However, we can demonstrate that
+  its negation isn't either. While reading this proof, keep the following in
   mind:
   \begin{itemize}
     \itemsep0em
@@ -672,43 +716,43 @@ represent propositions.
   tells you they apprehended the following hypothetical judgment
   in a dream, but upon waking, couldn't recall the derivation:
   \begin{equation*}
-      {\apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+      {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
   \end{equation*}
   Well, it certainly had to end with an application of implication eliimination
   to hypotheses of the form $\mvar{b}$ and $\mvar{b}→ \mvar{d}$:
   \begin{equation*}
     \prftree[r]{}
-      {\mvar{r}:\mvar{b}→\mvar{d}}
-      {\prftree[r]{}
+      {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
+      {Γ ⊢ \prftree[r]{}
         {?}
-        {\appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
-      {\apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+        {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+      {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
   \end{equation*}
   and if the term of type $\mvar{b}$ was produced from the application of
   $\pr{1}$, the term it was applied to had to be a proof of
   $\mvar{b}\land \mvar{c}$ for some $\mvar{c}$:
   \begin{equation*}
     \prftree[r]{}
-      {\mvar{r}:\mvar{b}→\mvar{d}}
+      {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
       {\prftree[r]{}
         {\prftree[r]{}
           {?}
-          {\apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
-        {\appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
-      {\apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+          {Γ ⊢ \apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
+        {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+      {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
   \end{equation*}
   which itself had to be applied to proofs of $\mvar{a}$ and
   $\mvar{a}→\mvar{b}\land\mvar{c}$ for some $\mvar{a}$:
   \begin{equation*}
     \prftree[r]{}
-      {\mvar{r}:\mvar{b}→\mvar{d}}
+      {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
       {\prftree[r]{}
         {\prftree[r]{}
-          {\mvar{p}:\mvar{a}→(\mvar{b}\land\mvar{c})}
-          {\mvar{q}:\mvar{a}}
-          {\apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
-        {\appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
-      {\apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+          {Γ ⊢ \mvar{p}:\mvar{a}→(\mvar{b}\land\mvar{c})}
+          {Γ ⊢ \mvar{q}:\mvar{a}}
+          {Γ ⊢ \apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
+        {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+      {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
   \end{equation*}
   At this point, we can (un)deduce no further. The form of the judgment allowed
   us no discretion; this is the only derivation (up to\footnote{For the
@@ -735,9 +779,10 @@ What kind of proofs can be reduced? Consider the following example:
 \begin{equation*}
   {\prftree[r]{}
     {\prftree[r]{}
-      {\mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
-      {(\mvar{p},\mvar{q}):\mvar{a}\land\mvar{b}}}
-    {\appr{1}{(\mvar{p},\mvar{q})}:\mvar{a}}}.
+      {Γ ⊢ \mvar{p}:\mvar{a}}
+      {Γ ⊢ \mvar{q}:\mvar{b}}
+      {Γ ⊢ (\mvar{p},\mvar{q}):\mvar{a}\land\mvar{b}}}
+    {Γ ⊢ \appr{1}{(\mvar{p},\mvar{q})}:\mvar{a}}}.
 \end{equation*}
 This derivation could be eliminated entirely: we had a proof of $\mvar{a}$ to
 begin with! This is an instance of a general pattern: whenever we have an
@@ -756,37 +801,37 @@ affirmative.
   following
   \define{computation rules}\index{Computation rules!In \abbreviation{IPL}}
   (also called \define{$β$-rules}):
-  \setlength{\oldjot}{\jot}\addtolength{\jot}{1em}
-  \begin{gather*}
+  \begin{gatherjot}
     {\prftree[r]{\footnotesize $\landβ_{\text{l}}$}
-      {\mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
-      {\appr{1}{(\mvar{p},\mvar{q})}\jdeq \mvar{p}:\mvar{a}}}
+      {Γ ⊢ \mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
+      {Γ ⊢ \appr{1}{(\mvar{p},\mvar{q})}\jdeq \mvar{p}:\mvar{a}}}
     \qquad
     {\prftree[r]{\footnotesize $\landβ_{\text{r}}$}
-      {\mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
-      {\appr{2}{(\mvar{p},\mvar{q})}:\mvar{b}}} \\
+      {Γ ⊢ \mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
+      {Γ ⊢ \appr{2}{(\mvar{p},\mvar{q})}:\mvar{b}}} \\
     {\prftree[r]{\footnotesize $(→)β$}
-      {\mvar{p}:\mvar{a}⊢\mvar{q}\jdeq \mvar{q}:\mvar{b}}
-      {\mvar{r}:\mvar{a}}
-      {\apply{(\λ{v}\mvar{q})}{\mvar{r}}\jdeq
-        \mvar{q}[v\coloneqq\mvar{r}]:\mvar{b}}} \\
+      {Γ ⊢ \mvar{p}:\mvar{a}⊢\mvar{q}:\mvar{b}}
+      {Γ ⊢ \mvar{r}:\mvar{a}}
+      {Γ ⊢ \apply{(\λ{v}\mvar{q})}{\mvar{r}}\jdeq
+        \mvar{q}[\mvar{p}\coloneqq\mvar{r}]:\mvar{b}}} \\
     {\prftree[r]{\footnotesize $\lorβ_{\text{l}}$}
-      {\mvar{p}:\mvar{a}→\mvar{c}}
-      {\mvar{q}:\mvar{b}→\mvar{c}}
-      {\mvar{r}:\mvar{a}}
-      {\apppply{\case}{\mvar{p}}{\mvar{q}}{(\apply{\inl}{\mvar{r}})}\jdeq
+      {\prftree[r, noline]{}
+        {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
+        {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
+      {Γ ⊢ \mvar{r}:\mvar{a}}
+      {Γ ⊢ \apppply{\case}{\mvar{p}}{\mvar{q}}{(\apply{\inl}{\mvar{r}})}\jdeq
         \apply{\mvar{p}}{\mvar{r}}:\mvar{c}}} 
     \qquad
     {\prftree[r]{\footnotesize $\lorβ_{\text{r}}$}
-      {\mvar{p}:\mvar{a}→\mvar{c}}
-      {\mvar{q}:\mvar{b}→\mvar{c}}
-      {\mvar{r}:\mvar{b}}
-      {\apppply{\case}{\mvar{p}}{\mvar{q}}{(\apply{\inr}{\mvar{r}})}\jdeq
-        \apply{\mvar{q}}{\mvar{r}}:\mvar{c}}}
-  \end{gather*}
-  \setlength{\jot}{\oldjot}
+      {\prftree[r, noline]{}
+        {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
+        {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
+      {Γ ⊢ \mvar{r}:\mvar{b}}
+      {Γ ⊢ \apppply{\case}{\mvar{p}}{\mvar{q}}{(\apply{\inr}{\mvar{r}})}\jdeq
+        \apply{\mvar{q}}{\mvar{r}}:\mvar{c}}}.
+  \end{gatherjot}
   (Recall \cref{notation:substitution} for the meaning of
-  $\mvar{q}[v\coloneqq\mvar{r}]$). Since the elimination rule for
+  $\mvar{q}[\mvar{p}\coloneqq\mvar{r}]$). Since the elimination rule for
   falsehood (\cref{subsec:ipl-elim}) gives back a proof of an arbitrary
   proposition (which is not in general one of the ``inputs'' to $\intro{⊥}$),
   there's no corresponding $β$-rule.
@@ -1712,7 +1757,7 @@ the following auxiliary result:
 \begin{lemma}\label[lemma]{lemma:limitt-universal}
 	There is an equivalence of types
   \begin{equation*}
-    \weq{(A\to L(X,π))}{\∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{π_n∘ f_{n+1}=f_n}}}
+    \weq{(A\to L(X,π))}{\∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{\propeq{}{π_n∘ f_{n+1}}{f_n}}}}
   \end{equation*}
 \end{lemma}
 \begin{proof}
@@ -1720,7 +1765,7 @@ the following auxiliary result:
   compose to the respective identities.\TODO{reference definition}
   First, define
   \begin{gather*}
-    ϕ :(A\to L(X,π)) ⟶ \∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{π_n∘ f_{n+1}=f_n}} \\
+    ϕ :(A\to L(X,π)) ⟶ \∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{\propeq{}{π_n∘ f_{n+1}}{f_n}}} \\
     ϕ(g) \defeq
     \dpair{\λ{n}\λ{a}\appply{p}{(\apply{g}{a})}{n}}
           {\λ{n}\appply{β}{(\apply{g}{a})}{n})}
