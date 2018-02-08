@@ -1,10 +1,10 @@
 \documentclass[12pt,twoside,draft]{reedthesis}
-\usepackage{graphicx} 
-\usepackage{booktabs,setspace} 
+\usepackage{graphicx}
+\usepackage{booktabs,setspace}
 % \usepackage{natbib}
-% Comment out the natbib line above and uncomment the following two lines to use the new 
-% biblatex-chicago style, for Chicago A. Also make some changes at the end where the 
-% bibliography is included. 
+% Comment out the natbib line above and uncomment the following two lines to use the new
+% biblatex-chicago style, for Chicago A. Also make some changes at the end where the
+% bibliography is included.
 %\usepackage{biblatex-chicago}
 %\bibliography{thesis}
 
@@ -110,7 +110,7 @@
     \textbf{LC}  	  &  Church's untyped λ-calculus
   \end{tabular}
 \end{table}
-	
+
 % Depth to which to number and print sections in TOC
 \setcounter{tocdepth}{4}
 % \setcounter{secnumdepth}{2}
@@ -128,7 +128,7 @@ recent advances in the semantics of Per Martin-L\"of's intentional type theory.
 We first develop the classical Curry-Howard correspondence between (the
 constructive subset of) Gentzen's natural deducation and the λ-calculus.
 We proceed to explicate Martin-L\"of's theory of dependent types and the central
-modern development in type theory: Vladimir Voevodsky's Univalence principle. 
+modern development in type theory: Vladimir Voevodsky's Univalence principle.
 We go on to examine the nature of coinduction within this theory, presenting a
 novel formalization of a recent result that M-types can be derived
 \textit{internally} in Univalent type theory.
@@ -160,7 +160,7 @@ science uses a combination of Gentzen's first-order logic (\abbreviation{FOL})
 and an axiomatization of sets called
 \abbreviation{ZFC}.\footnote{This ``consensus'' left out many
   prominent schools of thought, such as the Intuitionists and constructivists, a
-  point we'll soon return to.} 
+  point we'll soon return to.}
 
 Despite the apparent rigor of \abbreviation{FOL}+\abbreviation{ZFC},
 practitioners of the deductive sciences were still beset by issues of
@@ -185,7 +185,7 @@ counterexample. In 1999, Pierre Deligne found a crucial mistake in Voevodsky's
 much of his work in the area of motivic cohomology. As he began to develop more
 and more complex arguments, Voevodsky wondered: ``And who would ensure that I
 did not forget something and did not make a mistake, if even the mistakes in
-much more simple arguments take years to uncover?'' \cite{voevodsky-ias}. 
+much more simple arguments take years to uncover?'' \cite{voevodsky-ias}.
 
 The problems facing Voevodsky and his peers seemed insurmountable.
 As the requisite attention span, memory, and capacity for detail required to
@@ -300,7 +300,7 @@ when discussing and defining formal systems for logic and computation.
 \end{notation}
 
 See \cref{fig:structure}, \cref{ex:judgments}, and \cref{sec:ipl} for examples
-of metavariables. 
+of metavariables.
 
 \begin{definition}\label[definition]{def:judgment}
 	A \define{judgment}\index{Judgment} is something that could be known. A
@@ -323,7 +323,7 @@ of metavariables.
     \item $\mvar{a}$ will happen in the future
     \item $\mvar{a}$ is a program with type $\mvar{t}$
     \item $\mvar{a}$ is true
-    \item the variable $\mvar{v}$ is free (resp.\ bound) in $\mvar{a}$ 
+    \item the variable $\mvar{v}$ is free (resp.\ bound) in $\mvar{a}$
   \end{itemize}
   If one is working in a formal metalanguage, judgments may be defined
   inductively in it.
@@ -367,7 +367,7 @@ of metavariables.
       {B}.
   \end{align*}
   Iterating this notation, we can write long derivations as wellfounded trees
-  with the conclusion as their root. 
+  with the conclusion as their root.
 \end{notation}
 
 \begin{notation}\label[notation]{notation:sequent}
@@ -380,7 +380,7 @@ of metavariables.
   To denote some arbitrary sequence of hypotheses, we will use capital Greek
   letters $Γ$, $Δ$, and $Θ$. Our notions of entailment will
   always allow for \define{reflexivity}, \define{weakening}, \define{contraction},
-  \define{substitution}, and \cref{sec:ipl} will allow for \define{exchange}, 
+  \define{substitution}, and \cref{sec:ipl} will allow for \define{exchange},
   which are the following meta-rules (where $J$, $K$, and $L$ stand for judgments):
   \begin{gatherjot}
     \prftree[r]{\footnotesize refl}{}
@@ -413,7 +413,7 @@ of metavariables.
 \section{Intuitionistic propositional logic}
 \label{sec:ipl}
 
-With these notations, we are prepared to define \abbreviation{IPL}. 
+With these notations, we are prepared to define \abbreviation{IPL}.
 
 \subsection{Formation rules}
 \label{subsec:ipl-form}
@@ -446,13 +446,13 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
     {\prftree[r, noline]{}
       {Γ ⊢ \prop{\mvar{a}}}
       {Γ ⊢ \prop{\mvar{b}}}}
-    {Γ⊢\prop{\mvar{a}→\mvar{b}}} 
+    {Γ⊢\prop{\mvar{a}→\mvar{b}}}
   \qquad
   \prftree[r]{}
     {\prftree[r, noline]{}
       {Γ ⊢ \prop{\mvar{a}}}
       {Γ ⊢ \prop{\mvar{b}}}}
-    {Γ⊢\prop{\mvar{a}\land \mvar{b}}} 
+    {Γ⊢\prop{\mvar{a}\land \mvar{b}}}
   \qquad
   \prftree[r]{}
     {\prftree[r, noline]{}
@@ -563,12 +563,10 @@ $v,w,\ldots$
 \label{subsec:ipl-elim}
 
 Once we know a judgment, how do we use it in a derivation?
-We need \define{elimination rules}. These should be dual to our
-introduction rules: we should be able to extract the same amount of information
-from a proposition that went into its proof.\footnote{The feature that our
-  elimination rules extract enough (resp.\ not too much) information is called
-  \define{local completeness}\indeX{Completeness!Local} (resp \define{local
-  soundness}\indeX{Soundness!Local}).}
+We need \define{elimination rules}. How do we know what they should be?
+They should be dual to our introduction rules: we should be able to extract the
+same amount of information from a proposition that went into its proof (More to
+come in \cref{subsec:proof-terms}, see \cref{def:local-soundness-completeness}).
 
 For conjunction, we should be able to recover proofs of both conjuncts:
 \begin{align*}
@@ -577,7 +575,7 @@ For conjunction, we should be able to recover proofs of both conjuncts:
       {Γ ⊢ \prop{\mvar{a}}}
       {Γ ⊢ \prop{\mvar{b}}}}
     {Γ ⊢ \mvar{p}:\mvar{a}\land\mvar{b}}
-    {Γ ⊢ \appr{1}\mvar{p}:\mvar{a}} 
+    {Γ ⊢ \appr{1}\mvar{p}:\mvar{a}}
   &&\text{and}&&
   \prftree[r]{}
     {\prftree[r, noline]{}
@@ -614,7 +612,7 @@ deduce the consequence:
 The elimination rule for falsehood comes from the principle
 \textit{ex falso quod libet}, ``from falsehood anything follows''. If we've been
 able to prove $⊥$, our whole logic is bankrupt and we can derive anything we
-please: 
+please:
 \begin{align*}
   \prftree[r]{}
     {Γ ⊢ \prop{\mvar{a}}}
@@ -704,78 +702,90 @@ represent propositions.
   \TODO{cite bob harper}
 \end{example}
 
-\subsection{Computation rules and judgmental equality}
-\label{subsec:ipl-compute}
+\subsection{Proof terms and harmony}
+\label{subsec:proof-terms}
 
-\begin{remark}\label[remark]{rmk:reverse-proof}
-  As we can see in \cref{ex:ipl-and-comm}, and \cref{fig:lem-refute},
-  derivations in \abbreviation{IPL} end with a \define{proof term} which
-  summarizes the whole proof tree (modulo some actions on hypotheses, which we've
-  excluded for brevity). To demonstrate this, let's attempt to reconstruct a
-  proof tree based on a judgment including such a term. Suppose your friend
-  tells you they apprehended the following hypothetical judgment
-  in a dream, but upon waking, couldn't recall the derivation:
-  \begin{equation*}
-      {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
-  \end{equation*}
-  Well, it certainly had to end with an application of implication eliimination
-  to hypotheses of the form $\mvar{b}$ and $\mvar{b}→ \mvar{d}$:
-  \begin{equation*}
-    \prftree[r]{}
-      {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
-      {Γ ⊢ \prftree[r]{}
+As we can see in \cref{ex:ipl-and-comm}, and \cref{fig:lem-refute},
+derivations in \abbreviation{IPL} end with a \define{proof term} which
+summarizes the whole proof tree. To demonstrate this, let's attempt to
+reconstruct a proof tree based on a judgment including such a term. Suppose your
+friend tells you they apprehended the following hypothetical judgment
+in a dream, but upon waking, couldn't recall the derivation:
+\begin{equation*}
+    {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+\end{equation*}
+Well, it certainly had to end with an application of implication eliimination
+to hypotheses of the form $\mvar{b}$ and $\mvar{b}→ \mvar{d}$:
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
+    {Γ ⊢ \prftree[r]{}
+      {?}
+      {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+    {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+\end{equation*}
+and if the term of type $\mvar{b}$ was produced from the application of
+$\pr{1}$, the term it was applied to had to be a proof of
+$\mvar{b}\land \mvar{c}$ for some $\mvar{c}$:
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
+    {\prftree[r]{}
+      {\prftree[r]{}
         {?}
-        {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
-      {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
-  \end{equation*}
-  and if the term of type $\mvar{b}$ was produced from the application of
-  $\pr{1}$, the term it was applied to had to be a proof of
-  $\mvar{b}\land \mvar{c}$ for some $\mvar{c}$:
-  \begin{equation*}
-    \prftree[r]{}
-      {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
+        {Γ ⊢ \apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
+      {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+    {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+\end{equation*}
+which itself had to be applied to proofs of $\mvar{a}$ and
+$\mvar{a}→\mvar{b}\land\mvar{c}$ for some $\mvar{a}$:
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
+    {\prftree[r]{}
       {\prftree[r]{}
-        {\prftree[r]{}
-          {?}
-          {Γ ⊢ \apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
-        {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
-      {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
-  \end{equation*}
-  which itself had to be applied to proofs of $\mvar{a}$ and
-  $\mvar{a}→\mvar{b}\land\mvar{c}$ for some $\mvar{a}$:
-  \begin{equation*}
-    \prftree[r]{}
-      {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
-      {\prftree[r]{}
-        {\prftree[r]{}
-          {Γ ⊢ \mvar{p}:\mvar{a}→(\mvar{b}\land\mvar{c})}
-          {Γ ⊢ \mvar{q}:\mvar{a}}
-          {Γ ⊢ \apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
-        {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
-      {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
-  \end{equation*}
-  At this point, we can (un)deduce no further. The form of the judgment allowed
-  us no discretion; this is the only derivation (up to\footnote{For the
-    non-mathematical reader: When a mathematician says ``X is true up to $R$''
-    for some (equivalence) relation $R$, it means that all objects related by $R$
-    are considered equivalent. In this case, ``unique up to isomorphism'' means that
-    there may be other terminal objects, but all of them are mutually isomorphic.}
-  renaming of metavariables) that could have produced that conclusion.
-\end{remark}
+        {Γ ⊢ \mvar{p}:\mvar{a}→(\mvar{b}\land\mvar{c})}
+        {Γ ⊢ \mvar{q}:\mvar{a}}
+        {Γ ⊢ \apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
+      {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+    {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+\end{equation*}
+At this point, we can (un)deduce no further. The form of the judgment allowed
+us no discretion; this is the only derivation (up to\footnote{For the
+  non-mathematical reader: When a mathematician says ``X is true up to $R$''
+  for some (equivalence) relation $R$, it means that all objects related by $R$
+  are considered equivalent. In this case, ``unique up to isomorphism'' means that
+  there may be other terminal objects, but all of them are mutually isomorphic.}
+renaming of metavariables) that could have produced that conclusion.
 
 The proof term in longer arguments is often cumbersome, and we might wonder if
-there are any benefits to internalizing\index{Internalizing!Proofs} the notion
-of proof. The answer to this question will play a critical role in
-\cref{sec:curry-howard}, and it is essentially the following: when we
-internalize proof, we can give formal rules for reducing our
-proof terms.\footnote{On the philosophical side, Martin-L\"of made a fascinating
+there are any benefits to internalizing\index{Internalizing!Proofs} proof. The
+answer to this question will become clear in
+\crefrange{subsec:ipl-compute}{subsec:ipl-uni}, and will play a critical role in
+\cref{sec:curry-howard}. In short, they will allow us to
+verify the \define{harmony}\index{Harmony} of our logic: that the introduction
+rules complement the elimination rules with respect to two specific
+criteria.\footnote{On the philosophical side, Martin-L\"of made a fascinating
   and convincing argument that judgments involving proof terms are analytic,
   whereas proof-irrelevant mathematical arguments are synthetic: one must go
   beyond conceptual analysis and view the proof to be convinced of them
-  \cite{martin-lof-analytic}.} By \cref{rmk:reverse-proof}, this is as good as
-giving an algorithm that converts unnecessarily complex to some normal form.
+  \cite{martin-lof-analytic}}
 
-What kind of proofs can be reduced? Consider the following example:
+\begin{definition}\label[definition]{def:local-soundness-completeness}
+  \define{Local soundness}\index{Soundness!Local} is the condition that
+  elimination rules can't extract more information than was put into a
+  conclusion by introduction rules; they aren't too strong.
+
+  \define{Local completeness}\index{Completeness!Local} is the condition that
+  elimination rules can recover all the information that was put into a conclusion
+  by introduction rules; they aren't too weak.
+\end{definition}
+
+\subsection{Computation rules and judgmental equality}
+\label{subsec:ipl-compute}
+
+Some proofs are needlessly roundabout, and can be shortened.
+Consider:
 \begin{equation*}
   {\prftree[r]{}
     {\prftree[r]{}
@@ -786,13 +796,12 @@ What kind of proofs can be reduced? Consider the following example:
 \end{equation*}
 This derivation could be eliminated entirely: we had a proof of $\mvar{a}$ to
 begin with! This is an instance of a general pattern: whenever we have an
-elimination rule for a connective just after its introduction, by the symmetry
-between such rules, we can avoid the circumlocution and cut straight to the
-conclusion.
+elimination rule for a connective just after its introduction, we can avoid the
+circumlocution and cut straight to the conclusion.
 
 Do such shortcuts result in \textit{the same} proof? To phrase this
-question precisely, one needs a notion of equality for proof terms.
-And Gentzen's notion was define it just so he could answer this question in the
+question precisely, one needs a notion of identity for proof terms.
+Gentzen's notion was to define it just so he could answer this question in the
 affirmative.
 
 \begin{definition}\label[definition]{def:jdeq-ipl}
@@ -800,29 +809,29 @@ affirmative.
   $\mvar{p}\jdeq\mvar{q}:mvar{a}$, is the least congruence closed under the
   following
   \define{computation rules}\index{Computation rules!In \abbreviation{IPL}}
-  (also called \define{$β$-rules}):
+  (also called \define{β-rules}):
   \begin{gatherjot}
-    {\prftree[r]{\footnotesize $\landβ_{\text{l}}$}
+    {\prftree[r]{\footnotesize β$∧$\textsubscript{l}}
       {Γ ⊢ \mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
       {Γ ⊢ \appr{1}{(\mvar{p},\mvar{q})}\jdeq \mvar{p}:\mvar{a}}}
     \qquad
-    {\prftree[r]{\footnotesize $\landβ_{\text{r}}$}
+    {\prftree[r]{\footnotesize β$∧$\textsubscript{r}}
       {Γ ⊢ \mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
       {Γ ⊢ \appr{2}{(\mvar{p},\mvar{q})}:\mvar{b}}} \\
-    {\prftree[r]{\footnotesize $(→)β$}
+    {\prftree[r]{\footnotesize β$→$}
       {Γ ⊢ \mvar{p}:\mvar{a}⊢\mvar{q}:\mvar{b}}
       {Γ ⊢ \mvar{r}:\mvar{a}}
       {Γ ⊢ \apply{(\λ{v}\mvar{q})}{\mvar{r}}\jdeq
         \mvar{q}[\mvar{p}\coloneqq\mvar{r}]:\mvar{b}}} \\
-    {\prftree[r]{\footnotesize $\lorβ_{\text{l}}$}
+    {\prftree[r]{\footnotesize β$∨$\textsubscript{l}}
       {\prftree[r, noline]{}
         {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
         {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
       {Γ ⊢ \mvar{r}:\mvar{a}}
       {Γ ⊢ \apppply{\case}{\mvar{p}}{\mvar{q}}{(\apply{\inl}{\mvar{r}})}\jdeq
-        \apply{\mvar{p}}{\mvar{r}}:\mvar{c}}} 
+        \apply{\mvar{p}}{\mvar{r}}:\mvar{c}}}
     \qquad
-    {\prftree[r]{\footnotesize $\lorβ_{\text{r}}$}
+    {\prftree[r]{\footnotesize β$∨$\textsubscript{r}}
       {\prftree[r, noline]{}
         {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
         {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
@@ -831,43 +840,57 @@ affirmative.
         \apply{\mvar{q}}{\mvar{r}}:\mvar{c}}}.
   \end{gatherjot}
   (Recall \cref{notation:substitution} for the meaning of
-  $\mvar{q}[\mvar{p}\coloneqq\mvar{r}]$). Since the elimination rule for
-  falsehood (\cref{subsec:ipl-elim}) gives back a proof of an arbitrary
-  proposition (which is not in general one of the ``inputs'' to $\intro{⊥}$),
-  there's no corresponding $β$-rule.
+  $\mvar{q}[\mvar{p}\coloneqq\mvar{r}]$).\footnote{
+    Since the elimination rule for falsehood (\cref{subsec:ipl-elim}) gives back a
+    proof of an arbitrary proposition (which is not in general one of the ``inputs''
+    to $\intro{⊥}$), there's no corresponding β-rule.}
 \end{definition}
 
-% To define the rules for introducing quantifiers, we must deal with the issue of
-% free and bound variables. Our second judgment expresses that $v$ is a free variable
-% of $\mvar{a}$, denoted $v\in\FV(\mvar{a})$. For the sake of brevity, metavariables in the
-% following are implicitly assumed to be propositions:
-% \begin{gather*}
-%   \prftree[r]{}
-%      {v\in \FV(\mvar{a})}
-%      {v\in \FV(\mvar{a}\land \mvar{b}\prop)}
-%   \qquad
-%   \prftree[r]{}
-%      {v\in \FV(\mvar{b})}
-%      {v\in \FV(\mvar{a}\land \mvar{b}\prop)} \\
-%   \prftree[r]{}
-%      {v\in \FV(\mvar{a})}
-%      {v\in \FV(\mvar{a}\lor \mvar{b}\prop)}
-%   \qquad
-%   \prftree[r]{}
-%      {v\in \FV(\mvar{b})}
-%      {v\in \FV(\mvar{a}\lor \mvar{b}\prop)}
-% \end{gather*}
+Besides allowing us to write shorter proofs, these rules witness local
+soundness; they show that the elimination rules never prove any conclusion that
+wasn't given to an introduction rule.
 
 \subsection{Unicity rules}
 \label{subsec:ipl-uni}
 
-Just because a logic doesn't give us an easy way to do something unexpected
-doesn't mean it can't be done. The prime example is proving a contradiction.
-History is filled with deductive systems that were thought to be sound, but
-were shown to be useless by some clever argument. Russell's paradox dispensed
-with Frege's \textit{Begriffsschrift}, the Burali-Forti antimony unraveled
-na\"ive set theories, and Girard's paradox revealed a fatal flaw in
-Martin-L\"of's early attempts at dependent type theory.
+% Just because a logic doesn't give us an easy way to do something unexpected
+% doesn't mean it can't be done. The prime example is proving a contradiction.
+% History is filled with deductive systems that were thought to be sound, but
+% were shown to be useless by some clever argument. Russell's paradox dispensed
+% with Frege's \textit{Begriffsschrift}, the Burali-Forti antimony unraveled
+% na\"ive set theories, and Girard's paradox revealed a fatal flaw in
+% Martin-L\"of's early attempts at dependent type theory.
+
+One worry we might have when designing our logic is that our propositions have
+proofs of a non-standard form. We might \textit{think} that every proof of
+$\mvar{a}∧\mvar{b}$ has the form $(\mvar{p},\mvar{q})$ for $\mvar{p}:\mvar{a}$ and
+$\mvar{q}:\mvar{b}$, but how do we \textit{know}? Gentzen's answer was the
+following \define{unicity rules}\index{Unicity rules},
+(also known as \define{η-rules} or
+\define{uniqueness principles}):
+\begin{gatherjot}
+  {\prftree[r]{\footnotesize η$⊤$}
+    {Γ ⊢ \mvar{p}:⊤}
+    {Γ ⊢ \mvar{p}\jdeq \unitelem : ⊤}}
+  \qquad
+  {\prftree[r]{\footnotesize η$∧$}
+    {Γ ⊢ \mvar{p}:\mvar{a}∧\mvar{b}}
+    {Γ ⊢ (\appr{1}{\mvar{p}},\appr{2}{\mvar{p}})\jdeq
+      \mvar{p}:\mvar{a}∧\mvar{b}}} \\
+  {\prftree[r]{\footnotesize η$→$}
+    {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{b}}
+    {Γ ⊢ \λ{v}{(\apply{\mvar{p}}{v})}:\mvar{a}→\mvar{b}}}
+  \qquad
+  {\prftree[r]{\footnotesize η$∨$}
+    {Γ ⊢ \mvar{p}:\mvar{a}∨\mvar{b}}
+    {Γ ⊢ \apppply{\case}{\inl}{\inr}{\mvar{p}}\jdeq \mvar{p}:\mvar{a}∨\mvar{b}}}.
+\end{gatherjot}
+
+Naturally, these rules witness local completeness; after applying elimination
+rules and then introduction rules, we can recover our original
+
+\subsection{Diagrams}
+\label{subsec:ipl-diagrams}
 
 \section{The λ-calculus}
 \label{sec:the-lambda-calculus}
@@ -935,7 +958,7 @@ The strong normalization property
 \end{notation}
 
 \begin{lemma}\label[lemma]{lemma:transport-compose}
-	For $f:A\to B$, $P:B\to\universe$, and $p:\propeq{A}{x}{y}$, 
+	For $f:A\to B$, $P:B\to\universe$, and $p:\propeq{A}{x}{y}$,
   \begin{equation*}
     \propeq{}{
       \transpor{P∘ f}{p}
@@ -1012,7 +1035,7 @@ produces some element of $A$. This seems like a very tricky function to write:
 how can we give a term of type $A$ just by knowing $A$ has terms? We don't
 know what form data of type $A$ have! The function $\ttfun{lem}$ seems
 similarly quagmired. Given a type $A$, this function either has to produce an
-element of it, or demonstrate that it is uninhabited. 
+element of it, or demonstrate that it is uninhabited.
 
 As you may have already guessed, under the Curry-Howard correspondence, these
 functions correspond to the rule of double negation elimination
@@ -1073,7 +1096,7 @@ canonical example of a category is $\Set$, the collection of all sets. In
   paradoxes of Burali-Forti and Russell. The discovery of said paradoxes
   motivated Bertrand Russell to invent something he called the ``theory of
   types'' \cite{russell}.}.
-\Crefrange{sec:basics}{sec:functors-and-their-algebras}, 
+\Crefrange{sec:basics}{sec:functors-and-their-algebras},
 are willfully imprecise, we work with an abstract and undefined notion of
 ``collection'', and adopt set-theoretic notation. See any textbook on category
 theory for information on how problems of size are dealt with set-theoretically.
@@ -1109,7 +1132,7 @@ We will examine category theory within \abbreviation{UTT} in
     \item the identity acts as a unit for composition.
   \end{enumerate}
   When the category in question is clear from context, one writes $f:A\to B$ for
-  $f\in\Hom_{\bfC}(A,B)$. 
+  $f\in\Hom_{\bfC}(A,B)$.
 \end{definition}
 
 \begin{definition}\label[definition]{def:domain-and-codomain}
@@ -1122,7 +1145,7 @@ We will examine category theory within \abbreviation{UTT} in
   A student of mathematics will be familiar with the following categories:
   \begin{itemize}
     \itemsep-0.2em
-    \item $\Set$: The category with sets as objects, functions as morphisms, 
+    \item $\Set$: The category with sets as objects, functions as morphisms,
       the usual composition of functions, and identity functions.
     \item $\Grp$: The category of groups\index{Group} with group homomorphisms
       as morphisms. Note that the identity function of sets is the required
@@ -1154,7 +1177,7 @@ Just as with functions, inverses (should they exist) are unique.
   \begin{tikzpicture}[scale=2]
     \node (A) [] {$∗$};
 
-    \foreach \x in {1,2,3} 
+    \foreach \x in {1,2,3}
       \draw (A) edge [in={50*\x},out={40+50*\x},loop] node[above] {$g_\x$} (A);
 
     \draw (A) edge [in=200,out=240,loop] node[below] {$\cdots$} (A);
@@ -1294,9 +1317,9 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
   consists of the following data:
   \begin{itemize}
     \itemsep-0.2em
-    \item a map $F_0:\Obj \bfC\to\Obj \bfD$ 
+    \item a map $F_0:\Obj \bfC\to\Obj \bfD$
     \item for each pair of objects $A,B\in\Obj C$, a map \\
-      $F_1:\Hom_{\bfC}(A,B) \to\Hom_{\bfD}(F_0(A),F_0(B))$ 
+      $F_1:\Hom_{\bfC}(A,B) \to\Hom_{\bfD}(F_0(A),F_0(B))$
   \end{itemize}
   These data are subject to the following axioms:
   \begin{enumerate}%[label=\Alph*.]
@@ -1333,7 +1356,7 @@ using the following notation:
 \end{example}
 
 \begin{example}\label[example]{ex:coproduct-functoriality}
-	If $\bfC$ has distinguished binary coproducts, then 
+	If $\bfC$ has distinguished binary coproducts, then
   for any fixed $A,B\in\Obj\bfC$, one can define the following
   functors:\footnote{Really, this is a consequence of the fact that $+$ is
     what's called a \define{bifunctor}\indeX{Bifunctor}, but we don't need the
@@ -1469,9 +1492,9 @@ The following example is crucial to
   with $i_1:1\to 1+N$ yields
   \begin{align*}
     u∘ z = u∘ [z,s]∘ i_1
-    &= [f,g]∘ (\id_1+u) ∘ i_1 
+    &= [f,g]∘ (\id_1+u) ∘ i_1
     && \text{Above diagram} \\
-    &= [f,g]∘ [i_1,i_2∘ u] ∘ i_1 
+    &= [f,g]∘ [i_1,i_2∘ u] ∘ i_1
     && \text{Definition of }+ \\
     &= [f, g]∘ i_1 \\
     &= f
@@ -1523,9 +1546,56 @@ The following example is crucial to
   with length $n$.\footnote{In $\Set$, $\N$ would be an initial algebra.
     It makes sense to ask if this functor has an initial algebra in any
     category with a terminal object and chosen binary coproducts, and in
-    general, such algebras are called \define{natural number objects} (NNOs) 
+    general, such algebras are called \define{natural number objects} (NNOs)
     \cite{sketches}.
   }
+\end{example}
+
+\begin{example}\label[example]{ex:final-coalgebra}
+  A coalgebra for this same functor $A↦A+1$ is a set $A$ with a partial unary
+  operation (where the value $1$ represents failure/undefined).
+  In $\universe$ the type $\N_∞\jdeq\N+\unittype$ is the carrier of a final
+  coalgebra given by a partial operation
+  \begin{alignat*}{3}
+    &\ttfun{pred} : \N+\unittype &&\to(\N+\unittype)+\unittype \\
+    &\ttfun{pred}(\apinl{0})                 &&\jdeq \apinr{(\apinr{\unitelem})}
+      &\qquad\quad&\text{(undefined)}\\
+    &\ttfun{pred}(\apinl{(\apply{\suc}{n})}) &&\jdeq n
+      &\qquad\quad& \\
+    &\ttfun{pred}(\apinr{\unitelem})         &&\jdeq \apinr{\unitelem}
+      &\qquad\quad&\text{($\apinr{\unitelem}$ is like $∞$)}
+  \end{alignat*}
+  which acts like the natural numbers with an extra ``infinite element''
+  \cite{adamek}.
+\end{example}
+
+\begin{remark}\label[remark]{rmk:universal-algebra}
+  The form of the functor encodes what a student of universal algebra would call
+  a \define{signature}\index{Signature}. By the universal property of
+  coproducts, an algebra for an functor of the form $A↦(A×A)+A+1$ consists of:
+  \begin{itemize}
+    \itemsep0em
+    \item an arrow $A×A→A$ (a binary operation on $A$),
+    \item an arrow $A→A$ (a unary operation on $A$),
+    \item and a distinguished element $1→A$.
+  \end{itemize}
+  This is exactly the signature of a \define{group}\index{Group} (the arrow
+  $A×A→A$ corresponds the group operation, $A→A$ to inversion, and $1→A$ to the
+  identity).\footnote{However, an algebra for this functor will not form a group
+    in general: the signature doesn't encode the group laws (the operation is
+    associative, etc.). To encode these relations, one needs the richer
+    structure of a \define{monad}\indeX{Monad}.}
+\end{remark}
+
+\begin{example}\label[example]{ex:initial-algebras}
+  \
+  \begin{itemize}
+    \itemsep0em
+    \item An initial algebra for the functor $A↦B×A+1$ has the universal property
+      of a \define{list object}.
+    \item The initial algebra $A↦(A×A)+1$ has a universal property expressing
+      the induction principle for binary trees.
+  \end{itemize}
 \end{example}
 
 \section{Type theoretic category theory}
@@ -1533,7 +1603,7 @@ The following example is crucial to
 
 Unfortunately, terminology varies between the three predominant sources
 on category theory in univalent type theory \cite{book} \cite{unimath}
-\cite{hott-lib}. 
+\cite{hott-lib}.
 
 \chapter{Coinductive types in univalent type theory}
 \label{chap:coinductive-types-in-univalent-type-theory}
@@ -1597,7 +1667,7 @@ constructed in \cref{lemma:algebra-iso-equiv}.
 
 \begin{lemma}\label[lemma]{lemma:polynomial-functor-transport}
   For all $X,Y:\universe$, $F:\universe\to\universe$,
-  $f:X\to FX$, $g:Y\to FY$, and $p:\propeq{}{X}{Y}$, 
+  $f:X\to FX$, $g:Y\to FY$, and $p:\propeq{}{X}{Y}$,
   if for all $x:X$ we have
   \begin{equation*}
     \propeq{}{
@@ -1608,7 +1678,7 @@ constructed in \cref{lemma:algebra-iso-equiv}.
   \end{equation*}
   then $\propeq{}{\transport{Z↦ (Z\to FZ)}{p}{f}}{g}$.
   That is, $f$ is equal to $g$ after being transported just when
-  applying $f$ and transporting the result is the same as transporting the 
+  applying $f$ and transporting the result is the same as transporting the
   input and applying $g$.
 \end{lemma}
 \begin{proof}
@@ -1638,7 +1708,7 @@ To complete the proof that the transported coalgebra maps are equal, we'll need
 the following auxiliary result:
 
 \begin{lemma}\label[lemma]{lemma:polynomial-functor-transport}
-  For all $X,Y:\universe$ and $p:\propeq{}{X}{Y}$, 
+  For all $X,Y:\universe$ and $p:\propeq{}{X}{Y}$,
   \begin{equation*}
     \propeq{}{
       P^*\paren{\transpor{\id_{\universe}}{p}}
@@ -1690,7 +1760,7 @@ the following auxiliary result:
     is our first (but not nearly our last) crucial use of univalence. Without an
     equality, we couldn't \transportname{} $α$ to $β$ in the next step.
     This step also demonstrates that function extensionality alone doesn't
-    suffice.} 
+    suffice.}
   To demonstrate that $\propeq{}{(X,α)}{(Y,β)}$, we invoke the
   characterization of paths in $Σ$-types, \cref{lemma:path-sigma}. It
   remains to show
@@ -1842,10 +1912,10 @@ of \cite{non-wellfounded} (under the column \MTypes{}).
 % in your bibliography, regardless of whether or not you've cited it in the thesis.
 \nocite{*}
 
-%  \bibliographystyle{bsts/mla-good} % there are a variety of styles available; 
+%  \bibliographystyle{bsts/mla-good} % there are a variety of styles available;
 %  \bibliographystyle{plainnat}
-% replace ``plainnat'' with the style of choice. You can crefer to files in the bsts or APA 
-% subfolder, e.g. 
+% replace ``plainnat'' with the style of choice. You can crefer to files in the bsts or APA
+% subfolder, e.g.
 % \bibliographystyle{APA/apa-good}  % or
 \bibliography{thesis}
 \bibliographystyle{plain}
@@ -1857,4 +1927,3 @@ of \cite{non-wellfounded} (under the column \MTypes{}).
 \index{$F$-algebra|see {Algebra for a functor}}
 \printindex
 \end{document}
-
