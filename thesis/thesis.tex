@@ -84,13 +84,13 @@
 \setlength{\parskip}{0pt}
 \begin{document}
 
-\maketitle
+% \maketitle
 \frontmatter % this stuff will be roman-numbered
 \pagestyle{empty} % this removes page numbers from the frontmatter
 
 % Acknowledgements (Acceptable American spelling) are optional
 % So are Acknowledgments (proper English spelling)
-\chapter*{Acknowledgments}
+% \chapter*{Acknowledgments}
 
 % The pcreface is optional
 % To remove it, comment it out or delete it.
@@ -122,18 +122,18 @@
 
 \chapter*{Abstract}
 
-In this thesis, we explain Univalent type theory, a constructive and
+In this thesis we explain Univalent type theory, a constructive and
 computationally meaningful foundational system for mathematics inspired by
-recent advances in the semantics of Per Martin-L\"of's intentional type theory.
-We first develop the classical Curry-Howard correspondence between (the
-constructive subset of) Gentzen's natural deducation and the λ-calculus.
-We proceed to explicate Martin-L\"of's theory of dependent types and the central
-modern development in type theory: Vladimir Voevodsky's Univalence principle.
-We go on to examine the nature of coinduction within this theory, presenting a
-novel formalization of a recent result that M-types can be derived
-\textit{internally} in Univalent type theory.
+recent advances in the semantics of Per Martin-L\"of's intuitionistic type
+theory with intentional equality. We first develop the classical Curry-Howard
+correspondence between (the constructive subset of) Gentzen's natural deducation
+and the λ-calculus. We proceed to explicate Martin-L\"of's theory of dependent
+types and the central modern development in type theory: Vladimir Voevodsky's
+Univalence principle. We go on to examine the nature of coinduction within this
+theory, presenting a novel formalization of a recent result that M-types can be
+derived \textit{internally} in Univalent type theory.
 
-\chapter*{Dedication}
+% \chapter*{Dedication}
 
 \mainmatter % here the regular arabic numbering starts
 \pagestyle{fancyplain} % turns page numbering back on
@@ -887,10 +887,99 @@ following \define{unicity rules}\index{Unicity rules},
 \end{gatherjot}
 
 Naturally, these rules witness local completeness; after applying elimination
-rules and then introduction rules, we can recover our original
+rules and then introduction rules, we can recover our original proofs.
 
 \subsection{Diagrams}
 \label{subsec:ipl-diagrams}
+
+One of the ways that we can understand our computation rules is via a clever
+sort of diagram. This section foreshadows some connections between
+\abbreviation{IPL} and the content of \cref{chap:category-theory}.
+
+\begin{definition}\label[definition]{def:implication-composition}
+  Suppose given terms $\mvar{p}:\mvar{a}→\mvar{b}$ and
+  $\mvar{q}:\mvar{b}→\mvar{c}$ under some hypotheses $\Gamma$. We define the
+  \define{composition}\index{Composition!Of proof terms}
+  $\mvar{q}∘\mvar{p}:\mvar{a}→\mvar{c}$ to be the term in the conclusion of the
+  following deduction:
+  \begin{equation*}
+  {\prftree[r]{}
+    {\prftree[r]{}
+      {\prftree[r]{}
+        {\prftree[r]{\footnotesize refl}
+          {}
+          {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{r}:\mvar{a}}}
+        {\prftree[r]{\footnotesize weak}
+          {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{b}}
+          {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{p}:\mvar{a}→\mvar{b}}}
+        {Γ, \mvar{r}:\mvar{a} ⊢ \apply{\mvar{p}}{\mvar{r}}:\mvar{b}}}
+      {\prftree[r]{\footnotesize weak}
+        {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}
+        {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
+      {Γ, \mvar{r}:\mvar{a} ⊢ \apply{\mvar{q}}{(\apply{\mvar{p}}{\mvar{r}})}:\mvar{c}}}
+    {Γ ⊢ \λ{v}{\apply{\mvar{q}}{(\apply{\mvar{p}}{v}})}:\mvar{a}→\mvar{c}}}.
+  \end{equation*}
+  In short, $\mvar{q}∘\mvar{p}\defeq \λ{v}{\apply{\mvar{q}}{(\apply{\mvar{p}}{v}})}$.
+\end{definition}
+
+Now suppose we have terms $\mvar{p}:\mvar{a}→\mvar{c}$ and
+$\mvar{q}:\mvar{b}→\mvar{c}$. Via the elimination rule for $∨$, there is a
+term $\apppply{\case}{\mvar{p}}{\mvar{q}}:\mvar{a}∨\mvar{b}→\mvar{c}$.
+By the computation rules, this term obeys the following identities (in fact,
+this is just a rewrite of the β-rules using the composition we just defined):
+\begin{align*}
+  \appply{\case}{\mvar{p}}{\mvar{q}}∘\inl &\jdeq \mvar{p} \\
+  \appply{\case}{\mvar{p}}{\mvar{q}}∘\inr &\jdeq \mvar{q}
+\end{align*}
+We can express these equalities using the following \define{commutative diagram}
+(skip ahead to \cref{def:commutative-diagram} for details).
+
+% Now suppose we have another term $\mvar{r}:\mvar{a}∨\mvar{b}→\mvar{c}$ which
+% obeys the same equalities,
+% \begin{align*}
+%   \mvar{r}∘\inl &\jdeq \mvar{p} \\
+%   \mvar{r}∘\inr &\jdeq \mvar{q}
+% \end{align*}
+
+% \begin{lemma}
+% 	For any $\mvar{f}:\mvar{c}→\mvar{d}$,
+%   \begin{equation*}
+%     \appply{\case}{(f∘\inl)}{(f∘\inr)}
+%     \jdeq f∘\appply{\case}{\inl}{\inr}
+%   \end{equation*}
+% \end{lemma}
+% \begin{proof}
+% 	\begin{align*}
+%     \appply{\case}{(f∘\mvar{p})}{(f∘\mvar{q})}
+%     &= \λ{v}{\apply{(\appply{\case}{(f∘\mvar{p})}{(f∘\mvar{q})})}{v}}
+%   \end{align*}
+% \end{proof}
+
+\begin{center}
+  \begin{tikzcd}[sep=large]
+    A \arrow[dr, "\inl"{name=I1}]\arrow[ddr, swap, "\mvar{p}"{name=F}, bend right] &
+    {} & B\arrow[dl, "\inr"{name=I2},swap] \arrow[ddl,"\mvar{q}"{name=G}, bend left] \\
+    {} & A+B \arrow[d,dashed, "\appply{\case}{\mvar{p}}{\mvar{q}}"] & {} \\
+    {} & C & {}
+    % filling in the cells
+    \arrow[phantom, shift left=0.3em, from=I1, to=F, "(\beta)"]
+    \arrow[phantom, shift right=0.3em, from=I2, to=G, "(\beta)"]
+    % \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
+  \end{tikzcd}
+\end{center}
+
+% \begin{tikzcd}[sep=large]
+%   {} & C\arrow[ddl, bend right, swap, "f"{name=F}]\arrow[ddr, bend left, "g"{name=G}]
+%         \arrow[d,dashed, bend right, swap, "\mathsf{rec}"{name=FG1}]
+%         \arrow[d,dashed, bend left, ""{name=FG2}] & {} \\
+%   {} & A\times B \arrow[dl, "\mathsf{proj}_1"{name=P1}]
+%                  \arrow[dr,swap, "\mathsf{proj}_2"{name=P2}] & {} \\
+%   A & {} & B
+%   % filling in the cells
+%   \arrow[phantom, shift right=0.3em, from=P1, to=F, "(\beta)"]
+%   \arrow[phantom, shift left=0.3em, from=P2, to=G, "(\beta)"]
+%   \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
+% \end{tikzcd}
 
 \section{The λ-calculus}
 \label{sec:the-lambda-calculus}
@@ -1874,13 +1963,12 @@ the following auxiliary result:
 \section{Internalizing M-types}
 \label{sec:internalizing-m-types}
 
-\chapter*{Conclusion}
-\addcontentsline{toc}{chapter}{Conclusion}
-\chaptermark{Conclusion}
-\markboth{Conclusion}{Conclusion}
-\setcounter{chapter}{4}
-\setcounter{section}{0}
-
+% \chapter*{Conclusion}
+% \addcontentsline{toc}{chapter}{Conclusion}
+% \chaptermark{Conclusion}
+% \markboth{Conclusion}{Conclusion}
+% \setcounter{chapter}{4}
+% \setcounter{section}{0}
 
 %If you feel it necessary to include an appendix, it goes here.
 \appendix
