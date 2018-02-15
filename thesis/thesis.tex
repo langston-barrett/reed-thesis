@@ -56,6 +56,7 @@
   arrows={line width=0.65pt},
   >={stealth}
 }
+\newcommand{\comma}{,}
 
 % Gather environments with more interline spacing
 \usepackage{environ}
@@ -451,6 +452,10 @@ of uses of metavariables.
       & \cref{def:metavariable} 
       & English                
       & A metavariable: some term in our object language \\
+    $x\≔\mvar{a}$
+      & TODO
+      & English                
+      & ``x'' is a shorthand for the expression $\mvar{a}$ \\
     $\prop{\mvar{a}}$   
       & \cref{subsec:ipl-intro} 
       & English                
@@ -534,7 +539,7 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
   $\lnot$ is read ``not'', $\lor$ is read ``or'',
   $\land$ is read ``and'', $→$ is read ``implies'', $∀$ is read
   ``for all'', and $∃$ is read ``there exists''.
-  The rules for deriving truth will justify these readings.}
+  \Cref{subsec:ipl-intro} attempts to justify these readings.}
 \begin{gatherjot}
   \prftree[r]{}{}{Γ⊢\prop{⊤}}
   \qquad
@@ -594,9 +599,7 @@ $\mvar{a}$.
 \label{subsec:ipl-intro}
 
 Martin-L\"of said ``The meaning of a proposition is determined by [...] what
-counts as a verification of it'' \cite{martin-lof-meanings}. Paraphrasing,
-he follows the constructivist view and identifies (as we will identify) the
-\textit{truth} of a proposition with having a \textit{proof} of it. Thus, to
+counts as a verification of it'' \cite{martin-lof-meanings}. To
 understand the meanings of the formation rules, we must define the judgment
 ``$\mvar{p}:\mvar{a}$'', read ``$\mvar{p}$ is a proof of $\mvar{a}$''. The
 ways of proving a proposition are called \define{introduction rules}.
@@ -682,9 +685,9 @@ $v,w,\ldots$
 
 Once we know a judgment, how do we use it in a derivation?
 We need \define{elimination rules}. How do we know what they should be?
-They should be dual to our introduction rules: we should be able to extract the
-same amount of information from a proposition that went into its proof (More to
-come in \cref{subsec:proof-terms}, see \cref{def:local-soundness-completeness}).
+In a sense to be made precise in \crefrange{subsec:proof-terms}{subsec:ipl-uni},
+they should be dual to our introduction rules: we should be able to extract the
+same amount of information from a proposition that went into its proof.
 
 For conjunction, we should be able to recover proofs of both conjuncts:
 \begin{align*}
@@ -755,7 +758,7 @@ represent propositions.
         {Γ ⊢ \appr{1}{\mvar{p}}:\mvar{a}}}
       {Γ ⊢ (\appr{2}{\mvar{p}},\appr{1}{\mvar{p}}):\mvar{b}\land\mvar{a}}
   \end{equation*}
-  This derivation serves as a verification that the introduction and
+  This derivation serves as a small-scale verification that the introduction and
   elimination rules for conjunction complement one another well.
 \end{example}
 
@@ -775,6 +778,7 @@ represent propositions.
       {Γ ⊢ \prop{\mvar{a}}}{\mvar{p}:\lnot\lnot\mvar{a}}
       {Γ ⊢ \apply{\ttfun{dne}}{\mvar{p}}:\mvar{a}}.
   \end{equation*}
+  that is, using the rule LEM, you can construct a proof of DNE and vice versa.
 \end{definition}
 
 \begin{example}\label[example]{ex:ipl-not-not-lem}
@@ -919,7 +923,7 @@ circumlocution and cut straight to the conclusion.
 
 Do such shortcuts result in \textit{the same} proof? To phrase this
 question precisely, one needs a notion of identity for proof terms.
-Gentzen's notion was to define it just so he could answer this question in the
+This notion is constructed just so we can answer this question in the
 affirmative.
 
 \begin{definition}\label[definition]{def:jdeq-ipl}
@@ -982,10 +986,9 @@ wasn't given to an introduction rule.
 One worry we might have when designing our logic is that our propositions have
 proofs of a non-standard form. We might \textit{think} that every proof of
 $\mvar{a}∧\mvar{b}$ has the form $(\mvar{p},\mvar{q})$ for $\mvar{p}:\mvar{a}$ and
-$\mvar{q}:\mvar{b}$, but how do we \textit{know}? Gentzen's answer was the
-following \define{unicity rules}\index{Unicity rules},
-(also known as \define{η-rules} or
-\define{uniqueness principles}):
+$\mvar{q}:\mvar{b}$, but how do we \textit{know}? The answer was is in
+following \define{unicity rules}\index{Unicity rules}, (also known as
+\define{η-rules} or \define{uniqueness principles}):
 \begin{gatherjot}
   {\prftree[r]{\footnotesize η$⊤$}
     {Γ ⊢ \mvar{p}:⊤}
@@ -1003,9 +1006,8 @@ following \define{unicity rules}\index{Unicity rules},
     {Γ ⊢ \mvar{p}:\mvar{a}∨\mvar{b}}
     {Γ ⊢ \apppply{\case}{\inl}{\inr}{\mvar{p}}\jdeq \mvar{p}:\mvar{a}∨\mvar{b}}}.
 \end{gatherjot}
-
 Naturally, these rules witness local completeness; after applying elimination
-rules and then introduction rules, we can recover our original proofs.
+rules and then introduction rules we can recover our original proofs.
 
 \subsection{Diagrams}
 \label{subsec:ipl-diagrams}
@@ -1099,7 +1101,7 @@ We can express these equalities using the following \define{commutative diagram}
       \begin{tikzcd}[sep=large]
         {} & C\arrow[ddl, bend right, swap, "\mvar{p}"{name=F}]\arrow[ddr, bend left, "\mvar{q}"{name=G}]
               % \arrow[d,dashed, bend right, swap, "\mathsf{rec}"{name=FG1}]
-              \arrow[d,dashed, "\mvar{f}"{name=FG2}] & {} \\
+              \arrow[d,dashed, "\langle \mvar{p}\comma \mvar{q} \rangle"{name=FG2}] & {} \\
         {} & A\times B \arrow[dl, "\pr{1}"{name=P1}]
                       \arrow[dr,swap, "\pr{2}"{name=P2}] & {} \\
         A & {} & B
@@ -1111,8 +1113,8 @@ We can express these equalities using the following \define{commutative diagram}
   \end{minipage}
 \end{center}
 In short, each of the two respective computation rules ensure that, whichever
-(directed) path you take around the perimeters of the two triangles, you get the
-same result.
+(directed) path you take around the perimeters of the two triangles, composing
+as you go, you get judgmentally equal results.
 
 \section{The λ-calculus}
 \label{sec:the-lambda-calculus}
