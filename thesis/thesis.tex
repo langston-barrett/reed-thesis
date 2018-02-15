@@ -1,4 +1,4 @@
-\documentclass[12pt,twoside,draft]{reedthesis}
+\documentclass[12pt,twoside]{reedthesis}
 \usepackage{graphicx}
 \usepackage{booktabs,setspace}
 % \usepackage{natbib}
@@ -8,19 +8,29 @@
 %\usepackage{biblatex-chicago}
 %\bibliography{thesis}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% While drafting:
-\usepackage{showlabels}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%\makeatletter
+\makeatletter
+\def\ifdraft{\ifdim\overfullrule>\z@
+  \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi}
+\makeatother%%% While drafting:
+
+\ifdraft{
+  \usepackage{showlabels}
+  % \usepackage{showidx}
+  \let\oldindex\index
+  \definecolor{index}{HTML}{0088EE}
+  \renewcommand{\index}[1]
+               {\oldindex{#1}\marginpar{\footnotesize\color{index}index: #1}}
+  \newcommand{\indeX}{\oldindex}
+}{
+  \newcommand{\indeX}{\index}
+}
 
 \usepackage{color}
 \usepackage[dvipsnames]{xcolor}
 \definecolor{TODO}{HTML}{EE8800}
 \newcommand{\TODO}[1]{\marginpar{\footnotesize\color{TODO}todo: #1}}
 
-% \usepackage{showidx}
-\let\oldindex\index
-\definecolor{index}{HTML}{0088EE}
-\renewcommand{\index}[1]{\oldindex{#1}\marginpar{\footnotesize\color{index}index: #1}}
-\newcommand{\indeX}[1]{\oldindex{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% My stuff:
 \input{../tex-preamble/math.tex}
 \input{../tex-preamble/general.tex}
