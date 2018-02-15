@@ -19,12 +19,15 @@
 \newcommand{\universei}[1]{\ensuremath{\mathcal{U}_{#1}}}  % ith universe
 
 \newcommand{\sigmat}[2]{\ensuremath{\sum_{\paren*{#1}}#2}}    % Σ-type
-\newcommand{\∑}{\sigmat}                                     % Σ-type
 \newcommand{\dpair}[2]{\ensuremath{\paren{#1\hspace{0.1em};#2}}} % Σ-pair
 \newcommand{\pr}[1]{\ttfun{pr}_{#1}}
 \newcommand{\pit}[2]{\ensuremath{\prod_{\paren*{#1}}#2}}      % Π-type
-\newcommand{\∏}{\pit}      % Π-type
 \newcommand{\refl}[1]{\ttfun{refl}_{#1}}      % reflexivity
+\newcommand{\W}[3]{\ttfun{W}_{(#1:#2)}\apply{#3}{#1}}      % W-types
+\renewcommand{\M}[3]{\ttfun{M}_{(#1:#2)}\apply{#3}{#1}}      % M-types
+\renewcommand{\sup}[2]{\appply{\ttfun{sup}}{#1}{#2}}      % supremum
+\newcommand{\recW}{\rec_{\mathsf{W}}}                   % W-elim
+
 
 %%% Natural numbers
 \newcommand{\suc}{\mathsf{succ}}
@@ -49,6 +52,8 @@
 \newcommand{\homot}[2]{#1 \sim #2}
 
 \newcommand{\appr}[2]{\apply{\pr{#1}}{#2}} % a combination of apply and pr
+\newcommand{\apinl}[1]{\apply{\inl}{#1}}   % a combination of apply and inl
+\newcommand{\apinr}[1]{\apply{\inr}{#1}}   % a combination of apply and inl
 
 \newcommand{\ap}[2]{\mathsf{ap}_{#1}{\paren{#2}}} % action on paths
 \newcommand{\ua}{\mathsf{ua}} % univalence axiom

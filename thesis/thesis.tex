@@ -28,22 +28,24 @@
 \input{../tex-preamble/problems.tex}
 \input{../tex-preamble/logic.tex}
 \input{../tex-preamble/hott.tex}
+\input{../tex-preamble/unicode.tex}
 \usepackage{rotating}
 \newcommand{\abbreviation}[1]{\textbf{#1}\indeX{#1@\textbf{#1}}} % abbreviations
 \usepackage{makeidx}
 \usepackage{prftree}\setlength{\prfinterspace}{1.2em}
-\usepackage{tikz}
-\usetikzlibrary{cd}
-\tikzcdset{
-  arrow style=tikz,
-  arrows={line width=0.65pt},
-  >={stealth}
-}
 \newcommand{\software}[1]{{\textsc{#1}}\indeX{#1}}
 \newcommand{\Agda}{\software{Agda}}
 \newcommand{\UniMath}{\software{UniMath}}
 \newcommand{\Coq}{\software{Coq}}
 \newcommand{\MTypes}{\software{HoTT/M-Types}}
+
+\usepackage{tikz}
+\usetikzlibrary{cd,arrows.meta}
+\tikzcdset{
+  arrow style=tikz,
+  arrows={line width=0.65pt},
+  >={stealth}
+}
 
 % Gather environments with more interline spacing
 \usepackage{environ}
@@ -68,6 +70,7 @@
 \newtheorem{notation}[theorem]{Notation}
 \newtheorem{tt-rule}[theorem]{Rule}
 
+\newcommand{\Algtype}{\ensuremath{\ttfun{Alg}}}
 \newcommand{\Coalgtype}{\ensuremath{\ttfun{Coalg}}}
 \newcommand{\Final}{\ensuremath{\ttfun{Final}}}
 
@@ -230,7 +233,7 @@ emphasized the importance of the notion of judgment (\cref{def:judgment})
 \cite{martin-lof-meanings} and justified the rules of his type theory
 by meaning explanations \cite{martin-lof-constructive}, which we will imitate
 in \cref{subsec:ipl-intro}. See \cite{modal-judgment} for a similar application
-of Martin-L\"of vocabulary to predicate logic.
+of Martin-L\"of vocabulary to modal logic.
 
 The presentation of \crefrange{sec:ipl}{sec:the-lambda-calculus} is influenced by
 Philip Wadler \cite{wadler-propositions}, Frank Pfenning's lecture notes for
@@ -289,9 +292,16 @@ when discussing and defining formal systems for logic and computation.
   \end{itemize}
 \end{example}
 
+\begin{figure}
+  \centering
+  \includegraphics[scale=1.1]{figures/nested-languages.pdf}
+  \caption{\label{fig:nested}Nested languages, formal and informal. Outer boxes
+    are meta-languages, inner boxes are object languages.}
+\end{figure}
+
 \begin{definition}\label[definition]{def:metavariable}
 	A \define{metavariable}\index{Metavariable} is a variable meant to stand for
-  any well-formed expression of our object language.
+  any expression of our object language.
 \end{definition}
 
 \begin{notation}
@@ -300,7 +310,7 @@ when discussing and defining formal systems for logic and computation.
 \end{notation}
 
 See \cref{fig:structure}, \cref{ex:judgments}, and \cref{sec:ipl} for examples
-of metavariables.
+of uses of metavariables.
 
 \begin{definition}\label[definition]{def:judgment}
 	A \define{judgment}\index{Judgment} is something that could be known. A
@@ -311,19 +321,19 @@ of metavariables.
 \end{definition}
 
 \begin{example}\label[example]{ex:judgments}
-  Here are some examples of common judgments in logic:
+  Here are some examples of common judgments in logic (where the metavariables
+  in these examples are to be understood as ranging over expressions of some
+  unspecified object language):
   \begin{itemize}
     \itemsep0em
-    \item $\mvar{a}$ is a well-formed formula\footnote{The metavariables in
-        these examples are to be understood as ranging over well-formed
-        expressions of some unspecified object language.}
+    \item $\mvar{a}$ is a well-formed formula
     \item $\mvar{a}$ is a proposition
     \item if $\mvar{a}$ and $\mvar{b}$ are propositions, then
       $\mvar{a}\land \mvar{b}$ is a proposition (this judgment is hypothetical)
     \item $\mvar{a}$ will happen in the future
     \item $\mvar{a}$ is a program with type $\mvar{t}$
     \item $\mvar{a}$ is true
-    \item the variable $\mvar{v}$ is free (resp.\ bound) in $\mvar{a}$
+    \item the variable $v$ is free (resp.\ bound) in $\mvar{a}$
   \end{itemize}
   If one is working in a formal metalanguage, judgments may be defined
   inductively in it.
@@ -338,50 +348,52 @@ of metavariables.
     from \cite{martin-lof-meanings})}
 \end{figure}
 
-\begin{figure}
-  \centering
-  % TODO
-  % \begin{tikzpicture}
-  % \end{tikzpicture}
-  \caption{\label{fig:structure}Nested languages, formal and informal}
-\end{figure}
+% Since this thesis will define several different formal systems, it
+% will be useful to establish some uniform notation for such definitions.
+% Therefore, the following definitions and notations are part of our
+% meta-language, which is plain English.
 
 \begin{notation}\label[notation]{notation:proof-tree}
   The premises and conclusions of proofs or rules of deduction are always
-  judgments. If we can deduce a conclusion $B$ from premises $A_1,\ldots,A_n$
-  via some rule R (again: $A_1,\ldots,A_n$ and $B$ are judgments, not terms of
-  an object language), we will write
+  judgments. If we can deduce a conclusion $K$ from premises $J_1,\ldots,J_n$
+  via some rule R (again: $J_1,\ldots,J_n$ and $K$ are \textit{judgments},
+  phrased in plain Enlgish, not terms of an object language)\footnote{These 
+    could be called meta-metavariables.},
+  we will write
   \begin{align*}
     \prftree[r]{\footnotesize R}
-      {A_1}{A_2}{\ldots}{A_n}
-      {B}
+      {J_1}{J_2}{\ldots}{J_n}
+      {K}
     &&\text{or}&&
     \prftree[r]{\footnotesize R}
       {\prftree[r, noline]{}
-        {A_1}
-        {A_2}}
+        {J_1}
+        {J_2}}
       {\prftree[r, noline]{}
-        {A_3}
-        {A_4}}
-      {\ldots}{A_n}
-      {B}.
+        {J_3}
+        {J_4}}
+      {\ldots}{J_n}
+      {K}.
   \end{align*}
-  Iterating this notation, we can write long derivations as wellfounded trees
-  with the conclusion as their root.
+  Iterating this notation, we can write long derivations as trees with the
+  conclusion as their root.
 \end{notation}
 
 \begin{notation}\label[notation]{notation:sequent}
-  If $B$ is a hypothetical judgment holding under assumptions $A_1,\ldots,A_n$,
-  we denote this by $A_1,\ldots,A_n⊢ B$.\footnote{This is called Gentzen's
-  \define{sequent notation}, $⊢$ can be read ``(syntactically) entails''.}
-  A hypothetical judgment of this form is distinguished from the deduction of
-  $B$ from premises $A_1,\ldots,A_n$ (shown in \cref{notation:proof-tree}).
+  If $K$ is a hypothetical judgment holding under assumptions $J_1,\ldots,J_n$,
+  we denote this by $J_1,\ldots,J_n⊢ K$. This is distinct from Gentzen's notion
+  of syntactic entailment: a hypothetical judgment of this form is distinguished
+  from the deduction of $K$ from premises $J_1,\ldots,J_n$ (shown in
+  \cref{notation:proof-tree}). To denote some arbitrary sequence of hypotheses,
+  we will use capital Greek letters $Γ$, $Δ$, and $Θ$.\footnote{Again, these are
+  sorts of meta-metavariables.}
+\end{notation}
 
-  To denote some arbitrary sequence of hypotheses, we will use capital Greek
-  letters $Γ$, $Δ$, and $Θ$. Our notions of entailment will
-  always allow for \define{reflexivity}, \define{weakening}, \define{contraction},
-  \define{substitution}, and \cref{sec:ipl} will allow for \define{exchange},
-  which are the following meta-rules (where $J$, $K$, and $L$ stand for judgments):
+\begin{definition}\label[definition]{def:entailment-rules}
+  Our notions of entailment will always allow for \define{reflexivity},
+  \define{weakening}, \define{contraction}, \define{substitution}, and
+  \abbreviation{IPL} will allow for \define{exchange}, which are the following
+  ``meta-rules'' (where $J$, $K$, and $L$ stand for judgments):
   \begin{gatherjot}
     \prftree[r]{\footnotesize refl}{}
       {Γ,J,Δ ⊢ J}
@@ -401,7 +413,7 @@ of metavariables.
       {Γ,J,Δ,K,Θ ⊢ L}
       {Γ,K,Δ,J,Θ ⊢ L}
   \end{gatherjot}
-\end{notation}
+\end{definition}
 
 \begin{notation}\label[notation]{notation:substitution}
   We denote the substitution of a term $t$ for all free occurrences variable $v$
@@ -409,6 +421,85 @@ of metavariables.
   issues of variable capture, scoping, and substitution here, for a rigorous
   treatment see any thorough textbook on logic.
 \end{notation}
+
+\begin{sidewaystable}
+  \centering
+  \begin{tabular}{c | l | l | l}
+    Symbol               & Introduced & Language & Meaning \\ \hline
+    $J,K,L$
+      & \cref{notation:proof-tree}
+      & English
+      & Some arbitrary judgment \\
+    $Γ,Δ,Θ$
+                         & \cref{notation:proof-tree}
+      & English                & Some arbitrary ordered sequence of judgments \\
+    $Γ ⊢ J$              
+      & \cref{notation:sequent} 
+      & English                
+      & Under the hypotheses $Γ$, $J$ holds \\
+    $\mvar{a},\mvar{b}$  
+      & \cref{def:metavariable} 
+      & English                
+      & A metavariable: some term in our object language \\
+    $\prop{\mvar{a}}$   
+      & \cref{subsec:ipl-intro} 
+      & English                
+      & Judgment: $\mvar{a}$ is a proposition \\
+    $\mvar{a}:\mvar{p}$  
+      & \cref{subsec:ipl-intro}, TODO: \abbreviation{LC} 
+      & English                
+      & Judgment: $\mvar{a}$ is a proof of (or has type) $\mvar{p}$ \\
+    $\mvar{a}\≡\mvar{b}:\mvar{p}$  
+      & \cref{def:jdeq-ipl} 
+      & English                
+      & Judgment: $\mvar{a}$ is equal to $\mvar{b}$ as (proofs) elements of $\mvar{p}$ \\
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\apply{\mvar{a}}{\mvar{b}}$       
+      & \cref{notation:parens}
+      &  All
+      & Application of $\mvar{a}$ to $\mvar{b}$ \\
+    $v,w,x,y,z$          
+      & 
+      & All
+      & Variables (free or bound) \\
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\λ{x}\mvar{a}$      
+      & 
+      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & A function that takes an input $x$ \\
+    $→$       
+      & 
+      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & Material implication or function type \\
+    $×$       
+      & 
+      & \abbreviation{ZFC}+\abbreviation{FOL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & Cartesian product, product type, categorical product \\
+    $+$       
+      & 
+      & \abbreviation{LC}, \abbreviation{UTT} 
+      & Coproduct type, categorical coproduct \\
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $(a,b)$       
+      & 
+      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & Constructor of the pair type \\
+    $\inl$, $\inr$       
+      & 
+      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & Constructor of the coproduct type \\
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\pr{1}$, $\pr{2}$
+      & 
+      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & Destructor of the product type \\
+    $\case$       
+      & 
+      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & Destructor of the coproduct type \\
+  \end{tabular}
+  \caption{\label{fig:symbols}Symbols and their interpretations}
+\end{sidewaystable}
 
 \section{Intuitionistic propositional logic}
 \label{sec:ipl}
@@ -467,6 +558,12 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
   %    {\mvar{a}\prop}{v∉\FV(\mvar{a})}
   %    {∃ v.\mvar{a}}
 \end{gatherjot}
+For the sake of clarity, ``$Γ$'', ``$⊢$'', and the horizontal line
+``$\frac{\hspace{1em}}{\hspace{1em}}$'' are symbols in our metalanguage
+(English), whereas ``$⊤,⊥,¬,→,∧,∨$'' are symbols in the object language. For
+example $(\mvar{a}∧\mvar{b})∨\mvar{c}$ is a valid expression of our object
+language whereas $(Γ ⊢ \prop{\mvar{a}})∨\mvar{b}$ is incoherent.
+
 % The hypothesis $v∉\FV(\mvar{a})$ involves another kind of judgment: that $v$ is
 % not a free variable of $\mvar{a}$. Intuitively, this just means that if $v$ appears at
 % all in $\mvar{a}$, it is already ``bound'' by appearing just after a $∀$ or
@@ -819,7 +916,7 @@ affirmative.
       {Γ ⊢ \mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
       {Γ ⊢ \appr{2}{(\mvar{p},\mvar{q})}:\mvar{b}}} \\
     {\prftree[r]{\footnotesize β$→$}
-      {Γ ⊢ \mvar{p}:\mvar{a}⊢\mvar{q}:\mvar{b}}
+      {Γ, \mvar{p}:\mvar{a}⊢\mvar{q}:\mvar{b}}
       {Γ ⊢ \mvar{r}:\mvar{a}}
       {Γ ⊢ \apply{(\λ{v}\mvar{q})}{\mvar{r}}\jdeq
         \mvar{q}[\mvar{p}\coloneqq\mvar{r}]:\mvar{b}}} \\
@@ -843,7 +940,7 @@ affirmative.
   $\mvar{q}[\mvar{p}\coloneqq\mvar{r}]$).\footnote{
     Since the elimination rule for falsehood (\cref{subsec:ipl-elim}) gives back a
     proof of an arbitrary proposition (which is not in general one of the ``inputs''
-    to $\intro{⊥}$), there's no corresponding β-rule.}
+    to falsehood introduction), there's no corresponding β-rule.}
 \end{definition}
 
 Besides allowing us to write shorter proofs, these rules witness local
@@ -925,11 +1022,18 @@ sort of diagram. This section foreshadows some connections between
 Now suppose we have terms $\mvar{p}:\mvar{a}→\mvar{c}$ and
 $\mvar{q}:\mvar{b}→\mvar{c}$. Via the elimination rule for $∨$, there is a
 term $\apppply{\case}{\mvar{p}}{\mvar{q}}:\mvar{a}∨\mvar{b}→\mvar{c}$.
-By the computation rules, this term obeys the following identities (in fact,
-this is just a rewrite of the β-rules using the composition we just defined):
+We can rewrite the β-rules using the composition we just defined:
 \begin{align*}
   \appply{\case}{\mvar{p}}{\mvar{q}}∘\inl &\jdeq \mvar{p} \\
   \appply{\case}{\mvar{p}}{\mvar{q}}∘\inr &\jdeq \mvar{q}
+\end{align*}
+Similarly, given $\mvar{p}:\mvar{c}→\mvar{a}$ and $\mvar{q}:\mvar{c}→\mvar{b}$,
+the introduction rule for $∧$ guarantees a function
+$\mvar{f}\defeq\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}:\mvar{c}→\mvar{a}∧\mvar{b}$.
+The computation rules give us the following equalities:
+\begin{align*}
+  \pr{1}∘f &\jdeq \mvar{p} \\
+  \pr{2}∘f &\jdeq \mvar{q} \\
 \end{align*}
 We can express these equalities using the following \define{commutative diagram}
 (skip ahead to \cref{def:commutative-diagram} for details).
@@ -956,30 +1060,38 @@ We can express these equalities using the following \define{commutative diagram}
 % \end{proof}
 
 \begin{center}
-  \begin{tikzcd}[sep=large]
-    A \arrow[dr, "\inl"{name=I1}]\arrow[ddr, swap, "\mvar{p}"{name=F}, bend right] &
-    {} & B\arrow[dl, "\inr"{name=I2},swap] \arrow[ddl,"\mvar{q}"{name=G}, bend left] \\
-    {} & A+B \arrow[d,dashed, "\appply{\case}{\mvar{p}}{\mvar{q}}"] & {} \\
-    {} & C & {}
-    % filling in the cells
-    \arrow[phantom, shift left=0.3em, from=I1, to=F, "(\beta)"]
-    \arrow[phantom, shift right=0.3em, from=I2, to=G, "(\beta)"]
-    % \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
-  \end{tikzcd}
+  \begin{minipage}[b]{0.47\linewidth}
+    \centering
+      \begin{tikzcd}[sep=large]
+        A \arrow[dr, "\inl"{name=I1}]\arrow[ddr, swap, "\mvar{p}"{name=F}, bend right] &
+        {} & B\arrow[dl, "\inr"{name=I2},swap] \arrow[ddl,"\mvar{q}"{name=G}, bend left] \\
+        {} & A+B \arrow[d,dashed, "\appply{\case}{\mvar{p}}{\mvar{q}}"] & {} \\
+        {} & C & {}
+        % filling in the cells
+        \arrow[phantom, shift left=0.3em, from=I1, to=F, "(\beta)"]
+        \arrow[phantom, shift right=0.3em, from=I2, to=G, "(\beta)"]
+        % \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
+      \end{tikzcd}
+  \end{minipage}
+  \begin{minipage}[b]{0.47\linewidth}
+    \centering
+      \begin{tikzcd}[sep=large]
+        {} & C\arrow[ddl, bend right, swap, "\mvar{p}"{name=F}]\arrow[ddr, bend left, "\mvar{q}"{name=G}]
+              % \arrow[d,dashed, bend right, swap, "\mathsf{rec}"{name=FG1}]
+              \arrow[d,dashed, "\mvar{f}"{name=FG2}] & {} \\
+        {} & A\times B \arrow[dl, "\pr{1}"{name=P1}]
+                      \arrow[dr,swap, "\pr{2}"{name=P2}] & {} \\
+        A & {} & B
+        % filling in the cells
+        \arrow[phantom, shift right=0.3em, from=P1, to=F, "(\beta)"]
+        \arrow[phantom, shift left=0.3em, from=P2, to=G, "(\beta)"]
+        % \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
+      \end{tikzcd}
+  \end{minipage}
 \end{center}
-
-% \begin{tikzcd}[sep=large]
-%   {} & C\arrow[ddl, bend right, swap, "f"{name=F}]\arrow[ddr, bend left, "g"{name=G}]
-%         \arrow[d,dashed, bend right, swap, "\mathsf{rec}"{name=FG1}]
-%         \arrow[d,dashed, bend left, ""{name=FG2}] & {} \\
-%   {} & A\times B \arrow[dl, "\mathsf{proj}_1"{name=P1}]
-%                  \arrow[dr,swap, "\mathsf{proj}_2"{name=P2}] & {} \\
-%   A & {} & B
-%   % filling in the cells
-%   \arrow[phantom, shift right=0.3em, from=P1, to=F, "(\beta)"]
-%   \arrow[phantom, shift left=0.3em, from=P2, to=G, "(\beta)"]
-%   \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
-% \end{tikzcd}
+In short, each of the two respective computation rules ensure that, whichever
+(directed) path you take around the perimeters of the two triangles, you get the
+same result.
 
 \section{The λ-calculus}
 \label{sec:the-lambda-calculus}
@@ -990,6 +1102,69 @@ We can express these equalities using the following \define{commutative diagram}
 The Church-Turing thesis
 
 $β$-reduction
+
+The formation\index{Formation!In the λ-calculus} (really, all) rules of the
+λ-calculus are brilliantly simple.\footnote{Again, ignoring issues of variable
+binding.} We will again assume the presence of a countably infinite set of
+variables $v,w,\ldots$:
+\begin{align*}
+  {\prftree[r]{}
+    {}
+    {Γ ⊢ \term{v}}}
+  &&
+  {\prftree[r]{}
+    {Γ ⊢ \term{\mvar{a}}}
+    {Γ ⊢ \term{\mvar{b}}}
+    {Γ ⊢ \term{\apply{\mvar{a}}{\mvar{b}}}}}
+  &&
+  {\prftree[r]{}
+    {Γ ⊢ \mvar{a}}
+    {Γ ⊢ \term{\lam{v}{\mvar{a}}}}}
+\end{align*}
+In short, we have variables, application of one term to another, and
+\define{function abstraction}. The λ-calculus is the inspiration for our
+notation of function application by juxtaposition (\cref{notation:parens}).
+Accordingly, function application is left-associative.
+
+There are no elimination rules. Again, we define judgmental equality λ-terms to
+be the least congruence closed under the following computation
+rule\index{Computation rules!In the λ-calculus} and subject to the following
+unicity rule:
+\begin{align*}
+  {\prftree[r]{\footnotesize β}
+    {Γ ⊢ \term{\mvar{a}}}
+    {Γ ⊢ \term{\mvar{b}}}
+    {Γ ⊢ \apply{(\λ{v}\mvar{a})}{\mvar{b}}\jdeq
+      \mvar{a}[v\coloneqq\mvar{b}]}}
+  &&
+  {\prftree[r]{\footnotesize η}
+    {Γ ⊢ \term{\mvar{a}}}
+    {Γ ⊢ \λ{v}{(\apply{\mvar{a}}{v})}\jdeq \mvar{a}}}.
+\end{align*}
+
+\begin{example*}\label[example]{ex:calculations-in-lc}
+  Under the computation rule, we have
+  \begin{align*}
+    &\appply
+      {(\λ{u}{\λ{v}{\λ{w}{\appply{\mvar{x}}{v}{w}}}})}
+      {(\λ{y}{y})}
+      {(\λ{z}{\apply{z}{\mvar{a}}})} \\
+    \≡ &\apply
+      {(\λ{v}{\λ{w}{\appply{\mvar{x}}{v}{w}}})[u\coloneqq (\λ{y}{y})]}
+      {(\λ{z}{\apply{z}{\mvar{a}}})}
+    &&\quad\text{(β)} \\
+    \≡ &\apply
+      {(\λ{v}{\λ{w}{\appply{\mvar{x}}{v}{w}}})}
+      {(\λ{z}{\apply{z}{\mvar{a}}})}
+    &&\quad\text{(substitution)} \\
+    \≡ & (\λ{w}{\appply{\mvar{x}}{v}{w}})[v\coloneqq \λ{z}{\apply{z}{\mvar{a}}}]
+    &&\quad\text{(β)} \\
+    \≡ & (\λ{w}{\appply{\mvar{x}}{(\λ{z}{\apply{z}{\mvar{a}}})}{w}})
+    &&\quad\text{(substitution)}.
+  \end{align*}
+  Since $\mvar{x}$ is some arbitrary term, we can reduce this expression no
+  further.
+\end{example*}
 
 \subsection{The simply-typed λ-calculus}
 \label{subsec:the-simply-typed-lambda-calculus}
@@ -1023,6 +1198,9 @@ The strong normalization property
 
 \chapter{Type theory}
 \label{chap:type-theory}
+
+The system we describe, \abbreviation{UTT}, corresponds closely to $\caH$ in
+\cite{inductive} and \cite{homotopy-initial}.
 
 \section{The identity type}
 \label{sec:the-identity-type}
@@ -1518,7 +1696,7 @@ Since $F$ is a functor, the composition of coalgebra morphisms is again a
 coalgebra morphism. In fact, $F$-coalgebras have all of the structure of a
 category, which we will call $F\Coalg$.\TODO{Proof?}
 
-\begin{definition}
+\begin{definition}\label[definition]{def:initial-alg}
   \
   \vspace{-0.3em}\dual{
     An \define{initial $F$-algebra}\index{Initial algebra} is an initial
@@ -1636,7 +1814,7 @@ The following example is crucial to
     It makes sense to ask if this functor has an initial algebra in any
     category with a terminal object and chosen binary coproducts, and in
     general, such algebras are called \define{natural number objects} (NNOs)
-    \cite{sketches}.
+    \cite{sketches} \cite{lawvere-etcs}.
   }
 \end{example}
 
@@ -1661,7 +1839,8 @@ The following example is crucial to
 \begin{remark}\label[remark]{rmk:universal-algebra}
   The form of the functor encodes what a student of universal algebra would call
   a \define{signature}\index{Signature}. By the universal property of
-  coproducts, an algebra for an functor of the form $A↦(A×A)+A+1$ consists of:
+  coproducts, of an algebra for an functor of the form $A↦(A×A)+A+1$ consists
+  of:
   \begin{itemize}
     \itemsep0em
     \item an arrow $A×A→A$ (a binary operation on $A$),
@@ -1697,14 +1876,142 @@ on category theory in univalent type theory \cite{book} \cite{unimath}
 \chapter{Coinductive types in univalent type theory}
 \label{chap:coinductive-types-in-univalent-type-theory}
 
-\begin{notation}
-  Following \cite{non-wellfounded}, we will adopt the notation
-  $(X,α)⇒ (Y,β)$ or $X⇒ Y$ to denote the type of
-  coalgebra morphisms from $(X,α)$ to $(Y,β)$.
-\end{notation}
+\section{W and M}
+\label{sec:w-and-m}
+
+We now present W-types and M-types. Per Martin-Löf introduced W-types as a
+way to study types with a well-ordering. In fact, W-types provide a general and
+convenient setting for the study of induction. In extensional type theories,
+W-types are equivalent to initial algebras (as in \cref{def:initial-alg}) for
+polynomial functors (see \cref{def:polynomial-functor}), so all the examples
+we've seen so far of inductive types defined as functor algebras are W-types.
+
+Dually, M-types are non-wellfounded trees, that is, trees with potentially
+infinitely long branches.
+
+\begin{definition}\label[definition]{def:container}
+  A \define{container}\index{Container} (sometimes called a
+  \define{signature}\index{Signature} by analogy, see
+  \cref{rmk:universal-algebra}) is a pair $(A,B)$ of a type
+  $A:\universe$ and a family $B:A→\universe$.
+\end{definition}
+Given a container, we can form the associated W- and M-types:
+\begin{gatherjot}
+  \prftree[r]{W-form}
+    {Γ ⊢ A:\universe}{Γ ⊢ B:A\to\universe}
+    {Γ ⊢ \type{\W{a}{A}{B}}}
+  \\
+  \prftree[r]{M-form}
+    {Γ ⊢ A:\universe}{Γ ⊢ B:A\to\universe}
+    {Γ ⊢ \type{\M{a}{A}{B}}}
+\end{gatherjot}
+Again, these types are shaped like trees. An element of a W-type is specified by
+an element $a:A$ (the ``label'' of this vertex) and a function
+$b:B(a)\to \W{x}{A}{B(x)}$ which picks out its subtrees.
+\begin{equation*}
+  \prftree[r]{W-intro}
+    {Γ ⊢ A:\universe}{Γ ⊢ B:A\to\universe}{Γ ⊢ a:A}{Γ ⊢ b:B(a)\to \W{x}{A}{B}}
+    {Γ ⊢ \sup{a}{b}:\W{x}{A}{B}}
+\end{equation*}
+Martin-Löf points out that a ``bottom'' element can be given by taking one of
+the $B(a)$ to be $\emptytype$ and the subtree-function to be the one provided by
+$\rec_{\emptytype}$ (example in \cref{ex:nat-w})\TODO{reference}.
+
+The elimination rule\index{Elimination!For W-types} for W-types encodes
+transfinite induction. If, when a property $C:\W{a}{A}{B}→\universe$ holds for
+all subtrees of a given node it also holds for that node, then it holds for any
+element in $\W{a}{A}{B}$:
+\begin{equation*}
+  \prftree[r]{W-elim}
+    {Γ ⊢ w:\W{a}{A}{B}}
+    {\prftree[r, noline]{}
+      {Γ, a:A,\quad f:\apply{B}{a}→\W{a}{A}{B},\quad g:\∏{b:\apply{B}{a}}{\apply{C}{(\apply{f}{b})}}}
+      {⊢\apppply{h}{a}{f}{g}: C(\sup{a}{f})}}
+    {Γ ⊢ \appply{\recW}{w}{h}:\apply{C}{w}}
+\end{equation*}
+
+\begin{example}\label[example]{ex:nat-w}
+  The natural numbers are readily encoded as a W-type.
+  Define $B\defeq \apppply{\rec_{\booltype}}{\universe}{\emptytype}{\unittype}$
+  so that $\apply{B}{\bfalse}\jdeq \emptytype$ and
+  $\apply{B}{\btrue}\jdeq\unittype$, and consider $\N'\jdeq \W{b}{A}{B}$.
+  Let $!$ be the unique function out of the empty type and further define:
+  \begin{align*}
+    \begin{split}
+      0_{\N'} &: \W{b}{\booltype}{B} \\
+      0_{\N'} &\defeq \sup{\bfalse}{!} \\
+    \end{split}
+    \begin{split}
+      1_{\N'} &: \W{b}{\booltype}{B} \\
+      1_{\N'} &\defeq \sup{\btrue}{(\λ{x}{0_{\N'}})}
+    \end{split}
+  \end{align*}
+  Following this pattern, we can define
+  \begin{align*}
+    \suc &: \N' \to \N' \\
+    \suc &\defeq \λ{n}{\sup{\btrue}{(\λ{x}{n})}}
+  \end{align*}
+  so that $1_{\N'}\equiv \apply{\suc}{0_{\N'}}$. What does this tree look like?
+  Well, by virtue of construction, $0_{\N'}$ is its least element. Applying
+  $\suc$ gives us an element at one level higher in the tree than the one we put
+  in.
+  \vspace{-2em}\begin{center}
+    \begin{tikzpicture}[scale=4]
+      \node (A) [scale=2] {$\cdot$};
+      \node     [above of=A] {$0_{\N'}$};
+
+      \node (B) [scale=2, right of=A] {$\cdot$};
+      \node     [above of=B] {$1_{\N'}$};
+
+      \node (C) [scale=2, right of=B] {$\cdot$};
+      \node     [above of=C] {$\apply{\suc}{1_{\N'}}$};
+
+      \node (D) [scale=2, right of=C] {$\cdot$};
+      \node     [above of=D] {$\cdots$};
+
+      \node     [right of=D, scale=2.0, color=white] {$\cdot$};
+      \node (E) [right of=D] {$\cdots$};
+      \node     [scale=2, above of=E, color=white] {$\cdots$};
+
+      \draw[->] (A) edge (B);
+      \draw[->] (B) edge (C);
+      \draw[->] (C) edge (D);
+      \draw[->] (D) edge (E);
+      % \draw (A) edge [in=-60,out=-20,loop] node[below] {$e$} (A);
+    \end{tikzpicture}
+  \end{center}
+  
+  We can derive from the induction principle of $\booltype$ that it
+  only has two elements, $\bfalse$ and $\btrue$ \TODO{reference}.
+  Using this (and ignoring uniquely specified terms like $!$),
+  the W-elimination rule for $\N'$ can be reshaped and simplified: 
+  \begin{equation*}
+    \prftree[r]{\N'-elim}
+      {Γ ⊢ n:\N'}
+      {\prftree[r, noline]{}
+        {Γ⊢h_1: C(0_{\N'})}}
+      {\prftree[r, noline]{}
+        {Γ, f:\unittype→\N',g:\∏{\unitelem:\unittype}\apply{C}{(\apply{f}{\unitelem)}}}
+        {⊢\appply{h_2}{f}{g}: C(\sup{\btrue}{f})}}
+      {Γ ⊢ \apppply{\rec_{\N'}}{n}{h_1}{h_2}:\apply{C}{n}}
+  \end{equation*}
+  But since a function $\unittype→\N'$ is equivalent to picking out a single
+  element of $\N'$ and $\sup{\btrue}{f}\equiv\apply{\suc}{f}$, 
+  this is just the elimination rule for the natural numbers (\TODO{ref})
+  in disguise.
+\end{example}
+
+Other examples include lists, binary trees, ordinals of the second number
+class, and more.\TODO{reference} In the next few sections, we will develop a
+correspondence between W-types (resp.\ M-types) and initial algebras (resp.\
+final coalgebras) for a general class of functor on $\universe$, which will
+include all examples in \cref{sec:functors-and-their-algebras}.
+
+\section{Preliminaries}
+\label{sec:preliminaries}
 
 \begin{definition}\label[definition]{def:polynomial-functor}
-  Given a signature $S\defeq (A,B)$, its associated \define{polynomial functor}
+  Given a container $S\defeq (A,B)$, its associated \define{polynomial functor}
   is the function
   \begin{gather*}
     P:\universe\to \universe \\
@@ -1714,15 +2021,47 @@ on category theory in univalent type theory \cite{book} \cite{unimath}
   The \define{action} of $P$ on functions is
   \begin{gather*}
     P^* : (X\to Y)\to P_{A,B}(X)\to P_{A,B}(Y) \\
-    \apply{P^*f}{(a,g)}\defeq (a,g∘ f).
+    \apply{P^*f}{(a,g)}\defeq (a,g∘f).
   \end{gather*}
-  \TODO{this isn't a functor}
 \end{definition}
 
-Fix a signature $S\defeq (A,B)$ and let $P$ be the associated polynomial functor.
+\begin{remark}
+	Technically, polynomial functors aren't functors, since $\universe$ isn't
+  a category (the whole point of the univalent perspective is that it behaves
+  more like a weak higher category). It has functorial properties only up to
+  \textit{propositional} equality, which will suffice for the following proofs:
+  \begin{align*}
+    \apply{P^*}{g∘f} = \apply{P^*}{g}∘\apply{P^*}{f}
+    &&
+    \apply{P^*}{\id_X} = \apply{P^*}{\id_X}
+  \end{align*}
+\end{remark}
+
+\begin{definition}\label[definition]{def:algebra-coalgebra-in-utt}
+  Exactly as in \cref{def:f-coalgebra}, we define the type of (co)algebras for a
+  polynomial functor $P$ associated to a container $(A,B)$ as follows:
+  \begin{align*}
+    \Algtype\≔\∑{A:\universe}{PA→A} && \Coalgtype\≔\∑{A:\universe}{A→PA}
+  \end{align*}
+  and coalgebra morphisms as
+  \begin{align*}
+    \ttfun{CoalgMor}((X,α),(Y,β))
+    &\≔ (X,α)⇒(Y,β) \\
+    &\≔ \∑{f:X→Y}{(\apply{P}{f})∘α = β∘f}
+  \end{align*}
+  with algebra morphisms defined dually \cite{homotopy-initial}.
+\end{definition}
+
+\section{Internalizing M-types}
+\label{sec:internalizing-m-types}
+
+Fix a container $S\defeq (A,B)$ and let $P$ be the associated polynomial functor.
 We will prove a few auxiliary lemmas on the way to the following result.
 This proof appeared in the \Agda{} formalization of \cite{non-wellfounded}, this
 is its first appearance ``de-formalized''.
+
+\subsection{Uniqueness of final coalgebras}
+\label{subsec:uniqueness}
 
 \begin{lemma}\label[lemma]{lemma:final-colagebra-unique}
   Any two final $P$-coalgebras are equal. In other words, the following type is
@@ -1903,6 +2242,9 @@ the following auxiliary result:
   \end{center}
 \end{proof}
 
+\subsection{Limits}
+\label{subsec:limits}
+
 \begin{definition}\label[definition]{def:limitt}
 	Given a family of types $X:\N\to\universe$ and a family of functions
   $π_n:X_{n+1}\to X_n$, the \define{limit} of $(X,π)$ is the type
@@ -1948,20 +2290,93 @@ the following auxiliary result:
 \end{lemma}
 \begin{proof}
   Consider again the functor of \cref{ex:nat}, specialized to the case of
-  $\bfC\defeq\universe$:
+  $\bfC\≔\universe$:
   \begin{gather*}
     G:\universe ⟶ \universe  \\
     G(W) \defeq 1+W
   \end{gather*}
   A $G$-algebra is given by a type $W:\universe$, a point in $W$, and a function
-  $W\to W$.
+  $W\to W$. Fix a point $z:Z$. Then $\appr{1}{z}$ gives a point in
+  $\∏{n:\ℕ}{\apply{X}{n}}$.
 \end{proof}
 
-\section{W and M}
-\label{sec:w-and-m}
+\subsection{Fibered Algebras}
+\label{subsec:fibered-algebras}
 
-\section{Internalizing M-types}
-\label{sec:internalizing-m-types}
+We pivot now to considering fibered algebras, which are a more general case of
+algebras for endofunctors. The proof of the induction principle for initial
+algebras (\TODO{ref}) is necessary to prove the existence of M-types.
+
+\begin{definition}\label[definition]{def:algebra-fibration}
+  We might consider when a \textit{dependent} type can be given the structure of
+  a functor algebra. Inspired by the homotopical semantics for \abbreviation{UTT},
+  if $(X,α)$ is an algebra for the functor associated to $(A,B)$,
+  the type of \define{fibered $P$-algebras} over $X$ is
+  \begin{equation*}
+    \ttfun{FiberedAlg}(X)\≔
+    \∑{E:X→\universe}
+    {\∏{x:P_{A,B}X}{
+      \paren{\∏{b:\apply{B}{(\appr{1}{x})}}{\apply{E}{(\appply{\pr{2}}{x}{b})}}}
+      → \apply{E}{(\apply{\alpha}{x})}
+    }}
+  \end{equation*}
+  an \define{algebra fibration}.
+  % ((∑ (f : forall x, E x), forall a, f (c a) = e a (f ∘ (pr2 a)))).
+  An \define{algebra section} for an algebra fibration $(E,θ)$ is a pair
+  \begin{equation*}
+    \∑{f:\∏{x:X}{\apply{E}{x}}}
+    \∏{x:P_{A,B}X}
+    {\propeq
+      {}
+      % {\∏{x:X}{\apply{E}{(\apply{α}{x})}}}
+      {\apply{f}{(\apply{α}{x})}}
+      {\appply{θ}{x}{(f∘\appr{2}{x})}}}
+  \end{equation*}
+\end{definition}
+
+Any $P$-algebra can be made into a fibered $P$-algebra over $(X,α)$ by using a
+constant family: 
+\begin{align*}
+	\Algtype(P) &\longrightarrow \ttfun{FiberedAlg}(X) \\
+	(Y,β) &\longmapsto \dpair{\λ{x}{Y}} {\λ{x}{\λ{f}{\apply{β}{\dpair{\appr{1}{x}}{f}}}}}
+\end{align*}
+Since the $x$ in the argument to the second coordinate is of type
+$P_{A,B}X\jdeq \∑{a:A}\apply{B}{a}→X$ and $f:\apply{B}{(\appr{1}{x})}→Y$, the pair
+$\dpair{x}{f}$ has type $P_{A,B}Y\jdeq \∑{a:A}\apply{B}{a}→Y$, which can then be
+sent via $β$ to $Y$. This matches our expectation that a non-dependent
+$\ttfun{foo}$ should be a generalization of a dependent $\ttfun{foo}$.
+In turn, any fibered algebra with family $E:X→\universe$ can be turned into a
+non-fibered algebra over the ``total space'' $\∑{x:X}\apply{E}{x}$.
+
+\begin{theorem}[Fiber-initiality]\label[theorem]{thm:fiber-initiality}
+  If $(X,α)$ is an initial algebra and $Y$ is a fibered algebra over $X$, then
+  the type of algebra sections from $X$ to $Y$ is contractible.
+\end{theorem}
+
+\begin{example}
+	A fibered algebra over $\N$ is given by a family $X:\N→\universe$ and a
+  function $α:\pit{n:\N}X_n→X_{n+1}$. \cref{thm:fiber-initiality} states
+  that for any $x_0:X_0$, the type
+  \begin{equation*}
+    \∑{z:\∏{n:\N}{X_n}}{
+      (\propeq{X_0}{x_0}{z_0}) × \paren{\∏{n:\N}\propeq{X_{n+1}}{z_{n+1}}{\apply{α}{z_n}}}
+    }
+  \end{equation*}
+  is contractible.
+\end{example}
+
+% \begin{lemma}\label[lemma]{lemma:algebra-sections}
+%   Let $X$ be a $P$-algebra with $α:PX→X$, and let $C:X→\universe$. The standard
+%   projection map $π_1:\∑{x:X}{Cx}→X$ has a section $s:\∏{x:X}{Cx}$
+%   if $\∑{x:X}{Cx}$ also has a $P$-algebra structure, as in
+%   \begin{center}
+%     \begin{tikzcd}
+%       {} & \∑{x:X}{Cx} \arrow[d, "π_1"] \\
+%       X \arrow[ur, "s"] \arrow[r, equal] & X
+%     \end{tikzcd}
+%   \end{center}
+%   In this case, $s$ is a $P$-algebra morphism \cite{inductive}.
+% \end{lemma}
 
 % \chapter*{Conclusion}
 % \addcontentsline{toc}{chapter}{Conclusion}
