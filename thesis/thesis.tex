@@ -508,7 +508,7 @@ of uses of metavariables.
       & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
       & Destructor of the coproduct type \\
   \end{tabular}
-  \caption{\label{fig:symbols}Symbols and their interpretations}
+  \caption{\label{tab:symbols}Symbols and their interpretations}
 \end{sidewaystable}
 
 \section{Intuitionistic propositional logic}
@@ -568,16 +568,27 @@ rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
   %    {\mvar{a}\prop}{v∉\FV(\mvar{a})}
   %    {∃ v.\mvar{a}}
 \end{gatherjot}
-For the sake of clarity, ``$Γ$'', ``$⊢$'', and the horizontal line
+We add parentheses where necessary to disambiguate compound expressions.
+As noted in \cref{tab:symbols}, ``$Γ$'', ``$⊢$'', and the horizontal line
 ``$\frac{\hspace{1em}}{\hspace{1em}}$'' are symbols in our metalanguage
-(English), whereas ``$⊤,⊥,¬,→,∧,∨$'' are symbols in the object language. For
-example $(\mvar{a}∧\mvar{b})∨\mvar{c}$ is a valid expression of our object
-language whereas $(Γ ⊢ \prop{\mvar{a}})∨\mvar{b}$ is incoherent.
+(English), whereas ``$⊤,⊥,¬,→,∧,∨$'' are symbols in the object language
+(\abbreviation{IPL}). See \cref{tab:incoherent} for examples of some valid
+expressions we could form with the above rules. Such valid expressions (in the
+left column) are things that could be substituted in for our metavariables like
+$\mvar{a}$.
 
-% The hypothesis $v∉\FV(\mvar{a})$ involves another kind of judgment: that $v$ is
-% not a free variable of $\mvar{a}$. Intuitively, this just means that if $v$ appears at
-% all in $\mvar{a}$, it is already ``bound'' by appearing just after a $∀$ or
-% $∃$. Again, we won't deal with such issues with much care here.
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{l | l}
+    \abbreviation{IPL}                      & Incoherent \\ \hline
+    $(\mvar{a}∧\mvar{b})∨\mvar{c}$          & $(Γ ⊢ \prop{\mvar{a}})∨\mvar{b}$ \\
+    $(\mvar{a}→\mvar{b})→\mvar{c}$          & $∧∨→$ \\
+    $⊤∨\mvar{a}_1∨\mvar{a}_2∨⋯∨\mvar{a}_n$  & $Γ⊢Θ$ \\
+    $⊤→⊥$                                   & $\prop{\mvar{a}}→\mvar{b}∧\mvar{c}$ \\
+  \end{tabular}
+  \caption{\label{fig:label}Valid \abbreviation{IPL} expressions and incoherent
+    nonsense.}
+\end{table}
 
 \subsection{Introduction rules}
 \label{subsec:ipl-intro}
