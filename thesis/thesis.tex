@@ -56,6 +56,7 @@
   arrows={line width=0.65pt},
   >={stealth}
 }
+\tikzset{every path/.append style={line width=0.65pt}}
 \newcommand{\comma}{,}
 
 % Gather environments with more interline spacing
@@ -116,12 +117,14 @@
 \begin{table}[h]
   \centering
   \begin{tabular}{ll}
-    \textbf{HoTT}  	&  Homotopy type theory \\
-    \textbf{UTT}  	&  Univalent type theory \\
-    \textbf{ITT}  	&  Intensional type theory \\
-    \textbf{FOL}  	&  Classical first-order logic \\
-    \textbf{IPL}  	&  Intuitionistic propositional logic \\
-    \textbf{LC}  	  &  Church's untyped λ-calculus
+    \abbreviation{HoTT}  	&  Homotopy type theory \\
+    \abbreviation{UTT}  	&  Univalent type theory \\
+    \abbreviation{ITT}  	&  Intensional type theory \\
+    \abbreviation{FOL}  	&  Classical first-order logic \\
+    \abbreviation{IPL}  	&  Intuitionistic propositional logic \\
+    \abbreviation{LC}  	  &  Church's untyped λ-calculus \\
+    \abbreviation{STLC}  	&  Simply-typed λ-calculus \\
+    \abbreviation{TLC}  	&  Typed λ-calculus
   \end{tabular}
 \end{table}
 
@@ -140,12 +143,12 @@ In this thesis we explain Univalent type theory, a constructive and
 computationally meaningful foundational system for mathematics inspired by
 recent advances in the semantics of Per Martin-L\"of's intuitionistic type
 theory with intentional equality. We first develop the classical Curry-Howard
-correspondence between (the constructive subset of) Gentzen's natural deducation
-and the λ-calculus. We proceed to explicate Martin-L\"of's theory of dependent
-types and the central modern development in type theory: Vladimir Voevodsky's
-Univalence principle. We go on to examine the nature of coinduction within this
-theory, presenting a novel formalization of a recent result that M-types can be
-derived \textit{internally} in Univalent type theory.
+correspondence between (the constructive subset of) intuitionistic natural
+dedication and the λ-calculus. We proceed to explicate Martin-L\"of's theory of
+dependent types and the central modern development in type theory: Vladimir
+Voevodsky's Univalence principle. We go on to examine the nature of coinduction
+within this theory, presenting a novel formalization of a recent result that
+M-types can be derived \textit{internally} in Univalent type theory.
 
 % \chapter*{Dedication}
 
@@ -165,8 +168,8 @@ In the early 20\textsuperscript{th} century, mathematicians had a problem. Often
 held up as the pinnacle of necessary, undoubtable, \textit{a priori} truth,
 their discipline was suffering from an embarrassing lack of certainty. The
 intricate arguments of advanced analysis left mathematicians unable to confirm
-nor deny each other's proofs. While Cantor's na\"ive set theory had unleashed a
-wave of paradoxes, the need for a rigorous logical foundation for higher
+nor deny each other's proofs. Due to the wave of paradoxes unleashed by
+Cantor's na\"ive set theory, the need for a rigorous logical foundation for higher
 mathematics was so great that the enterprise of axiomatic set theory was pursued
 headlong until some kind of consensus was reached. To make a long, rich story
 brutally short, virtually every modern paper in mathematics and computer
@@ -187,7 +190,7 @@ unintelligible to the vast majority of mathematicians \cite{nyt}. The
 classification of the simple finite groups, one of the crowning achievements of
 modern mathematics, has a combined proof of over ten thousand pages. These
 examples illustrate merely a few of the practical epistemological challenges
-facing mathematicians, for a historical perspective see \cite{rigor-and-proof},
+facing mathematicians; for a historical perspective see \cite{rigor-and-proof},
 and for a general overview see \cite{fidelity}.
 
 In 1990s, Fields medalist Vladimir Voevodsky grew concerned with the state
@@ -225,19 +228,20 @@ than \abbreviation{FOL} to find disagreements.
 \chapter{Propositions and Types}
 \label[chapter]{chap:propositions-and-types}
 
-In this chapter, we will present a logical and a computational framework.
-We will begin with general remarks on discussing and defining formal systems in
-\cref{sec:discussing-logic}. \Cref{sec:ipl} begins with an
+In this chapter, we will present first a logical and then a computational
+framework. We will begin with general remarks on discussing and defining formal
+systems in \cref{sec:discussing-logic}. \Cref{sec:ipl} begins with an
 intuitionistic, proof-relevant version of Gentzen's natural deduction
 \cite{gentzen1935untersuchungen} called \abbreviation{IPL}. As most
-mathematicians, computer scientists, and philosophers are familiar with
-some version of first-order logic, this section will focus on the introduction
-of notation, meta-logical concerns, and the key differences between
+mathematicians, computer scientists, and philosophers are familiar with some
+version of first-order logic, this section will focus on the introduction of
+notation, meta-logical concerns, and the key differences between
 \abbreviation{IPL} and \abbreviation{FOL}. In \cref{sec:the-lambda-calculus}, we
-will introduce Church's λ-calculus (typed and untyped). Finally, in
+will introduce Church's λ-calculus \abbreviation{LC} (and the simply-typed and
+typed versions \abbreviation{STLC} and \abbreviation{TLC}). Finally, in
 \cref{sec:the-curry-howard-correspondence}, we will discuss the fundamental and
 harmonious relation between these systems known as the Curry-Howard
-correspondence.
+correspondence.\TODO{Motivate the formality of this chapter}
 
 The vocabulary of \cref{sec:discussing-logic} is due to Martin-L\"of. He
 emphasized the importance of the notion of judgment (\cref{def:judgment})
@@ -392,12 +396,19 @@ of uses of metavariables.
 
 \begin{notation}\label[notation]{notation:sequent}
   If $K$ is a hypothetical judgment holding under assumptions $J_1,\ldots,J_n$,
-  we denote this by $J_1,\ldots,J_n⊢ K$. This is distinct from Gentzen's notion
-  of syntactic entailment: a hypothetical judgment of this form is distinguished
-  from the deduction of $K$ from premises $J_1,\ldots,J_n$ (shown in
-  \cref{notation:proof-tree}). To denote some arbitrary sequence of hypotheses,
-  we will use capital Greek letters $Γ$, $Δ$, and $Θ$.\footnote{Again, these are
-  sorts of meta-metavariables.}
+  we denote this by $J_1,\ldots,J_n⊢ K$ (``$⊢$'' can be read ``entails'').
+  There are three (seemingly) related notions that entailment is distinct from:
+  \begin{enumerate}
+    \itemsep0em
+    \item Gentzen's notion of syntactic entailment, which we won't discuss here,
+    \item the deduction of $K$ from premises $J_1,\ldots,J_n$ (shown in
+      \cref{notation:proof-tree}), and
+    \item implication (see \cref{subsec:ipl-intro} for more discussion of this
+      distinction).
+  \end{enumerate}
+  To denote some arbitrary sequence of hypotheses, we will use capital Greek
+  letters $Γ$, $Δ$, and $Θ$.\footnote{Again, these are sorts of
+  meta-metavariables.}
 \end{notation}
 
 \begin{definition}\label[definition]{def:entailment-rules}
@@ -451,23 +462,27 @@ of uses of metavariables.
     $\mvar{a},\mvar{b}$  
       & \cref{def:metavariable} 
       & English                
-      & A metavariable: some term in our object language \\
+      & Metavariable: a term in the object language \\
     $x\≔\mvar{a}$
       & TODO
       & English                
       & ``x'' is a shorthand for the expression $\mvar{a}$ \\
+    $\mvar{a}[\mvar{b} \≔ \mvar{c}]$
+      & \cref{notation:substitution}
+      & English                
+      & Substitute the expression $\mvar{c}$ for $\mvar{b}$ in $\mvar{a}$ \\
     $\prop{\mvar{a}}$   
       & \cref{subsec:ipl-intro} 
       & English                
       & Judgment: $\mvar{a}$ is a proposition \\
     $\mvar{a}:\mvar{p}$  
-      & \cref{subsec:ipl-intro}, TODO: \abbreviation{LC} 
+      & \cref{subsec:ipl-intro}, TODO: \abbreviation{STLC} 
       & English                
       & Judgment: $\mvar{a}$ is a proof of (or has type) $\mvar{p}$ \\
     $\mvar{a}\≡\mvar{b}:\mvar{p}$  
       & \cref{def:jdeq-ipl} 
       & English                
-      & Judgment: $\mvar{a}$ is equal to $\mvar{b}$ as (proofs) elements of $\mvar{p}$ \\
+      & Judgment: $\mvar{a}$ is equal to $\mvar{b}$ proofs/elements of $\mvar{p}$ \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $\apply{\mvar{a}}{\mvar{b}}$       
       & \cref{notation:parens}
@@ -477,40 +492,44 @@ of uses of metavariables.
       & 
       & All
       & Variables (free or bound) \\
+    % $c_0,c_1,\ldots$          
+    %   & 
+    %   & \abbreviation{(S)TLC}
+    %   & Constants \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $\λ{x}\mvar{a}$      
       & 
-      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & \abbreviation{IPL}, \abbreviation{((S)T)LC}, \abbreviation{UTT} 
       & A function that takes an input $x$ \\
     $→$       
       & 
-      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & \abbreviation{IPL}, \abbreviation{(S)TLC}, \abbreviation{UTT} 
       & Material implication or function type \\
     $×$       
       & 
-      & \abbreviation{ZFC}+\abbreviation{FOL}, \abbreviation{LC}, \abbreviation{UTT} 
-      & Cartesian product, product type, categorical product \\
+      & \abbreviation{ZFC}+\abbreviation{FOL}, \abbreviation{TLC}, \abbreviation{UTT} 
+      & Cartesian or categorical product, product type \\
     $+$       
       & 
-      & \abbreviation{LC}, \abbreviation{UTT} 
+      & \abbreviation{TLC}, \abbreviation{UTT} 
       & Coproduct type, categorical coproduct \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $(a,b)$       
       & 
-      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & \abbreviation{IPL}, \abbreviation{TLC}, \abbreviation{UTT} 
       & Constructor of the pair type \\
     $\inl$, $\inr$       
       & 
-      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & \abbreviation{IPL}, \abbreviation{TLC}, \abbreviation{UTT} 
       & Constructor of the coproduct type \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $\pr{1}$, $\pr{2}$
       & 
-      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & \abbreviation{IPL}, \abbreviation{TLC}, \abbreviation{UTT} 
       & Destructor of the product type \\
     $\case$       
       & 
-      & \abbreviation{IPL}, \abbreviation{LC}, \abbreviation{UTT} 
+      & \abbreviation{IPL}, \abbreviation{TLC}, \abbreviation{UTT} 
       & Destructor of the coproduct type \\
   \end{tabular}
   \caption{\label{tab:symbols}Symbols and their interpretations}
@@ -731,7 +750,8 @@ deduce the consequence:
     {Γ ⊢ \apply{\mvar{p}}{\mvar{q}}:\mvar{b}}.
 \end{align*}
 The elimination rule for falsehood comes from the principle
-\textit{ex falso quod libet}, ``from falsehood anything follows''. If we've been
+\textit{ex falso quod libet}, ``from falsehood anything follows'' (also more
+dramatically called the ``principle of explosion''). If we've been
 able to prove $⊥$, our whole logic is bankrupt and we can derive anything we
 please:
 \begin{align*}
@@ -1119,12 +1139,14 @@ as you go, you get judgmentally equal results.
 \section{The λ-calculus}
 \label{sec:the-lambda-calculus}
 
-\subsection{The untyped λ-calculus and computation}
-\label{subsec:the-untyped-lambda-calculus}
-
 The Church-Turing thesis
 
-$β$-reduction
+For a more comprehensive overview of \abbreviation{LC} and \abbreviation{STLC},
+see \cite{barendregt}, which is the source of theorems and information covered
+here.
+
+\subsection{The untyped λ-calculus and computation}
+\label{subsec:the-untyped-lambda-calculus}
 
 The formation\index{Formation!In the λ-calculus} (really, all) rules of the
 λ-calculus are brilliantly simple.\footnote{Again, ignoring issues of variable
@@ -1151,7 +1173,7 @@ Accordingly, function application is left-associative.
 
 There are no elimination rules. Again, we define judgmental equality λ-terms to
 be the least congruence closed under the following computation
-rule\index{Computation rules!In the λ-calculus} and subject to the following
+rule\index{Computation rules!In \abbreviation{LC}} and subject to the following
 unicity rule:
 \begin{align*}
   {\prftree[r]{\footnotesize β}
@@ -1165,6 +1187,13 @@ unicity rule:
     {Γ ⊢ \λ{v}{(\apply{\mvar{a}}{v})}\jdeq \mvar{a}}}.
 \end{align*}
 
+\begin{notation}\label[notation]{notation:beta}
+  If we apply the computation rule to $\mvar{a}$ and get some term $\mvar{a}'$,
+  we write $\mvar{a} \betato \mvar{a}'$. If we apply it an arbitrary but finite
+  (possibly zero) amount of times to get $\mvar{a}''$, we write $\mvar{a}
+  \betatoo \mvar{a}''$.
+\end{notation}
+
 \begin{example*}\label[example]{ex:calculations-in-lc}
   Under the computation rule, we have
   \begin{align*}
@@ -1173,28 +1202,246 @@ unicity rule:
       {(\λ{y}{y})}
       {(\λ{z}{\apply{z}{\mvar{a}}})} \\
     \≡ &\apply
-      {(\λ{v}{\λ{w}{\appply{\mvar{x}}{v}{w}}})[u\coloneqq (\λ{y}{y})]}
+      {(\λ{v}{\λ{w}{\appply{\mvar{x}}{v}{w}}})[u\≔ (\λ{y}{y})]}
       {(\λ{z}{\apply{z}{\mvar{a}}})}
     &&\quad\text{(β)} \\
     \≡ &\apply
       {(\λ{v}{\λ{w}{\appply{\mvar{x}}{v}{w}}})}
       {(\λ{z}{\apply{z}{\mvar{a}}})}
     &&\quad\text{(substitution)} \\
-    \≡ & (\λ{w}{\appply{\mvar{x}}{v}{w}})[v\coloneqq \λ{z}{\apply{z}{\mvar{a}}}]
+    \≡ & (\λ{w}{\appply{\mvar{x}}{v}{w}})[v\≔ \λ{z}{\apply{z}{\mvar{a}}}]
     &&\quad\text{(β)} \\
     \≡ & (\λ{w}{\appply{\mvar{x}}{(\λ{z}{\apply{z}{\mvar{a}}})}{w}})
     &&\quad\text{(substitution)}.
   \end{align*}
+  (Recall the meta-theoretical notation $[\mvar{b} \≔ \mvar{c}]$,
+  \cref{notation:substitution}.)
   Since $\mvar{x}$ is some arbitrary term, we can reduce this expression no
   further.
 \end{example*}
 
+We can make choices about what part of an expression to apply the computation
+rule to. Consider the following computations:
+\begin{center}
+  \begin{tikzpicture}[node distance=1.5cm]
+    \node[] (A) at (0, 0) {$
+      \apply{(\apply{(\λ{x}{\apply{x}{x}})}
+                    {(\λ{y}{\mvar{a}})})}
+            {(\apply{(\λ{z}{\apply{z}{\mvar{b}}})}
+                      {(\λ{w}{\mvar{c}})})}
+    $};
+    %%%%%%%%%%%%%%%%%%%%%%% LEFT
+    \node[below of=A, xshift=-8em] (B) {$
+      \apply{(\apply{(\λ{y}{\mvar{a}})}{(\λ{y}{\mvar{a}})})}
+            {(\apply{(\λ{z}{\apply{z}{\mvar{b}}})}
+                      {(\λ{w}{\mvar{c}})})}
+    $};
+    \node[below of=B] (C) {$
+      \apply{(\apply{(\λ{y}{\mvar{a}})}{\mvar{a})})}
+            {(\apply{(\λ{z}{\apply{z}{\mvar{b}}})}
+                      {(\λ{w}{\mvar{c}})})}
+    $};
+    \node[below of=C] (D) {$
+      \apply{\apply{\mvar{a}}{\mvar{a}}}
+            {(\apply{(\λ{z}{\apply{z}{\mvar{b}}})}
+                      {(\λ{w}{\mvar{c}})})}
+    $};
+    \node[below of=D] (E) {$
+      \apply{\apply{\mvar{a}}{\mvar{a}}}
+            {(\apply{(\λ{w}{\mvar{c}})}{\mvar{b}})}
+    $};
+    %%%%%%%%%%%%%%%%%%%%%%% RIGHT
+    \node[below of=A, xshift=8em] (F) {$
+      \apply{(\apply{(\λ{x}{\apply{x}{x}})}
+                    {(\λ{y}{\mvar{a}})})}
+            {(\apply{(\λ{w}{\mvar{c}})}{\mvar{b}})}
+    $};
+    \node[below of=F] (G) {$
+      \apply{(\apply{(\λ{x}{\apply{x}{x}})}
+                    {(\λ{y}{\mvar{a}})})}
+            {(\apply{\mvar{b}}{\mvar{c}})}
+    $};
+    \node[below of=G] (H) {$
+      \apply{(\apply{(\λ{x}{\apply{x}{x}})}
+                    {(\λ{y}{\mvar{a}})})}
+            {(\apply{\mvar{b}}{\mvar{c}})}
+    $};
+    \node[below of=H] (I) {$
+      \apply{(\apply{(\λ{y}{\mvar{a}})}{(\λ{y}{\mvar{a}})})}
+            {(\apply{\mvar{b}}{\mvar{c}})}
+    $};
+    %%%%%%%%%%%%%%%%%%%%%%% LAST
+    \node[below of=A, yshift=-13em] (Z) {$
+      \appply{\mvar{a}}{\mvar{a}}{(\apply{\mvar{b}}{\mvar{c}})}
+    $};
+    %%%%%%%%%%%%%%%%%%%%%%% ARROWS
+    %%%%% LEFT
+    \draw (A) edge [->] node[above] {\scriptsize β} (B);
+    \draw (B) edge [->] node[left] {\scriptsize β} (C);
+    \draw (C) edge [->] node[left] {\scriptsize β} (D);
+    \draw (D) edge [->] node[left] {\scriptsize β} (E);
+    \draw (E) edge [->] node[below] {\scriptsize β} (Z);
+    %%%%% RIGHT
+    \draw (A) edge [->] node[above] {\scriptsize β} (F);
+    \draw (F) edge [->] node[right] {\scriptsize β} (G);
+    \draw (G) edge [->] node[right] {\scriptsize β} (H);
+    \draw (H) edge [->] node[right] {\scriptsize β} (I);
+    \draw (I) edge [->] node[below] {\scriptsize β} (Z);
+  \end{tikzpicture}
+\end{center}
+In the left column, we reduce the leftmost expression first, whereas in the
+right column, we reduce the rightmost expression first. In this example, they
+result in the same term, but there is \textit{a priori} no reason to think this
+is so in general. 
+
+\begin{theorem}[Church-Rosser]\label[theorem]{thm:church-rosser}
+  The order in which we apply computation rules to a term of \abbreviation{LC}
+  doesn't matter. More specifically, if $\mvar{a}\betatoo\mvar{b}$ and
+  $\mvar{a}\betatoo\mvar{c}$, then there is a term $\mvar{d}$ such that
+  $\mvar{b}\betatoo\mvar{d}$ and $\mvar{c}\betatoo \mvar{d}$.
+  Diagrammatically,
+  \begin{center}
+    \begin{tikzcd}[sep=small, every arrow/.append style={two heads, "β"}]
+      {} &
+      \mvar{a}
+        \arrow[dl, swap]
+        \arrow[dr] &
+      {} \\
+      \mvar{b}
+        \arrow[dr, dashed, swap] &
+      {} &
+      \mvar{c}
+        \arrow[dl, dashed] \\
+      {} & \mvar{d} & {}
+    \end{tikzcd}
+  \end{center}
+\end{theorem}
+
+Note that the Church-Rosser Theorem doesn't claim judgmental equality
+$\≡$,\footnote{If it did, it would be trivial; the β-rules preserve judgmental
+equality.} but actual \textit{syntactic identity}, they compute to the exact
+same term.
+
+\begin{definition}\label[definition]{def:normal-form}
+	If $\mvar{a}$ is a term of \abbreviation{LC} such that there does not exist
+  a term $\mvar{a}'$ with $\mvar{a}\betato \mvar{a}'$, then we say that
+  $\mvar{a}$ is in \define{(β-)normal form}\index{Normal form}.
+  If $\mvar{b}\betatoo\mvar{b}'$ and $\mvar{b}'$ is in normal form, we say
+  $\mvar{b}'$ is the normal form of $\mvar{b}$.
+\end{definition}
+
+The use of the definite article in the above definition is justified by
+Church-Rosser: every term has at most one β-normal form. The converse does not
+hold.
+
+\begin{example*}\label[example]{ex:non-terminating}
+  Consider the term $⊥\≔ \λ{v}{\apply{v}{v}}$. Using the computation rule,
+  \begin{align*}
+    \apply{⊥}{⊥}
+    &\≡ \apply{(\λ{v}{\apply{v}{v}})}{⊥}
+    &&\quad\text{(Definition)} \\
+    &\≡ (\apply{v}{v})[v ≔ ⊥]
+    &&\quad\text{(β)} \\
+    &\≡ \apply{⊥}{⊥}
+    &&\quad\text{(substitution)} \\
+    &\≡ \apply{⊥}{⊥}
+    &&\quad\text{(β, substitution)} \\
+    &\≡ \apply{⊥}{⊥}
+    &&\quad\text{(β, substitution)} \\
+    &\≡ ⋯
+  \end{align*}
+  It is clear that we could iterate this process.
+  Now consider $⊥'\≔ \λ{v}{\appply{v}{v}{v}}$. Then
+  \begin{align*}
+    \apply{⊥'}{⊥'}
+    &\≡ \apply{(\λ{v}{\appply{v}{v}{v}})}{⊥'} \\
+    &\≡ \appply{⊥'}{⊥'}{⊥'} \\
+    &\≡ \apppply{⊥'}{⊥'}{⊥'}{⊥'} \\
+    &\≡ ⋯
+  \end{align*}
+  Not only can we build terms that don't really ``progress'' when we try to
+  ``compute'' ($⊥$), but we can build terms that actually \textit{expand} under
+  rules meant to \textit{reduce} them, that are judgmentally equal to infinitely
+  many other terms!
+\end{example*}
+
+While an ability to loop indefinitely is essential to Turing-Completeness, we
+might ask if there is another system in which we could express many of the same
+ideas and computations, but with a computation rule that always ``terminates''.
+
 \subsection{The simply-typed λ-calculus}
 \label{subsec:the-simply-typed-lambda-calculus}
 
-Two judgments
+In order to fix the problem raised in \cref{ex:non-terminating}, we can add
+\define{types}\index{Types!Simply-typed λ-calculus} to \abbreviation{LC} to get
+\abbreviation{STLC}, the simply-typed λ-calculus. We consider two new judgments
+of the form ``$\type{\mvar{t}}$'' and ``$\mvar{a}:\mvar{t}$'', read 
+``\mvar{t} is a type'' and ``\mvar{a} has type \mvar{t}'', respectively (recall
+that ``$:$'' is a symbol of the meta-language, it is just shorthand for writing
+a judgment). In writing these judgments, we implicitly assume that all
+expressions are well-formed terms. As a first approximation, a type can be
+thought of as a description of a program's behavior.
 
-The strong normalization property
+This language begins with additional formation rules
+\begin{align*}
+  {\prftree[r]{}
+    {}
+    {Γ ⊢ \type{\groundtype_i}}}
+  &&
+  {\prftree[r]{}
+    {Γ ⊢ \type{\mvar{s}}}
+    {Γ ⊢ \type{\mvar{t}}}
+    {Γ ⊢ \type{\mvar{s}→\mvar{t}}}}
+\end{align*}
+The $\groundtype_i$ are called \define{ground types}.\footnote{There can be as
+  many ground types as necessary or only one, it doesn't fundamentally change
+  the character of the resulting theory.} 
+The term $\mvar{a}→\mvar{b}$ is the type of functions from $\mvar{a}$ to
+$\mvar{b}$. The introduction
+rule\index{Introduction rules!In \abbreviation{STLC}} tells us how to form
+elements of these types:
+\begin{align*}
+  {\prftree[r]{}
+    {Γ, \mvar{a}:\mvar{s} ⊢ \mvar{b}:\mvar{t}}
+    {Γ ⊢ \λ{v}{\mvar{b}}:\mvar{s}→\mvar{t}}}
+\end{align*}
+Introduction rules for some ground type(s) are reasonable additional axioms, but
+they are not necessary for the development of the theory.\footnote{This might
+look like
+\begin{align*}
+  {\prftree[r]{}
+    {}
+    {Γ ⊢ z:\groundtype_0}},
+\end{align*}
+which would assert the existence of an element $z$ of the 0\textsuperscript{th}
+ground type $\groundtype_0$.
+} An elimination rule to balances this introduction:
+\begin{align*}
+  {\prftree[r]{}
+    {Γ ⊢ \mvar{a}:\mvar{s}→\mvar{t}}
+    {Γ ⊢ \mvar{b}:\mvar{s}}
+    {Γ ⊢ \apply{\mvar{a}}{\mvar{b}}:\mvar{t}}}
+\end{align*}
+The computation rules\index{Computation rules!In \abbreviation{STLC}} and
+unicity rules remain much the same, only now with some restrictions on their
+domains:
+\begin{align*}
+  {\prftree[r]{\footnotesize β}
+    {Γ, \mvar{a}:\mvar{s} ⊢ \mvar{b}:\mvar{t}}
+    {Γ ⊢ \term{\mvar{c}}:\mvar{s}}
+    {Γ ⊢ \apply{(\λ{v}\mvar{b})}{\mvar{c}}\jdeq
+      \mvar{b}[\mvar{a}\coloneqq\mvar{c}]}}
+  &&
+  {\prftree[r]{\footnotesize η}
+    {Γ ⊢ \term{\mvar{a}}}
+    {Γ ⊢ \λ{v}{(\apply{\mvar{a}}{v})}\jdeq \mvar{a}}}.
+\end{align*}
+Variables may stand in for terms of arbitrary type.
+
+\begin{theorem}\label[theorem]{thm:strong-normalization}
+  \abbreviation{STLC} is \define{strongly normalizing}; every term has exactly
+  one normal form.
+\end{theorem}
 
 \subsection{More complex types}
 \label{subsec:more-complex-types}
