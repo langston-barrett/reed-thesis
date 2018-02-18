@@ -112,21 +112,21 @@
 % \chapter*{Pcreface}
 % This thesis delves into highly interdisciplinary territory. I'll
 
-\chapter*{List of Abbreviations}
+% \chapter*{List of Abbreviations}
 
-\begin{table}[h]
-  \centering
-  \begin{tabular}{ll}
-    \abbreviation{HoTT}  	&  Homotopy type theory \\
-    \abbreviation{UTT}  	&  Univalent type theory \\
-    \abbreviation{ITT}  	&  Intensional type theory \\
-    \abbreviation{FOL}  	&  Classical first-order logic \\
-    \abbreviation{IPL}  	&  Intuitionistic propositional logic \\
-    \abbreviation{LC}  	  &  Church's untyped λ-calculus \\
-    \abbreviation{STLC}  	&  Simply-typed λ-calculus \\
-    \abbreviation{TLC}  	&  Typed λ-calculus
-  \end{tabular}
-\end{table}
+% \begin{table}[h]
+%   \centering
+%   \begin{tabular}{ll}
+%     \abbreviation{HoTT}  	&  Homotopy type theory \\
+%     \abbreviation{UTT}  	&  Univalent type theory \\
+%     \abbreviation{ITT}  	&  Intensional type theory \\
+%     \abbreviation{FOL}  	&  Classical first-order logic \\
+%     \abbreviation{IPL}  	&  Intuitionistic propositional logic \\
+%     \abbreviation{LC}  	  &  Church's untyped λ-calculus \\
+%     \abbreviation{STLC}  	&  Simply-typed λ-calculus \\
+%     \abbreviation{TLC}  	&  Typed λ-calculus
+%   \end{tabular}
+% \end{table}
 
 % Depth to which to number and print sections in TOC
 \setcounter{tocdepth}{4}
@@ -1443,6 +1443,19 @@ Variables may stand in for terms of arbitrary type.
   one normal form.
 \end{theorem}
 
+\begin{example}
+	Recall the problematic term of \cref{ex:non-terminating}:
+  $⊥\≔ \λ{v}{\apply{v}{v}}$. Can the introduction rules assign this term a type?
+  To determine the overall type of $⊥$, we must determine the type of its
+  argument. Its argument gets applied to a term, so it must have a function type
+  $\mvar{a} → \mvar{b}$. However, since it is applied to
+  itself, it must have type $(\mvar{a} → \mvar{b}) → \mvar{b}$. But now it still
+  can't be applied to itself, so it must have type
+  $((\mvar{a} → \mvar{b}) → \mvar{b}) → \mvar{b}$. Of course, this problem
+  persists no matter how many layers are added, and leads us to the following
+  conclusion: no well-typed term may be applied to itself.
+\end{example}
+
 \subsection{More complex types}
 \label{subsec:more-complex-types}
 
@@ -2322,6 +2335,9 @@ include all examples in \cref{sec:functors-and-their-algebras}.
   with algebra morphisms defined dually \cite{homotopy-initial}.
 \end{definition}
 
+See \cref{ex:nat-functor-utt} for the polynomial functor for which $\ℕ$ is
+initial. 
+
 \section{Internalizing M-types}
 \label{sec:internalizing-m-types}
 
@@ -2573,21 +2589,24 @@ the following auxiliary result:
 \subsection{Fibered Algebras}
 \label{subsec:fibered-algebras}
 
-We pivot now to considering fibered algebras, which are a more general case of
-algebras for endofunctors. The proof of the induction principle for initial
-algebras (\TODO{ref}) is necessary to prove the existence of M-types.
+A functor algebra $\dpair{X}{α}$ has as its first component a type
+$X:\universe$. What would it mean for an algebra to be ``fibered'' over this
+one, with a first component $Y:X → \universe$? When can a \textit{dependent}
+type (over an algebra) can be given the structure of a functor algebra?
+Such fibered algebras generalize regular algebras for endofunctors. The proof of
+the induction principle for initial algebras (\TODO{ref}) is necessary to prove
+the existence of M-types.
 
 \begin{definition}\label[definition]{def:algebra-fibration}
-  We might consider when a \textit{dependent} type can be given the structure of
-  a functor algebra. Inspired by the homotopical semantics for \abbreviation{UTT},
+  Inspired by the homotopical semantics for \abbreviation{UTT},
   if $(X,α)$ is an algebra for the functor associated to $(A,B)$,
   the type of \define{fibered $P$-algebras} over $X$ is
   \begin{equation*}
     \ttfun{FiberedAlg}(X)\≔
     \∑{E:X→\universe}
-    {\∏{x:P_{A,B}X}{
-      \paren{\∏{b:\apply{B}{(\appr{1}{x})}}{\apply{E}{(\appply{\pr{2}}{x}{b})}}}
-      → \apply{E}{(\apply{\alpha}{x})}
+    {\∏{\dpair{x}{h}:P_{A,B}X}{
+      \paren{\∏{b:\apply{B}{x}}{\apply{E}{(\apply{h}{b})}}}
+      → \apply{E}{(\apply{\alpha}{\dpair{x}{h}})}
     }}
   \end{equation*}
   an \define{algebra fibration}.
@@ -2608,7 +2627,8 @@ Any $P$-algebra can be made into a fibered $P$-algebra over $(X,α)$ by using a
 constant family: 
 \begin{align*}
 	\Algtype(P) &\longrightarrow \ttfun{FiberedAlg}(X) \\
-	(Y,β) &\longmapsto \dpair{\λ{x}{Y}} {\λ{x}{\λ{f}{\apply{β}{\dpair{\appr{1}{x}}{f}}}}}
+	\dpair{Y}{β} &\longmapsto
+               \dpair{\λ{x}{Y}} {\λ{x}{\λ{f}{\apply{β}{\dpair{\appr{1}{x}}{f}}}}}
 \end{align*}
 Since the $x$ in the argument to the second coordinate is of type
 $P_{A,B}X\jdeq \∑{a:A}\apply{B}{a}→X$ and $f:\apply{B}{(\appr{1}{x})}→Y$, the pair
@@ -2618,7 +2638,8 @@ $\ttfun{foo}$ should be a generalization of a dependent $\ttfun{foo}$.
 In turn, any fibered algebra with family $E:X→\universe$ can be turned into a
 non-fibered algebra over the ``total space'' $\∑{x:X}\apply{E}{x}$.
 
-\begin{theorem}[Fiber-initiality]\label[theorem]{thm:fiber-initiality}
+\begin{theorem}[Fiber-initiality]\label[definition]{def:fiber-initiality}
+  TODO: this is a definition
   If $(X,α)$ is an initial algebra and $Y$ is a fibered algebra over $X$, then
   the type of algebra sections from $X$ to $Y$ is contractible.
 \end{theorem}
@@ -2634,6 +2655,234 @@ non-fibered algebra over the ``total space'' $\∑{x:X}\apply{E}{x}$.
   \end{equation*}
   is contractible.
 \end{example}
+
+\subsubsection{The natural numbers}
+\label{subsubsec:fibered-natural-numbers}
+
+We now prove a few facts about the natural numbers and the functor for which
+they are initial, some of which will be familiar from
+\cref{sec:functors-and-their-algebras}.\footnote{These arguments are my own,
+  though some of these theorems are proved in the \Agda development of
+  \cite{non-wellfounded}.}
+
+\begin{example}\label[example]{ex:nat-functor-utt}
+	Consider the polynomial functor associated to $A\defeq \𝔹$ and 
+  $B\defeq \apppply{\rec_{\𝔹}}{\universe}{\𝟘}{\𝟙}$:
+  \begin{equation*}
+    PX \defeq \∑{b:\𝔹}{\appppply{\rec_{\𝔹}}{\universe}{\𝟘}{\𝟙}{b}} → X.
+  \end{equation*}
+  An algebra for this functor is given by a type $X:\universe$ and a function
+  \begin{equation*}
+    PX → X\≡ \paren{\∑{b:\𝔹}{\appppply{\rec_{\𝔹}}{\universe}{\𝟘}{\𝟙}{b}} → X} → X
+  \end{equation*}
+  Define:
+  \begin{align*}
+    &η : Pℕ → ℕ &&\\
+    &\apply{η}{\dpair{\bfalse}{g}} \defeq 0
+    &&\quad(\text{In this case,  }g:\𝟘 → X) \\
+    &\apply{η}{\dpair{\btrue}{g}}  \defeq \apply{\suc}{(\apply{g}{\unitelem})}
+    &&\quad(\text{In this case,  }g:\𝟙 → X) \\
+  \end{align*}
+\end{example}
+
+\begin{lemma}
+	For any $P$-algebra $\dpair{X}{α}$, there is an algebra morphism
+  $\dpair{ℕ}{η} ⇒ \dpair{X}{α}$.
+\end{lemma}
+\begin{proof}
+	Define
+  \begin{align*}
+    \begin{split}
+      x_0 &: X \\
+      x_0 &\defeq \apply{α}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{X}}} \\
+    \end{split}
+    \begin{split}
+      f   &: X → X \\
+      f  &\defeq \λ{x}{\apply{α}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{X}{x}}}}
+    \end{split}
+  \end{align*}
+  These are like the ``zero'' and ``successor'' for $X$. Now define a function
+  $g$ recursively:
+  \begin{alignat*}{2}
+    &g : ℕ → X \\
+    &\apply{g}{0}                 &&\defeq x_0 \\
+    &\apply{g}{(\apply{\suc}{n})} &&\defeq f(g(n)) 
+  \end{alignat*}
+  To show that $g$ is an algebra morphism (\cref{def:algebra-coalgebra-in-utt}),
+  we must demonstrate that the following diagram commutes:
+  \begin{center}
+    \begin{tikzcd}
+      Pℕ  \arrow[d, "η"] \arrow[r, "P^*g"] & PX \arrow[d, "α"] \\
+      ℕ \arrow[r, "g"] & X
+    \end{tikzcd}
+  \end{center}
+  where $\apply{P^*g}{\dpair{b}{h}}\defeq \dpair{b}{g ∘ h}$\TODO{check the order}
+  (\cref{def:polynomial-functor}). By function extensionality
+  (\cref{thm:funext}), it suffices to show that the two composites are equal on
+  all inputs. Let $\dpair{b}{h}:Pℕ$, and proceed by cases on $b:\𝔹$.
+
+  If $b\≡\bfalse$, then $h:\𝟘 → ℕ$. Recall that $\emptytype$ is terminal in
+  $\universe$; the type of functions $\𝟘 → Z$ is contractible for any
+  $Z:\universe$. Thus,
+  \begin{align*}
+    \apply{(α∘(P^*g))}{\dpair{\bfalse}{h}}
+    &\jdeq \apply{α}{\dpair{\bfalse}{g ∘ h}} \\
+    &= \apply{α}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{X}}}
+    &&\quad\text{Terminality of }\𝟘\\
+    &\jdeq x_0 \\
+    &\jdeq \apply{g}{0} \\
+    &\jdeq \apply{(g∘η)}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{ℕ}}} \\
+    &= \apply{(g∘η)}{\dpair{\bfalse}{h}}
+  \end{align*}
+
+  If $b\≡\btrue$, then $h:\𝟙 → ℕ$. By the induction principle for
+  $\𝟙$\TODO{reference}, for any type $Z:\universe$, any function $k:\𝟙 → Z$, and
+  any $x:\𝟙$, $\apply{k}{x}=\apply{k}{\unitelem}$. In short,
+  $k=\appply{\rec_{\𝟙}}{Z}{(\apply{k}{\unitelem})}$. In this case,
+  \TODO{TODO: fix this with definition of f!}
+  \begin{align*}
+    \apply{(α∘(P^*g))}{\dpair{\btrue}{h}}
+    &\jdeq \apply{α}{\dpair{\btrue}{g ∘ h}} \\
+    &= \apply{α}{\dpair{\btrue}{g ∘ (\appply{\rec_{\𝟙}}{ℕ}{(\apply{h}{\unitelem})})}} \\
+    &= \apply{α}{\dpair{\btrue}{(\λ{x}{\appply{\rec_{\𝟙}}{X}{(\apply{g}{(\apply{h}{x})}})})}}
+    &&\quad\text{Function extensionality} \\
+    &\jdeq \apply{f}{(\apply{g}{(\apply{h}{\unitelem})})} \\
+    &\jdeq \apply{g}{(\apply{\suc}{(\apply{h}{\unitelem})})} 
+    &&\quad\text{Definition of }g \\
+    &\jdeq \apply{(g∘η)}{\dpair{\btrue}{h}}
+    &&\quad\text{Definition of }η \\
+  \end{align*}
+\end{proof}
+
+\begin{lemma}\label[lemma]{lemma:nat-alg-mor-fun-unique}
+  The underlying function of the above morphism is unique. That is,
+	for any algebra morphism $\dpair{τ}{i}:\dpair{ℕ}{η} ⇒ \dpair{X}{α}$,
+  $\propeq{}{τ}{g}$, with $g$ is as in the previous proof.
+\end{lemma}
+\begin{proof}
+  By function extensionality (\cref{thm:funext}), it suffices to show that they
+  are equal on all inputs. We know that the following diagrams commute:
+  \begin{center}
+    \begin{minipage}[b]{0.48\linewidth}
+      \centering
+      \begin{tikzcd}
+        P\ℕ  \arrow[d, "η"] \arrow[r, "P^*g"] & PX \arrow[d, "α"] \\
+        \ℕ \arrow[r, "g"] & X
+      \end{tikzcd}
+    \end{minipage}
+    \begin{minipage}[b]{0.48\linewidth}
+      \centering
+      \begin{tikzcd}
+        P\ℕ  \arrow[d, "η"] \arrow[r, "P^*τ"] & PX \arrow[d, "α"] \\
+        \ℕ \arrow[r, "τ"] & X
+      \end{tikzcd}
+    \end{minipage}
+  \end{center}
+  Using function extensionality, proceed
+  by induction on the argument.
+  % by cases on the constructor of the argument.
+
+  % mor 0 =
+  % (x ∘ polynomial_functor_arr bool (bool_rect (λ _ : bool, UU) ∅ unit) mor)
+  %   (true,, fromempty)
+  (Base case) In the zero case, we have
+  $\dpair{\bfalse}{\apply{\rec_{\𝟘}}{\ℕ}}:P\ℕ$. Then
+  % By definition of $η$ and the
+  % commuting condition for $τ$ (in the diagram above),
+  \begin{align*}
+    \apply{τ}{0}
+    &= \apply{τ}{(\apply{η}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{\ℕ}}})}
+    &&\quad\text{Definition of }η \\
+    &\jdeq \apply{(τ∘η)}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{\ℕ}}} \\
+    &= \apply{(α∘P^*τ)}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{\ℕ}}}
+    &&\quad\text{Commuting condition} \\
+    &\jdeq \apply{α}{\dpair{\bfalse}{τ∘\apply{\rec_{\𝟘}}{\ℕ}}}
+    &&\quad\text{Definition of }P^* \\
+    &= \apply{α}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{X}}}
+    &&\quad\text{Contractibility of }\𝟘 → X\\
+    &\jdeq x_0 \\
+    &\jdeq \apply{g}{0}.
+  \end{align*}
+
+  % (false,, (λ _ : bool_rect (λ _ : bool, UU) ∅ unit false, n0))
+  (Inductive step) Suppose the hypothesis holds for $n:\ℕ$. Then
+  $\dpair{\btrue}{\apply{\rec_{\𝟙}}{\ℕ}{n}}:P\ℕ$.
+  Recall the definition of $f$ given in the previous proof. Similarly to the
+  above reasoning,
+  \begin{align*}
+    \apply{τ}{(\apply{\suc}{n})}
+    &= \apply{τ}{(\apply{η}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{\ℕ}{n}}})}
+    &&\quad\text{Definition of }η \\
+    &\jdeq \apply{(τ∘η)}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{\ℕ}{n}}} \\
+    &= \apply{(α∘P^*τ)}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{\ℕ}{n}}}
+    &&\quad\text{Commuting condition} \\
+    &\jdeq \apply{α}{\dpair{\btrue}{τ∘\appply{\rec_{\𝟙}}{\ℕ}{n}}}
+    &&\quad\text{Definition of }P^* \\
+    &= \apply{α}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{X}{(\apply{τ}{n}})}} \\
+    &\jdeq \apply{f}{(\apply{τ}{n})} \\
+    &= \apply{f}{(\apply{g}{n})}
+    &&\quad\text{Inductive hypothesis} \\
+    &\jdeq \apply{g}{(\apply{\suc}{n})}.
+    &&\quad\text{Definition of }g
+  \end{align*}
+\end{proof}
+
+\begin{lemma}\label[lemma]{lemma:fiber-initiality-nat}
+	The natural numbers are fiber-initial (\cref{def:fiber-initiality}).
+\end{lemma}
+\begin{proof}
+	Suppose $\dpair{E}{θ}$ is a fibered algebra over $\ℕ$
+  (\cref{def:algebra-fibration}) so that $E:\ℕ→\universe$ and
+  \begin{equation*}
+    θ:\∏{\dpair{n}{h}:P\ℕ}{\paren{\∏{b:\appppply{\rec_{\𝟚}}{\universe}{\𝟘}{\𝟙}{n}}{\apply{E}{(\apply{h}{b})}}} → \apply{E}{(\apply{η}{\dpair{n}{h}})}}.
+  \end{equation*}
+  The first part of an algebra section is a function $f:\∏{n:\ℕ}{\apply{E}{n}}$.
+  Define $f$ by induction:
+  \begin{alignat*}{2}
+    &f : \∏{n:\ℕ}{\apply{E}{n}}   &&\\
+    &\apply{f}{0}                 &&\defeq
+    \appply{θ}{\dpair{\bfalse}{\fromempty{ℕ}}}
+              {(\fromempty{(E∘\fromempty{\ℕ})})} \\
+    &\apply{f}{(\apply{\suc}{n})} &&\defeq
+    \appply{θ}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{\ℕ}{n}}}
+              {(\fromunit{(\apply{E}{n})}{(\apply{f}{n})})}
+  \end{alignat*}
+  Let $\dpair{b}{h}:P_{A,B}\ℕ$. It remains to show that this function is indeed
+  a section, namely that
+  \begin{equation*}
+    \propeq
+      {}
+      {\apply{f}{(\apply{η}{\dpair{b}{h}})}}
+      {\appply{θ}{\dpair{b}{h}}{(f∘h)}}
+  \end{equation*}
+  Proceed by cases on $b$.
+
+  If $b\≡\bfalse$, then $h:\𝟘 → ℕ$. In this case,
+  \begin{align*}
+    \apply{f}{(\apply{η}{\dpair{\bfalse}{h}})}
+    &\≡ \apply{f}{0}
+    &&\quad\text{Definition of }η \\
+    &\≡ \appply{θ}{\dpair{\bfalse}{\fromempty{ℕ}}}
+                  {(\fromempty{(E∘\fromempty{\ℕ})})}
+    &&\quad\text{Definition of }f \\
+    &\= \appply{θ}{\dpair{\bfalse}{h}}{(f∘h)}
+  \end{align*}
+  by the contractibility of types $\𝟘 → \ℕ$ and
+  $(E∘\fromempty{\ℕ}) → \ℕ$.\TODO{reference}
+
+  If $b\≡\btrue$, then $h:\𝟙 → ℕ$.
+  \begin{align*}
+    \apply{f}{(\apply{η}{\dpair{\btrue}{h}})}
+    &\≡ \apply{f}{(\apply{\suc}{(\apply{h}{\unitelem})})} \\
+    &\≡ \appply{θ}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{\ℕ}{(\apply{h}{\unitelem})}}}
+                  {\Big(\fromunit{(\apply{E}{(\apply{h}{\unitelem})})}
+                             {(\apply{f}{(\apply{h}{\unitelem})})}\Big)} \\
+    &\= \appply{θ}{\dpair{\btrue}{h}}{(f∘h)}
+  \end{align*}
+  where the last equality is by two applications of function extensionality
+  (\cref{thm:funext}) and the induction principle for $\𝟙$.
+  % By the induction principle for
+\end{proof}
 
 % \begin{lemma}\label[lemma]{lemma:algebra-sections}
 %   Let $X$ be a $P$-algebra with $α:PX→X$, and let $C:X→\universe$. The standard
@@ -2681,17 +2930,17 @@ of \cite{non-wellfounded} (under the column \MTypes{}).
 
 \backmatter % backmatter makes the index and bibliography appear properly in the TOC
 
-% if you're using bibtex, the next line forces every entry in the bibtex file to be included
-% in your bibliography, regardless of whether or not you've cited it in the thesis.
-\nocite{*}
-
 %  \bibliographystyle{bsts/mla-good} % there are a variety of styles available;
 %  \bibliographystyle{plainnat}
 % replace ``plainnat'' with the style of choice. You can crefer to files in the bsts or APA
 % subfolder, e.g.
 % \bibliographystyle{APA/apa-good}  % or
+
+% uncomment me!
+% \nocite{*}
 \bibliography{thesis}
-\bibliographystyle{plain}
+% \bibliographystyle{plain}
+
 % Comment the above two lines and uncomment the next line to use biblatex-chicago.
 %\printbibliography[heading=bibintoc]
 
