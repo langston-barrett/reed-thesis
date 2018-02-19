@@ -8,11 +8,11 @@
 %\usepackage{biblatex-chicago}
 %\bibliography{thesis}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% While drafting:
 \makeatletter
 \def\ifdraft{\ifdim\overfullrule>\z@
   \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi}
-\makeatother%%% While drafting:
+\makeatother
 
 \ifdraft{
   \usepackage{showlabels}
@@ -43,11 +43,19 @@
 \newcommand{\abbreviation}[1]{\textbf{#1}\indeX{#1@\textbf{#1}}} % abbreviations
 \usepackage{makeidx}
 \usepackage{prftree}\setlength{\prfinterspace}{1.2em}
+
 \newcommand{\software}[1]{{\textsc{#1}}\indeX{#1}}
 \newcommand{\Agda}{\software{Agda}}
 \newcommand{\UniMath}{\software{UniMath}}
 \newcommand{\Coq}{\software{Coq}}
 \newcommand{\MTypes}{\software{HoTT/M-Types}}
+
+\definecolor{accepted}{HTML}{0088EE}
+\definecolor{notaccepted}{HTML}{EE8800}
+% \newcommand{\coqname}{\texttt}
+% \newcommand{\unimathname}[1]{\underline{\texttt{#1}}}
+\newcommand{\coqname}[1]{\texttt{\footnotesize\color{notaccepted} #1}}
+\newcommand{\unimathname}[1]{\texttt{\footnotesize\color{accepted} #1}}
 
 \usepackage{tikz}
 \usetikzlibrary{cd,arrows.meta}
@@ -83,6 +91,7 @@
 \newtheorem{tt-rule}[theorem]{Rule}
 
 \newcommand{\Algtype}{\ensuremath{\ttfun{Alg}}}
+\newcommand{\Fibalgtype}{\ensuremath{\ttfun{FiberedAlg}}}
 \newcommand{\Coalgtype}{\ensuremath{\ttfun{Coalg}}}
 \newcommand{\Final}{\ensuremath{\ttfun{Final}}}
 
@@ -223,6 +232,16 @@ than \abbreviation{FOL} to find disagreements.
 \section*{Our contribution}
 
 (Co)inductive types and UniMath
+
+begin
+\begin{notation}
+  All of the results of this thesis have been formalized in the \Coq{} proof
+  assistant \cite{coq-manual}. The names of the formal proofs
+  appear in a monospaced font (e.g.\ \coqname{univalence}). Many results have
+  already been reviewed (by the \UniMath{} development team \cite{unimath} and
+  Anders Mörtberg) and accepted into the \UniMath{} library, these appear
+  with an underline (e.g.\ \unimathname{univalence}).
+\end{notation}
 
 \chapter{Propositions and Types}
 \label[chapter]{chap:propositions-and-types}
@@ -1992,7 +2011,7 @@ category, which we will call $F\Coalg$.\TODO{Proof?}
 The following example is crucial to
 \cref{chap:coinductive-types-in-univalent-type-theory}.
 
-\begin{example}\label[example]{ex:nat}
+\begin{example}[\unimathname{CategoryTheory.FunctorAlgebras.Nats}]\label[example]{ex:nat}
   Let $\bfC$ be a category with distinguished binary coproducts and a terminal
   object $1$. Consider the functor
   \begin{align*}
@@ -2158,6 +2177,11 @@ on category theory in univalent type theory \cite{book} \cite{unimath}
 \chapter{Coinductive types in univalent type theory}
 \label{chap:coinductive-types-in-univalent-type-theory}
 
+The results in this chapter all appear in the \UniMath{} package
+\unimathname{Induction}, so that prefix is left off
+(e.g.\ \unimathname{Induction.W.Core} is shortened to
+\unimathname{W.Core}).
+
 \section{W and M}
 \label{sec:w-and-m}
 
@@ -2292,7 +2316,8 @@ include all examples in \cref{sec:functors-and-their-algebras}.
 \section{Preliminaries}
 \label{sec:preliminaries}
 
-\begin{definition}\label[definition]{def:polynomial-functor}
+\begin{definition}[\unimathname{PolynomialFunctors.polynomial\_functor}]
+  \label[definition]{def:polynomial-functor}
   Given a container $S\defeq (A,B)$, its associated \define{polynomial functor}
   is the function
   \begin{gather*}
@@ -2345,10 +2370,12 @@ We will prove a few auxiliary lemmas on the way to the following result.
 This proof appeared in the \Agda{} formalization of \cite{non-wellfounded}, this
 is its first appearance ``de-formalized''.
 
-\subsection{Uniqueness of final coalgebras}
+\subsection{Uniqueness}
 \label{subsec:uniqueness}
 
-\begin{lemma}\label[lemma]{lemma:final-colagebra-unique}
+\begin{lemma}[\unimathname{M.Uniqueness.M\_coalg\_eq},
+              \unimathname{M.Uniqueness.isaprop\_M}]
+  \label[lemma]{lemma:final-colagebra-unique}
   Any two final $P$-coalgebras are equal. In other words, the following type is
   a proposition:
   \begin{equation*}
@@ -2361,7 +2388,8 @@ is its first appearance ``de-formalized''.
 
 First, we'll show that their carriers are equivalent:
 
-\begin{lemma}\label[lemma]{lemma:algebra-iso-equiv}
+\begin{lemma}[\unimathname{M.Uniqueness.M\_carriers\_iso}]
+  \label[lemma]{lemma:algebra-iso-equiv}
 	If $(X,α)$ and $(Y,β)$ are final $P$-coalgebras,
   then the first projections of the unique coalgebra morphisms
   $f:X⇒ Y$ and $g:Y⇒ X$ induce
@@ -2527,23 +2555,38 @@ the following auxiliary result:
   \end{center}
 \end{proof}
 
-\subsection{Fibered Algebras and the natural numbers}
+\begin{lemma}[\unimathname{W.Uniqueness.W\_alg\_eq},
+              \unimathname{W.Uniqueness.isaprop\_W}]
+  Any two initial $P$-algebras are equal.
+\end{lemma}
+\begin{proof}
+	The above proof works with only minor modifications, see the \Coq{}
+  development for details.
+\end{proof}
+
+\subsection{Fibered algebras and the natural numbers}
 \label{subsec:fibered-algebras}
 
 A functor algebra $\dpair{X}{α}$ has as its first component a type
 $X:\universe$. What would it mean for an algebra to be ``fibered'' over this
 one, with a first component $Y:X → \universe$? When can a \textit{dependent}
 type (over an algebra) can be given the structure of a functor algebra?
-Such fibered algebras generalize regular algebras for endofunctors. The proof of
-the induction principle for initial algebras (\TODO{ref}) is necessary to prove
-the existence of M-types.
+Such fibered algebras generalize regular algebras for endofunctors.
 
-\begin{definition}\label[definition]{def:algebra-fibration}
+The fiber-initial property of $\ℕ$
+(see \cref{def:fiber-initiality} and \cref{lemma:fiber-initiality-nat})
+is essential to proving a property about limits
+(\cref{lemma:cochains}) that plays a pivotal role in the proof of the existence
+of M-types.
+
+\begin{definition}[\unimathname{W.Fibered.fibered\_alg},
+                   \unimathname{W.Fibered.algebra\_section}]
+  \label[definition]{def:algebra-fibration}
   Inspired by the homotopical semantics for \abbreviation{UTT},
   if $(X,α)$ is an algebra for the functor associated to $(A,B)$,
   the type of \define{fibered $P$-algebras} over $X$ is
   \begin{equation*}
-    \ttfun{FiberedAlg}(X)\≔
+    \Fibalgtype(X)\≔
     \∑{E:X→\universe}
     {\∏{\dpair{x}{h}:P_{A,B}X}{
       \paren{\∏{b:\apply{B}{x}}{\apply{E}{(\apply{h}{b})}}}
@@ -2564,22 +2607,26 @@ the existence of M-types.
   \end{equation*}
 \end{definition}
 
-Any $P$-algebra can be made into a fibered $P$-algebra over $(X,α)$ by using a
-constant family: 
-\begin{align*}
-	\Algtype_P &\longrightarrow \ttfun{FiberedAlg}(X) \\
-	\dpair{Y}{β} &\longmapsto
-               \dpair{\λ{x}{Y}} {\λ{x}{\λ{f}{\apply{β}{\dpair{\appr{1}{x}}{f}}}}}
-\end{align*}
-Since the $x$ in the argument to the second coordinate is of type
-$P_{A,B}X\jdeq \∑{a:A}\apply{B}{a}→X$ and $f:\apply{B}{(\appr{1}{x})}→Y$, the pair
-$\dpair{x}{f}$ has type $P_{A,B}Y\jdeq \∑{a:A}\apply{B}{a}→Y$, which can then be
-sent via $β$ to $Y$. This matches our expectation that a non-dependent
-$\ttfun{foo}$ should be a generalization of a dependent $\ttfun{foo}$.
-In turn, any fibered algebra with family $E:X→\universe$ can be turned into a
-non-fibered algebra over the ``total space'' $\∑{x:X}\apply{E}{x}$.
+\begin{example}[\unimathname{W.Fibered.alg2fibered\_alg},
+                \unimathname{W.Fibered.fibered\_alg2alg}]
+  Any $P$-algebra can be made into a fibered $P$-algebra over $(X,α)$ by using a
+  constant family: 
+  \begin{align*}
+    \Algtype_P &\longrightarrow \Fibalgtype(X) \\
+    \dpair{Y}{β} &\longmapsto
+                \dpair{\λ{x}{Y}} {\λ{x}{\λ{f}{\apply{β}{\dpair{\appr{1}{x}}{f}}}}}
+  \end{align*}
+  Since the $x$ in the argument to the second coordinate is of type
+  $P_{A,B}X\jdeq \∑{a:A}\apply{B}{a}→X$ and $f:\apply{B}{(\appr{1}{x})}→Y$, the pair
+  $\dpair{x}{f}$ has type $P_{A,B}Y\jdeq \∑{a:A}\apply{B}{a}→Y$, which can then be
+  sent via $β$ to $Y$. This matches our expectation that a non-dependent
+  $\ttfun{foo}$ should be a generalization of a dependent $\ttfun{foo}$.
+  In turn, any fibered algebra with family $E:X→\universe$ can be turned into a
+  non-fibered algebra over the ``total space'' $\∑{x:X}\apply{E}{x}$.
+\end{example}
 
-\begin{definition}\label[definition]{def:fiber-preinitiality}
+\begin{definition}[\unimathname{W.Fibered.is\_preinitial\_sec}]
+  \label[definition]{def:fiber-preinitiality}
   An algebra $\dpair{X}{α}$ is \define{fiber-preinitial}
   if for any fibered algebra $\dpair{E}{θ}$ over
   $X$ the type of algebra sections from $X$ to $E$ is
@@ -2587,7 +2634,8 @@ non-fibered algebra over the ``total space'' $\∑{x:X}\apply{E}{x}$.
   algebra''.\label{fn:inductive-algebra}}
 \end{definition}
 
-\begin{definition}\label[definition]{def:fiber-uniqueness}
+\begin{definition}[\unimathname{W.Fibered.fibered\_uniqueness}]
+  \label[definition]{def:fiber-uniqueness}
   An algebra $\dpair{X}{α}$ has the \define{fiber uniqueness property}
   if for any fibered algebra $\dpair{E}{θ}$ over
   $X$ the type of algebra sections from $X$ to $E$ is a
@@ -2604,18 +2652,6 @@ non-fibered algebra over the ``total space'' $\∑{x:X}\apply{E}{x}$.
 
 \Cref{subsubsec:fibered-natural-numbers} explores the applications of these
 functions to $\ℕ$.
-
-% \begin{example}
-% 	A fibered algebra over $\N$ is given by a family $X:\N→\universe$ and a
-%   function $α:\pit{n:\N}X_n→X_{n+1}$. \cref{thm:fiber-initiality} states
-%   that for any $x_0:X_0$, the type
-%   \begin{equation*}
-%     \∑{z:\∏{n:\N}{X_n}}{
-%       (\propeq{X_0}{x_0}{z_0}) × \paren{\∏{n:\N}\propeq{X_{n+1}}{z_{n+1}}{\apply{α}{z_n}}}
-%     }
-%   \end{equation*}
-%   is contractible.
-% \end{example}
 
 \subsubsection{The natural numbers}
 \label{subsubsec:fibered-natural-numbers}
@@ -2652,7 +2688,7 @@ correct definition, nor how we can apply our intuition about $\ℕ$ to this
 situation. The next lemma provides more evidence that $P$ is an analogue
 of $X ↦ 1 + X$.
 
-\begin{lemma}
+\begin{lemma}\label[lemma]{lemma:nat-alg-simpl}
   A $P$-algebra structure on a type $X$ is given by a point $x_0:X$ and a
   function $\suc_x:X→X$. More precisely, there is an equivalence:
   \begin{equation*}
@@ -2839,8 +2875,22 @@ result. We can give a similar lemma for morphisms:
   \end{align*}
 \end{proof}
 
-\begin{lemma}\label[lemma]{lemma:fiber-initiality-nat}
-	The natural numbers are fiber-initial (\cref{def:fiber-initiality}).
+Similar to the result of \cref{lemma:nat-alg-simpl}, fibered algebras over $\ℕ$
+also have a simple structure understood by an equivalence.
+
+\begin{lemma}\label[lemma]{lemma:nat-fib-alg-simpl}
+  A fibered algebra structure (over $\ℕ$) on a family 
+  $X:\ℕ\to\universe$ is given by a point $x_0:X_0$
+  and a family of functions $f:\pit{n:\ℕ}{X_n\to X_{n+1}}$. Specifically, there
+  is an equivalence
+  \begin{equation*}
+    \weq{\Fibalgtype(\dpair{ℕ}{\suc})}
+        {\∑{X:\universe}X_0×\pit{n:\ℕ}{X_n\to X_{n+1}}}
+  \end{equation*}
+\end{lemma}
+
+\begin{lemma}\label[lemma]{lemma:fiber-preinitiality-nat}
+	The natural numbers are fiber-preinitial (\cref{def:fiber-preinitiality}).
 \end{lemma}
 \begin{proof}
 	Suppose $\dpair{E}{θ}$ is a fibered algebra over $\ℕ$
@@ -2895,8 +2945,12 @@ result. We can give a similar lemma for morphisms:
   (\cref{thm:funext}) and the contractibility for $\𝟙$.
 \end{proof}
 
-\begin{lemma}
-	The natural
+\begin{lemma}\label[lemma]{lemma:fiber-initiality-nat}
+	The natural numbers are fiber-initial (\cref{def:fiber-initiality}).
+\end{lemma}
+
+\begin{lemma}\label[lemma]{lemma:fiber-initiality-nat}
+	The natural numbers are fiber-initial (\cref{def:fiber-initiality}).
 \end{lemma}
 
 % \begin{lemma}\label[lemma]{lemma:algebra-sections}
