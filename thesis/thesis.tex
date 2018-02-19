@@ -142,14 +142,13 @@
 In this thesis we explain Univalent type theory, a constructive and
 computationally meaningful foundational system for mathematics inspired by
 recent advances in the semantics of Per Martin-L\"of's intuitionistic type
-theory with intentional equality. We first develop the classical Curry-Howard
-correspondence between (the constructive subset of) intuitionistic natural
-dedication and the λ-calculus. We proceed to explicate Martin-L\"of's theory of
-dependent types and the central modern development in type theory: Vladimir
-Voevodsky's Univalence principle. We go on to examine the nature of coinduction
-within this theory, presenting a novel formalization of a recent result that
-M-types can be derived \textit{internally} in Univalent type theory.
-
+theory. We first develop the classical Curry-Howard correspondence between (the
+constructive subset of) intuitionistic natural dedication and the λ-calculus. We
+proceed to explicate Martin-L\"of's theory of dependent types and the central
+modern development in type theory: Vladimir Voevodsky's Univalence principle. We
+go on to examine the nature of coinduction within this theory, presenting a
+novel formalization of a recent result that M-types can be derived
+\textit{internally} in Univalent type theory.
 % \chapter*{Dedication}
 
 \mainmatter % here the regular arabic numbering starts
@@ -239,7 +238,7 @@ notation, meta-logical concerns, and the key differences between
 \abbreviation{IPL} and \abbreviation{FOL}. In \cref{sec:the-lambda-calculus}, we
 will introduce Church's λ-calculus \abbreviation{LC} (and the simply-typed and
 typed versions \abbreviation{STLC} and \abbreviation{TLC}). Finally, in
-\cref{sec:the-curry-howard-correspondence}, we will discuss the fundamental and
+\cref{sec:curry-howard}, we will discuss the fundamental and
 harmonious relation between these systems known as the Curry-Howard
 correspondence.\TODO{Motivate the formality of this chapter}
 
@@ -610,7 +609,7 @@ $\mvar{a}$.
     $⊤∨\mvar{a}_1∨\mvar{a}_2∨⋯∨\mvar{a}_n$  & $Γ⊢Θ$ \\
     $⊤→⊥$                                   & $\prop{\mvar{a}}→\mvar{b}∧\mvar{c}$ \\
   \end{tabular}
-  \caption{\label{fig:label}Valid \abbreviation{IPL} expressions and incoherent
+  \caption{\label{tab:incoherent}Valid \abbreviation{IPL} expressions and incoherent
     nonsense.}
 \end{table}
 
@@ -847,7 +846,7 @@ represent propositions.
 \subsection{Proof terms and harmony}
 \label{subsec:proof-terms}
 
-As we can see in \cref{ex:ipl-and-comm}, and \cref{fig:lem-refute},
+As we can see in \cref{ex:ipl-and-comm}, and \cref{ex:ipl-not-not-lem},
 derivations in \abbreviation{IPL} end with a \define{proof term} which
 summarizes the whole proof tree. To demonstrate this, let's attempt to
 reconstruct a proof tree based on a judgment including such a term. Suppose your
@@ -2036,7 +2035,7 @@ The following example is crucial to
       N \arrow[r, dashed, "u"] & A
     \end{tikzcd}
   \end{center}
-  By functoriality of the coproduct (\ref{example:coproduct-functoriality}), we can
+  By functoriality of the coproduct (\cref{ex:coproduct-functoriality}), we can
   compose along either the left- or right-hand paths in the above diagram.
   The above square states $u∘ [z,s]= [f,g]∘ (\id_1+u)$. Precomposing
   with $i_1:1\to 1+N$ yields
@@ -2324,7 +2323,7 @@ include all examples in \cref{sec:functors-and-their-algebras}.
   Exactly as in \cref{def:f-coalgebra}, we define the type of (co)algebras for a
   polynomial functor $P$ associated to a container $(A,B)$ as follows:
   \begin{align*}
-    \Algtype\≔\∑{A:\universe}{PA→A} && \Coalgtype\≔\∑{A:\universe}{A→PA}
+    \Algtype_P\≔\∑{A:\universe}{PA→A} && \Coalgtype_P\≔\∑{A:\universe}{A→PA}
   \end{align*}
   and coalgebra morphisms as
   \begin{align*}
@@ -2354,8 +2353,8 @@ is its first appearance ``de-formalized''.
   a proposition:
   \begin{equation*}
     \Final(S)\defeq
-    \∑{(X,α):\Coalgtype(S)}{
-      \∏{(Y,β):\Coalgtype(S)}{\isContr((Y,β)⇒ (X,α))}
+    \∑{(X,α):\Coalgtype_{S}}{
+      \∏{(Y,β):\Coalgtype_{S}}{\isContr((Y,β)⇒ (X,α))}
     }
   \end{equation*}
 \end{lemma}
@@ -2528,65 +2527,7 @@ the following auxiliary result:
   \end{center}
 \end{proof}
 
-\subsection{Limits}
-\label{subsec:limits}
-
-\begin{definition}\label[definition]{def:limitt}
-	Given a family of types $X:\N\to\universe$ and a family of functions
-  $π_n:X_{n+1}\to X_n$, the \define{limit} of $(X,π)$ is the type
-  \begin{equation*}
-    L(X,π)\defeq \∑{x:\∏{n:\N}{X_n}}{\∏{n:\N}π_nx_{n+1}=x_n}
-  \end{equation*}
-  We give special names to the projection maps for limits: $p \defeq \pr{1}$ and
-  $β \defeq \pr{2}$.
-\end{definition}
-
-\begin{lemma}\label[lemma]{lemma:limitt-universal}
-	There is an equivalence of types
-  \begin{equation*}
-    \weq{(A\to L(X,π))}{\∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{\propeq{}{π_n∘ f_{n+1}}{f_n}}}}
-  \end{equation*}
-\end{lemma}
-\begin{proof}
-	To give an equivalence, it suffices to give functions back and forth that
-  compose to the respective identities.\TODO{reference definition}
-  First, define
-  \begin{gather*}
-    ϕ :(A\to L(X,π)) ⟶ \∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{\propeq{}{π_n∘ f_{n+1}}{f_n}}} \\
-    ϕ(g) \defeq
-    \dpair{\λ{n}\λ{a}\appply{p}{(\apply{g}{a})}{n}}
-          {\λ{n}\appply{β}{(\apply{g}{a})}{n})}
-  \intertext{and}
-    ψ : \paren*[\bigg]{\∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{π_n∘ f_{n+1}=f_n}}}
-          \to A\to L(X,π) \\
-    ψ((f; h)) \defeq \λ{a:A} \dpair{\λ{n}\appply{f}{n}{a}}{h}
-  \end{gather*}
-  Their composites are judgmentally equal to the appropriate identities.
-  \TODO{should I include proof?}
-\end{proof}
-
-\begin{lemma}\label[lemma]{lemma:cochains}
-	If $X:\N\to\universe$ is a family of types, $ρ:\∏{n:\N}{X_n\to X_{n+1}}$ is a
-  family of functions, and
-  \begin{equation*}
-    Z\defeq \∑{x:\∏{n:\N}X_n}{\∏{n:\N}x_{n+1}=ρ_n(x_n)},
-  \end{equation*}
-  then $\weq{Z}{X_0}$, that is, limits of cochains are entirely determined by
-  the first element.
-\end{lemma}
-\begin{proof}
-  Consider again the functor of \cref{ex:nat}, specialized to the case of
-  $\bfC\≔\universe$:
-  \begin{gather*}
-    G:\universe ⟶ \universe  \\
-    G(W) \defeq 1+W
-  \end{gather*}
-  A $G$-algebra is given by a type $W:\universe$, a point in $W$, and a function
-  $W\to W$. Fix a point $z:Z$. Then $\appr{1}{z}$ gives a point in
-  $\∏{n:\ℕ}{\apply{X}{n}}$.
-\end{proof}
-
-\subsection{Fibered Algebras}
+\subsection{Fibered Algebras and the natural numbers}
 \label{subsec:fibered-algebras}
 
 A functor algebra $\dpair{X}{α}$ has as its first component a type
@@ -2626,7 +2567,7 @@ the existence of M-types.
 Any $P$-algebra can be made into a fibered $P$-algebra over $(X,α)$ by using a
 constant family: 
 \begin{align*}
-	\Algtype(P) &\longrightarrow \ttfun{FiberedAlg}(X) \\
+	\Algtype_P &\longrightarrow \ttfun{FiberedAlg}(X) \\
 	\dpair{Y}{β} &\longmapsto
                \dpair{\λ{x}{Y}} {\λ{x}{\λ{f}{\apply{β}{\dpair{\appr{1}{x}}{f}}}}}
 \end{align*}
@@ -2638,23 +2579,43 @@ $\ttfun{foo}$ should be a generalization of a dependent $\ttfun{foo}$.
 In turn, any fibered algebra with family $E:X→\universe$ can be turned into a
 non-fibered algebra over the ``total space'' $\∑{x:X}\apply{E}{x}$.
 
-\begin{theorem}[Fiber-initiality]\label[definition]{def:fiber-initiality}
-  TODO: this is a definition
-  If $(X,α)$ is an initial algebra and $Y$ is a fibered algebra over $X$, then
-  the type of algebra sections from $X$ to $Y$ is contractible.
-\end{theorem}
+\begin{definition}\label[definition]{def:fiber-preinitiality}
+  An algebra $\dpair{X}{α}$ is \define{fiber-preinitial}
+  if for any fibered algebra $\dpair{E}{θ}$ over
+  $X$ the type of algebra sections from $X$ to $E$ is
+  inhabited.\footnote{\cite{homotopy-initial} call this an ``inductive
+  algebra''.\label{fn:inductive-algebra}}
+\end{definition}
 
-\begin{example}
-	A fibered algebra over $\N$ is given by a family $X:\N→\universe$ and a
-  function $α:\pit{n:\N}X_n→X_{n+1}$. \cref{thm:fiber-initiality} states
-  that for any $x_0:X_0$, the type
-  \begin{equation*}
-    \∑{z:\∏{n:\N}{X_n}}{
-      (\propeq{X_0}{x_0}{z_0}) × \paren{\∏{n:\N}\propeq{X_{n+1}}{z_{n+1}}{\apply{α}{z_n}}}
-    }
-  \end{equation*}
-  is contractible.
-\end{example}
+\begin{definition}\label[definition]{def:fiber-uniqueness}
+  An algebra $\dpair{X}{α}$ has the \define{fiber uniqueness property}
+  if for any fibered algebra $\dpair{E}{θ}$ over
+  $X$ the type of algebra sections from $X$ to $E$ is a
+  proposition.\footnote{\cite{homotopy-initial} call this the η-rule for
+    inductive algebras (see \cref{fn:inductive-algebra}).}
+\end{definition}
+
+\begin{definition}\label[definition]{def:fiber-initiality}
+  Combining \crefrange{def:fiber-preinitiality}{def:fiber-uniqueness}, an
+  algebra $\dpair{X}{α}$ is \define{fiber-initial} if the type of algebra
+  sections from $X$ to any fibered algebra $\dpair{E}{θ}$ over $X$ is
+  contractible.
+\end{definition}
+
+\Cref{subsubsec:fibered-natural-numbers} explores the applications of these
+functions to $\ℕ$.
+
+% \begin{example}
+% 	A fibered algebra over $\N$ is given by a family $X:\N→\universe$ and a
+%   function $α:\pit{n:\N}X_n→X_{n+1}$. \cref{thm:fiber-initiality} states
+%   that for any $x_0:X_0$, the type
+%   \begin{equation*}
+%     \∑{z:\∏{n:\N}{X_n}}{
+%       (\propeq{X_0}{x_0}{z_0}) × \paren{\∏{n:\N}\propeq{X_{n+1}}{z_{n+1}}{\apply{α}{z_n}}}
+%     }
+%   \end{equation*}
+%   is contractible.
+% \end{example}
 
 \subsubsection{The natural numbers}
 \label{subsubsec:fibered-natural-numbers}
@@ -2685,79 +2646,130 @@ they are initial, some of which will be familiar from
   \end{align*}
 \end{example}
 
+While the above polynomial functor $P$ bears some relation to the definition of
+$ℕ$ as an W-type (\cref{ex:nat-w}), it is not immediately clear that this is the
+correct definition, nor how we can apply our intuition about $\ℕ$ to this
+situation. The next lemma provides more evidence that $P$ is an analogue
+of $X ↦ 1 + X$.
+
 \begin{lemma}
-	For any $P$-algebra $\dpair{X}{α}$, there is an algebra morphism
-  $\dpair{ℕ}{η} ⇒ \dpair{X}{α}$.
+  A $P$-algebra structure on a type $X$ is given by a point $x_0:X$ and a
+  function $\suc_x:X→X$. More precisely, there is an equivalence:
+  \begin{equation*}
+    w:\weq{\Algtype_P}{\∑{X:\universe}{X × (X → X)}}
+  \end{equation*}
 \end{lemma}
 \begin{proof}
-	Define
+	Suppose given a $P$-algebra $(X,α)$. Then define
   \begin{align*}
     \begin{split}
       x_0 &: X \\
       x_0 &\defeq \apply{α}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{X}}} \\
     \end{split}
     \begin{split}
-      f   &: X → X \\
-      f  &\defeq \λ{x}{\apply{α}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{X}{x}}}}
+      \suc_X  &: X → X \\
+      \suc_X  &\defeq \λ{x}{\apply{α}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{X}{x}}}}
     \end{split}
   \end{align*}
-  These are like the ``zero'' and ``successor'' for $X$. Now define a function
-  $g$ recursively:
-  \begin{alignat*}{2}
-    &g : ℕ → X \\
-    &\apply{g}{0}                 &&\defeq x_0 \\
-    &\apply{g}{(\apply{\suc}{n})} &&\defeq f(g(n)) 
-  \end{alignat*}
-  To show that $g$ is an algebra morphism (\cref{def:algebra-coalgebra-in-utt}),
+  Now $\dpair{X}{(x_0,\suc_X)}$ has type $\∑{X:\universe}{X × (X → X)}$ as
+  desired. 
+
+  In the other direction, suppose we have some type $X$, a point $x_0:X$, and a
+  function $\suc_X:X → X$. Define
+  \begin{align*}
+    &α:\paren{\∑{b:\𝔹}{\appppply{\rec_{\𝔹}}{\universe}{\𝟘}{\𝟙}{b}} → X} → X \\
+    &\apply{α}{\dpair{\bfalse}{h}} \defeq x_0 \\
+    &\apply{α}{\dpair{\btrue}{h}}  \defeq \apply{\suc_X}{(\apply{h}{\unitelem})}
+  \end{align*}
+  While it's not immediately that these functions are inverses, it follows from
+  initiality of $\emptytype$ in $\universe$ and the contractibility of
+  $\unittype$, both of which will be used extensively in the next few proofs.
+\end{proof}
+
+Applying this equivalence, we could more readily define the $P$-algebra over
+$\ℕ$ as $(\appply{w}{0}{\suc})$. In fact, this gives \textit{judgmentally equal}
+result. We can give a similar lemma for morphisms:
+
+\begin{lemma}\label[lemma]{lemma:nat-alg-mor}
+  Let $(X,α)$ and $(Y,β)$ be $P$-algebras. Any function $f:X → Y$
+  which sends $x_0$ to $y_0$ and intertwines $\suc_X$ with $\suc_Y$ is an
+  algebra morphism.
+\end{lemma}
+\begin{proof}
+	To show that $f$ is an algebra morphism (\cref{def:algebra-coalgebra-in-utt}),
   we must demonstrate that the following diagram commutes:
   \begin{center}
     \begin{tikzcd}
-      Pℕ  \arrow[d, "η"] \arrow[r, "P^*g"] & PX \arrow[d, "α"] \\
-      ℕ \arrow[r, "g"] & X
+      PX  \arrow[d, "α"] \arrow[r, "P^*f"] & PY \arrow[d, "β"] \\
+      X \arrow[r, "f"] & Y
     \end{tikzcd}
   \end{center}
-  where $\apply{P^*g}{\dpair{b}{h}}\defeq \dpair{b}{g ∘ h}$\TODO{check the order}
-  (\cref{def:polynomial-functor}). By function extensionality
-  (\cref{thm:funext}), it suffices to show that the two composites are equal on
-  all inputs. Let $\dpair{b}{h}:Pℕ$, and proceed by cases on $b:\𝔹$.
+  where $\apply{P^*f}{\dpair{b}{h}}\defeq \dpair{b}{f ∘ h}$
+  (\cref{def:polynomial-functor}). 
+  By function extensionality (\cref{thm:funext}), it suffices to show that the
+  two composites are equal on all inputs. Let $\dpair{b}{h}:PX$, and proceed by
+  cases on $b:\𝔹$.
 
-  If $b\≡\bfalse$, then $h:\𝟘 → ℕ$. Recall that $\emptytype$ is terminal in
+  If $b\≡\bfalse$, then $h:\𝟘 → X$. Recall that $\emptytype$ is terminal in
   $\universe$; the type of functions $\𝟘 → Z$ is contractible for any
   $Z:\universe$. Thus,
   \begin{align*}
-    \apply{(α∘(P^*g))}{\dpair{\bfalse}{h}}
-    &\jdeq \apply{α}{\dpair{\bfalse}{g ∘ h}} \\
-    &= \apply{α}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{X}}}
+    \apply{(β∘(P^*f))}{\dpair{\bfalse}{h}}
+    &\jdeq \apply{β}{\dpair{\bfalse}{f ∘ h}} \\
+    &= \apply{β}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{Y}}}
     &&\quad\text{Terminality of }\𝟘\\
-    &\jdeq x_0 \\
-    &\jdeq \apply{g}{0} \\
-    &\jdeq \apply{(g∘η)}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{ℕ}}} \\
-    &= \apply{(g∘η)}{\dpair{\bfalse}{h}}
+    &\jdeq y_0 
+    &&\quad\text{Definition} \\
+    &= \apply{f}{x_0} 
+    &&\quad\text{Hypothesis} \\
+    &\jdeq \apply{(f∘α)}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{X}}} \\
+    &= \apply{(f∘α)}{\dpair{\bfalse}{h}}
+    &&\quad\text{Terminality of }\𝟘
   \end{align*}
 
-  If $b\≡\btrue$, then $h:\𝟙 → ℕ$. By the induction principle for
+  If $b\≡\btrue$, then $h:\𝟙 → X$. By the induction principle for
   $\𝟙$\TODO{reference}, for any type $Z:\universe$, any function $k:\𝟙 → Z$, and
   any $x:\𝟙$, $\apply{k}{x}=\apply{k}{\unitelem}$. In short,
   $k=\appply{\rec_{\𝟙}}{Z}{(\apply{k}{\unitelem})}$. In this case,
-  \TODO{TODO: fix this with definition of f!}
   \begin{align*}
-    \apply{(α∘(P^*g))}{\dpair{\btrue}{h}}
-    &\jdeq \apply{α}{\dpair{\btrue}{g ∘ h}} \\
-    &= \apply{α}{\dpair{\btrue}{g ∘ (\appply{\rec_{\𝟙}}{ℕ}{(\apply{h}{\unitelem})})}} \\
-    &= \apply{α}{\dpair{\btrue}{(\λ{x}{\appply{\rec_{\𝟙}}{X}{(\apply{g}{(\apply{h}{x})}})})}}
-    &&\quad\text{Function extensionality} \\
-    &\jdeq \apply{f}{(\apply{g}{(\apply{h}{\unitelem})})} \\
-    &\jdeq \apply{g}{(\apply{\suc}{(\apply{h}{\unitelem})})} 
-    &&\quad\text{Definition of }g \\
-    &\jdeq \apply{(g∘η)}{\dpair{\btrue}{h}}
-    &&\quad\text{Definition of }η \\
+    \apply{(β∘(P^*f))}{\dpair{\btrue}{h}}
+    &\jdeq \apply{β}{\dpair{\btrue}{f ∘ h}} \\
+    &\= \apply{β}{\dpair{\btrue}{f ∘ (\appply{\rec_{\𝟙}}{Y}{(\apply{h}{\unitelem})})}} \\
+    &\= \apply{β}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{Y}{(\apply{f}{(\apply{h}{\unitelem})})}}} 
+    &&\quad\text{Function ext.} \\
+    &\jdeq \apply{\suc_Y}{(\apply{f}{(\apply{h}{\unitelem})})}
+    &&\quad\text{Definition of }\suc_Y \\
+    &\= \apply{f}{(\apply{\suc_X}{(\apply{h}{\unitelem})})}
+    &&\quad\text{Hypothesis} \\
+    &\jdeq \apply{f}{(\apply{α}{\dpair{\btrue}{\fromunit{X}{(\apply{h}{\unitelem})}}})}
+    &&\quad\text{Definition of }\suc_X \\
+    &\jdeq \apply{(f∘α)}{\dpair{\btrue}{\fromunit{X}{(\apply{h}{\unitelem})}}}
+    &&\quad\text{Definition} \\
+    &\= \apply{(f∘α)}{\dpair{\btrue}{h}}
+    &&\quad\text{Function ext.}
   \end{align*}
+\end{proof}
+
+\begin{lemma}
+	For any $P$-algebra $\dpair{X}{α}$, there is an algebra morphism
+  $\dpair{ℕ}{η} ⇒ \dpair{X}{α}$.
+\end{lemma}
+\begin{proof}
+	Define $x_0$ and $\suc_X$ as in the above proof.
+  Now define a function $g$ recursively:
+  \begin{alignat*}{2}
+    &g : ℕ → X \\
+    &\apply{g}{0}                 &&\defeq x_0 \\
+    &\apply{g}{(\apply{\suc}{n})} &&\defeq \suc_X(g(n)) 
+  \end{alignat*}
+  By definition $g$ sends the distinguished point $x_0$ to $0$ and intertwines
+  $\suc$ with $\suc_X$; by \cref{lemma:nat-alg-mor}, it's an algebra morphism.
 \end{proof}
 
 \begin{lemma}\label[lemma]{lemma:nat-alg-mor-fun-unique}
   The underlying function of the above morphism is unique. That is,
 	for any algebra morphism $\dpair{τ}{i}:\dpair{ℕ}{η} ⇒ \dpair{X}{α}$,
-  $\propeq{}{τ}{g}$, with $g$ is as in the previous proof.
+  $\propeq{}{τ}{g}$, with $g$ as in the previous proof.
 \end{lemma}
 \begin{proof}
   By function extensionality (\cref{thm:funext}), it suffices to show that they
@@ -2819,8 +2831,8 @@ they are initial, some of which will be familiar from
     &\jdeq \apply{α}{\dpair{\btrue}{τ∘\appply{\rec_{\𝟙}}{\ℕ}{n}}}
     &&\quad\text{Definition of }P^* \\
     &= \apply{α}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{X}{(\apply{τ}{n}})}} \\
-    &\jdeq \apply{f}{(\apply{τ}{n})} \\
-    &= \apply{f}{(\apply{g}{n})}
+    &\jdeq \apply{\suc_X}{(\apply{τ}{n})} \\
+    &= \apply{\suc_X}{(\apply{g}{n})}
     &&\quad\text{Inductive hypothesis} \\
     &\jdeq \apply{g}{(\apply{\suc}{n})}.
     &&\quad\text{Definition of }g
@@ -2880,9 +2892,12 @@ they are initial, some of which will be familiar from
     &\= \appply{θ}{\dpair{\btrue}{h}}{(f∘h)}
   \end{align*}
   where the last equality is by two applications of function extensionality
-  (\cref{thm:funext}) and the induction principle for $\𝟙$.
-  % By the induction principle for
+  (\cref{thm:funext}) and the contractibility for $\𝟙$.
 \end{proof}
+
+\begin{lemma}
+	The natural
+\end{lemma}
 
 % \begin{lemma}\label[lemma]{lemma:algebra-sections}
 %   Let $X$ be a $P$-algebra with $α:PX→X$, and let $C:X→\universe$. The standard
@@ -2896,6 +2911,72 @@ they are initial, some of which will be familiar from
 %   \end{center}
 %   In this case, $s$ is a $P$-algebra morphism \cite{inductive}.
 % \end{lemma}
+
+\subsection{Limits}
+\label{subsec:limits}
+
+In extensional type theories, W-types can be derived as colimits of
+\define{chains}, which are given by a family $X:\ℕ → \universe$ and a family of
+functions $π_n:X_{n+1}\to X_n$.\TODO{do they use cochains?} Dually,
+M-types can be constructed as limits of such chains. As noted in
+\cite{non-wellfounded}, these types are instances
+of the general homotopy limits of \cite{homotopy-limits}.
+
+\begin{definition}\label[definition]{def:limitt}
+	Given chain $X:\N\to\universe$ and $π_n:X_{n+1}\to X_n$, the \define{limit} of
+  $(X,π)$ is the type
+  \begin{equation*}
+    L(X,π)\defeq \∑{x:\∏{n:\N}{X_n}}{\∏{n:\N}π_nx_{n+1}=x_n}
+  \end{equation*}
+  We give special names to the projection maps for limits: $p \defeq \pr{1}$ and
+  $β \defeq \pr{2}$.
+\end{definition}
+
+\begin{lemma}\label[lemma]{lemma:limitt-universal}
+	There is an equivalence of types
+  \begin{equation*}
+    \weq{(A\to L(X,π))}{\∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{\propeq{}{π_n∘ f_{n+1}}{f_n}}}}
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+	To give an equivalence, it suffices to give functions back and forth that
+  compose to the respective identities.\TODO{reference definition}
+  First, define
+  \begin{gather*}
+    ϕ :(A\to L(X,π)) ⟶ \∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{\propeq{}{π_n∘ f_{n+1}}{f_n}}} \\
+    ϕ(g) \defeq
+    \dpair{\λ{n}\λ{a}\appply{p}{(\apply{g}{a})}{n}}
+          {\λ{n}\appply{β}{(\apply{g}{a})}{n})}
+  \intertext{and}
+    ψ : \paren*[\bigg]{\∑{f:\∏{n:\N}A\to X_n}{\∏{n:\N}{π_n∘ f_{n+1}=f_n}}}
+          \to A\to L(X,π) \\
+    ψ((f; h)) \defeq \λ{a:A} \dpair{\λ{n}\appply{f}{n}{a}}{h}
+  \end{gather*}
+  Their composites are judgmentally equal to the appropriate identities.
+  \TODO{should I include proof?}
+\end{proof}
+
+\begin{lemma}\label[lemma]{lemma:cochains}
+	If $X:\N\to\universe$ is a family of types, $ρ:\∏{n:\N}{X_n\to X_{n+1}}$ is a
+  family of functions, and
+  \begin{equation*}
+    Z\defeq \∑{x:\∏{n:\N}X_n}{\∏{n:\N}x_{n+1}=ρ_n(x_n)},
+  \end{equation*}
+  then $\weq{Z}{X_0}$, that is, limits of cochains are entirely determined by
+  the first element.
+\end{lemma}
+\begin{proof}
+  Consider again the functor of \cref{ex:nat}, specialized to the case of
+  $\bfC\≔\universe$:
+  \begin{gather*}
+    G:\universe ⟶ \universe  \\
+    G(W) \defeq 1+W
+  \end{gather*}
+  A $G$-algebra is given by a type $W:\universe$, a point in $W$, and a function
+  $W\to W$. Fix a point $z:Z$. Then $\appr{1}{z}$ gives a point in
+  $\∏{n:\ℕ}{\apply{X}{n}}$.
+\end{proof}
+
 
 % \chapter*{Conclusion}
 % \addcontentsline{toc}{chapter}{Conclusion}
@@ -2937,9 +3018,9 @@ of \cite{non-wellfounded} (under the column \MTypes{}).
 % \bibliographystyle{APA/apa-good}  % or
 
 % uncomment me!
-% \nocite{*}
+\nocite{*}
+\bibliographystyle{plain}
 \bibliography{thesis}
-% \bibliographystyle{plain}
 
 % Comment the above two lines and uncomment the next line to use biblatex-chicago.
 %\printbibliography[heading=bibintoc]
