@@ -151,12 +151,12 @@
 In this thesis we explain Univalent type theory, a constructive and
 computationally meaningful foundational system for mathematics inspired by
 recent advances in the semantics of Per Martin-L\"of's intuitionistic type
-theory. We first develop the classical Curry-Howard correspondence between (the
-constructive subset of) intuitionistic natural dedication and the λ-calculus. We
-proceed to explicate Martin-L\"of's theory of dependent types and the central
-modern development in type theory: Vladimir Voevodsky's Univalence principle. We
-go on to examine the nature of coinduction within this theory, presenting a
-novel formalization of a recent result that M-types can be derived
+theory. We first develop the classical propositions/types correspondence between
+(the constructive subset of) intuitionistic natural dedication and the
+λ-calculus. We proceed to explicate Martin-L\"of's theory of dependent types and
+the central modern development in type theory: Vladimir Voevodsky's Univalence
+principle. We go on to examine the nature of coinduction within this theory,
+presenting a novel formalization of a recent result that M-types can be derived
 \textit{internally} in Univalent type theory.
 % \chapter*{Dedication}
 
@@ -297,10 +297,11 @@ implication: one usually defines $P→ Q$ as ``if whenever $P$ is true,
 $Q$ is true, then $P→ Q$ is true''. It seems that in order to understand
 implication, one must first understand implication! More perniciously,
 philosophers and mathematicians alike have argued that Skolem's
-``paradox''\footnote{The L\"owenheim-Skolem theorem states that
-  \abbreviation{ZFC} has a countable model. The paradox is that the statement
-  ``there are uncountable sets'' is (famously) a theorem of \abbreviation{ZFC},
-  Cantor's.} has deep and significant consequences for the philosophy of
+``paradox''\footnote{(An application of) the L\"owenheim-Skolem theorem states
+  that if there is a model of \abbreviation{ZFC}, there is a countable one.
+  The paradox is that the statement ``there are uncountable sets'' is (famously)
+  a theorem of \abbreviation{ZFC}, Cantor's.}
+has deep and significant consequences for the philosophy of
 mathematics \cite{skolem}. These misunderstandings both arise from a common
 root: the failure to distinguish between object language and metalanguage. In
 this section, we will attempt to mitigate some of the difficulties that arise
@@ -547,8 +548,21 @@ of uses of metavariables.
       & Destructor of the product type \\
     $\case$       
       & 
-      & \abbreviation{IPL}, \abbreviation{TLC}, \abbreviation{UTT} 
+      & \abbreviation{IPL}, \abbreviation{TLC}
       & Destructor of the coproduct type \\
+    $\rec$       
+      & Various
+      & \abbreviation{IPL}, \abbreviation{TLC}, \abbreviation{UTT} 
+      & Recursion principle or elimination rule \\
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\∑{\mvar{a}:\mvar{p}}{\apply{\mvar{b}}{\mvar{a}}}$
+      &
+      & \abbreviation{UTT} 
+      & Σ or dependent pair type \\
+    $\∏{\mvar{a}:\mvar{p}}{\apply{\mvar{b}}{\mvar{a}}}$
+      &
+      & \abbreviation{UTT} 
+      & Π or dependent pair type \\
   \end{tabular}
   \caption{\label{tab:symbols}Symbols and their interpretations}
 \end{sidewaystable}
@@ -557,6 +571,10 @@ of uses of metavariables.
 \label{sec:ipl}
 
 With these notations, we are prepared to define \abbreviation{IPL}.
+\Crefrange{sec:ipl}{sec:the-lambda-calculus} present these systems in some
+degree of formality. Proofs in later chapters are not written in this style, but
+it is important to see precisely specified versions of these logics in order to
+understand \cref{sec:curry-howard}.
 
 \subsection{Formation rules}
 \label{subsec:ipl-form}
@@ -879,7 +897,7 @@ to hypotheses of the form $\mvar{b}$ and $\mvar{b}→ \mvar{d}$:
 \begin{equation*}
   \prftree[r]{}
     {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
-    {Γ ⊢ \prftree[r]{}
+    {\prftree[r]{}
       {?}
       {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
     {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
@@ -925,11 +943,11 @@ answer to this question will become clear in
 \cref{sec:curry-howard}. In short, they will allow us to
 verify the \define{harmony}\index{Harmony} of our logic: that the introduction
 rules complement the elimination rules with respect to two specific
-criteria.\footnote{On the philosophical side, Martin-L\"of made a fascinating
-  and convincing argument that judgments involving proof terms are analytic,
-  whereas proof-irrelevant mathematical arguments are synthetic: one must go
+criteria.\footnote{On the philosophical side, Martin-L\"of made an interesting
+  argument that judgments involving proof terms are analytic, whereas
+  proof-irrelevant mathematical arguments are synthetic: one must go
   beyond conceptual analysis and view the proof to be convinced of them
-  \cite{martin-lof-analytic}}
+  \cite{martin-lof-analytic}.}
 
 \begin{definition}\label[definition]{def:local-soundness-completeness}
   \define{Local soundness}\index{Soundness!Local} is the condition that
@@ -977,7 +995,7 @@ affirmative.
     \qquad
     {\prftree[r]{\footnotesize β$∧$\textsubscript{r}}
       {Γ ⊢ \mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
-      {Γ ⊢ \appr{2}{(\mvar{p},\mvar{q})}:\mvar{b}}} \\
+      {Γ ⊢ \appr{2}{(\mvar{p},\mvar{q})} \jdeq \mvar{q}:\mvar{b}}} \\
     {\prftree[r]{\footnotesize β$→$}
       {Γ, \mvar{p}:\mvar{a}⊢\mvar{q}:\mvar{b}}
       {Γ ⊢ \mvar{r}:\mvar{a}}
@@ -1038,7 +1056,7 @@ following \define{unicity rules}\index{Unicity rules}, (also known as
       \mvar{p}:\mvar{a}∧\mvar{b}}} \\
   {\prftree[r]{\footnotesize η$→$}
     {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{b}}
-    {Γ ⊢ \λ{v}{(\apply{\mvar{p}}{v})}:\mvar{a}→\mvar{b}}}
+    {Γ ⊢ \λ{v}{(\apply{\mvar{p}}{v})}\jdeq \mvar{p}:\mvar{a}→\mvar{b}}}
   \qquad
   {\prftree[r]{\footnotesize η$∨$}
     {Γ ⊢ \mvar{p}:\mvar{a}∨\mvar{b}}
@@ -1094,7 +1112,7 @@ $\mvar{f}\defeq\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}:\mvar{c}→\m
 The computation rules give us the following equalities:
 \begin{align*}
   \pr{1}∘f &\jdeq \mvar{p} \\
-  \pr{2}∘f &\jdeq \mvar{q} \\
+  \pr{2}∘f &\jdeq \mvar{q}
 \end{align*}
 We can express these equalities using the following \define{commutative diagram}
 (skip ahead to \cref{def:commutative-diagram} for details).
@@ -1157,13 +1175,30 @@ as you go, you get judgmentally equal results.
 \section{The λ-calculus}
 \label{sec:the-lambda-calculus}
 
-The Church-Turing thesis
+In the 1930s, mathematicians and computer scientists (though they were not
+called ``computer scientists'' then) sought a rigorous foundation for terms like
+``effectively computable'' and ``systematic''. They sought to lay on a rigorous
+logical foundation an intuitive idea of what a(n idealized) human being could
+accomplish with specific\footnote{(finite)} instructions and arbitrarily much
+paper, pen, and time. Many particular mathematical models were proposed,
+including the λ-calculus (\abbreviation{LC}), Turing machines, Post systems,
+register machines, combinatory definability, and more \cite{sep-church-turing}.
+The \textit{Church-Turing thesis} proposes that the proper definition is (any
+model equivalent to) the λ-calculus.\footnote{Perhaps the strongest reason to
+  accept such a thesis is the theorem that all models just mentioned are
+  equivalent.}
+Computer scientists widely adopt this thesis, and the λ-calculus and its
+variants are of central importance to the study of computation in
+general.\footnote{A comprehensive study of \abbreviation{LC} is beyond the scope
+  of this thesis. For a reference on \abbreviation{LC} and \abbreviation{STLC},
+  see \cite{barendregt}.}
 
-For a more comprehensive overview of \abbreviation{LC} and \abbreviation{STLC},
-see \cite{barendregt}, which is the source of theorems and information covered
-here.
+The type theory considered in \cref{chap:type-theory} is an extension of the
+typed λ-calculus (\abbreviation{TLC}) of \cref{subsec:more-complex-types}, which
+itself an extension of the simply-typed λ-calculus (\abbreviation{STLC}) of
+\cref{subsec:the-simply-typed-lambda-calculus}.
 
-\subsection{The untyped λ-calculus and computation}
+\subsection{The untyped λ-calculus}
 \label{subsec:the-untyped-lambda-calculus}
 
 The formation\index{Formation!In the λ-calculus} (really, all) rules of the
@@ -1232,7 +1267,7 @@ unicity rule:
     \≡ & (\λ{w}{\appply{\mvar{x}}{(\λ{z}{\apply{z}{\mvar{a}}})}{w}})
     &&\quad\text{(substitution)}.
   \end{align*}
-  (Recall the meta-theoretical notation $[\mvar{b} \≔ \mvar{c}]$,
+  (Recall the meta-theoretical notation $\mvar{a}[\mvar{b} \≔ \mvar{c}]$,
   \cref{notation:substitution}.)
   Since $\mvar{x}$ is some arbitrary term, we can reduce this expression no
   further.
@@ -1280,11 +1315,6 @@ rule to. Consider the following computations:
             {(\apply{\mvar{b}}{\mvar{c}})}
     $};
     \node[below of=G] (H) {$
-      \apply{(\apply{(\λ{x}{\apply{x}{x}})}
-                    {(\λ{y}{\mvar{a}})})}
-            {(\apply{\mvar{b}}{\mvar{c}})}
-    $};
-    \node[below of=H] (I) {$
       \apply{(\apply{(\λ{y}{\mvar{a}})}{(\λ{y}{\mvar{a}})})}
             {(\apply{\mvar{b}}{\mvar{c}})}
     $};
@@ -1303,8 +1333,7 @@ rule to. Consider the following computations:
     \draw (A) edge [->] node[above] {\scriptsize β} (F);
     \draw (F) edge [->] node[right] {\scriptsize β} (G);
     \draw (G) edge [->] node[right] {\scriptsize β} (H);
-    \draw (H) edge [->] node[right] {\scriptsize β} (I);
-    \draw (I) edge [->] node[below] {\scriptsize β} (Z);
+    \draw (H) edge [->] node[below] {\scriptsize β} (Z);
   \end{tikzpicture}
 \end{center}
 In the left column, we reduce the leftmost expression first, whereas in the
@@ -1349,41 +1378,32 @@ same term.
 \end{definition}
 
 The use of the definite article in the above definition is justified by
-Church-Rosser: every term has at most one β-normal form. The converse does not
-hold.
+Church-Rosser: every term has at most one β-normal form. However, not every
+term has a β-normal form.
 
 \begin{example*}\label[example]{ex:non-terminating}
-  Consider the term $⊥\≔ \λ{v}{\apply{v}{v}}$. Using the computation rule,
+  Consider the term $⊥\≔ \λ{v}{\appply{v}{v}{v}}$. Using the computation rule,
   \begin{align*}
     \apply{⊥}{⊥}
-    &\≡ \apply{(\λ{v}{\apply{v}{v}})}{⊥}
+    &\≡ \apply{(\λ{v}{\appply{v}{v}{v}})}{⊥}
     &&\quad\text{(Definition)} \\
-    &\≡ (\apply{v}{v})[v ≔ ⊥]
+    &\≡ (\appply{v}{v}{v})[v \defeq ⊥]
     &&\quad\text{(β)} \\
-    &\≡ \apply{⊥}{⊥}
-    &&\quad\text{(substitution)} \\
-    &\≡ \apply{⊥}{⊥}
-    &&\quad\text{(β, substitution)} \\
-    &\≡ \apply{⊥}{⊥}
-    &&\quad\text{(β, substitution)} \\
-    &\≡ ⋯
-  \end{align*}
-  It is clear that we could iterate this process.
-  Now consider $⊥'\≔ \λ{v}{\appply{v}{v}{v}}$. Then
-  \begin{align*}
-    \apply{⊥'}{⊥'}
-    &\≡ \apply{(\λ{v}{\appply{v}{v}{v}})}{⊥'} \\
-    &\≡ \appply{⊥'}{⊥'}{⊥'} \\
-    &\≡ \apppply{⊥'}{⊥'}{⊥'}{⊥'} \\
+    &\≡ \appply{⊥}{⊥}{⊥}
+    &&\quad\text{(Substitution)} \\
+    &\≡ \apppply{⊥}{⊥}{⊥}{⊥}
+    &&\quad\text{(…)} \\
+    &\≡ \appppply{⊥}{⊥}{⊥}{⊥}{⊥} \\
     &\≡ ⋯
   \end{align*}
   Not only can we build terms that don't really ``progress'' when we try to
-  ``compute'' ($⊥$), but we can build terms that actually \textit{expand} under
-  rules meant to \textit{reduce} them, that are judgmentally equal to infinitely
-  many other terms!
+  ``compute'', but we can build terms that actually \textit{expand} under rules
+  meant to \textit{reduce} them, that are judgmentally equal to infinitely many
+  other terms!
 \end{example*}
 
-While an ability to loop indefinitely is essential to Turing-Completeness, we
+While an ability to loop indefinitely is essential to Turing-Completeness (the
+property of being equivalent to a Turing machine model of computation), we
 might ask if there is another system in which we could express many of the same
 ideas and computations, but with a computation rule that always ``terminates''.
 
@@ -1411,9 +1431,10 @@ This language begins with additional formation rules
     {Γ ⊢ \type{\mvar{t}}}
     {Γ ⊢ \type{\mvar{s}→\mvar{t}}}}
 \end{align*}
-The $\groundtype_i$ are called \define{ground types}.\footnote{There can be as
-  many ground types as necessary or only one, it doesn't fundamentally change
-  the character of the resulting theory.} 
+The $\groundtype_i$ are called \define{ground types}, \define{base types}, or
+\define{atomic types}.\footnote{There can be as many ground types as necessary
+  or only one, it doesn't fundamentally change the character of the resulting
+  theory.}
 The term $\mvar{a}→\mvar{b}$ is the type of functions from $\mvar{a}$ to
 $\mvar{b}$. The introduction
 rule\index{Introduction rules!In \abbreviation{STLC}} tells us how to form
@@ -1422,6 +1443,7 @@ elements of these types:
   {\prftree[r]{}
     {Γ, \mvar{a}:\mvar{s} ⊢ \mvar{b}:\mvar{t}}
     {Γ ⊢ \λ{v}{\mvar{b}}:\mvar{s}→\mvar{t}}}
+    % {Γ ⊢ \λ{v}{\mvar{b}}[\mvar{a}\defeq v]:\mvar{s}→\mvar{t}}}
 \end{align*}
 Introduction rules for some ground type(s) are reasonable additional axioms, but
 they are not necessary for the development of the theory.\footnote{This might
@@ -1429,11 +1451,11 @@ look like
 \begin{align*}
   {\prftree[r]{}
     {}
-    {Γ ⊢ z:\groundtype_0}},
+    {Γ ⊢ z:\groundtype_0}}.
 \end{align*}
 which would assert the existence of an element $z$ of the 0\textsuperscript{th}
 ground type $\groundtype_0$.
-} An elimination rule to balances this introduction:
+} An elimination rule balances this introduction:
 \begin{align*}
   {\prftree[r]{}
     {Γ ⊢ \mvar{a}:\mvar{s}→\mvar{t}}
@@ -1441,12 +1463,12 @@ ground type $\groundtype_0$.
     {Γ ⊢ \apply{\mvar{a}}{\mvar{b}}:\mvar{t}}}
 \end{align*}
 The computation rules\index{Computation rules!In \abbreviation{STLC}} and
-unicity rules remain much the same, only now with some restrictions on their
-domains:
+unicity rules remain much the same, only now with some restrictions on the types
+of the expressions involved:
 \begin{align*}
   {\prftree[r]{\footnotesize β}
     {Γ, \mvar{a}:\mvar{s} ⊢ \mvar{b}:\mvar{t}}
-    {Γ ⊢ \term{\mvar{c}}:\mvar{s}}
+    {Γ ⊢ \mvar{c}:\mvar{s}}
     {Γ ⊢ \apply{(\λ{v}\mvar{b})}{\mvar{c}}\jdeq
       \mvar{b}[\mvar{a}\coloneqq\mvar{c}]}}
   &&
@@ -1477,31 +1499,300 @@ Variables may stand in for terms of arbitrary type.
 \subsection{More complex types}
 \label{subsec:more-complex-types}
 
-\subsubsection{Product types}
-\label{subsubsec:product-types}
+The ontology of \abbreviation{STLC} is severely limited: it can only express
+ground type(s) and functions between them. This section develops
+various \define{type formers}, which build up more complex types
+from simpler ones (e.g.\ $→$ from \abbreviation{STLC}). In
+\cref{sec:propositions-and-types}, we will see that these types conform to
+intuitions from \cref{sec:ipl}.
 
-\subsubsection{Coproduct types}
-\label{subsubsec:coproduct-types}
+We will specifically consider four additional types (plus $→$), formed via the
+following rules\index{Formation rules!In \abbreviation{TLC}}: 
+\begin{gatherjot}
+  \prftree[r]{}{}{Γ⊢\type{⊤}}
+  \qquad
+  \prftree[r]{}{}{Γ⊢\type{⊥}}
+  \qquad
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
+    {Γ⊢\type{\mvar{a}×\mvar{b}}}
+  \qquad
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
+    {Γ⊢\type{\mvar{a}+\mvar{b}}}
+\end{gatherjot}
 
-\subsubsection{Natural numbers}
-\label{subsubsec:natural-numbers}
+Perhaps unsurprisingly, the type $⊥$ is empty, it has no elements.
+The type $⊤$ has one element:\footnote{This rule only really says we have one
+  known way to construct an element of $⊤$, but the η-rules for this type
+  justify the claim that this is the only such element.}
+\begin{equation*}
+  \prftree[r]{}{}{Γ ⊢ \unitelem:⊤}.
+\end{equation*}
+The type $\mvar{a}×\mvar{b}$ contains (ordered) pairs, with one element from
+$\mvar{a}$ and one from $\mvar{b}$:
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \prop{\mvar{b}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}}{Γ ⊢ \mvar{q}:\mvar{b}}
+    {Γ ⊢ (\mvar{p},\mvar{q}):\mvar{a}×\mvar{b}}.
+\end{equation*}
+The type $\mvar{a}+\mvar{b}$ is sometimes called ``option'' or ``either'': it
+contains tagged elements of $\mvar{a}$ or $\mvar{b}$:
+\begin{align*}
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}}
+    {Γ ⊢ \apply{\inl}{\mvar{p}}:\mvar{a}+\mvar{b}},
+  &&
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{b}}
+    {Γ ⊢ \apply{\inr}{\mvar{p}}:\mvar{a}+\mvar{b}}.
+\end{align*}
 
-\subsubsection{Lists}
-\label{subsubsec:lists}
+The elimination rules\index{Elimination rules!In \abbreviation{TLC}}
+act as one might expect, given the reuse of the notation from \cref{sec:ipl} for
+the introduction rules:
+\begin{gatherjot}
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}×\mvar{b}}
+    {Γ ⊢ \appr{1}\mvar{p}:\mvar{a}}
+  \qquad
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}×\mvar{b}}
+    {Γ ⊢ \appr{2}\mvar{p}:\mvar{b}} \\
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {\prftree[r, noline]{}
+        {Γ ⊢ \prop{\mvar{a}}}
+        {Γ ⊢ \prop{\mvar{b}}}}
+      {Γ ⊢ \prop{\mvar{c}}}}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
+      {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
+    {Γ ⊢ \mvar{r}:\mvar{a}+\mvar{b}}
+    {Γ ⊢ \apppply{\rec_{+}}{\mvar{p}}{\mvar{q}}{\mvar{r}}:\mvar{c}}
+  \qquad
+  \prftree[r]{}
+    {Γ ⊢ \prop{\mvar{a}}}
+    {Γ ⊢ \mvar{p}:⊥}
+    {Γ ⊢ \apply{\rec_{⊥}}{\mvar{p}}:\mvar{a}}.
+\end{gatherjot}
+Just as with the formation, introduction, and elimination rules,
+the computation and unicity rules are identical to those in \abbreviation{IPL}
+(modulo notational differences), and so are omitted here.
 
-\section{The Curry-Howard correspondence}
-\label{sec:curry-howard}
+Examples of (somewhat) practical programs that can be written in an extension
+of this theory abound in \cref{chap:type-theory}.
 
-\cite{curry-howard}
+\subsection{Propositions and Types}
+\label{sec:propositions-and-types}
 
-\subsection{The BHK interpretation}
-\label{subsec:the-bhk-interpretation}
+What just happened? \Cref{sec:ipl} defined a logico-deductive system, capable of
+expressing many familiar proofs of sentential logic (with some differences
+stemming from its constructivist nature). \Cref{sec:the-lambda-calculus} took a
+sharp left turn, describing a formalism for capturing a notion of algorithmic
+computability. However, the system obtained by adding a few reasonable features
+for describing more complicated data to \abbreviation{STLC} looked not merely
+analogous, but \textit{identical to} \abbreviation{IPL} (again, modulo simple
+notational changes).
+
+While perhaps less surprising due to the notational conveniences of hindsight,
+this observation has startling and deep consequences (and a rich intellectual
+history). It is known as the 
+Curry-Howard(-Lambek)\footnote{More on Lambek's part in \cref{rmk:lambek}}
+correspondence, or the propositions-as-types interpretation. First investigated
+by Curry \cite{curry-howard}, who noticed that the types of the ``combinators''
+of his computational system\footnote{Equivalent to the λ-calculus, of course}
+could be interpreted as valid propositions in \abbreviation{IPL}. This
+observation squared nicely with what's called the Brouwer-Heyting-Kolmogorov
+interpretation of \abbreviation{IPL}, which asserts that the semantics thereof
+are to be interpreted as referring not exactly to propositions and their proofs,
+but more general ``problems'' and their ``solutions'' \cite{kolmogorov}.
+
+So what does this correspondence really say? It can be understood in many
+ways.\footnote{My own favorite is that it is not really a correspondence nor an
+  isomorphism, but indeed should be read as an \textit{identity}, an expression
+  of the fundamental sameness of logic and computation.}
+It is sometimes read as asserting
+that proofs of \abbreviation{IPL} can be encoded into \abbreviation{TLC}. This
+translation has the nice property that type-checking (the process of determining
+whether or not has a given type in a given context $Γ$) is decidable: it can be
+performed mechanically, preferably by a computer. This gives such proofs a
+strong epistemological footing.
 
 \chapter{Type theory}
 \label{chap:type-theory}
 
-The system we describe, \abbreviation{UTT}, corresponds closely to $\caH$ in
-\cite{inductive} and \cite{homotopy-initial}.
+Whatever the meaning of the Curry-Howard correspondence, its utility is
+circumscribed by the fact that \abbreviation{IPL}/\abbreviation{TLC} as
+presented do not match the expressive power of classical \abbreviation{FOL}:
+there are no types expressing quantification over some domain, nor propositions
+or relations that may ``apply'' to terms and variables. Certainly, they are
+missing the infinite structures of classical set theory.
+
+The system described in this section enriches \abbreviation{TLC} with
+\textit{dependent types} (\cref{sec:dependent-types}) and a few more base types,
+including our first examples of \textit{inductive types}
+(\cref{subsec:natural-numbers-and-lists}). Additionally, we define and include
+Voevodsky's univalence axiom (\cref{sec:univalence}). The
+resulting system (univalent type theory, or \abbreviation{UTT}) has similar
+expressive power to \abbreviation{ZFC}+\abbreviation{FOL}.\footnote{Indeed, the
+  ``set types'' (\cref{def:sets}) behave very much like sets in classical
+  mathematics, especially when a few classically-minded axioms are assumed. See
+  \cite{book} for more commentary.}
+
+\abbreviation{UTT} corresponds closely to $\caH$ in
+\cite{inductive} and \cite{homotopy-initial}. The results of
+\cref{chap:coinductive-types-in-univalent-type-theory} don't require the full
+power of homotopy type theory (\abbreviation{HoTT}), specifically we leave out
+the axioms asserting the existence of higher inductive types.
+
+\section{Dependent types}
+\label{sec:dependent-types}
+
+One of the slogans of dependently typed programming is that \textit{types are
+terms}. Propositions, like proof terms, can now be subsumed as objects of study
+in their own right. However, all terms must have a type. What, if anything, is
+the type of types?
+
+\begin{definition}\label[definition]{def:universes}
+  All the base types we have considered up to this point ($⊤$, $⊥$) are members
+  of a \define{universe} \universei{0}, formed via the following rule:
+  \begin{equation*}
+    \prftree[r]{}
+      {}
+      {Γ⊢\type{\universei{0}}}
+  \end{equation*}
+  The type formers $×$, $+$, and $→$
+  preserve membership of this universe, i.e.\
+  \begin{gatherjot}
+    \prftree[r]{}{}{Γ⊢⊤:\universei{0}}
+    \qquad
+    \prftree[r]{}{}{Γ⊢⊥:\universei{0}}
+    \qquad
+    \prftree[r]{}
+      {\prftree[r, noline]{}
+        {Γ ⊢ \mvar{a}:\universei{0}}
+        {Γ ⊢ \mvar{b}:\universei{0}}}
+      {Γ⊢\mvar{a}×\mvar{b}:\universei{0}}
+    \qquad
+    \prftree[r]{}
+      {\prftree[r, noline]{}
+        {Γ ⊢ \mvar{a}:\universei{0}}
+        {Γ ⊢ \mvar{b}:\universei{0}}}
+      {Γ⊢\mvar{a}+\mvar{b}:\universei{0}}
+  \end{gatherjot}
+  Conversely, if something is a member of the universe, we may conclude that
+  it is a type:
+  \begin{equation*}
+    \prftree[r]{}
+      {Γ ⊢ \mvar{a}:\universei{0}}
+      {Γ⊢\type{\mvar{a}}}
+  \end{equation*}
+\end{definition}
+
+Dependent types blur (well, destroy) the distinction between what goes
+on the left- and right-hand side of the typing judgment (``$:$'').
+Additional commentary on the universe follows in \cref{rmk:universe-hierarchy}.
+
+\subsection{Π-types}
+\label{subsec:pi-types}
+
+We now have the power to write an \textit{single} identity function that works
+for \textit{all} types.
+
+\begin{definition}\label[definition]{def:id-polymorphic}
+  The identity function is
+	\begin{align*}
+    \id :\∏{A:\universe}{A\to A} &&
+    \id \defeq \λ{A}{\λ{a}{a}}
+  \end{align*}
+  We will write its first argument as a subscript, as in $\id_{A}$.
+\end{definition}
+
+
+\begin{remark}\label[remark]{rmk:universe-hierarchy}
+	
+\end{remark}
+
+\subsection{Σ-types}
+\label{subsec:sigma-types}
+
+\begin{lemma}[Paths in $Σ$-types]\label[lemma]{lemma:path-sigma}
+	If $x,y:\∑{a:A}{B(a)}$, then
+  \begin{equation*}
+    \weq{
+      (\propeq{}{x}{y})
+    }{
+      \∑{
+        p:\propeq{}{\appr{1}{x}}{\appr{1}{y}}
+      }{
+        \propeq{}{
+          \transport{}{p}{\appr{2}{x}}
+        }{
+          \appr{2}{y}
+        }
+      }
+    }.
+  \end{equation*}
+  \TODO{cite with page number}
+\end{lemma}
+
+\subsection{Natural numbers and lists}
+\label{subsec:natural-numbers-and-lists}
+
+\subsubsection{On the law of the excluded middle}
+\label{subsec:on-lem}
+
+\TODO{introduce the topic based on previous sections}
+
+Consider functions with the following types:
+\begin{itemize}
+  \itemsep0em
+  \item $\ttfun{dne}:\∏{A:\universe}{(A\to⊥\to⊥)\to A}$
+  \item $\ttfun{lem}:\∏{A:\universe}{A+(A\to⊥)}$
+\end{itemize}
+What can we tell about these functions from their type signatures?
+The term $\ttfun{dne}$ takes as argument a term $x:A\to⊥\to⊥$,
+that is, a term showing that $A$ is not the empty type\footnote{More precisely,
+  $x$ demonstrates that $A$ is not \textit{isomorphic} or \textit{equivalent} to
+  $⊥$, in the sense of \cref{subsec:weak-equivalences}. If $A$ were isomorphic
+  to $⊥$, then that isomorphism would be an inhabitant of $A\to⊥$.}, and
+produces some element of $A$. This seems like a very tricky function to write:
+how can we give a term of type $A$ just by knowing $A$ has terms? We don't
+know what form data of type $A$ have! The function $\ttfun{lem}$ seems
+similarly quagmired. Given a type $A$, this function either has to produce an
+element of it, or demonstrate that it is uninhabited.
+
+As you may have already guessed, under the propositions/types correspondence,
+these functions correspond to the rule of double negation elimination
+($\ttfun{dne}$)\index{Double negation elimination}
+and the law of excluded middle ($\ttfun{lem}$)\index{Law of excluded middle}
+\cref{def:lem-dne}.
+
+To demonstrate with finality that these are not definable terms in any
+consistent type theory, consider the application of $\ttfun{lem}$ to a type
+$\ttfun{pnp}$ that corresponds to the $\textsc{P}\neq\textsc{NP}$ conjecture
+under the types-as-propositions interpretation. If $\ttfun{lem}$ existed, we
+could trivially solve this problem and make a million dollars! We need no
+recourse to philosophy to justify the constructive/intuitionistic logic of proof
+assistants: nothing else computes.
 
 \section{The identity type}
 \label{sec:the-identity-type}
@@ -1536,91 +1827,13 @@ The system we describe, \abbreviation{UTT}, corresponds closely to $\caH$ in
   \end{equation*}
 \end{lemma}
 
-\section{Dependent types}
-\label{sec:dependent-types}
-
-Up to now, we have not considered the type of types. However, types are terms
-like any other, and every term has a type.
-
-\begin{definition}\label[definition]{def:universes}
-  All the types we have considered up to this point are members of a universe
-  \universei{0}.
-\end{definition}
-
-We now have the power to write an \textit{single} identity function that works
-for \textit{all} types.
-
-\begin{definition}\label[definition]{def:id-polymorphic}
-  The identity function is
-	\begin{align*}
-    \id :\∏{A:\universe}{A\to A} &&
-    \id \defeq \λ{A}{\λ{a}{a}}
-  \end{align*}
-  We will write its first argument as a subscript, as in $\id_{A}$.
-\end{definition}
-
-\begin{lemma}[Paths in $Σ$-types]\label[lemma]{lemma:path-sigma}
-	If $x,y:\∑{a:A}{B(a)}$, then
-  \begin{equation*}
-    \weq{
-      (\propeq{}{x}{y})
-    }{
-      \∑{
-        p:\propeq{}{\appr{1}{x}}{\appr{1}{y}}
-      }{
-        \propeq{}{
-          \transport{}{p}{\appr{2}{x}}
-        }{
-          \appr{2}{y}
-        }
-      }
-    }.
-  \end{equation*}
-  \TODO{cite with page number}
-\end{lemma}
-
-\subsection{$Π$-types}
-\label{subsec:pi-types}
-
-\subsubsection{On the law of the excluded middle}
-\label{subsec:on-lem}
-
-\TODO{introduce the topic based on previous sections}
-
-Consider functions with the following types:
-\begin{itemize}
-  \itemsep0em
-  \item $\ttfun{dne}:\∏{A:\universe}{(A\to⊥\to⊥)\to A}$
-  \item $\ttfun{lem}:\∏{A:\universe}{A+(A\to⊥)}$
-\end{itemize}
-What can we tell about these functions from their type signatures?
-The term $\ttfun{dne}$ takes as argument a term $x:A\to⊥\to⊥$,
-that is, a term showing that $A$ is not the empty type\footnote{More precisely,
-  $x$ demonstrates that $A$ is not \textit{isomorphic} or \textit{equivalent} to
-  $⊥$, in the sense of \cref{subsec:weak-equivalences}. If $A$ were isomorphic
-  to $⊥$, then that isomorphism would be an inhabitant of $A\to⊥$.}, and
-produces some element of $A$. This seems like a very tricky function to write:
-how can we give a term of type $A$ just by knowing $A$ has terms? We don't
-know what form data of type $A$ have! The function $\ttfun{lem}$ seems
-similarly quagmired. Given a type $A$, this function either has to produce an
-element of it, or demonstrate that it is uninhabited.
-
-As you may have already guessed, under the Curry-Howard correspondence, these
-functions correspond to the rule of double negation elimination
-($\ttfun{dne}$)\index{Double negation elimination}
-and the law of excluded middle ($\ttfun{lem}$)\index{Law of excluded middle}
-\cref{def:lem-dne}.
-
-To demonstrate with finality that these are not definable terms in any
-consistent type theory, consider the application of $\ttfun{lem}$ to a type
-$\ttfun{pnp}$ that corresponds to the $\textsc{P}\neq\textsc{NP}$ conjecture
-under the types-as-propositions interpretation. If $\ttfun{lem}$ existed, we
-could trivially solve this problem and make a million dollars! We need no
-recourse to philosophy to justify the constructive/intuitionistic logic of proof
-assistants: nothing else computes.
 
 \section{$h$-levels and truncation}
 \label{sec:$h$-levels and truncation}
+
+\begin{definition}\label[definition]{def:sets}
+	
+\end{definition}
 
 \section{Univalence}
 \label{sec:univalence}
@@ -1876,6 +2089,22 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
     the unque arrow $u$ as $[f,g]$.
   }
 \end{definition}
+
+\begin{remark}\label[remark]{rmk:lambek}
+	We now have the vocabulary to extend the correspondence of
+  \cref{sec:curry-howard} to statements about a certain kind of category.
+  \TODO{}
+\end{remark}
+
+\begin{remark}
+  The Curry-Howard-Lambek correspondence gives the barest hint of insight into
+  Voevodsky's innovation. He also gave a categorically-based model of a version
+  of the typed λ-calculus, but of full Martin-Löf dependent type theory. The
+  structure of higher/nested identity types
+  ($\propeq{\propeq{\cdots}{a}{b}}{p}{q}$) recalled ideas of homotopy theory,
+  where paths are considered identical up to the existence of ``higher
+  paths''.\TODO{}
+\end{remark}
 
 \section{Functors and their algebras}
 \label{sec:functors-and-their-algebras}
@@ -2662,7 +2891,8 @@ they are initial, some of which will be familiar from
   though some of these theorems are proved in the \Agda development of
   \cite{non-wellfounded}.}
 
-\begin{example}\label[example]{ex:nat-functor-utt}
+\begin{example}[\coqname{W.Naturals.nat\_functor}]
+  \label[example]{ex:nat-functor-utt}
 	Consider the polynomial functor associated to $A\defeq \𝔹$ and 
   $B\defeq \apppply{\rec_{\𝔹}}{\universe}{\𝟘}{\𝟙}$:
   \begin{equation*}
@@ -2688,7 +2918,8 @@ correct definition, nor how we can apply our intuition about $\ℕ$ to this
 situation. The next lemma provides more evidence that $P$ is an analogue
 of $X ↦ 1 + X$.
 
-\begin{lemma}\label[lemma]{lemma:nat-alg-simpl}
+\begin{lemma}[\coqname{W.Naturals.nat\_functor\_equiv}]
+  \label[lemma]{lemma:nat-alg-simpl}
   A $P$-algebra structure on a type $X$ is given by a point $x_0:X$ and a
   function $\suc_x:X→X$. More precisely, there is an equivalence:
   \begin{equation*}
@@ -2726,8 +2957,9 @@ Applying this equivalence, we could more readily define the $P$-algebra over
 $\ℕ$ as $(\appply{w}{0}{\suc})$. In fact, this gives \textit{judgmentally equal}
 result. We can give a similar lemma for morphisms:
 
-\begin{lemma}\label[lemma]{lemma:nat-alg-mor}
-  Let $(X,α)$ and $(Y,β)$ be $P$-algebras. Any function $f:X → Y$
+\begin{lemma}[\coqname{W.Naturals.mk\_nat\_functor\_algebra\_mor}]
+  \label[lemma]{lemma:mk-nat-alg-mor}
+  Let $\dpair{X}{α}$ and $\dpair{Y}{β}$ be $P$-algebras. Any function $f:X → Y$
   which sends $x_0$ to $y_0$ and intertwines $\suc_X$ with $\suc_Y$ is an
   algebra morphism.
 \end{lemma}
@@ -2786,7 +3018,7 @@ result. We can give a similar lemma for morphisms:
   \end{align*}
 \end{proof}
 
-\begin{lemma}
+\begin{lemma}[\coqname{W.Naturals.nat\_alg\_is\_preinitial}]
 	For any $P$-algebra $\dpair{X}{α}$, there is an algebra morphism
   $\dpair{ℕ}{η} ⇒ \dpair{X}{α}$.
 \end{lemma}
@@ -2802,7 +3034,8 @@ result. We can give a similar lemma for morphisms:
   $\suc$ with $\suc_X$; by \cref{lemma:nat-alg-mor}, it's an algebra morphism.
 \end{proof}
 
-\begin{lemma}\label[lemma]{lemma:nat-alg-mor-fun-unique}
+\begin{lemma}[\coqname{W.Naturals.nat\_alg\_func\_is\_unique}]
+  \label[lemma]{lemma:nat-alg-mor-fun-unique}
   The underlying function of the above morphism is unique. That is,
 	for any algebra morphism $\dpair{τ}{i}:\dpair{ℕ}{η} ⇒ \dpair{X}{α}$,
   $\propeq{}{τ}{g}$, with $g$ as in the previous proof.
@@ -2878,18 +3111,47 @@ result. We can give a similar lemma for morphisms:
 Similar to the result of \cref{lemma:nat-alg-simpl}, fibered algebras over $\ℕ$
 also have a simple structure understood by an equivalence.
 
-\begin{lemma}\label[lemma]{lemma:nat-fib-alg-simpl}
+\begin{lemma}[\coqname{W.Naturals.fibered\_algebra\_nat}]
+  \label[lemma]{lemma:nat-fib-alg-simpl}
   A fibered algebra structure (over $\ℕ$) on a family 
-  $X:\ℕ\to\universe$ is given by a point $x_0:X_0$
-  and a family of functions $f:\pit{n:\ℕ}{X_n\to X_{n+1}}$. Specifically, there
-  is an equivalence
+  $E:\ℕ\to\universe$ is given by a point $e_0:E_0$
+  and a family of functions $f^E:\pit{n:\ℕ}{E_n\to E_{n+1}}$. Specifically,
+  there is an equivalence
   \begin{equation*}
     \weq{\Fibalgtype(\dpair{ℕ}{\suc})}
-        {\∑{X:\universe}X_0×\pit{n:\ℕ}{X_n\to X_{n+1}}}
+        {\∑{E:\universe}E_0×\pit{n:\ℕ}{E_n\to E_{n+1}}}
   \end{equation*}
 \end{lemma}
+\begin{proof}
+	\TODO{proof?}
+\end{proof}
 
-\begin{lemma}\label[lemma]{lemma:fiber-preinitiality-nat}
+And like \cref{lemma:mk-nat-alg-mor}, we can also simplify our understanding of
+algebra sections.
+
+\begin{lemma}[\coqname{W.Naturals.mk\_nat\_alg\_sec}]
+  \label[lemma]{lemma:mk-nat-alg-sec}
+  % (p1 : x 0 = pr1 (pr2 FA'))
+  % (p2 : (∏ n, pr2 (pr2 FA') n (x n) = x (S n))),
+  Let $\dpair{E}{θ}$ be a fibered $P$-algebra over $\dpair{\ℕ}{\suc}$.
+  If $x:\∏{n:\ℕ}{X}$ sends $0$ to $e_0$ and for all $n$,
+  $\propeq{}{\apply{f^E}{n}}{\apply{x}{(\apply{\suc}{n})}}$,
+  then there is a corresponding algebra section with $x$ as the underlying
+  function. 
+\end{lemma}
+\begin{proof}
+	\TODO{proof?}
+\end{proof}
+
+\begin{lemma}\label[lemma]{lemma:nat-alg-sec-equiv}
+  The above function is an equivalence.
+\end{lemma}
+
+This result is proved in the \Agda{} formalization accompanying
+\cite{non-wellfounded}. Its proof is outside of the scope 
+
+\begin{lemma}[\coqname{W.Naturals.nat\_alg\_is\_preinitial\_sec}]
+  \label[lemma]{lemma:fiber-preinitiality-nat}
 	The natural numbers are fiber-preinitial (\cref{def:fiber-preinitiality}).
 \end{lemma}
 \begin{proof}
