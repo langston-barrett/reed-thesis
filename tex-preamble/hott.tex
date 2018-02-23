@@ -9,7 +9,8 @@
 
 \newcommand{\emptytype}{\ensuremath{\mathbf{0}}}  % empty type
 \newcommand{\unittype}{\ensuremath{\mathbf{1}}}   % unit type
-\newcommand{\unitelem}{\ensuremath{1_{\unittype}}} % sole inhabitant of the unit type
+% \newcommand{\unitelem}{\ensuremath{1_{\unittype}}} % sole inhabitant of the unit type
+\newcommand{\unitelem}{\star} % sole inhabitant of the unit type
 \newcommand{\booltype}{\ensuremath{\mathbf{2}}}   % two element type
 \newcommand{\btrue}{1_{\booltype}}                 % inhabitant of two element type
 \newcommand{\bfalse}{0_{\booltype}}                % inhabitant of two element type
@@ -28,6 +29,9 @@
 \renewcommand{\sup}[2]{\appply{\ttfun{sup}}{#1}{#2}}      % supremum
 \newcommand{\recW}{\rec_{\mathsf{W}}}                   % W-elim
 
+\newcommand{\fromempty}[1]{\apply{\rec_{\emptytype}}{#1}}
+\newcommand{\fromunit}[2]{\appply{\rec_{\unittype}}{#1}{#2}}
+
 
 %%% Natural numbers
 \newcommand{\suc}{\mathsf{succ}}
@@ -45,9 +49,15 @@
 \newcommand{\isContr}{\ttfun{isContr}}
 
 %%% Relations
+
+% Propositional equality
+\newcommand{\propeqsign}{=}
+\renewcommand{\=}{\propeqsign}
+\newcommand{\propeq}[3]{#2 \propeqsign_{#1} #3}
+
+% Others
 \newcommand{\jdeq}{\equiv}
 \newcommand{\defeq}{\vcentcolon\jdeq}
-\newcommand{\propeq}[3]{#2 =_{#1} #3}
 \newcommand{\weq}[2]{#1 \simeq #2}
 \newcommand{\homot}[2]{#1 \sim #2}
 

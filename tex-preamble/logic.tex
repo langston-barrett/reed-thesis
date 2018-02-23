@@ -16,8 +16,15 @@
 \newcommand{\apppply}[4]{#1\apspace #2 \apspace #3 \apspace #4}
 \newcommand{\appppply}[5]{#1\apspace #2 \apspace #3 \apspace #4 \apspace #5}
 
-% application
-\newcommand{\lam}[2]{\uplambda #1.\apspace#2}               % λ-abstraction
+% LC
+\newcommand{\lam}[2]{\uplambda #1.\apspace#2}                % λ-abstraction
+\DeclareRobustCommand\longtwoheadrightarrow
+     {\relbar\joinrel\twoheadrightarrow}
+\newcommand{\betato}{\overset{\upbeta}
+  {\;\vphantom{\rule{0pt}{.3ex}}\smash{{\longrightarrow}}}\;}
+\newcommand{\betatoo}{\overset{\upbeta}
+  {\;\vphantom{\rule{0pt}{.3ex}}\smash{{\longtwoheadrightarrow}}}\;}
+\newcommand{\groundtype}{\mathbb{T}}
 
 % Judgments
 \newcommand{\judgment}[2]{#2\hspace{0.4em}\text{#1}}
@@ -26,3 +33,16 @@
 \newcommand{\true}[1]{\judgment{true}{#1}}
 \newcommand{\term}[1]{\judgment{term}{#1}}
 \newcommand{\valid}[1]{\judgment{valid}{#1}}
+
+% Names of formal systems
+\newcommand{\formalsystem}[1]{\textbf{#1}\indeX{#1@\textbf{#1}}}
+\newcommand{\HoTT}[0]{\formalsystem{HoTT}}  % homotopy type theory
+\newcommand{\LC}[0]{\formalsystem{LC}}      % λ-calculus
+\newcommand{\STLC}[0]{\formalsystem{STLC}}  % simply-typed λ-calculus
+\newcommand{\TLC}[0]{\formalsystem{TLC}}    % typed λ-calculus
+\newcommand{\ITT}[0]{\formalsystem{ITT}}    % intuitionistic type theory
+\newcommand{\UTT}[0]{\formalsystem{UTT}}    % univalent type theory
+\newcommand{\IPL}[0]{\formalsystem{IPL}}    % intuitionistic propositional logic
+\newcommand{\FOL}[0]{\formalsystem{FOL}}    % first-order logic
+\newcommand{\ZF}[0]{\formalsystem{ZF}}      % Zermelo–Fraenkel  set theory
+\newcommand{\ZFC}[0]{\formalsystem{ZFC}}    % Zermelo-... with choice

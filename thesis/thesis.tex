@@ -40,7 +40,6 @@
 \input{../tex-preamble/hott.tex}
 \input{../tex-preamble/unicode.tex}
 \usepackage{rotating}
-\newcommand{\abbreviation}[1]{\textbf{#1}\indeX{#1@\textbf{#1}}} % abbreviations
 \usepackage{makeidx}
 \usepackage{prftree}\setlength{\prfinterspace}{1.2em}
 
@@ -126,14 +125,14 @@
 % \begin{table}[h]
 %   \centering
 %   \begin{tabular}{ll}
-%     \abbreviation{HoTT}  	&  Homotopy type theory \\
-%     \abbreviation{UTT}  	&  Univalent type theory \\
-%     \abbreviation{ITT}  	&  Intensional type theory \\
-%     \abbreviation{FOL}  	&  Classical first-order logic \\
-%     \abbreviation{IPL}  	&  Intuitionistic propositional logic \\
-%     \abbreviation{LC}  	  &  Church's untyped λ-calculus \\
-%     \abbreviation{STLC}  	&  Simply-typed λ-calculus \\
-%     \abbreviation{TLC}  	&  Typed λ-calculus
+%     \HoTT  	&  Homotopy type theory \\
+%     \UTT{}  	&  Univalent type theory \\
+%     \ITT  	&  Intensional type theory \\
+%     \FOL  	&  Classical first-order logic \\
+%     \IPL{}  	&  Intuitionistic propositional logic \\
+%     \LC{}  	  &  Church's untyped λ-calculus \\
+%     \STLC{}  	&  Simply-typed λ-calculus \\
+%     \TLC{}  	&  Typed λ-calculus
 %   \end{tabular}
 % \end{table}
 
@@ -181,13 +180,13 @@ Cantor's na\"ive set theory, the need for a rigorous logical foundation for high
 mathematics was so great that the enterprise of axiomatic set theory was pursued
 headlong until some kind of consensus was reached. To make a long, rich story
 brutally short, virtually every modern paper in mathematics and computer
-science uses a combination of Gentzen's first-order logic (\abbreviation{FOL})
+science uses a combination of Gentzen's first-order logic (\FOL)
 and an axiomatization of sets called
-\abbreviation{ZFC}.\footnote{This ``consensus'' left out many
+\ZFC.\footnote{This ``consensus'' left out many
   prominent schools of thought, such as the Intuitionists and constructivists, a
   point we'll soon return to.}
 
-Despite the apparent rigor of \abbreviation{FOL}+\abbreviation{ZFC},
+Despite the apparent rigor of \FOL+\ZFC,
 practitioners of the deductive sciences were still beset by issues of
 verifiability. Complexity, specialization and sheer length made modern proofs
 difficult to comprehend with the absolute certainty which is supposed to
@@ -226,8 +225,8 @@ While much of the mathematical discipline was simply relieved to have ``solved''
 their foundational issues with axiomatic set theory, there remained a vocal
 opposition to the newly-adopted methods. Most mathematicians are dimly aware
 that there's some controversy about the Axiom of Choice (the ``C'' in
-\abbreviation{ZFC}) \cite{martin-lof-100-years}, you don't have to look further
-than \abbreviation{FOL} to find disagreements.
+\ZFC) \cite{martin-lof-100-years}, you don't have to look further
+than \FOL to find disagreements.
 
 \section*{Our contribution}
 
@@ -250,13 +249,13 @@ In this chapter, we will present first a logical and then a computational
 framework. We will begin with general remarks on discussing and defining formal
 systems in \cref{sec:discussing-logic}. \Cref{sec:ipl} begins with an
 intuitionistic, proof-relevant version of Gentzen's natural deduction
-\cite{gentzen1935untersuchungen} called \abbreviation{IPL}. As most
+\cite{gentzen1935untersuchungen} called \IPL{}. As most
 mathematicians, computer scientists, and philosophers are familiar with some
 version of first-order logic, this section will focus on the introduction of
 notation, meta-logical concerns, and the key differences between
-\abbreviation{IPL} and \abbreviation{FOL}. In \cref{sec:the-lambda-calculus}, we
-will introduce Church's λ-calculus \abbreviation{LC} (and the simply-typed and
-typed versions \abbreviation{STLC} and \abbreviation{TLC}). Finally, in
+\IPL{} and \FOL. In \cref{sec:the-lambda-calculus}, we
+will introduce Church's λ-calculus \LC{} (and the simply-typed and
+typed versions \STLC{} and \TLC{}). Finally, in
 \cref{sec:curry-howard}, we will discuss the fundamental and
 harmonious relation between these systems known as the Curry-Howard
 correspondence.\TODO{Motivate the formality of this chapter}
@@ -271,7 +270,7 @@ of Martin-L\"of vocabulary to modal logic.
 The presentation of \crefrange{sec:ipl}{sec:the-lambda-calculus} is influenced by
 Philip Wadler \cite{wadler-propositions}, Frank Pfenning's lecture notes for
 ``Constructive Logic'', and Robert Harper's lectures on
-\abbreviation{HoTT}.\TODO{citation}
+\HoTT.\TODO{citation}
 
 Two recent Reed graduates wrote theses on the Curry-Howard correspondence, both
 taking a different approach in presentation that may complement this work,
@@ -298,9 +297,9 @@ $Q$ is true, then $P→ Q$ is true''. It seems that in order to understand
 implication, one must first understand implication! More perniciously,
 philosophers and mathematicians alike have argued that Skolem's
 ``paradox''\footnote{(An application of) the L\"owenheim-Skolem theorem states
-  that if there is a model of \abbreviation{ZFC}, there is a countable one.
+  that if there is a model of \ZFC, there is a countable one.
   The paradox is that the statement ``there are uncountable sets'' is (famously)
-  a theorem of \abbreviation{ZFC}, Cantor's.}
+  a theorem of \ZFC, Cantor's.}
 has deep and significant consequences for the philosophy of
 mathematics \cite{skolem}. These misunderstandings both arise from a common
 root: the failure to distinguish between object language and metalanguage. In
@@ -318,10 +317,10 @@ when discussing and defining formal systems for logic and computation.
   \
   \begin{itemize}
     \itemsep0em
-    \item In the statement ``\abbreviation{FOL} is complete'', \abbreviation{FOL}
+    \item In the statement ``\FOL is complete'', \FOL
       is the object language, and the metalanguage is English.
     \item G\"odel's second incompleteness theorem is a statement in the
-      metalanguage of \abbreviation{FOL}+\abbreviation{ZFC}, about the object
+      metalanguage of \FOL+\ZFC, about the object
       language of Peano arithmetic.
   \end{itemize}
 \end{example}
@@ -433,7 +432,7 @@ of uses of metavariables.
 \begin{definition}\label[definition]{def:entailment-rules}
   Our notions of entailment will always allow for \define{reflexivity},
   \define{weakening}, \define{contraction}, \define{substitution}, and
-  \abbreviation{IPL} will allow for \define{exchange}, which are the following
+  \IPL{} will allow for \define{exchange}, which are the following
   ``meta-rules'' (where $J$, $K$, and $L$ stand for judgments):
   \begin{gatherjot}
     \prftree[r]{\footnotesize refl}{}
@@ -495,7 +494,7 @@ of uses of metavariables.
       & English                
       & Judgment: $\mvar{a}$ is a proposition \\
     $\mvar{a}:\mvar{p}$  
-      & \cref{subsec:ipl-intro}, TODO: \abbreviation{STLC} 
+      & \cref{subsec:ipl-intro}, TODO: \STLC{} 
       & English                
       & Judgment: $\mvar{a}$ is a proof of (or has type) $\mvar{p}$ \\
     $\mvar{a}\≡\mvar{b}:\mvar{p}$  
@@ -513,55 +512,55 @@ of uses of metavariables.
       & Variables (free or bound) \\
     % $c_0,c_1,\ldots$          
     %   & 
-    %   & \abbreviation{(S)TLC}
+    %   & \(S)TLC
     %   & Constants \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $\λ{x}\mvar{a}$      
       & 
-      & \abbreviation{IPL}, \abbreviation{((S)T)LC}, \abbreviation{UTT} 
+      & \IPL{}, \formalsystem{((S)T)LC}, \UTT{} 
       & A function that takes an input $x$ \\
     $→$       
       & 
-      & \abbreviation{IPL}, \abbreviation{(S)TLC}, \abbreviation{UTT} 
+      & \IPL{}, \formalsystem{(S)TLC}, \UTT{} 
       & Material implication or function type \\
     $×$       
       & 
-      & \abbreviation{ZFC}+\abbreviation{FOL}, \abbreviation{TLC}, \abbreviation{UTT} 
+      & \ZFC+\FOL, \TLC{}, \UTT{} 
       & Cartesian or categorical product, product type \\
     $+$       
       & 
-      & \abbreviation{TLC}, \abbreviation{UTT} 
+      & \TLC{}, \UTT{} 
       & Coproduct type, categorical coproduct \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $(a,b)$       
       & 
-      & \abbreviation{IPL}, \abbreviation{TLC}, \abbreviation{UTT} 
+      & \IPL{}, \TLC{}, \UTT{} 
       & Constructor of the pair type \\
     $\inl$, $\inr$       
       & 
-      & \abbreviation{IPL}, \abbreviation{TLC}, \abbreviation{UTT} 
+      & \IPL{}, \TLC{}, \UTT{} 
       & Constructor of the coproduct type \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $\pr{1}$, $\pr{2}$
       & 
-      & \abbreviation{IPL}, \abbreviation{TLC}, \abbreviation{UTT} 
+      & \IPL{}, \TLC{}, \UTT{} 
       & Destructor of the product type \\
     $\case$       
       & 
-      & \abbreviation{IPL}, \abbreviation{TLC}
+      & \IPL{}, \TLC{}
       & Destructor of the coproduct type \\
     $\rec$       
       & Various
-      & \abbreviation{IPL}, \abbreviation{TLC}, \abbreviation{UTT} 
+      & \IPL{}, \TLC{}, \UTT{} 
       & Recursion principle or elimination rule \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $\∑{\mvar{a}:\mvar{p}}{\apply{\mvar{b}}{\mvar{a}}}$
       &
-      & \abbreviation{UTT} 
+      & \UTT{} 
       & Σ or dependent pair type \\
     $\∏{\mvar{a}:\mvar{p}}{\apply{\mvar{b}}{\mvar{a}}}$
       &
-      & \abbreviation{UTT} 
+      & \UTT{} 
       & Π or dependent pair type \\
   \end{tabular}
   \caption{\label{tab:symbols}Symbols and their interpretations}
@@ -570,7 +569,7 @@ of uses of metavariables.
 \section{Intuitionistic propositional logic}
 \label{sec:ipl}
 
-With these notations, we are prepared to define \abbreviation{IPL}.
+With these notations, we are prepared to define \IPL{}.
 \Crefrange{sec:ipl}{sec:the-lambda-calculus} present these systems in some
 degree of formality. Proofs in later chapters are not written in this style, but
 it is important to see precisely specified versions of these logics in order to
@@ -579,7 +578,7 @@ understand \cref{sec:curry-howard}.
 \subsection{Formation rules}
 \label{subsec:ipl-form}
 
-Since \abbreviation{IPL} is supposed to be a logic, we better have a notion of a
+Since \IPL{} is supposed to be a logic, we better have a notion of a
 proposition.\footnote{Why do we judge that terms are propositions, instead of
   well-formed formulae? Propositions are strictly more general. With
   hypothetical judgments, we can have a judgment of the form
@@ -589,7 +588,7 @@ proposition.\footnote{Why do we judge that terms are propositions, instead of
   refrain from specifying our syntax via formal BNF (or similar) grammars.}
 Indeed, we denote the judgment that some term $\mvar{a}$ represents a
 proposition by $\prop{\mvar{a}}$. The following are the \define{formation
-rules}\index{Formation!In \abbreviation{IFOL}}:\footnote{For the less
+rules}\index{Formation!In \IFOL}:\footnote{For the less
   logically-versed reader: $⊤$ is read ``true'', $⊥$ is read ``false'',
   $\lnot$ is read ``not'', $\lor$ is read ``or'',
   $\land$ is read ``and'', $→$ is read ``implies'', $∀$ is read
@@ -632,7 +631,7 @@ We add parentheses where necessary to disambiguate compound expressions.
 As noted in \cref{tab:symbols}, ``$Γ$'', ``$⊢$'', and the horizontal line
 ``$\frac{\hspace{1em}}{\hspace{1em}}$'' are symbols in our metalanguage
 (English), whereas ``$⊤,⊥,¬,→,∧,∨$'' are symbols in the object language
-(\abbreviation{IPL}). See \cref{tab:incoherent} for examples of some valid
+(\IPL{}). See \cref{tab:incoherent} for examples of some valid
 expressions we could form with the above rules. Such valid expressions (in the
 left column) are things that could be substituted in for our metavariables like
 $\mvar{a}$.
@@ -640,13 +639,13 @@ $\mvar{a}$.
 \begin{table}[ht]
   \centering
   \begin{tabular}{l | l}
-    \abbreviation{IPL}                      & Incoherent \\ \hline
+    \IPL{}                      & Incoherent \\ \hline
     $(\mvar{a}∧\mvar{b})∨\mvar{c}$          & $(Γ ⊢ \prop{\mvar{a}})∨\mvar{b}$ \\
     $(\mvar{a}→\mvar{b})→\mvar{c}$          & $∧∨→$ \\
     $⊤∨\mvar{a}_1∨\mvar{a}_2∨⋯∨\mvar{a}_n$  & $Γ⊢Θ$ \\
     $⊤→⊥$                                   & $\prop{\mvar{a}}→\mvar{b}∧\mvar{c}$ \\
   \end{tabular}
-  \caption{\label{tab:incoherent}Valid \abbreviation{IPL} expressions and incoherent
+  \caption{\label{tab:incoherent}Valid \IPL{} expressions and incoherent
     nonsense.}
 \end{table}
 
@@ -725,14 +724,14 @@ $v,w,\ldots$
 \begin{definition}\label[definition]{def:valid-theorem}
   If know that under no hypotheses $\mvar{a}$ is a proposition and has a proof,
   then we may judge that $\mvar{a}$ is \define{valid}\index{Valid!In
-  \abbreviation{IPL}}:
+  \IPL{}}:
   \begin{equation*}
     \prftree[r]{}
       {⊢\prop{\mvar{a}}}{⊢\mvar{p}:\mvar{a}}
       {⊢\valid{\mvar{a}}}.
   \end{equation*}
   In this case, we say that $\mvar{a}$ is a \define{theorem}\index{Theorem!Of
-  \abbreviation{IPL}} of \abbreviation{IPL}.
+  \IPL{}} of \IPL{}.
 \end{definition}
 
 \subsection{Elimination rules}
@@ -838,7 +837,7 @@ represent propositions.
 \end{definition}
 
 \begin{example}\label[example]{ex:ipl-not-not-lem}
-  A crucial consequence of the definition of \abbreviation{IPL} is that the law
+  A crucial consequence of the definition of \IPL{} is that the law
   of excluded middle isn't a theorem. However, we can demonstrate that
   its negation isn't either. While reading this proof, keep the following in
   mind:
@@ -884,7 +883,7 @@ represent propositions.
 \label{subsec:proof-terms}
 
 As we can see in \cref{ex:ipl-and-comm}, and \cref{ex:ipl-not-not-lem},
-derivations in \abbreviation{IPL} end with a \define{proof term} which
+derivations in \IPL{} end with a \define{proof term} which
 summarizes the whole proof tree. To demonstrate this, let's attempt to
 reconstruct a proof tree based on a judgment including such a term. Suppose your
 friend tells you they apprehended the following hypothetical judgment
@@ -986,7 +985,7 @@ affirmative.
 	\define{Judgmental equality} of proof terms, denoted
   $\mvar{p}\jdeq\mvar{q}:mvar{a}$, is the least congruence closed under the
   following
-  \define{computation rules}\index{Computation rules!In \abbreviation{IPL}}
+  \define{computation rules}\index{Computation rules!In \IPL{}}
   (also called \define{β-rules}):
   \begin{gatherjot}
     {\prftree[r]{\footnotesize β$∧$\textsubscript{l}}
@@ -1070,7 +1069,7 @@ rules and then introduction rules we can recover our original proofs.
 
 One of the ways that we can understand our computation rules is via a clever
 sort of diagram. This section foreshadows some connections between
-\abbreviation{IPL} and the content of \cref{chap:category-theory}.
+\IPL{} and the content of \cref{chap:category-theory}.
 
 \begin{definition}\label[definition]{def:implication-composition}
   Suppose given terms $\mvar{p}:\mvar{a}→\mvar{b}$ and
@@ -1181,7 +1180,7 @@ called ``computer scientists'' then) sought a rigorous foundation for terms like
 logical foundation an intuitive idea of what a(n idealized) human being could
 accomplish with specific\footnote{(finite)} instructions and arbitrarily much
 paper, pen, and time. Many particular mathematical models were proposed,
-including the λ-calculus (\abbreviation{LC}), Turing machines, Post systems,
+including the λ-calculus (\LC{}), Turing machines, Post systems,
 register machines, combinatory definability, and more \cite{sep-church-turing}.
 The \textit{Church-Turing thesis} proposes that the proper definition is (any
 model equivalent to) the λ-calculus.\footnote{Perhaps the strongest reason to
@@ -1189,13 +1188,17 @@ model equivalent to) the λ-calculus.\footnote{Perhaps the strongest reason to
   equivalent.}
 Computer scientists widely adopt this thesis, and the λ-calculus and its
 variants are of central importance to the study of computation in
-general.\footnote{A comprehensive study of \abbreviation{LC} is beyond the scope
-  of this thesis. For a reference on \abbreviation{LC} and \abbreviation{STLC},
-  see \cite{barendregt}.}
+general.
+
+A comprehensive study of \LC{} is beyond the scope
+of this thesis. For a tutorial on \LC{} and \STLC{} to
+complement the presentation here, see \cite{lambda-lecture}. For a standard
+reference on \LC{} (with an appendix on \STLC{}), see
+\cite{barendregt}.
 
 The type theory considered in \cref{chap:type-theory} is an extension of the
-typed λ-calculus (\abbreviation{TLC}) of \cref{subsec:more-complex-types}, which
-itself an extension of the simply-typed λ-calculus (\abbreviation{STLC}) of
+typed λ-calculus (\TLC{}) of \cref{subsec:more-complex-types}, which
+itself an extension of the simply-typed λ-calculus (\STLC{}) of
 \cref{subsec:the-simply-typed-lambda-calculus}.
 
 \subsection{The untyped λ-calculus}
@@ -1226,7 +1229,7 @@ Accordingly, function application is left-associative.
 
 There are no elimination rules. Again, we define judgmental equality λ-terms to
 be the least congruence closed under the following computation
-rule\index{Computation rules!In \abbreviation{LC}} and subject to the following
+rule\index{Computation rules!In \LC{}} and subject to the following
 unicity rule:
 \begin{align*}
   {\prftree[r]{\footnotesize β}
@@ -1342,7 +1345,7 @@ result in the same term, but there is \textit{a priori} no reason to think this
 is so in general. 
 
 \begin{theorem}[Church-Rosser]\label[theorem]{thm:church-rosser}
-  The order in which we apply computation rules to a term of \abbreviation{LC}
+  The order in which we apply computation rules to a term of \LC{}
   doesn't matter. More specifically, if $\mvar{a}\betatoo\mvar{b}$ and
   $\mvar{a}\betatoo\mvar{c}$, then there is a term $\mvar{d}$ such that
   $\mvar{b}\betatoo\mvar{d}$ and $\mvar{c}\betatoo \mvar{d}$.
@@ -1370,14 +1373,33 @@ equality.} but actual \textit{syntactic identity}, they compute to the exact
 same term.
 
 \begin{definition}\label[definition]{def:normal-form}
-	If $\mvar{a}$ is a term of \abbreviation{LC} such that there does not exist
+	If $\mvar{a}$ is a term of \LC{} such that there does not exist
   a term $\mvar{a}'$ with $\mvar{a}\betato \mvar{a}'$, then we say that
   $\mvar{a}$ is in \define{(β-)normal form}\index{Normal form}.
   If $\mvar{b}\betatoo\mvar{b}'$ and $\mvar{b}'$ is in normal form, we say
   $\mvar{b}'$ is the normal form of $\mvar{b}$.
 \end{definition}
 
-The use of the definite article in the above definition is justified by
+\begin{example*}\label[example]{ex:fixed-point}
+  A \define{fixed point} of a function $f$ (in \LC{},
+  \FOL+\ZFC, or any other formal system or programming language)
+  is an input $x$ such that $\apply{f}{x}=x$. Every term of \LC{}
+  has a fixed point (up to judgmental equality $\≡$). To see this, define
+  $θ \defeq (\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})$ and let
+  $𝚯\defeq \apply{θ}{θ}$. Let $\mvar{f}$ be any term of \LC{}. Then
+  \begin{align*}
+    \apply{𝚯}{f}
+    &\≡ \appply{θ}{θ}{f} \\
+    &\≡ \appply{(\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})}{θ}{f} \\
+    &\≡ \apply{f}{(\appply{θ}{θ}{f})} \\
+    &\≡ \apply{f}{(\apply{𝚯}{f})}
+  \end{align*}
+  The term $𝚯$ is called the \define{Turing fixed-point combinator}, and it can
+  be used to define recursive functions in \LC{} and its derivatives
+  \cite{lambda-lecture}.
+\end{example*}
+
+The use of the definite article in \cref{def:normal-form} is justified by
 Church-Rosser: every term has at most one β-normal form. However, not every
 term has a β-normal form.
 
@@ -1411,8 +1433,8 @@ ideas and computations, but with a computation rule that always ``terminates''.
 \label{subsec:the-simply-typed-lambda-calculus}
 
 In order to fix the problem raised in \cref{ex:non-terminating}, we can add
-\define{types}\index{Types!Simply-typed λ-calculus} to \abbreviation{LC} to get
-\abbreviation{STLC}, the simply-typed λ-calculus. We consider two new judgments
+\define{types}\index{Types!Simply-typed λ-calculus} to \LC{} to get
+\STLC{}, the simply-typed λ-calculus. We consider two new judgments
 of the form ``$\type{\mvar{t}}$'' and ``$\mvar{a}:\mvar{t}$'', read 
 ``\mvar{t} is a type'' and ``\mvar{a} has type \mvar{t}'', respectively (recall
 that ``$:$'' is a symbol of the meta-language, it is just shorthand for writing
@@ -1437,7 +1459,7 @@ The $\groundtype_i$ are called \define{ground types}, \define{base types}, or
   theory.}
 The term $\mvar{a}→\mvar{b}$ is the type of functions from $\mvar{a}$ to
 $\mvar{b}$. The introduction
-rule\index{Introduction rules!In \abbreviation{STLC}} tells us how to form
+rule\index{Introduction rules!In \STLC{}} tells us how to form
 elements of these types:
 \begin{align*}
   {\prftree[r]{}
@@ -1462,7 +1484,7 @@ ground type $\groundtype_0$.
     {Γ ⊢ \mvar{b}:\mvar{s}}
     {Γ ⊢ \apply{\mvar{a}}{\mvar{b}}:\mvar{t}}}
 \end{align*}
-The computation rules\index{Computation rules!In \abbreviation{STLC}} and
+The computation rules\index{Computation rules!In \STLC{}} and
 unicity rules remain much the same, only now with some restrictions on the types
 of the expressions involved:
 \begin{align*}
@@ -1479,7 +1501,7 @@ of the expressions involved:
 Variables may stand in for terms of arbitrary type.
 
 \begin{theorem}\label[theorem]{thm:strong-normalization}
-  \abbreviation{STLC} is \define{strongly normalizing}; every term has exactly
+  \STLC{} is \define{strongly normalizing}; every term has exactly
   one normal form.
 \end{theorem}
 
@@ -1499,15 +1521,15 @@ Variables may stand in for terms of arbitrary type.
 \subsection{More complex types}
 \label{subsec:more-complex-types}
 
-The ontology of \abbreviation{STLC} is severely limited: it can only express
+The ontology of \STLC{} is severely limited: it can only express
 ground type(s) and functions between them. This section develops
 various \define{type formers}, which build up more complex types
-from simpler ones (e.g.\ $→$ from \abbreviation{STLC}). In
+from simpler ones (e.g.\ $→$ from \STLC{}). In
 \cref{sec:propositions-and-types}, we will see that these types conform to
 intuitions from \cref{sec:ipl}.
 
 We will specifically consider four additional types (plus $→$), formed via the
-following rules\index{Formation rules!In \abbreviation{TLC}}: 
+following rules\index{Formation rules!In \TLC{}}: 
 \begin{gatherjot}
   \prftree[r]{}{}{Γ⊢\type{⊤}}
   \qquad
@@ -1559,7 +1581,7 @@ contains tagged elements of $\mvar{a}$ or $\mvar{b}$:
     {Γ ⊢ \apply{\inr}{\mvar{p}}:\mvar{a}+\mvar{b}}.
 \end{align*}
 
-The elimination rules\index{Elimination rules!In \abbreviation{TLC}}
+The elimination rules\index{Elimination rules!In \TLC{}}
 act as one might expect, given the reuse of the notation from \cref{sec:ipl} for
 the introduction rules:
 \begin{gatherjot}
@@ -1594,7 +1616,7 @@ the introduction rules:
     {Γ ⊢ \apply{\rec_{⊥}}{\mvar{p}}:\mvar{a}}.
 \end{gatherjot}
 Just as with the formation, introduction, and elimination rules,
-the computation and unicity rules are identical to those in \abbreviation{IPL}
+the computation and unicity rules are identical to those in \IPL{}
 (modulo notational differences), and so are omitted here.
 
 Examples of (somewhat) practical programs that can be written in an extension
@@ -1608,8 +1630,8 @@ expressing many familiar proofs of sentential logic (with some differences
 stemming from its constructivist nature). \Cref{sec:the-lambda-calculus} took a
 sharp left turn, describing a formalism for capturing a notion of algorithmic
 computability. However, the system obtained by adding a few reasonable features
-for describing more complicated data to \abbreviation{STLC} looked not merely
-analogous, but \textit{identical to} \abbreviation{IPL} (again, modulo simple
+for describing more complicated data to \STLC{} looked not merely
+analogous, but \textit{identical to} \IPL{} (again, modulo simple
 notational changes).
 
 While perhaps less surprising due to the notational conveniences of hindsight,
@@ -1619,48 +1641,49 @@ Curry-Howard(-Lambek)\footnote{More on Lambek's part in \cref{rmk:lambek}}
 correspondence, or the propositions-as-types interpretation. First investigated
 by Curry \cite{curry-howard}, who noticed that the types of the ``combinators''
 of his computational system\footnote{Equivalent to the λ-calculus, of course}
-could be interpreted as valid propositions in \abbreviation{IPL}. This
+could be interpreted as valid propositions in \IPL{}. This
 observation squared nicely with what's called the Brouwer-Heyting-Kolmogorov
-interpretation of \abbreviation{IPL}, which asserts that the semantics thereof
+interpretation of \IPL{}, which asserts that the semantics thereof
 are to be interpreted as referring not exactly to propositions and their proofs,
 but more general ``problems'' and their ``solutions'' \cite{kolmogorov}.
 
 So what does this correspondence really say? It can be understood in many
-ways.\footnote{My own favorite is that it is not really a correspondence nor an
-  isomorphism, but indeed should be read as an \textit{identity}, an expression
-  of the fundamental sameness of logic and computation.}
-It is sometimes read as asserting
-that proofs of \abbreviation{IPL} can be encoded into \abbreviation{TLC}. This
-translation has the nice property that type-checking (the process of determining
-whether or not has a given type in a given context $Γ$) is decidable: it can be
-performed mechanically, preferably by a computer. This gives such proofs a
-strong epistemological footing.
+ways.\footnote{Read in a particular light, the univalence principle 
+  \cref{sec:univalence} might suggest that this ``isomorphism'' be read
+  as an \textit{identity}, an expression of the fundamental sameness of logic
+  and computation.}
+It says that \TLC{} can be used to provide semantics for programming
+languages \cite{landin}. It says that proofs of \IPL{} can be
+encoded into \TLC{}. This translation has the nice property that
+type-checking (the process of determining whether or not has a given type in a
+given context $Γ$) is decidable: it can be performed mechanically, preferably by
+a computer. This gives such proofs a strong epistemological footing.
 
 \chapter{Type theory}
 \label{chap:type-theory}
 
 Whatever the meaning of the Curry-Howard correspondence, its utility is
-circumscribed by the fact that \abbreviation{IPL}/\abbreviation{TLC} as
-presented do not match the expressive power of classical \abbreviation{FOL}:
+circumscribed by the fact that \IPL{}/\TLC{} as
+presented do not match the expressive power of classical \FOL:
 there are no types expressing quantification over some domain, nor propositions
 or relations that may ``apply'' to terms and variables. Certainly, they are
 missing the infinite structures of classical set theory.
 
-The system described in this section enriches \abbreviation{TLC} with
+The system described in this section enriches \TLC{} with
 \textit{dependent types} (\cref{sec:dependent-types}) and a few more base types,
 including our first examples of \textit{inductive types}
 (\cref{subsec:natural-numbers-and-lists}). Additionally, we define and include
 Voevodsky's univalence axiom (\cref{sec:univalence}). The
-resulting system (univalent type theory, or \abbreviation{UTT}) has similar
-expressive power to \abbreviation{ZFC}+\abbreviation{FOL}.\footnote{Indeed, the
+resulting system (univalent type theory, or \UTT{}) has similar
+expressive power to \ZFC+\FOL.\footnote{Indeed, the
   ``set types'' (\cref{def:sets}) behave very much like sets in classical
   mathematics, especially when a few classically-minded axioms are assumed. See
   \cite{book} for more commentary.}
 
-\abbreviation{UTT} corresponds closely to $\caH$ in
+\UTT{} corresponds closely to $\caH$ in
 \cite{inductive} and \cite{homotopy-initial}. The results of
 \cref{chap:coinductive-types-in-univalent-type-theory} don't require the full
-power of homotopy type theory (\abbreviation{HoTT}), specifically we leave out
+power of homotopy type theory (\HoTT), specifically we leave out
 the axioms asserting the existence of higher inductive types.
 
 \section{Dependent types}
@@ -1798,7 +1821,7 @@ assistants: nothing else computes.
 \label{sec:the-identity-type}
 
 \begin{tt-rule}\label[rule]{rule:id-elim}
-  The rule of \define{identity elimination} (in the \abbreviation{HoTT}
+  The rule of \define{identity elimination} (in the \HoTT
   community, known as \define{path induction}) is as follows:\TODO{define id-elim}
 \end{tt-rule}
 
@@ -1854,7 +1877,7 @@ assistants: nothing else computes.
   It has the following computation rule:
 
   Note that this rule holds up to \textit{propositional equality}. This is
-  because in \abbreviation{UTT}, univalence is indeed an \textit{axiom}. It has
+  because in \UTT{}, univalence is indeed an \textit{axiom}. It has
   no computational meaning. \TODO{mention CTT}
 \end{definition}
 
@@ -1871,9 +1894,9 @@ assistants: nothing else computes.
 
 Category theory presents a challange to set-theoretic mathematicians: the
 canonical example of a category is $\Set$, the collection of all sets. In
-\abbreviation{ZFC}+\abbreviation{FOL}, this category is undefinable\footnote{In
+\ZFC+\FOL, this category is undefinable\footnote{In
   particular, its formation is prevented by the axiom of regularity
-  \cite{vonneumann}, which was included in \abbreviation{ZFC} to avoid the
+  \cite{vonneumann}, which was included in \ZFC to avoid the
   paradoxes of Burali-Forti and Russell. The discovery of said paradoxes
   motivated Bertrand Russell to invent something he called the ``theory of
   types'' \cite{russell}.}.
@@ -1881,7 +1904,7 @@ canonical example of a category is $\Set$, the collection of all sets. In
 are willfully imprecise, we work with an abstract and undefined notion of
 ``collection'', and adopt set-theoretic notation. See any textbook on category
 theory for information on how problems of size are dealt with set-theoretically.
-We will examine category theory within \abbreviation{UTT} in
+We will examine category theory within \UTT{} in
 \cref{sec:type-theoretic-category-theory}.
 
 \section{Basics}
@@ -2091,8 +2114,9 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \end{definition}
 
 \begin{remark}\label[remark]{rmk:lambek}
-	We now have the vocabulary to extend the correspondence of
+	We now have the vocabulary to (informally) extend the correspondence of
   \cref{sec:curry-howard} to statements about a certain kind of category.
+  \cite{lambek}
   \TODO{}
 \end{remark}
 
@@ -2320,7 +2344,7 @@ The following example is crucial to
   Well, we've successfully rephrased the property of initiality, but it seems
   just as cryptic now as it was then. Let's see if we can figure out what an
   type with this property would look like in our favorite category \universe, the
-  universe of small types in \abbreviation{ITT}!
+  universe of small types in \ITT!
 
   Let \List{\N} be the type of lists of natural numbers
   as in \cref{subsubsec:lists}. To utilize the above property, we need
@@ -2811,7 +2835,7 @@ of M-types.
 \begin{definition}[\unimathname{W.Fibered.fibered\_alg},
                    \unimathname{W.Fibered.algebra\_section}]
   \label[definition]{def:algebra-fibration}
-  Inspired by the homotopical semantics for \abbreviation{UTT},
+  Inspired by the homotopical semantics for \UTT{},
   if $(X,α)$ is an algebra for the functor associated to $(A,B)$,
   the type of \define{fibered $P$-algebras} over $X$ is
   \begin{equation*}
@@ -3309,7 +3333,7 @@ The following table lists lemmas taken from \cite{book}.
 \begin{table}[ht]
   \centering
   \begin{tabular}{c | c}
-    This thesis & The \abbreviation{HoTT} book \\ \hline
+    This thesis & The \HoTT book \\ \hline
     \Cref{def:ua} & Axiom 2.10.3
   \end{tabular}
 \end{table}
