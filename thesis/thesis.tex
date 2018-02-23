@@ -390,7 +390,7 @@ of uses of metavariables.
   The premises and conclusions of proofs or rules of deduction are always
   judgments. If we can deduce a conclusion $K$ from premises $J_1,\ldots,J_n$
   via some rule R (again: $J_1,\ldots,J_n$ and $K$ are \textit{judgments},
-  phrased in plain Enlgish, not terms of an object language)\footnote{These 
+  phrased in plain Enlgish, not terms of an object language)\footnote{These
     could be called meta-metavariables.},
   we will write
   \begin{align*}
@@ -473,94 +473,94 @@ of uses of metavariables.
     $Γ,Δ,Θ$
                          & \cref{notation:proof-tree}
       & English                & Some arbitrary ordered sequence of judgments \\
-    $Γ ⊢ J$              
-      & \cref{notation:sequent} 
-      & English                
+    $Γ ⊢ J$
+      & \cref{notation:sequent}
+      & English
       & Under the hypotheses $Γ$, $J$ holds \\
-    $\mvar{a},\mvar{b}$  
-      & \cref{def:metavariable} 
-      & English                
+    $\mvar{a},\mvar{b}$
+      & \cref{def:metavariable}
+      & English
       & Metavariable: a term in the object language \\
     $x\≔\mvar{a}$
       & TODO
-      & English                
+      & English
       & ``x'' is a shorthand for the expression $\mvar{a}$ \\
     $\mvar{a}[\mvar{b} \≔ \mvar{c}]$
       & \cref{notation:substitution}
-      & English                
+      & English
       & Substitute the expression $\mvar{c}$ for $\mvar{b}$ in $\mvar{a}$ \\
-    $\prop{\mvar{a}}$   
-      & \cref{subsec:ipl-intro} 
-      & English                
+    $\prop{\mvar{a}}$
+      & \cref{subsec:ipl-intro}
+      & English
       & Judgment: $\mvar{a}$ is a proposition \\
-    $\mvar{a}:\mvar{p}$  
-      & \cref{subsec:ipl-intro}, TODO: \STLC{} 
-      & English                
+    $\mvar{a}:\mvar{p}$
+      & \cref{subsec:ipl-intro}, TODO: \STLC{}
+      & English
       & Judgment: $\mvar{a}$ is a proof of (or has type) $\mvar{p}$ \\
-    $\mvar{a}\≡\mvar{b}:\mvar{p}$  
-      & \cref{def:jdeq-ipl} 
-      & English                
+    $\mvar{a}\≡\mvar{b}:\mvar{p}$
+      & \cref{def:jdeq-ipl}
+      & English
       & Judgment: $\mvar{a}$ is equal to $\mvar{b}$ proofs/elements of $\mvar{p}$ \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    $\apply{\mvar{a}}{\mvar{b}}$       
+    $\apply{\mvar{a}}{\mvar{b}}$
       & \cref{notation:parens}
       &  All
       & Application of $\mvar{a}$ to $\mvar{b}$ \\
-    $v,w,x,y,z$          
-      & 
+    $v,w,x,y,z$
+      &
       & All
       & Variables (free or bound) \\
-    % $c_0,c_1,\ldots$          
-    %   & 
+    % $c_0,c_1,\ldots$
+    %   &
     %   & \(S)TLC
     %   & Constants \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    $\λ{x}\mvar{a}$      
-      & 
-      & \IPL{}, \formalsystem{((S)T)LC}, \UTT{} 
+    $\λ{x}\mvar{a}$
+      &
+      & \IPL{}, \formalsystem{((S)T)LC}, \UTT{}
       & A function that takes an input $x$ \\
-    $→$       
-      & 
-      & \IPL{}, \formalsystem{(S)TLC}, \UTT{} 
+    $→$
+      &
+      & \IPL{}, \formalsystem{(S)TLC}, \UTT{}
       & Material implication or function type \\
-    $×$       
-      & 
-      & \ZFC+\FOL, \TLC{}, \UTT{} 
+    $×$
+      &
+      & \ZFC+\FOL, \TLC{}, \UTT{}
       & Cartesian or categorical product, product type \\
-    $+$       
-      & 
-      & \TLC{}, \UTT{} 
+    $+$
+      &
+      & \TLC{}, \UTT{}
       & Coproduct type, categorical coproduct \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    $(a,b)$       
-      & 
-      & \IPL{}, \TLC{}, \UTT{} 
+    $(a,b)$
+      &
+      & \IPL{}, \TLC{}, \UTT{}
       & Constructor of the pair type \\
-    $\inl$, $\inr$       
-      & 
-      & \IPL{}, \TLC{}, \UTT{} 
+    $\inl$, $\inr$
+      &
+      & \IPL{}, \TLC{}, \UTT{}
       & Constructor of the coproduct type \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $\pr{1}$, $\pr{2}$
-      & 
-      & \IPL{}, \TLC{}, \UTT{} 
+      &
+      & \IPL{}, \TLC{}, \UTT{}
       & Destructor of the product type \\
-    $\case$       
-      & 
+    $\case$
+      &
       & \IPL{}, \TLC{}
       & Destructor of the coproduct type \\
-    $\rec$       
+    $\rec$
       & Various
-      & \IPL{}, \TLC{}, \UTT{} 
+      & \IPL{}, \TLC{}, \UTT{}
       & Recursion principle or elimination rule \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $\∑{\mvar{a}:\mvar{p}}{\apply{\mvar{b}}{\mvar{a}}}$
       &
-      & \UTT{} 
+      & \UTT{}
       & Σ or dependent pair type \\
     $\∏{\mvar{a}:\mvar{p}}{\apply{\mvar{b}}{\mvar{a}}}$
       &
-      & \UTT{} 
+      & \UTT{}
       & Π or dependent pair type \\
   \end{tabular}
   \caption{\label{tab:symbols}Symbols and their interpretations}
@@ -1276,6 +1276,25 @@ unicity rule:
   further.
 \end{example*}
 
+\begin{example*}\label[example]{ex:fixed-point}
+  A \define{fixed point} of a function $f$ (in \LC{},
+  \FOL+\ZFC, or any other formal system or programming language)
+  is an input $x$ such that $\apply{f}{x}=x$. Every term of \LC{}
+  has a fixed point (up to judgmental equality $\≡$). To see this, define
+  $θ \defeq (\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})$ and let
+  $𝚯\defeq \apply{θ}{θ}$. Let $\mvar{f}$ be any term of \LC{}. Then
+  \begin{align*}
+    \apply{𝚯}{f}
+    &\≡ \appply{θ}{θ}{f} \\
+    &\≡ \appply{(\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})}{θ}{f} \\
+    &\≡ \apply{f}{(\appply{θ}{θ}{f})} \\
+    &\≡ \apply{f}{(\apply{𝚯}{f})}
+  \end{align*}
+  The term $𝚯$ is called the \define{Turing fixed-point combinator}, and it can
+  be used to define recursive functions in \LC{} and its derivatives
+  \cite{lambda-lecture}.
+\end{example*}
+
 We can make choices about what part of an expression to apply the computation
 rule to. Consider the following computations:
 \begin{center}
@@ -1342,7 +1361,7 @@ rule to. Consider the following computations:
 In the left column, we reduce the leftmost expression first, whereas in the
 right column, we reduce the rightmost expression first. In this example, they
 result in the same term, but there is \textit{a priori} no reason to think this
-is so in general. 
+is so in general.
 
 \begin{theorem}[Church-Rosser]\label[theorem]{thm:church-rosser}
   The order in which we apply computation rules to a term of \LC{}
@@ -1380,25 +1399,6 @@ same term.
   $\mvar{b}'$ is the normal form of $\mvar{b}$.
 \end{definition}
 
-\begin{example*}\label[example]{ex:fixed-point}
-  A \define{fixed point} of a function $f$ (in \LC{},
-  \FOL+\ZFC, or any other formal system or programming language)
-  is an input $x$ such that $\apply{f}{x}=x$. Every term of \LC{}
-  has a fixed point (up to judgmental equality $\≡$). To see this, define
-  $θ \defeq (\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})$ and let
-  $𝚯\defeq \apply{θ}{θ}$. Let $\mvar{f}$ be any term of \LC{}. Then
-  \begin{align*}
-    \apply{𝚯}{f}
-    &\≡ \appply{θ}{θ}{f} \\
-    &\≡ \appply{(\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})}{θ}{f} \\
-    &\≡ \apply{f}{(\appply{θ}{θ}{f})} \\
-    &\≡ \apply{f}{(\apply{𝚯}{f})}
-  \end{align*}
-  The term $𝚯$ is called the \define{Turing fixed-point combinator}, and it can
-  be used to define recursive functions in \LC{} and its derivatives
-  \cite{lambda-lecture}.
-\end{example*}
-
 The use of the definite article in \cref{def:normal-form} is justified by
 Church-Rosser: every term has at most one β-normal form. However, not every
 term has a β-normal form.
@@ -1435,7 +1435,7 @@ ideas and computations, but with a computation rule that always ``terminates''.
 In order to fix the problem raised in \cref{ex:non-terminating}, we can add
 \define{types}\index{Types!Simply-typed λ-calculus} to \LC{} to get
 \STLC{}, the simply-typed λ-calculus. We consider two new judgments
-of the form ``$\type{\mvar{t}}$'' and ``$\mvar{a}:\mvar{t}$'', read 
+of the form ``$\type{\mvar{t}}$'' and ``$\mvar{a}:\mvar{t}$'', read
 ``\mvar{t} is a type'' and ``\mvar{a} has type \mvar{t}'', respectively (recall
 that ``$:$'' is a symbol of the meta-language, it is just shorthand for writing
 a judgment). In writing these judgments, we implicitly assume that all
@@ -1529,7 +1529,7 @@ from simpler ones (e.g.\ $→$ from \STLC{}). In
 intuitions from \cref{sec:ipl}.
 
 We will specifically consider four additional types (plus $→$), formed via the
-following rules\index{Formation rules!In \TLC{}}: 
+following rules\index{Formation rules!In \TLC{}}:
 \begin{gatherjot}
   \prftree[r]{}{}{Γ⊢\type{⊤}}
   \qquad
@@ -1632,11 +1632,11 @@ sharp left turn, describing a formalism for capturing a notion of algorithmic
 computability. However, the system obtained by adding a few reasonable features
 for describing more complicated data to \STLC{} looked not merely
 analogous, but \textit{identical to} \IPL{} (again, modulo simple
-notational changes).
+notational changes, see \cref{tab:curry-howard}).
 
 While perhaps less surprising due to the notational conveniences of hindsight,
 this observation has startling and deep consequences (and a rich intellectual
-history). It is known as the 
+history). It is known as the
 Curry-Howard(-Lambek)\footnote{More on Lambek's part in \cref{rmk:lambek}}
 correspondence, or the propositions-as-types interpretation. First investigated
 by Curry \cite{curry-howard}, who noticed that the types of the ``combinators''
@@ -1648,7 +1648,7 @@ are to be interpreted as referring not exactly to propositions and their proofs,
 but more general ``problems'' and their ``solutions'' \cite{kolmogorov}.
 
 So what does this correspondence really say? It can be understood in many
-ways.\footnote{Read in a particular light, the univalence principle 
+ways.\footnote{Read in a particular light, the univalence principle
   \cref{sec:univalence} might suggest that this ``isomorphism'' be read
   as an \textit{identity}, an expression of the fundamental sameness of logic
   and computation.}
@@ -1658,6 +1658,75 @@ encoded into \TLC{}. This translation has the nice property that
 type-checking (the process of determining whether or not has a given type in a
 given context $Γ$) is decidable: it can be performed mechanically, preferably by
 a computer. This gives such proofs a strong epistemological footing.
+
+\begin{sidewaystable}
+  \centering
+  \begin{tabular}{l | l | l | l | l}
+    \ZFC & \IPL & \UTT & Category theory & Homotopy theory \\ \hline
+    Set
+      & Proposition
+      & Type
+      & Object
+      & Space \\
+    Element
+      & Proof
+      & Term/program
+      & ``Element'' ($⊤→X$)
+      & Point \\
+    Product ($A×B$)
+      & Conjunction ($a∧b$)
+      & Pair type (${a}×{b}$)
+      & Product (${a}×{b}$)
+      & Product space (${A}×{B}$) \\
+    Disjoint union (${A}\amalg {B}$)
+      & Disjunction (${a}∨{b}$)
+      & Sum type ($a+b$)
+      & Coprod.\ type ($A+B$)
+      & Coprod.\ space ($A+B$) \\
+    Empty set ($\emptyset$)
+      & Falsehood
+      & Empty type ($\emptytype$)
+      & Initial object
+      & Empty space \\
+    Singleton set
+      & Truth
+      & Unit type ($\unittype$)
+      & Final object
+      & Singeton space \\
+    Function ($f:A→B$)
+      & Impl.\ ($p:a→b$)
+      & Function ($f:A→B$)
+      & Morphism ($f:A→B$)
+      & Continuous function \\
+    Equality ($A=B$)
+      & Judg.\ eq.\ ($A\≡ B$)
+      & Judg.\ eq.\ ($A\≡ B$)
+      & Equality ($A=B$)
+      & Equality ($A=B$) \\
+    Path $f:[0,1]→X$
+      &
+      & Prop. eq.\ ($\propeq{A}{a}{b}$)
+      & Equality ($A=B$)
+      & Path \\
+    {}
+      & {}
+      & Weak equiv.\ $\weq{A}{B}$
+      & Isomorphism $A≅B$
+      & Equivalence $A\simeq B$ \\
+    Universal q.\ ($∀x.Px$)
+      & {}
+      & Π-type ($\prod_{x:A}\apply{P}{x}$)
+      & {}
+      & Section \\
+    Existential q.\ ($∃x.Px$)
+      & {}
+      & Σ-type ($\sum_{x:A}\apply{P}{x}$)
+      & {}
+      & Total space
+  \end{tabular}
+  \caption{\label{tab:curry-howard}A table of metaphors, including but not
+    limited to the Curry-Howard-Lambek-Voevodsky correspondence.}
+\end{sidewaystable}
 
 \chapter{Type theory}
 \label{chap:type-theory}
@@ -1751,7 +1820,7 @@ for \textit{all} types.
 
 
 \begin{remark}\label[remark]{rmk:universe-hierarchy}
-	
+
 \end{remark}
 
 \subsection{Σ-types}
@@ -1855,7 +1924,7 @@ assistants: nothing else computes.
 \label{sec:$h$-levels and truncation}
 
 \begin{definition}\label[definition]{def:sets}
-	
+
 \end{definition}
 
 \section{Univalence}
@@ -2539,11 +2608,11 @@ element in $\W{a}{A}{B}$:
       % \draw (A) edge [in=-60,out=-20,loop] node[below] {$e$} (A);
     \end{tikzpicture}
   \end{center}
-  
+
   We can derive from the induction principle of $\booltype$ that it
   only has two elements, $\bfalse$ and $\btrue$ \TODO{reference}.
   Using this (and ignoring uniquely specified terms like $!$),
-  the W-elimination rule for $\N'$ can be reshaped and simplified: 
+  the W-elimination rule for $\N'$ can be reshaped and simplified:
   \begin{equation*}
     \prftree[r]{\N'-elim}
       {Γ ⊢ n:\N'}
@@ -2555,7 +2624,7 @@ element in $\W{a}{A}{B}$:
       {Γ ⊢ \apppply{\rec_{\N'}}{n}{h_1}{h_2}:\apply{C}{n}}
   \end{equation*}
   But since a function $\unittype→\N'$ is equivalent to picking out a single
-  element of $\N'$ and $\sup{\btrue}{f}\equiv\apply{\suc}{f}$, 
+  element of $\N'$ and $\sup{\btrue}{f}\equiv\apply{\suc}{f}$,
   this is just the elimination rule for the natural numbers (\TODO{ref})
   in disguise.
 \end{example}
@@ -2613,7 +2682,7 @@ include all examples in \cref{sec:functors-and-their-algebras}.
 \end{definition}
 
 See \cref{ex:nat-functor-utt} for the polynomial functor for which $\ℕ$ is
-initial. 
+initial.
 
 \section{Internalizing M-types}
 \label{sec:internalizing-m-types}
@@ -2863,7 +2932,7 @@ of M-types.
 \begin{example}[\unimathname{W.Fibered.alg2fibered\_alg},
                 \unimathname{W.Fibered.fibered\_alg2alg}]
   Any $P$-algebra can be made into a fibered $P$-algebra over $(X,α)$ by using a
-  constant family: 
+  constant family:
   \begin{align*}
     \Algtype_P &\longrightarrow \Fibalgtype(X) \\
     \dpair{Y}{β} &\longmapsto
@@ -2917,7 +2986,7 @@ they are initial, some of which will be familiar from
 
 \begin{example}[\coqname{W.Naturals.nat\_functor}]
   \label[example]{ex:nat-functor-utt}
-	Consider the polynomial functor associated to $A\defeq \𝔹$ and 
+	Consider the polynomial functor associated to $A\defeq \𝔹$ and
   $B\defeq \apppply{\rec_{\𝔹}}{\universe}{\𝟘}{\𝟙}$:
   \begin{equation*}
     PX \defeq \∑{b:\𝔹}{\appppply{\rec_{\𝔹}}{\universe}{\𝟘}{\𝟙}{b}} → X.
@@ -2963,7 +3032,7 @@ of $X ↦ 1 + X$.
     \end{split}
   \end{align*}
   Now $\dpair{X}{(x_0,\suc_X)}$ has type $\∑{X:\universe}{X × (X → X)}$ as
-  desired. 
+  desired.
 
   In the other direction, suppose we have some type $X$, a point $x_0:X$, and a
   function $\suc_X:X → X$. Define
@@ -2997,7 +3066,7 @@ result. We can give a similar lemma for morphisms:
     \end{tikzcd}
   \end{center}
   where $\apply{P^*f}{\dpair{b}{h}}\defeq \dpair{b}{f ∘ h}$
-  (\cref{def:polynomial-functor}). 
+  (\cref{def:polynomial-functor}).
   By function extensionality (\cref{thm:funext}), it suffices to show that the
   two composites are equal on all inputs. Let $\dpair{b}{h}:PX$, and proceed by
   cases on $b:\𝔹$.
@@ -3010,9 +3079,9 @@ result. We can give a similar lemma for morphisms:
     &\jdeq \apply{β}{\dpair{\bfalse}{f ∘ h}} \\
     &= \apply{β}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{Y}}}
     &&\quad\text{Terminality of }\𝟘\\
-    &\jdeq y_0 
+    &\jdeq y_0
     &&\quad\text{Definition} \\
-    &= \apply{f}{x_0} 
+    &= \apply{f}{x_0}
     &&\quad\text{Hypothesis} \\
     &\jdeq \apply{(f∘α)}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{X}}} \\
     &= \apply{(f∘α)}{\dpair{\bfalse}{h}}
@@ -3027,7 +3096,7 @@ result. We can give a similar lemma for morphisms:
     \apply{(β∘(P^*f))}{\dpair{\btrue}{h}}
     &\jdeq \apply{β}{\dpair{\btrue}{f ∘ h}} \\
     &\= \apply{β}{\dpair{\btrue}{f ∘ (\appply{\rec_{\𝟙}}{Y}{(\apply{h}{\unitelem})})}} \\
-    &\= \apply{β}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{Y}{(\apply{f}{(\apply{h}{\unitelem})})}}} 
+    &\= \apply{β}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{Y}{(\apply{f}{(\apply{h}{\unitelem})})}}}
     &&\quad\text{Function ext.} \\
     &\jdeq \apply{\suc_Y}{(\apply{f}{(\apply{h}{\unitelem})})}
     &&\quad\text{Definition of }\suc_Y \\
@@ -3052,7 +3121,7 @@ result. We can give a similar lemma for morphisms:
   \begin{alignat*}{2}
     &g : ℕ → X \\
     &\apply{g}{0}                 &&\defeq x_0 \\
-    &\apply{g}{(\apply{\suc}{n})} &&\defeq \suc_X(g(n)) 
+    &\apply{g}{(\apply{\suc}{n})} &&\defeq \suc_X(g(n))
   \end{alignat*}
   By definition $g$ sends the distinguished point $x_0$ to $0$ and intertwines
   $\suc$ with $\suc_X$; by \cref{lemma:nat-alg-mor}, it's an algebra morphism.
@@ -3137,7 +3206,7 @@ also have a simple structure understood by an equivalence.
 
 \begin{lemma}[\coqname{W.Naturals.fibered\_algebra\_nat}]
   \label[lemma]{lemma:nat-fib-alg-simpl}
-  A fibered algebra structure (over $\ℕ$) on a family 
+  A fibered algebra structure (over $\ℕ$) on a family
   $E:\ℕ\to\universe$ is given by a point $e_0:E_0$
   and a family of functions $f^E:\pit{n:\ℕ}{E_n\to E_{n+1}}$. Specifically,
   there is an equivalence
@@ -3161,7 +3230,7 @@ algebra sections.
   If $x:\∏{n:\ℕ}{X}$ sends $0$ to $e_0$ and for all $n$,
   $\propeq{}{\apply{f^E}{n}}{\apply{x}{(\apply{\suc}{n})}}$,
   then there is a corresponding algebra section with $x$ as the underlying
-  function. 
+  function.
 \end{lemma}
 \begin{proof}
 	\TODO{proof?}
@@ -3172,7 +3241,7 @@ algebra sections.
 \end{lemma}
 
 This result is proved in the \Agda{} formalization accompanying
-\cite{non-wellfounded}. Its proof is outside of the scope 
+\cite{non-wellfounded}. Its proof is outside of the scope
 
 \begin{lemma}[\coqname{W.Naturals.nat\_alg\_is\_preinitial\_sec}]
   \label[lemma]{lemma:fiber-preinitiality-nat}
