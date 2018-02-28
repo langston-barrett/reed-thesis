@@ -256,7 +256,7 @@ notation, meta-logical concerns, and the key differences between
 \IPL{} and \FOL. In \cref{sec:the-lambda-calculus}, we
 will introduce Church's λ-calculus \LC{} (and the simply-typed and
 typed versions \STLC{} and \TLC{}). Finally, in
-\cref{sec:curry-howard}, we will discuss the fundamental and
+\cref{sec:propositions-and-types}, we will discuss the fundamental and
 harmonious relation between these systems known as the Curry-Howard
 correspondence.\TODO{Motivate the formality of this chapter}
 
@@ -573,7 +573,7 @@ With these notations, we are prepared to define \IPL{}.
 \Crefrange{sec:ipl}{sec:the-lambda-calculus} present these systems in some
 degree of formality. Proofs in later chapters are not written in this style, but
 it is important to see precisely specified versions of these logics in order to
-understand \cref{sec:curry-howard}.
+understand \cref{sec:propositions-and-types}.
 
 \subsection{Formation rules}
 \label{subsec:ipl-form}
@@ -939,7 +939,7 @@ The proof term in longer arguments is often cumbersome, and we might wonder if
 there are any benefits to internalizing\index{Internalizing!Proofs} proof. The
 answer to this question will become clear in
 \crefrange{subsec:ipl-compute}{subsec:ipl-uni}, and will play a critical role in
-\cref{sec:curry-howard}. In short, they will allow us to
+\cref{sec:propositions-and-types}. In short, they will allow us to
 verify the \define{harmony}\index{Harmony} of our logic: that the introduction
 rules complement the elimination rules with respect to two specific
 criteria.\footnote{On the philosophical side, Martin-L\"of made an interesting
@@ -1749,11 +1749,12 @@ expressive power to \ZFC+\FOL.\footnote{Indeed, the
   mathematics, especially when a few classically-minded axioms are assumed. See
   \cite{book} for more commentary.}
 
-\UTT{} corresponds closely to $\caH$ in
-\cite{inductive} and \cite{homotopy-initial}. The results of
-\cref{chap:coinductive-types-in-univalent-type-theory} don't require the full
-power of homotopy type theory (\HoTT), specifically we leave out
-the axioms asserting the existence of higher inductive types.
+\UTT{} mirrors the type theory $\caH'$ of \cite{homotopy-limits}, which itself
+is the system $\caH$ in \cite{inductive} and \cite{homotopy-initial} with the
+addition of the natural numbers and a universe. The results of
+\cref{chap:coinductive-types-in-univalent-type-theory} don't
+require the full power of homotopy type theory (\HoTT), specifically we leave
+out the axioms asserting the existence of higher inductive types.
 
 \section{Dependent types}
 \label{sec:dependent-types}
@@ -1857,11 +1858,11 @@ for \textit{all} types.
 Consider functions with the following types:
 \begin{itemize}
   \itemsep0em
-  \item $\ttfun{dne}:\∏{A:\universe}{(A\to⊥\to⊥)\to A}$
+  \item $\ttfun{dne}:\∏{A:\universe}{((A\to⊥)\to⊥)\to A}$
   \item $\ttfun{lem}:\∏{A:\universe}{A+(A\to⊥)}$
 \end{itemize}
 What can we tell about these functions from their type signatures?
-The term $\ttfun{dne}$ takes as argument a term $x:A\to⊥\to⊥$,
+The term $\ttfun{dne}$ takes as argument a term $x:(A\to⊥)\to⊥$,
 that is, a term showing that $A$ is not the empty type\footnote{More precisely,
   $x$ demonstrates that $A$ is not \textit{isomorphic} or \textit{equivalent} to
   $⊥$, in the sense of \cref{subsec:weak-equivalences}. If $A$ were isomorphic
@@ -1920,12 +1921,35 @@ assistants: nothing else computes.
 \end{lemma}
 
 
-\section{$h$-levels and truncation}
-\label{sec:$h$-levels and truncation}
+\section{h-levels and truncation}
+\label{sec:h-levels and truncation}
+
+\begin{definition}\label[definition]{def:mere-proposition}
+  A type $X:\universe$ is a \define{mere proposition}, a \define{proposition},
+  or an \define{hprop} if all of its elements are propositionally equal,
+  \begin{equation*}
+    \apply{\isProp}{X} \defeq \pit{x,y:X}x=y
+  \end{equation*}
+\end{definition}
+
+\begin{definition}\label[definition]{def:contr}
+  A type $X:\universe$ is \define{contractible} if it is a mere proposition and
+  is inhabited, that is
+  \begin{equation*}
+    \apply{\isContr}{X} \defeq \sigmat{x:X}{\pit{y:X}x=y}
+  \end{equation*}
+  The first projection is the \define{center} of $X$.
+\end{definition}
 
 \begin{definition}\label[definition]{def:sets}
 
 \end{definition}
+
+\begin{figure}[ht]
+  \centering
+  \caption{\label{fig:awodey} Awodey's two axes: size (universe level)
+    and complexity (h-level).}
+\end{figure}
 
 \section{Univalence}
 \label{sec:univalence}
@@ -1937,6 +1961,18 @@ assistants: nothing else computes.
   We may treat a weak equivalence as if it were a function and apply it to an
   argument. This amounts to implicitly appling $\pr{1}$.
 \end{notation}
+
+\begin{lemma}\label[lemma]{lemma:contr-weq-unit}
+	Any contractible type is weakly equivlant to $\unittype$.
+\end{lemma}
+\begin{proof}
+	Suppose $X:\universe$ is contractible with center $x$. Define $f:X→\unittype$
+  as $\λ{x}{\unitelem}$ and $g:\unittype→X$ as $\λ{u}{x}$. Then by hypothesis on
+  $X$, the induction principle for $\unittype$\TODO{reference}, and function
+  extensionality (\cref{thm:funext}), the composites are the appropriate
+  identities.
+\end{proof}
+
 
 \subsection{The univalence axiom}
 \label{subsec:the-univalence-axiom}
@@ -2124,6 +2160,53 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
   }
 \end{definition}
 
+\begin{example} \
+  \begin{itemize}
+    \itemsep-0.2em
+    \item $\Set$: 
+      \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+        \itemsep-0.2em
+        \item \vspace{-0.6em} Any singleton set $\braces{∗}$ is terminal.
+        \item The empty set $\emptyset$ is initial.\footnote{This is a little
+            odd: in set-theoretic foundations, functions are actually defined
+            as certain kinds of relations (``functional'' ones). Accordingly,
+            the unique function out of them empty set is the unique subset
+            of $\emptyset×X=\emptyset$, namely $\emptyset$ itself.}
+      \end{itemize}
+    \item $\universe$: 
+      \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+        \itemsep-0.2em
+        \item{} \vspace{-0.6em}
+          [\unimathname{CategoryTheory.categories.Types.TerminalType}]
+          Any contractible type is terminal (for the
+          similarity to the case of sets, note that any contractible type is
+          equivalent to the canonical type with one element, $\unittype$
+          (\cref{lemma:contr-weq-unit})).
+        \item{} [\unimathname{CategoryTheory.categories.Types.InitialType}]
+          The elimination rule for the empty type gives an arrow
+          $\emptytype→X$ for any $X$. How do we know it's unique? Apply function
+          extensionality (\cref{thm:funext}), then it suffices to show that it
+          has the same output as any competitor $f:\emptytype\to X$ on some
+          $e:\emptytype$. But using the elimination rule for $\emptytype$ on
+          $e$, we can conclude that it does.
+      \end{itemize}
+    \item $\Cat$: 
+      \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+        \itemsep-0.2em
+        \item \vspace{-0.6em} The category with one object and one arrow (its
+          identity) is terminal.
+        \item The empty category is initial, for the same reasons as in $\Set$
+          or $\universe$ (depending on which foundational system one is working
+          in).
+      \end{itemize}
+    \item $\Grp$, $\AbGrp$: The group with one element (``trivial group'') is
+      initial \textit{and} terminal. Such an object is, in general, called a
+      \define{zero object}.
+    \item $F\dVect$: Similarly, the trivial vector space is a zero object (its
+      underlying additive abelian group of vectors is the trivial group!)
+  \end{itemize}
+\end{example}
+
 \begin{remark}\label[remark]{remark:terminal-object-id-unique}
 	In particular, for a terminal object $⊤$, $\id_⊤$ is the only arrow
   $⊤\to⊤$.\footnote{As noted in \cref{sec:duality}, this statement
@@ -2182,9 +2265,367 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
   }
 \end{definition}
 
+\begin{remark}\label[remark]{rmk:prod-coprod-universal-adj}
+	The universal properties of the product and coproduct define a bijections
+  (there is one and only one function that fills in the diagram)
+  \begin{align*}
+    \Hom(A,C)×\Hom(B,C)&≅ \Hom(A+B,C)\text{ and} \\
+    \Hom(C,A)×\Hom(C,B)&≅ \Hom(C,A×B).
+  \end{align*}
+  With one additional criterion (called ``naturality''), this can be taken as an
+  alternative definition.
+\end{remark}
+
+\begin{example} \
+  \begin{itemize}
+    \itemsep-0.2em
+    \item $\Set$: Let $A$ and $B$ be sets.
+      \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+        \itemsep-0.2em
+        \item \vspace{-0.6em} Their Cartesian product
+          $A×B\coloneqq\braces{(a,b):a∈A,b∈B}$ together with projections
+          $\apply{p_1}{(a,b)}\coloneqq a$ and $\apply{p_2}{(a,b)}\coloneqq b$
+          is a product.
+        \item Their disjoint union
+          $A\amalg B\coloneqq\braces{(0,a):a∈A}∪\braces{(1,b):b∈B}$ together
+          with inclusions $\apply{i_1}{a}\coloneqq (0,a)$
+          and $\apply{i_2}{b}\coloneqq (1,b)$ is a coproduct.\footnote{Of
+            course, the identities of the ``labels'' $0$ and $1$ are
+            unimportant, so long as they are distinct. One could equally well
+            use ``$\inl$'' and ``$\inr$'' so long as $\inl≠\inr$.}
+      \end{itemize}
+    \item $\universe$: Let $A,B:\universe$.
+      \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+        \itemsep-0.2em
+        \item{} \vspace{-0.6em}
+          [\unimathname{CategoryTheory.categories.Types.BinProductsType}]
+          The product type $A×B$ with its projections is a product.
+          The universal property is guaranteed by $\rec_{A×B}$, and can be
+          expressed concisely as an equivalence $\weq{(C→A)×(C→B)}{C→A×B}$
+          (see \cref{rmk:prod-coprod-universal-adj}).
+        \item{} [\unimathname{CategoryTheory.categories.Types.BinCoproductsType}]
+          The coproduct type $A+B$ with its injections is a coproduct.
+          The universal property is guaranteed by $\rec_{A+B}$, and can be 
+          expressed concisely as an equivalence $\weq{(A→C)×(B→C)}{A+B→C}$.
+      \end{itemize}
+    \item $\Cat$: 
+      \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+        \itemsep-0.2em
+        \item \vspace{-0.6em} See \cref{ex:diagonal}
+        \item The coproduct of categories $\bfA$ and $\bfB$ is the category
+          $\bfA+\bfB$ with objects
+          $\Obj (\bfA+\bfB) \coloneqq (\Obj\bfA)+(\Obj\bfB)$
+          and arrows
+          \begin{align*}
+            \Hom_{\bfA+\bfB}(\apply{\inl}{A}, \apply{\inl}{A'}) &= \Hom_{\bfA}(A,A') \\
+            \Hom_{\bfA+\bfB}(\apply{\inr}{B}, \apply{\inr}{B'}) &= \Hom_{\bfB}(B,B') \\
+            \Hom_{\bfA+\bfB}(\apply{\inl}{A}, \apply{\inr}{B}) &= \emptytype \\
+            \Hom_{\bfA+\bfB}(\apply{\inr}{A}, \apply{\inl}{B}) &= \emptytype.
+          \end{align*}
+          (In set-theoretic foundations, one merely replaces $\apply{\inl}{A}$,
+          $\apply{\inr}{B}$, and $\emptytype$ with $(0,A)$, $(1,B)$, and
+          $\emptyset$ respectively.)
+      \end{itemize}
+    \item $\Grp$: Let $G,H$ be groups.
+      \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+        \itemsep-0.2em
+        \item \vspace{-0.6em} The direct product group $G×H$ is a product.
+        \item The free product $G∗H$ is a coproduct.
+      \end{itemize}
+    \item $\AbGrp$, $R\Mod$, $F\dVect$: The direct sum $⊕$ is both a product and
+      coproduct.\footnote{In fact, has a stronger property of being a
+      \define{biproduct}. These three categories share many significant
+      features; one fruitful lens through which to view them is as
+      \define{abelian categories}.} 
+  \end{itemize}
+\end{example}
+
+\begin{lemma}
+	(Co)products are unique up to a specified isomorphism.
+\end{lemma}
+\begin{proof}
+  Note that for any coproduct $C$ of $A$ and $B$, the identity makes the
+  following diagram ($⋆$) commute, and so is necessarily unique in doing so:
+  \begin{center}
+    \begin{tikzcd}[sep=large,ampersand replacement=\&]
+      A \arrow[r, "i_1"{name=I1}]\arrow[dr, swap, "i_1"{name=F}]
+      \& C \arrow[d,"\id_C"]
+      \& B\arrow[l, "i_2"{name=I2},swap]\arrow[dl,"i_2"{name=G}] \\
+      {} \& C \& {}
+    \end{tikzcd}
+  \end{center}
+	Suppose $C$ and $D$ are coproducts of $A$ and $B$. The universal
+  property of the coproduct induces arrows $u$ and $u'$ making the following
+  diagram commute:
+  \begin{center}
+    \begin{tikzcd}[column sep=large,ampersand replacement=\&]
+      {} \& C \arrow[dd, dashed, "u", bend left] \& {} \\
+      A \arrow[ur, "i_1"{name=I1}]\arrow[dr, swap, "i_1"{name=F}]
+      \& {}
+      \& B\arrow[ul, "i_2"{name=I2},swap]\arrow[dl,"i_2"{name=G}] \\
+      {} \& D \arrow[uu, dashed, "u'", bend left] \& {}
+    \end{tikzcd}
+  \end{center}
+  However by this commutativity, the compositions $u∘u'$ and $u'∘u$ fit into the
+  diagram ($⋆$), and so must be the respective identities, making $C$ and $D$
+  isomorphic.
+\end{proof}
+
+\begin{definition}\label[definition]{def:equalizer-and-coequalizer}
+  Given objects $A,B∈\Obj\bfC$ and arrows $f,g:A→B$,
+  \vspace{-0.3em}\dual{
+    an \define{equalizer}\index{Equalizer} of $f$ and $g$
+    consists of an object $E$ and an arrow $e:E→A$ satisfying the following
+    universal property:
+
+    For any other ``candidate equalizer'' $C$ with arrow $c:C→A$, there is a
+    unique arrow $u:C→E$ making the following diagram commute:
+    \begin{center}
+      \begin{tikzcd}[column sep=large, ampersand replacement=\&]
+        E \arrow[r, "e"]
+        \& A \arrow[r, yshift=2.5,"f"]\arrow[r, yshift=-2.5, swap,"g"]
+        \& B \\
+        C \arrow[ur, swap, "c"]
+          \arrow[u, dashed, "u"] \& {} \& {}
+      \end{tikzcd}
+    \end{center}
+  }{
+    a \define{coequalizer}\index{Coequalizer} of $f,g$
+    consists of an object $Q$ and an arrow $q:B→Q$ satisfying the following
+    universal property:
+
+    For any other ``candidate coequalizer'' $C$ with arrow $c:B→C$, there is a
+    unique arrow $u:Q→C$ making the following diagram commute:
+    \begin{center}
+      \begin{tikzcd}[column sep=large, ampersand replacement=\&]
+        A \arrow[r, yshift=2.5,"f"]\arrow[r, yshift=-2.5, swap,"g"]
+        \& B \arrow[r, "q"] \arrow[dr, "c"]
+        \& Q \arrow[d, dashed, "u"] \\
+        {} \& {} \& 
+        C
+      \end{tikzcd}
+    \end{center}
+  }
+\end{definition}
+
+\begin{example}\label[example]{ex:equalizer-and-coequalizer}
+  \
+  \begin{itemize}
+    \itemsep-0.2em
+    \item $\Set$: Let $A,B$ be sets and $f,g:A→B$.
+      \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+        \itemsep-0.2em
+        \item \vspace{-0.6em} The equalizer of $f$ and $g$
+          is the set $E\coloneqq\braces{a∈A:\apply{f}{a}=\apply{g}{a}}$.
+          The map $E→A$ is the standard inclusion of a subset (which sends each
+          element of $E$ to itself in $A$).
+        \item The functions $f$ and $g$ induce an equivalence relation $∼$ on
+          $B$ which is the closure of $\apply{f}{b}∼\apply{g}{b}$ for all $b∈B$.
+          The quotient set $B/∼$ together with the projection $p:B→B/∼$ which
+          sends each element of $b$ to its equivalence class is the coequalizer
+          of $f$ and $g$.
+      \end{itemize}
+    \item $\universe$: 
+      \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+        \itemsep-0.2em
+        \item{} \vspace{-0.6em} \TODO{}
+        \item{} \TODO{}
+      \end{itemize}
+    \item $F\dVect$: A coequalizer for a linear map $f:A→B$ is the quotient
+      space $B/\im f$.
+  \end{itemize}
+\end{example}
+
+\begin{definition}\label[definition]{def:pullback-and-pushout}
+  \
+  \vspace{-0.3em}\dual{
+    Given objects $A,B,C∈\Obj\bfC$ with arrows $f:A→C$ and $g:B→C$,
+    a \define{pullback}\index{Pullback} of $f$ and $g$
+    consists of an object $P$ together with arrows $p_1:P→A$ and $p_2:P→B$
+    satisfying the following universal property:
+
+    For any other ``candidate pullback'' $D$ with arrows $q_1:D→A$ and
+    $q_2:D→B$, there is a unique arrow $u:D→P$ making the following
+    diagram commute:
+    \begin{center}
+      \begin{tikzcd}[sep=large, ampersand replacement=\&]
+        D \arrow[dr, dashed, "u"]
+          \arrow[ddr, "q_1", swap, bend right=20]
+          \arrow[drr, "q_2", bend left=20] \& {} \& {} \\
+        {}
+        \& P \arrow[r, "p_2"] \arrow[d, swap, "p_1"]
+        \& B \arrow[d, "g"] \\
+        {} \& A \arrow[r, swap, "f"] \& C
+      \end{tikzcd}
+    \end{center}
+    The object $P$ is denoted $A×_C B$, or better 
+    $A×_{\langle f,g\rangle}B$.\footnote{The notation $A×_C B$
+      draws an important connection to the product, but omits some the
+      key information: \textit{which} arrows are being pulled back matters, 
+      and there might be many choices for the same objects $A$, $B$, and $C$.}
+  }{
+    Given objects $A,B,C∈\Obj\bfC$ with arrows $f:C→A$ and $g:C→B$,
+    a \define{pushout}\index{Pushout} of $f$ and $g$
+    consists of an object $P$ with arrows $i_1:A→P$ and $i_2:B→P$ satisfying the
+    following universal property:
+
+    For any other ``candidate pushout'' $D$, there is a unique arrow $u:P→D$
+    making the following diagram commute:
+    \begin{center}
+      \begin{tikzcd}[sep=large, ampersand replacement=\&]
+        C\arrow[r, "g"] \arrow[d, "f", swap]
+        \& B \arrow[d, "i_2"] \arrow[ddr, "j_2", bend left=20] \& {} \\
+        A \arrow[r, swap, "i_1"]
+          \arrow[drr, "j_1", swap, bend right=20]
+        \& D \arrow[dr, dashed, "u"] \& {} \\
+        {} \& {} \& P
+      \end{tikzcd}
+    \end{center}
+    The object $P$ is denoted $A+_C B$, or better $A+_{[f,g]}B$.
+  }
+\end{definition}
+
+\begin{example}\label[example]{ex:pullback-and-pushout}
+  \
+  \begin{itemize}
+    \itemsep-0.2em
+    \item $\Set$: 
+      \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+        \itemsep-0.2em
+        \item \vspace{-0.6em}
+          Let $A,B,C$ be sets $f:A→C$, and $g:B→C$.
+          The pullback of $f$ and $g$ is the set
+          $P\coloneqq$; the maps $P→A$ TODO
+        \item 
+          Let $A,B,C$ be sets $f:C→A$, and $g:C→B$.
+          The pushout of $f$ and $g$ is the disjoint union quotiented by the
+          smallest equivalence relation containing 
+          $(0,\apply{f}{c})∼(1,\apply{g}{c})$; the maps $p_1$ and $p_2$ are the
+          projections to equivalence classes.
+      \end{itemize}
+    \item $\universe$: 
+      \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+        \itemsep-0.2em
+        \item{} \vspace{-0.6em} \TODO{}
+        \item{} \TODO{}
+      \end{itemize}
+  \end{itemize}
+\end{example}
+\begin{example}\label[example]{ex:equalizer-and-coequalizer}
+\end{example}
+
+\begin{example}\label[example]{ex:pullback-special-cases-top}
+	The pullback and pushout are complex; it is less immediately clear where they
+  arise in standard mathematics than, say, the product and coproduct.
+  Two special cases of the pullback in $\Set$ help motivate these constructions.
+  TODO
+\end{example}
+
+\begin{example}\label[example]{ex:pullback-special-cases-top}
+  In $\Top$, the wedge sum $A∨B$ is an instance of a pushout.
+  Suppose $a∈A$ and $b∈B$ are the basepoints to be ``glued''.
+  Define (necessarily continuous) functions
+  \begin{align*}
+    \begin{split}
+      f:\braces{∗}&\longrightarrow A \\
+      ∗&\longmapsto a
+    \end{split}
+    \begin{split}
+      g:\braces{∗}&\longrightarrow B \\
+      ∗&\longmapsto b
+    \end{split}
+  \end{align*}
+  The equivalence relation $∼$ only relates $\apply{f}{∗}$ and 
+  $\apply{g}{∗}$, that is $a∼b$. Thus,
+  \begin{equation*}
+    A+_{[f,g]}B 
+    = A+B/(\apply{f}{∗}∼\apply{g}{∗})
+    = A+B/(a∼b)
+    = A∨B
+  \end{equation*}
+\end{example}
+
+\Cref{def:terminal-and-initial}, \cref{def:product-and-coproduct},
+\cref{equalizer-and-coequalizer}, and \cref{def:pullback-and-pushout}
+are all instances of a general construction of \textit{limits} and
+\textit{colimits}. Some preliminary constructions are necessary before these
+definitions; these will help make sense of the terms ``candidate \_'' and
+``candidate co\_'' used above.
+
+These concepts can be defined in greater generality using
+functors (\cref{def:functor}); here we consider only limits over graphs.
+
+\begin{definition}\label[definition]{def:limit-and-colimit}
+  Given \ldots,
+  \vspace{-0.3em}\dual{
+    a \define{limit}\index{Limit} of \ldots
+    consists of \ldots satisfying the following universal property:
+
+    For any other \ldots, there is a unique arrow \ldots making the following
+    diagram commute:
+    % \begin{center}
+    %   \begin{tikzcd}[sep=large,ampersand replacement=\&]
+    %     {} \& D\arrow[dl,swap,"q_1"]\arrow[dr,"q_2"]
+    %           \arrow[d,dashed,"u"] \& {} \\
+    %     A \& C \arrow[l, "p_1"]\arrow[r,swap, "p_2"] \& B
+    %   \end{tikzcd}
+    % \end{center}
+  }{
+    a \define{pushout}\index{Pushout} of \ldots
+    consists of \ldots satisfying the following universal property:
+
+    For any other ``candidate pushout'' \ldots, there is a unique arrow
+    \ldots making the following diagram commute:
+    % \begin{center}
+    %   \begin{tikzcd}[sep=large,ampersand replacement=\&]
+    %     {} \& D\arrow[dl,swap,"q_1"]\arrow[dr,"q_2"]
+    %           \arrow[d,dashed,"u"] \& {} \\
+    %     A \& C \arrow[l, "p_1"]\arrow[r,swap, "p_2"] \& B
+    %   \end{tikzcd}
+    % \end{center}
+  }
+\end{definition}
+
+\begin{definition}\label[definition]{def:complete-and-cocomplete}
+  A category $\bfC$ \define{has (co)limits of shape $G$} any diagram of shape
+  $G$ has a (co)limit in $\bfC$. A category is \define{(co)complete} or
+  \define{has small (co)limits} when it has (co)limits of every shape.
+\end{definition}
+
+The following definition isn't necessary for understanding later sections
+and chapters, but provides an interesting categorical framework for
+understanding the λ-calculus. 
+
+\begin{definition}\label[definition]{def:exponentials}
+  If $\bfC$ has binary products, an \define{exponential} for objects
+  $A,B∈\Obj\bfC$ consists of an object $B^A$ together an arrow $\eval:B^A×A→B$
+  satisfying the following universal property: for any object $C∈\Obj\bfC$ and
+  arrow $f:C×A→B$, there is an arrow $λf:C→B^A$ making the following diagram
+  commute:
+  \begin{center}
+    \begin{tikzcd}[sep=large]
+      C×A \arrow[dr, "f"] \arrow[d, swap, "λf×\id_A"] & {} \\
+      B^A×A \arrow[r, swap, "\eval"]      & B
+    \end{tikzcd}
+  \end{center}
+	
+\end{definition}
+
+\begin{definition}\label[definition]{def:cartesian-closed}
+  A category is \define{Cartesian closed} when it has
+  \begin{itemize}
+    \itemsep-0.2em
+    \item \vspace{-0.1em} a terminal object (\cref{def:terminal-and-initial}),
+    \item binary products (\cref{def:product-and-coproduct}), and
+    \item exponentials (\cref{def:exponentials}).
+  \end{itemize}
+  ``CCC'' abbreviates ``Caratesian closed category''.
+\end{definition}
+
 \begin{remark}\label[remark]{rmk:lambek}
 	We now have the vocabulary to (informally) extend the correspondence of
-  \cref{sec:curry-howard} to statements about a certain kind of category.
+  \cref{sec:propositions-and-types} to statements about a certain kind of
+  category.
   \cite{lambek}
   \TODO{}
 \end{remark}
@@ -2197,6 +2638,9 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
   ($\propeq{\propeq{\cdots}{a}{b}}{p}{q}$) recalled ideas of homotopy theory,
   where paths are considered identical up to the existence of ``higher
   paths''.\TODO{}
+
+  For the initial development of the connection between locally Cartesian closed
+  categories (LCCCs) and type theory, see \cite{seely}.
 \end{remark}
 
 \section{Functors and their algebras}
@@ -2237,6 +2681,17 @@ using the following notation:
   itself, for instance).
 \end{example}
 
+\begin{example}\label[example]{ex:diagonal}
+  There is a product in $\Cat$; the product $\bfC×\bfD$ has as object pairs of
+  objects $(A,B)$ for $A∈\bfC$ and $B∈\bfD$ and similarly for arrows.
+  For any category, there is a \define{diagonal functor}
+  \begin{align*}
+    Δ:\bfC &⟶ \bfC×\bfC \\
+    A    &⟼_0 (A,A) \\
+    f    &⟼_1 (f,f)
+  \end{align*}
+\end{example}
+
 \begin{example}\label[example]{ex:forget}
   For each category of algebraic objects where the morphisms are the
   corresponding type of homomorphism, there is a \define{forgetful functor},
@@ -2246,11 +2701,9 @@ using the following notation:
 \end{example}
 
 \begin{example}\label[example]{ex:coproduct-functoriality}
-	If $\bfC$ has distinguished binary coproducts, then
+	If $\bfC$ has binary coproducts, then
   for any fixed $A,B\in\Obj\bfC$, one can define the following
-  functors:\footnote{Really, this is a consequence of the fact that $+$ is
-    what's called a \define{bifunctor}\indeX{Bifunctor}, but we don't need the
-    full power of that statement for our purposes.}
+  functors:
   \begin{align*}
     \begin{split}
       \bfC &⟶ \bfC \\
@@ -2263,6 +2716,16 @@ using the following notation:
       g    &⟼_1 g+\id_B = [i_1∘ g, i_2]
     \end{split}
   \end{align*}
+  These two functors interact well, meaning in part that they extend to
+  a \define{bifunctor}
+  \begin{align*}
+    \begin{split}
+      \bfC×\bfC &⟶ \bfC \\
+      (X,Y)    &⟼_0 X + Y \\
+      (f,g)    &⟼_1 f+g
+    \end{split}
+  \end{align*}
+  where $(f+g)∘\inl=f$ and $(f+g)∘\inr=g$.
 \end{example}
 
 Since functors preserve sources, targets, and composition, they preserve
@@ -2300,8 +2763,8 @@ One consequence is that functors preserve isomorphism.
   }
 \end{definition}
 
-For now, we will concentrate on properties of functor coalgebras, though all
-constructions in this section hold dually for algebras.
+For the remainder of this section when a definition or result is presented only
+for coalgebras or algebras, it holds dually for the other.
 
 \begin{definition}\label[definition]{def:coalgebra-morphism}
   A \define{coalgebra morphism}\index{(Co)algebra morphism} from
@@ -2495,6 +2958,19 @@ The following example is crucial to
 Unfortunately, terminology varies between the three predominant sources
 on category theory in univalent type theory \cite{book} \cite{unimath}
 \cite{hott-lib}.
+
+For a pioneering development of univalent category theory, see \cite{rezk} (the
+formalization of which served as a foundation for \UniMath{}'s
+\unimathname{CategoryTheory} package).
+
+
+\begin{theorem}
+	The precategory $\universe$ of types is complete
+  (\cref{def:complete-and-cocomplete}) \cite{homotopy-limits}.
+\end{theorem}
+\begin{proof}
+
+\end{proof}
 
 \chapter{Coinductive types in univalent type theory}
 \label{chap:coinductive-types-in-univalent-type-theory}
