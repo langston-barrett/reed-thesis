@@ -2682,20 +2682,6 @@ This section isn't necessary for understanding later sections and chapters, but
 provides an interesting categorical framework for understanding the λ-calculus.
 \TODO{subsection}
 
-\begin{definition}\label[definition]{def:exponentials}
-  If $\bfC$ has binary products, an \define{exponential} for objects
-  $A,B∈\Obj\bfC$ consists of an object $B^A$ together an arrow $\eval:B^A×A→B$
-  satisfying the following universal property: for any object $C∈\Obj\bfC$ and
-  arrow $f:C×A→B$, there is an arrow $λf:C→B^A$ making the following diagram
-  commute:
-  \begin{center}
-    \begin{tikzcd}[sep=large]
-      C×A \arrow[dr, "f"] \arrow[d, swap, "λf×\id_A"] & {} \\
-      B^A×A \arrow[r, swap, "\eval"]      & B
-    \end{tikzcd}
-  \end{center}
-\end{definition}
-
 \begin{lemma}[\unimathname{CategoryTheory.categories.Types.ExponentialsType}]
 	Any fixed universe $\universe$ of types has exponentials.
 \end{lemma}
@@ -2715,11 +2701,17 @@ provides an interesting categorical framework for understanding the λ-calculus.
     \item for all objects $A∈\Obj\bfC$, isomorphisms $λ_A:I⊗A≅A$ and $ρ_A:A⊗I≅A$.
   \end{itemize}
   These isomorphisms are subject to additional ``coherence conditions'', which
-  won't play a crucial role here. A monoidal category is \define{symmetric} if
-  there are additional isomorphisms $s_{A,B}:A⊗B→B⊗A$ satisfying other
-  coherence conditions; and is \define{cartesian} if the monoidal product $⊗$
-  coincides with the categorical product $×$.
+  won't play a crucial role here. A monoidal category is
+  \begin{itemize}
+    \itemsep-0.2em
+    \item \define{symmetric} if there are additional isomorphisms
+      $s_{A,B}:A⊗B→B⊗A$ satisfying other coherence conditions; and is
+    \item \define{cartesian} if the monoidal product $⊗$ coincides with the
+      categorical product $×$.
+  \end{itemize}
 \end{definition}
+
+Only cartesian monoidal categories play a crucial role later in this section.
 
 \begin{remark}
 	For any categorical product there is a specified isomorphism $A×B≅B×A$, so any
@@ -2738,21 +2730,66 @@ provides an interesting categorical framework for understanding the λ-calculus.
   \end{itemize}
 \end{example}
 
+\begin{definition}\label[definition]{def:exponentials}
+  An \define{internal hom} for a monoidal category $(\bfC,⊗)$
+  consists of, for each pair of objects $A,B∈\Obj\bfC$, an object
+  $A⇒B$ together an arrow $\eval:(A⇒B)×A→B$ satisfying the following universal
+  property: for any object $C∈\Obj\bfC$ and arrow $f:C⊗A→B$, there is an arrow
+  $λf:C→(A⇒B)$ making the following diagram commute:
+  \begin{center}
+    \begin{tikzcd}[sep=large]
+      C×A \arrow[dr, "f"] \arrow[d, swap, "λf×\id_A"] & {} \\
+      (A⇒B)×A \arrow[r, swap, "\eval"]      & B
+    \end{tikzcd}
+  \end{center}
+  When $\bfC$ is cartesian, $A⇒B$ is called an \define{exponential},
+  and is denoted $B^A$.
+\end{definition}
+
+\begin{definition}
+  A monoidal category $(\bfC,⊗)$ is \define{closed} when it has exponentials.
+\end{definition}
+
+\begin{remark}
+  (Compare to \cref{rmk:prod-coprod-universal-adj})
+  In a closed monoidal category, for all $A,B,C∈\Obj\bfC$,
+  $λ$ and $\eval$ define a bijection
+  \begin{equation*}
+    \Hom(A⊗B,C)≅\Hom(A,B⇒C).
+  \end{equation*}
+  This bijection can be taken as their definition
+  with an additional ``naturalality'' condition.
+  This bijection is often called \define{currying}.
+\end{remark}
+
+\begin{example*}
+  $\Set$ and $\universe$ are closed monoidal. Define $B⇒A\coloneqq \Hom(B,A)$.
+  Then this is an element of $\Set$/$\universe$. Mixing set- and type-theoretical
+  notation, the bijection is given by the mutually inverse functions
+  \begin{align*}
+    \Hom(A×B,C) &\longrightarrow \Hom(A,\Hom(B,C)) \\
+    f &\longmapsto \λ{a}{\λ{b}{\appply{f}{a}{b}}} \\
+    \Hom(A,\Hom(B,C)) &\longrightarrow \Hom(A×B,C) \\
+    g &\longmapsto \λ{p}{\appply{g}{(\appr{1}{a})}{(\appr{2}{b})}}
+  \end{align*}
+\end{example*}
+
 \begin{definition}\label[definition]{def:cartesian-cat}
-  A category is \define{Cartesian closed} when it has
+  A category is \define{Cartesian closed}
+  when it is closed, cartesian monoidal, and has a terminal object.
+  Equivalently, it is cartesian closed when it has
   \begin{itemize}
     \itemsep-0.2em
     \item \vspace{-0.1em} a terminal object (\cref{def:terminal-and-initial}),
     \item binary products (\cref{def:product-and-coproduct}), and
     \item exponentials (\cref{def:exponentials}).
   \end{itemize}
-  ``CCC'' abbreviates ``Caratesian closed category''.
+  ``CCC'' abbreviates ``Cartesian closed category''.
 \end{definition}
 
 \begin{remark}\label[remark]{rmk:lambek}
 	We now have the vocabulary to (informally) extend the correspondence of
-  \cref{sec:propositions-and-types} to statements about a certain kind of
-  category.
+  \cref{sec:propositions-and-types} to statements about CCCs.
   \cite{lambek}
   \TODO{}
 \end{remark}
