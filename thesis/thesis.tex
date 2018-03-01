@@ -2069,6 +2069,11 @@ We will examine category theory within \UTT{} in
       $\underline{G}$ with a single object (denoted $∗$) and
       $\Hom_{\underline{G}}(∗,∗)\coloneqq G$. Composition is given by the
       group operation.
+    \item For any set or type $A$, the \define{discrete category on $A$} has as
+      objects the members or elements as $A$, and no other arrows except the
+      requisite identities.
+    \item The category $\ω$ has as objects the natural numbers, and arrows
+      $n→\apply{\suc}{n}$ (plus the requisite composites $n→m$ where $n<m$).
   \end{itemize}
 \end{example}
 
@@ -2555,34 +2560,112 @@ definitions; these will help make sense of the terms ``candidate \_'' and
 These concepts can be defined in greater generality using
 functors (\cref{def:functor}); here we consider only limits over graphs.
 
-\begin{definition}\label[definition]{def:limit-and-colimit}
-  Given \ldots,
+\begin{definition}\label[definition]{def:graph-diagram}
+	A \define{graph}\index{Graph} $G$ consists of a (not necessarily finite)
+  collection $G_0$ of vertices, and a map $G_1:G_0×G_0→\universe$ which assigns
+  to each ordered pair of vertices a collection of directed edges between
+  them.\footnote{This definition may seem obtuse to a classically-trained
+    mathematician, but it translates more elegantly into the type-theoretic
+    setting.}
+\end{definition}
+
+\begin{definition}
+  A \define{diagram}\index{Diagram} $D$ for a graph $G$ is a collection
+  of objects and arrows ``of shape $G$''. Specifically, $D$ consists of a map
+  $D_0:G_0→\Obj\bfC$ and for each pair $(u,v)$ of vertices in $G_0$,
+  a map $D_{1}^{(u,v)}:G_1(u,v)→\Hom(\apply{D_0}{u},\apply{D}_0{v})$.
+  When convenient, we drop the sub- and super-scripts.
+\end{definition}
+
+\begin{definition}\label[definition]{def:cone-cocone}
+  Let $D$ be a diagram in $\bfC$ for a graph $G$.
   \vspace{-0.3em}\dual{
-    a \define{limit}\index{Limit} of \ldots
-    consists of \ldots satisfying the following universal property:
-
-    For any other \ldots, there is a unique arrow \ldots making the following
-    diagram commute:
-    % \begin{center}
-    %   \begin{tikzcd}[sep=large,ampersand replacement=\&]
-    %     {} \& D\arrow[dl,swap,"q_1"]\arrow[dr,"q_2"]
-    %           \arrow[d,dashed,"u"] \& {} \\
-    %     A \& C \arrow[l, "p_1"]\arrow[r,swap, "p_2"] \& B
-    %   \end{tikzcd}
-    % \end{center}
+    A \define{cone}\index{Cone} for $D$ consists of an object $C\in\Obj\bfC$
+    together with \define{projections}
+    $\braces{p_{v}:C→\apply{D}{v}}_{v∈G_0}$ such that the following triangle
+    commutes for all $u,v∈G_0$ and $e∈G_1(u,v)$:
+    \begin{center}
+      \begin{tikzcd}[row sep=large, column sep=small, ampersand replacement=\&]
+        {} \& C \arrow[dl, bend right=20, swap, "p_u"] \arrow[dr, bend left=20, "p_v"] \& {} \\
+        \apply{D}{u}\arrow[rr, "\apply{D}{e}"] \& {} \& \apply{D}{v}
+      \end{tikzcd}
+    \end{center}
   }{
-    a \define{pushout}\index{Pushout} of \ldots
-    consists of \ldots satisfying the following universal property:
+    A \define{cocone}\index{Cocone} for $D$ consists of an object $C\in\Obj\bfC$
+    together with \define{injections} $\braces{i_{v}:\apply{D}{v}→C}_{v∈G_0}$
+    such that the following triangle commutes for all $u,v∈G_0$ and
+    $e∈G_1(u,v)$:
+    \begin{center}
+      \begin{tikzcd}[row sep=large, column sep=small, ampersand replacement=\&]
+        \apply{D}{u}\arrow[dr, bend right=20, swap, "i_u"] \arrow[rr, "\apply{D}{e}"]\& {} \&
+        \apply{D}{v}\arrow[dl, bend left=20, "i_v"] \\
+        {} \& C \& {}
+      \end{tikzcd}
+    \end{center}
+  }
+\end{definition}
 
-    For any other ``candidate pushout'' \ldots, there is a unique arrow
-    \ldots making the following diagram commute:
-    % \begin{center}
-    %   \begin{tikzcd}[sep=large,ampersand replacement=\&]
-    %     {} \& D\arrow[dl,swap,"q_1"]\arrow[dr,"q_2"]
-    %           \arrow[d,dashed,"u"] \& {} \\
-    %     A \& C \arrow[l, "p_1"]\arrow[r,swap, "p_2"] \& B
-    %   \end{tikzcd}
-    % \end{center}
+\begin{example}
+  A cone for a diagram of shape $·\;·$
+  picks out a ``candidate product'' in $\bfC$. Similarly, we can draw the
+  following correspondences:
+  \begin{itemize}\renewcommand{\labelitemi}{$∘$}
+    \itemsep-0.2em
+    \item \vspace{-0.3em} Terminal/Initial: [empty]
+    \item (Co)product: $·\;·$
+    \item (Co)equalizer:
+      \begin{tikzcd}[cramped, sep=small]
+        · \arrow[r, yshift=2.5]\arrow[r, yshift=-2.5] & · 
+      \end{tikzcd}
+    \item Pullback/Pushout:
+      \begin{tikzcd}[cramped, sep=small] 
+        · & · \arrow[l]\arrow[r] & · 
+      \end{tikzcd}
+  \end{itemize}
+\end{example}
+
+\begin{definition}\label[definition]{def:limit-and-colimit}
+  Given a diagram $D$ for a graph $G$ in $\bfC$,
+  \vspace{-0.3em}\dual{
+    a \define{limit}\index{Limit} of $D$ consists of a cone $(L,\braces{p_v})$
+    satisfying the following universal property:
+
+    For any other cone $(C,\braces{q_v})$, there is a unique arrow $u:C→L$ making
+    the following diagram commute for all $u,v∈G_0$ and $e∈G_1(u,v)$:
+    \begin{center}
+      \begin{tikzcd}[row sep=large, column sep=small, ampersand replacement=\&]
+        {} \& C \arrow[ddl, bend right=25, swap, "q_u"]
+                \arrow[ddr, bend left=25, "q_v"]
+                \arrow[d, dashed, "u"]
+           \& {} \\
+        {} \& L
+                \arrow[dl, bend right=15, "p_u"]
+                \arrow[dr, bend left=15, swap, "p_v"]
+           \& {} \\
+        \apply{D}{u}\arrow[rr, swap, "\apply{D}{e}"] \& {} \& \apply{D}{v}
+      \end{tikzcd}
+    \end{center}
+  }{
+    a \define{colimit}\index{Colimit} of $D$
+    consists of a cocone $(L,\braces{i_v})$ satisfying the following universal
+    property:
+
+    For any other cone $(C,\braces{j_v})$, there is a unique arrow
+    $u:L→C$ making the following diagram commute:
+    \begin{center}
+      \begin{tikzcd}[row sep=large, column sep=small, ampersand replacement=\&]
+        \apply{D}{u}
+        \arrow[rr, "\apply{D}{e}"]
+        \arrow[dr, bend right=15, "j_u"]
+        \arrow[ddr, bend right=25, swap, "i_u"]
+        \& {} \&
+        \apply{D}{v}
+        \arrow[dl, swap, bend left=15, "j_v"]
+        \arrow[ddl, bend left=25, "i_v"] \\
+        {} \& L \arrow[d, dashed, "u"] \& {} \\
+        {} \& C \& {}
+      \end{tikzcd}
+    \end{center}
   }
 \end{definition}
 
@@ -2592,9 +2675,12 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
   \define{has small (co)limits} when it has (co)limits of every shape.
 \end{definition}
 
-The following definition isn't necessary for understanding later sections
-and chapters, but provides an interesting categorical framework for
-understanding the λ-calculus. 
+\section{CCCs and the λ-calculus}
+\label{sec:cccs-and-lc}
+
+This section isn't necessary for understanding later sections and chapters, but
+provides an interesting categorical framework for understanding the λ-calculus.
+\TODO{subsection}
 
 \begin{definition}\label[definition]{def:exponentials}
   If $\bfC$ has binary products, an \define{exponential} for objects
@@ -2608,10 +2694,51 @@ understanding the λ-calculus.
       B^A×A \arrow[r, swap, "\eval"]      & B
     \end{tikzcd}
   \end{center}
-	
 \end{definition}
 
-\begin{definition}\label[definition]{def:cartesian-closed}
+\begin{lemma}[\unimathname{CategoryTheory.categories.Types.ExponentialsType}]
+	Any fixed universe $\universe$ of types has exponentials.
+\end{lemma}
+\begin{proof}
+	
+\end{proof}
+
+\begin{definition}
+	A \define{monoidal category} consists of a category $\bfC$ together with
+  \begin{itemize}
+    \itemsep-0.2em
+    \item a bifunctor $\bfC×\bfC→\bfC$ called the \define{tensor product} or
+      \define{monoidal product},
+    \item an object $I∈\Obj\bfC$ called the \define{unit},
+    \item for all objects $A,B,C∈\Obj\bfC$, an isomorphism
+      $α_{A,B,C}:(A⊗B)⊗C≅A⊗(B⊗C)$, and
+    \item for all objects $A∈\Obj\bfC$, isomorphisms $λ_A:I⊗A≅A$ and $ρ_A:A⊗I≅A$.
+  \end{itemize}
+  These isomorphisms are subject to additional ``coherence conditions'', which
+  won't play a crucial role here. A monoidal category is \define{symmetric} if
+  there are additional isomorphisms $s_{A,B}:A⊗B→B⊗A$ satisfying other
+  coherence conditions; and is \define{cartesian} if the monoidal product $⊗$
+  coincides with the categorical product $×$.
+\end{definition}
+
+\begin{remark}
+	For any categorical product there is a specified isomorphism $A×B≅B×A$, so any
+  cartesian monoidal category is also symmetric monoidal.
+\end{remark}
+
+\begin{example}
+  \
+  \begin{itemize}
+    \itemsep-0.2em
+    \item \vspace{-0.3em} $\Set$, $\universe$, $\Cat$, $\Grp$, and others are 
+      cartesian (so necessarily symmetric) monoidal under their categorical
+      products. 
+    \item $F\dVect$ is symmetric monoidal under $⊗$; the trivial vector space is
+      a unit.
+  \end{itemize}
+\end{example}
+
+\begin{definition}\label[definition]{def:cartesian-cat}
   A category is \define{Cartesian closed} when it has
   \begin{itemize}
     \itemsep-0.2em
@@ -3904,7 +4031,7 @@ of \cite{non-wellfounded} (under the column \MTypes{}).
 
 % uncomment me!
 \nocite{*}
-\bibliographystyle{plain}
+\bibliographystyle{apalike}
 \bibliography{thesis}
 
 % Comment the above two lines and uncomment the next line to use biblatex-chicago.
