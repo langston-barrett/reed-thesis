@@ -145,103 +145,16 @@
 % if you want a list of figures, also optional
 % \listoffigures
 
-% \chapter*{Abstract}
-
-% In this thesis we explain Univalent type theory, a constructive and
-% computationally meaningful foundational system for mathematics inspired by
-% recent advances in the model theory of Per Martin-L\"of's intuitionistic type
-% theory. We first develop the classical propositions/types correspondence between
-% (the constructive subset of) intuitionistic natural dedication and the
-% λ-calculus. We proceed to explicate Martin-L\"of's theory of dependent types and
-% the central modern development in type theory: Vladimir Voevodsky's Univalence
-% principle. We go on to examine some category theory and the nature of coinduction
-% within this theory, presenting a novel formalization of a recent result that
-% M-types can be derived \textit{internally} in Univalent type theory.
+% TODO: uncomment me
+% \input{tex/abstract.tex}
 
 % \chapter*{Dedication}
 
 \mainmatter % here the regular arabic numbering starts
 \pagestyle{fancyplain} % turns page numbering back on
 
-\chapter*{Introduction}
-\addcontentsline{toc}{chapter}{Introduction}
-\chaptermark{Introduction}
-\markboth{Introduction}{Introduction}
-
-\section*{A short history of discomfort in mathematics}
-
-% \subsection*{Trouble in Cantor's Paradise}
-
-In the early 20\textsuperscript{th} century, mathematicians had a problem. Often
-held up as the pinnacle of necessary, undoubtable, \textit{a priori} truth,
-their discipline was suffering from an embarrassing lack of certainty. The
-intricate arguments of advanced analysis left mathematicians unable to confirm
-nor deny each other's proofs. Due to the wave of paradoxes unleashed by
-Cantor's na\"ive set theory, the need for a rigorous logical foundation for higher
-mathematics was so great that the enterprise of axiomatic set theory was pursued
-headlong until some kind of consensus was reached. To make a long, rich story
-brutally short, virtually every modern paper in mathematics and computer
-science uses a combination of Gentzen's first-order logic (\FOL)
-and an axiomatization of sets called
-\ZFC.\footnote{This ``consensus'' left out many
-  prominent schools of thought, such as the Intuitionists and constructivists, a
-  point we'll soon return to.}
-
-Despite the apparent rigor of \FOL+\ZFC,
-practitioners of the deductive sciences were still beset by issues of
-verifiability. Complexity, specialization and sheer length made modern proofs
-difficult to comprehend with the absolute certainty which is supposed to
-characterize these disciplines. In the 1970s, two teams of topologists proved
-contradictory results, and neither group could find the error in the other's
-proof \cite{kolata}. Wiles's famous proof of Fermat's last theorem was utterly
-unintelligible to the vast majority of mathematicians \cite{nyt}. The
-classification of the simple finite groups, one of the crowning achievements of
-modern mathematics, has a combined proof of over ten thousand pages. These
-examples illustrate merely a few of the practical epistemological challenges
-facing mathematicians; for a historical perspective see \cite{rigor-and-proof},
-and for a general overview see \cite{fidelity}.
-
-In 1990s, Fields medalist Vladimir Voevodsky grew concerned with the state
-of mathematical knowledge. In 1998, Carlos Simpson released a pre-print arguing
-that there was a major mistake in one of Voevodsky's papers. However, it was not
-clear whether Voevodsky had errored, or whether there was a flaw in Simpson's
-counterexample. In 1999, Pierre Deligne found a crucial mistake in Voevodsky's
-``Cohomological Theory of Presheaves with Transfers'', upon which he had based
-much of his work in the area of motivic cohomology. As he began to develop more
-and more complex arguments, Voevodsky wondered: ``And who would ensure that I
-did not forget something and did not make a mistake, if even the mistakes in
-much more simple arguments take years to uncover?'' \cite{voevodsky-ias}.
-
-The problems facing Voevodsky and his peers seemed insurmountable.
-As the requisite attention span, memory, and capacity for detail required to
-understand new developments in higer mathematics reached inhuman proportions,
-where was he to turn? He would not find a solution in the realm of pure
-mathematics, but rather in one of the finest examples of collaboration between
-mathematicians, computer scientists, and philosophers: the modern proof
-assistant. \TODO{reword}
-
-\section*{TODO}
-
-While much of the mathematical discipline was simply relieved to have ``solved''
-their foundational issues with axiomatic set theory, there remained a vocal
-opposition to the newly-adopted methods. Most mathematicians are dimly aware
-that there's some controversy about the Axiom of Choice (the ``C'' in
-\ZFC) \cite{martin-lof-100-years}, you don't have to look further
-than \FOL to find disagreements.
-
-\section*{Our contribution}
-
-(Co)inductive types and UniMath
-
-begin
-\begin{notation}
-  All of the results of this thesis have been formalized in the \Coq{} proof
-  assistant \cite{coq-manual}. The names of the formal proofs
-  appear in a monospaced font (e.g.\ \coqname{univalence}). Many results have
-  already been reviewed (by the \UniMath{} development team \cite{unimath} and
-  Anders Mörtberg) and accepted into the \UniMath{} library, these appear
-  with an underline (e.g.\ \unimathname{univalence}).
-\end{notation}
+% TODO: uncomment me
+% \input{tex/introduction.tex}
 
 \chapter{Propositions and Types}
 \label[chapter]{chap:propositions-and-types}
@@ -1983,13 +1896,34 @@ assistants: nothing else computes.
 \subsection{Weak equivalences}
 \label{subsec:weak-equivalences}
 
+\begin{definition}\label[definition]{def:fiber}
+	Given a function $f:A→B$ and point $b:B$, the \define{fiber of $f$ above $b$}
+  is the type
+  \begin{equation*}
+    \∑{a:A}{\propeq{}{\apply{f}{a}}{b}}
+  \end{equation*}
+\end{definition}
+
+\begin{definition}\label[definition]{def:weq}
+  A function $f:A→B$ is a weak equivalence if any of the following
+  equivalent\footnote{For proofs that these characterizations are mutually
+    equivalent, see \cite{book}.}
+  conditions hold:
+  \begin{itemize}
+    \itemsep0em
+    \item the fibers of $f$ are contractible,
+      $\∏{b:B}{\apply{\isContr}{\apply{\ttfun{fiber}_f}{b}}}$
+    \item TODO
+  \end{itemize}
+\end{definition}
+
 \begin{notation}\label[notation]{notation:weq-coerce}
   We may treat a weak equivalence as if it were a function and apply it to an
-  argument. This amounts to implicitly appling $\pr{1}$.
+  argument. This amounts to implicitly applying $\pr{1}$.
 \end{notation}
 
 \begin{lemma}\label[lemma]{lemma:contr-weq-unit}
-	Any contractible type is weakly equivlant to $\unittype$.
+	Any contractible type is weakly equivalent to $\unittype$.
 \end{lemma}
 \begin{proof}
 	Suppose $X:\universe$ is contractible with center $x$. Define $f:X→\unittype$
@@ -1999,6 +1933,40 @@ assistants: nothing else computes.
   identities.
 \end{proof}
 
+\begin{lemma}\label[lemma]{lemma:weq-eq}
+  If $A,B:\universe$, $w:\weq{A}{B}$, and $x,y:A$ then
+  \begin{equation*}
+    \weq{(\propeq{B}{\apply{w}{x}}{\apply{w}{y}})}{(\propeq{A}{x}{y})}
+  \end{equation*}
+\end{lemma}
+\begin{proof}[Proof sketch]
+  If $p:\propeq{A}{x}{y}$, then
+  $\ap{w}{p}:\propeq{B}{\apply{w}{x}}{\apply{w}{y}}$. Conversely,
+  suppose $\propeq{B}{\apply{w}{x}}{\apply{w}{y}}$.
+  Then $x$ and $y$ are both in the fiber above $\apply{w}{x}$,
+  and since the fibers of a weak equivalence are contractible, $x=y$.
+\end{proof}
+
+\begin{corollary}\label[corollary]{cor:weq-contr}
+	If $w:\weq{A}{B}$ and $B$ is contractible, so is $A$.
+\end{corollary}
+\begin{proof}
+  By contractibility of $B$, 
+  $\propeq{B}{\apply{w}{x}}{\apply{w}{y}}$ for any $a,a':A$, so $A$
+  is a mere proposition. Additionally, $w$ has an inverse which sends the center
+  $b$ of $B$ to some point $\apply{w^{-1}}{b}$, so $A$ is inhabited.
+  Thus, $A$ is contractible.\TODO{reference}
+\end{proof}
+
+The following restates the η-rule for the product type as a weak equivalence:
+
+\begin{lemma}\label[lemma]{lemma:paths-dirprod-weq}
+  For any $A,B:\universe$, $a:A$, $b:B$, and $x:A×B$,
+  \begin{equation*}
+    \weq{\big((\propeq{A}{\appr1{x}}{a})×(\propeq{B}{\appr1{x}}{b})\big)}
+        {\big(\propeq{}{x}{(a,b)}\big)}
+  \end{equation*}
+\end{lemma}
 
 \subsection{The univalence axiom}
 \label{subsec:the-univalence-axiom}
@@ -2020,6 +1988,25 @@ assistants: nothing else computes.
   \end{equation*}
 \end{theorem}
 
+As a simple example of the use of univalence, we can vastly generaize
+\cref{lemma:contr-weq}.
+
+\begin{theorem}
+	Weak equivalences preserve hlevels.
+\end{theorem}
+\begin{proof}
+  Let $A,B:\universe$, $w:\weq{A}{B}$, and $i:\appply{\hlevel}{n}{A}$.
+	Univalence provides an equality $\apply{\ua}{w}:\propeq{\universe}{A}{B}$. 
+  Then
+  \begin{equation*}
+    \transport{\λ{X}{\apply{\isContr}{X}}}{\apply{\ua}{w}}{i} : \appply{\hlevel}{n}{A}
+  \end{equation*}
+\end{proof}
+
+This argument isn't actually specific to contractibility; using univalence any
+proposition of the form ``If $\weq{A}{B}$ and $\apply{P}{A}$, then $\apply{P}{B}$''
+trivially true.
+
 \chapter{Category theory}
 \label{chap:category-theory}
 
@@ -2037,6 +2024,11 @@ are willfully imprecise, we work with an abstract and undefined notion of
 theory for information on how problems of size are dealt with set-theoretically.
 We will examine category theory within \UTT{} in
 \cref{sec:type-theoretic-category-theory}.
+
+The results in this chapter all appear in the \UniMath{} package
+\unimathname{CategoryTheory}, so that prefix is left off
+(e.g.\ \unimathname{CategoryTheory.limits.binproducts} is shortened to
+\unimathname{limits.binproducts}).
 
 \section{Basics}
 \label{sec:basics}
@@ -2208,12 +2200,12 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
       \begin{itemize}\renewcommand{\labelitemi}{$∘$}
         \itemsep-0.2em
         \item{} \vspace{-0.6em}
-          [\unimathname{CategoryTheory.categories.Types.TerminalType}]
+          [\unimathname{categories.Types.TerminalType}]
           Any contractible type is terminal (for the
           similarity to the case of sets, note that any contractible type is
           equivalent to the canonical type with one element, $\unittype$
           (\cref{lemma:contr-weq-unit})).
-        \item{} [\unimathname{CategoryTheory.categories.Types.InitialType}]
+        \item{} [\unimathname{categories.Types.InitialType}]
           The elimination rule for the empty type gives an arrow
           $\emptytype→X$ for any $X$. How do we know it's unique? Apply function
           extensionality (\cref{thm:funext}), then it suffices to show that it
@@ -2297,7 +2289,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \end{definition}
 
 \begin{remark}\label[remark]{rmk:prod-coprod-universal-adj}
-	The universal properties of the product and coproduct define a bijections
+	The universal properties of the product and coproduct define bijections
   (there is one and only one function that fills in the diagram)
   \begin{align*}
     \Hom(A,C)×\Hom(B,C)&≅ \Hom(A+B,C)\text{ and} \\
@@ -2328,13 +2320,10 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
     \item $\universe$: Let $A,B:\universe$.
       \begin{itemize}\renewcommand{\labelitemi}{$∘$}
         \itemsep-0.2em
-        \item{} \vspace{-0.6em}
-          [\unimathname{CategoryTheory.categories.Types.BinProductsType}]
+        \item{} \vspace{-0.6em} [\coqname{categories.Types.BinProductsType}]
           The product type $A×B$ with its projections is a product.
-          The universal property is guaranteed by $\rec_{A×B}$, and can be
-          expressed concisely as an equivalence $\weq{(C→A)×(C→B)}{C→A×B}$
-          (see \cref{rmk:prod-coprod-universal-adj}).
-        \item{} [\unimathname{CategoryTheory.categories.Types.BinCoproductsType}]
+          (See \label[lemma]{lemma:universe-binproducts}).
+        \item{} [\unimathname{categories.Types.BinCoproductsType}]
           The coproduct type $A+B$ with its injections is a coproduct.
           The universal property is guaranteed by $\rec_{A+B}$, and can be 
           expressed concisely as an equivalence $\weq{(A→C)×(B→C)}{A+B→C}$.
@@ -2391,9 +2380,9 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
   \begin{center}
     \begin{tikzcd}[column sep=large,ampersand replacement=\&]
       {} \& C \arrow[dd, dashed, "u", bend left] \& {} \\
-      A \arrow[ur, "i_1"{name=I1}]\arrow[dr, swap, "i_1"{name=F}]
+      A \arrow[ur]\arrow[dr]
       \& {}
-      \& B\arrow[ul, "i_2"{name=I2},swap]\arrow[dl,"i_2"{name=G}] \\
+      \& B\arrow[ul]\arrow[dl] \\
       {} \& D \arrow[uu, dashed, "u'", bend left] \& {}
     \end{tikzcd}
   \end{center}
@@ -2693,7 +2682,24 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
       \end{tikzcd}
     \end{center}
   }
+  If $(L,f_u)$ is a cone or cocone, $L$ is the \define{tip} of the cone.
+  If $\bfC$ has a (co)limit for a diagram $D$, its tip is denoted
+  $\apply{\Lim}{D}$ (resp.\ $\apply{\Colim}{D}$).
+  The collection of cones over a diagram $D$ with tip $X$ is denoted
+  $\appply{\Cone}{D}{X}$.
 \end{definition}
+
+\begin{remark}\label[remark]{rmk:limit-colimit-universal-adj}
+  If $D$ is a diagram in $\bfC$, the above universal properties define
+  bijections
+  \begin{align*}
+    \Hom(A,\apply{\Lim}{D}) &≅ \appply{\Cone}{D}{A}\text{ and} \\
+    \Hom(\apply{\Colim}{D},A) &≅ \appply{\Cocone}{D}{A}.
+  \end{align*}
+  for any object $A$. Again, with one additional criterion (called
+  ``naturality''), this can be taken as a alternative definitions.
+  (Compare to \cref{rmk:prod-coprod-universal-adj}).
+\end{remark}
 
 \begin{definition}\label[definition]{def:complete-and-cocomplete}
   A category $\bfC$ \define{has (co)limits of shape $G$} any diagram of shape
@@ -2860,7 +2866,7 @@ category, which we will call $F\Coalg$.\TODO{Proof?}
 The following example is crucial to
 \cref{chap:coinductive-types-in-univalent-type-theory}.
 
-\begin{example}[\unimathname{CategoryTheory.FunctorAlgebras.Nats}]\label[example]{ex:nat}
+\begin{example}[\unimathname{FunctorAlgebras.Nats}]\label[example]{ex:nat}
   Let $\bfC$ be a category with distinguished binary coproducts and a terminal
   object $1$. Consider the functor
   \begin{align*}
@@ -2962,7 +2968,7 @@ The following example is crucial to
   case, $u$ is the function that, when given a number $n$, outputs a list of $5$s
   with length $n$.\footnote{In $\Set$, $\N$ would be an initial algebra.
     It makes sense to ask if this functor has an initial algebra in any
-    category with a terminal object and chosen binary coproducts, and in
+    category with a terminal object and binary coproducts, and in
     general, such algebras are called \define{natural number objects} (NNOs)
     \cite{sketches} \cite{lawvere-etcs}.
   }
@@ -3031,6 +3037,9 @@ Types in \UTT{} are the analogues of sets in \ZFC{}+\FOL{}, insofar as they also
 represent ``collections''. Therefore, a naïve translation of the definition
 would define a category to consist of a type $C:\universe$ of objects and a
 family $\ttHom_{C}:C→C→\universe$ of arrows.
+
+\subsection{Basics}
+\label{subsec:basics}
 
 \begin{definition}\label[definition]{def:precategory}
   A \define{precategory}\index{Precategory} consists of the following data:
@@ -3143,23 +3152,68 @@ to restrict the hom-types to be hom-sets:
   is inhabited. A precategory with hom-sets is called a \define{category}.
 \end{definition}
 
+\subsection{Products in $\universe$}
+\label{subsec:products-in-universe}
+
 In \cref{chap:coinductive-types-in-univalent-type-theory}, we will be most
 concerned with a precategory that is emphatically \textit{not} a category,
-namely $\universe$. In particular, $M$-types are constructed as limits
-in $\universe$. The next few lemmas explore some particular examples
-before defining and constructing general limits.
+namely $\universe$. In particular, M-types are constructed as limits
+in $\universe$. The next few lemmas explore binary products before defining and
+constructing general limits in \cref{subsec:limits-in-universe}.
 
-\begin{lemma}\label[lemma]{lemma:universe-binproducts}
+\begin{lemma}[\unimathname{categories.Types.BinProductsType}]
+  \label[lemma]{lemma:universe-binproducts}
 	The precategory of types has binary
   products.\footnote{Again, where these are defined by rote translation from
     \cref{def:product-and-coproduct}.}
 \end{lemma}
 
-While there are more direct proofs of this lemma, the following is based on the
+While there are more direct proofs, the following is based on the
 observation made in \cref{rmk:prod-coprod-universal-adj}, and will carry over to
-the case of general limits. We begin with another lemma:
+the case of general limits. We begin a general lemma:
 
-\begin{lemma}
+\begin{lemma}[\unimathname{limits.binproduct.isBinProduct'\_to\_isBinProduct}]
+  \label[lemma]{lemma:isbinproduct}
+  Let $\bfC$ be a precategory, let $a,b,c:\bfC$, and let $p_1:c\catarrow a$,
+  $p_2:c\catarrow b$. Define a function
+  \begin{gather*}
+    \ttfun{postcomp}:\∏{d:\bfC}{(d\→ c)→ (d \→ a)×(d \→ b)
+    } \\
+    \appply{\ttfun{postcomp}}{f} \defeq (p_1∘f,p_2∘f)
+  \end{gather*}
+  If $\ttfun{postcomp}$ is an equivalence, $c$ is a product of $a$ and $b$.
+\end{lemma}
+
+\textit{Sketch}. Why is this true? If $\ttfun{postcomp}$ is an equivalence, then
+its fibers are contractible. In particular, for each pair of arrows $f:d\→a$ and
+$g:d\→b$, there is exactly one arrow $u:d\→c$ in the fiber over them. This means
+when $u$ is composed projections $p_1$ and $p_2$, it gives back $f$ and $g$ (up
+to propositional equality). This is just a backwards rephrasing of the universal
+property of the product.
+
+\begin{proof}
+  Fix $d$, $q_1$, and $q_2$ as in the type of $\ttfun{postcomp}$.
+  For $(c,p_1,p_2)$ to be a product of $a$ and $b$, the following type must be
+  contractible:\TODO{actually just put this in its own definition}
+  \begin{equation*}
+    \∑{f:d\→c}{(p_1∘f=q_1)×(p_2∘f=q_2)}
+  \end{equation*}
+  By \cref{cor:weq-contr}, it suffices to show that the above type is equivalent
+  to a contractible type. By \cref{def:weq}, the fibers of $\ttfun{postcomp}$
+  are contractible, so it suffices to show that the above type is equivalent to
+  the fiber over some point in $(d \→ a)×(d \→ b)$. This point is $(q_1,q_2)$:
+  \begin{align*}
+    \apply{\ttfun{fiber}}{(q_1,q_2)}
+    &\≡ \∑{f:d\→c}{\propeq{}{\apply{\ttfun{postcomp}}{f}}{(q_1,q_2)}}
+    &&\text{Definition} \\
+    &\≡ \∑{f:d\→c}{\propeq{}{(p_1∘f,p_2∘f)}{(q_1,q_2)}}
+    &&\text{Definition} \\
+    &\≃ \∑{f:d\→c}{(p_1∘f=q_1)×(p_2∘f=q_2)}
+    &&\text{\Cref{lemma:paths-dirprod-weq}}
+  \end{align*}
+\end{proof}
+
+\begin{lemma}\label[lemma]{lemma:voevodsky-prod-up}
 	There is an equivalence of types
   \begin{equation*}
     (C→A)×(C→B)≃(C→A×B)
@@ -3168,22 +3222,15 @@ the case of general limits. We begin with another lemma:
     Voevodsky's ``Foundations'' library, a precursor to \UniMath{}.}
 \end{lemma}
 \begin{proof}
-  Define
+  Define 
+  \begin{gather*}
+    g : (C→A)×(C→B) → (C→A×B) \\
+    \apply{g}{(h,i)} \defeq \λ{c}{(\apply{h}{c},\apply{i}{c})}
+  \end{gather*}
+  and let $\ttfun{postcomp}_{\universe}$ be the specialization of 
+  $\ttfun{postcomp}$ to the category of types. Then
   \begin{align*}
-    \begin{split}
-      f : &(C→A×B) → \\
-          &(C→A)×(C→B) \\
-      \apply{f}{h} &\defeq (\pr{1}∘\apply{h},\pr{2}∘\apply{h})
-    \end{split}
-    \begin{split}
-      g : &(C→A)×(C→B) → \\
-          &(C→A×B) \\
-      \apply{g}{(h,i)} &\defeq \λ{c}{(\apply{h}{c},\apply{i}{c})}
-    \end{split}
-  \end{align*}
-  Then
-  \begin{align*}
-    \apply{(g∘f)}{h}
+    \apply{(g∘\ttfun{postcomp}_{\universe})}{h}
     &\≡ \apply{g}{(\pr{1}∘\apply{h},\pr{2}∘\apply{h})} \\
     &\≡ \λ{c}{(\pr{1}∘\apply{h},\pr{2}∘\apply{h})} \\
     &\= h
@@ -3191,35 +3238,69 @@ the case of general limits. We begin with another lemma:
   where the final equality is due to function extensionality (\cref{thm:funext})
   and the η-rule for the product type \TODO{reference}. Further,
   \begin{align*}
-    \apply{(f∘g)}{(h,i)}
-    &\≡ \apply{f}{(\λ{c}{(\apply{h}{c},\apply{i}{c})})} \\
+    \apply{(\ttfun{postcomp}_{\universe}∘g)}{(h,i)}
+    &\≡ \apply{\ttfun{postcomp}_{\universe}}{(\λ{c}{(\apply{h}{c},\apply{i}{c})})} \\
     &\≡ (\pr{1}∘\λ{c}{(\apply{h}{c},\apply{i}{c})},\pr{2}∘\λ{c}{(\apply{h}{c},\apply{i}{c})}) \\
     &\= (h,i)
   \end{align*}
   where the final equality is again due to function extensionality
-  and the η-rule for the product type \TODO{reference}.
+  and the η-rule for the product type \cref{lemma:paths-dirprod-weq}.
 \end{proof}
 
-\begin{lemma}
-  Let $\bfC$ be a precategory, let $a,b,c:\bfC$, and let $p_1:c\catarrow a$,
-  $p_2:c\catarrow b$. Define a function
-  \begin{gather*}
-    \ttfun{postcomp}:\∏{d:\bfC}{\∏{f:d\catarrow c}{
-      (d \catarrow a)×(d \catarrow b)
-    }} \\
-    \appply{d}{f} \defeq (p_1∘f,p_2∘f)
-  \end{gather*}
-  If $\ttfun{postcomp}$ is an equivalence, $c$ is a product of $a$ and $b$.
-\end{lemma}
-\begin{proof}
-	TODO: define hfiber, etc
+\begin{proof}[Proof of \cref{lemma:universe-binproducts}]
+	\Cref{lemma:voevodsky-prod-up} proves that $\ttfun{postcomp}$ is an
+  equivalence in $\universe$, so by \cref{lemma:isbinproduct}, $\universe$ has
+  binary products.
 \end{proof}
+
+\subsection{Limits in $\universe$}
+\label{subsec:limits-in-universe}
+
+
+\begin{definition}\label[definition]{def:limit-cone}
+	A cone $(L,p_u):\appply{\Cone}{D}{L}$ is a \define{limit cone} for a diagram $D$
+  if the following function is an equivalence
+  \begin{gather*}
+    \ttfun{postcomp} : \∏{X:\universe} (X→L)→\appply{\Cone}{D}{X} \\
+    \apply{\ttfun{postcomp}}{f} \defeq 
+    (X, \λ{v}{p_v∘f})
+  \end{gather*}
+  (Compare to \cref{rmk:limit-colimit-universal-adj}.)
+\end{definition}
+
+\begin{figure}[ht]
+  \centering
+  \begin{center}
+    \begin{tikzcd}[row sep=large, column sep=small, ampersand replacement=\&]
+      {} \& C \arrow[ddl, bend right=25, swap, "\λ{v}{p_u∘f}"]
+              \arrow[ddr, bend left=25, "\λ{v}{p_v∘f}"]
+              \arrow[d, "f"]
+          \& {} \\
+      {} \& L
+              \arrow[dl, bend right=15, "p_u"]
+              \arrow[dr, bend left=15, swap, "p_v"]
+          \& {} \\
+      \apply{D}{u}\arrow[rr, swap, "\apply{D}{e}"] \& {} \& \apply{D}{v}
+    \end{tikzcd}
+  \end{center}
+  \caption{\label{fig:postcomp} The action of $\ttfun{postcomp}$}
+\end{figure}
+
+\begin{definition}
+  The \define{standard limit} of a diagram $D$ for a graph $G$ is the type
+  \begin{equation*}
+    \∑{x:\∏{v:G_0}{\apply{D}{v}}}
+      {\∏{u,v:G_0}{\∏{u:\appply{G_1}{u}{v}}{\propeq{}{\appply{D}{e}{(\apply{x}{u})}}{(\apply{x}{v})}}}}
+  \end{equation*}
+  (Note that, since we are focusing on $\universe$, we know that edges
+  $\apply{D}{e}$ are in fact functions, and so we can apply them.)
+\end{definition}
 
 \begin{theorem}
-	The precategory $\universe$ of types is complete
-  (\cref{def:complete-and-cocomplete}) \cite{homotopy-limits}.
+  Every diagram in $\universe$ has a limit cone \cite{homotopy-limits}.
 \end{theorem}
 \begin{proof}
+  Define the \define{standard limit}
 
 \end{proof}
 
@@ -4123,216 +4204,9 @@ of the general homotopy limits of \cite{homotopy-limits}.
 
 %If you feel it necessary to include an appendix, it goes here.
 \appendix
-\chapter{Cross-reference of names}
 
-The following table lists lemmas taken from \cite{book}.
-\begin{table}[ht]
-  \centering
-  \begin{tabular}{c | c}
-    This thesis & The \HoTT book \\ \hline
-    \Cref{def:ua} & Axiom 2.10.3
-  \end{tabular}
-\end{table}
-
-The following table compares the terminology used in this thesis to that in our
-\Coq{} formalization (under the column \UniMath{}) and that of the \Agda{} development
-of \cite{non-wellfounded} (under the column \MTypes{}).
-\begin{table}[ht]
-  \centering
-  \begin{tabular}{c | c | c }
-    This thesis & \UniMath{} & \MTypes{} \\ \hline
-  \end{tabular}
-\end{table}
-
-\chapter{CCCs and the λ-calculus}
-\label{chap:cccs-and-lc}
-
-\Cref{chap:category-theory} provides \textit{almost} enough background to
-understand an interesting connection between a certain kind of category and the
-λ-calculus.
-
-\begin{lemma}[\unimathname{CategoryTheory.categories.Types.ExponentialsType}]
-	Any fixed universe $\universe$ of types has exponentials.
-\end{lemma}
-\begin{proof}
-	
-\end{proof}
-
-\begin{definition}
-	A \define{monoidal category} consists of a category $\bfC$ together with
-  \begin{itemize}
-    \itemsep-0.2em
-    \item a bifunctor $\bfC×\bfC→\bfC$ called the \define{tensor product} or
-      \define{monoidal product},
-    \item an object $I∈\Obj\bfC$ called the \define{unit},
-    \item for all objects $A,B,C∈\Obj\bfC$, an isomorphism
-      $α_{A,B,C}:(A⊗B)⊗C≅A⊗(B⊗C)$, and
-    \item for all objects $A∈\Obj\bfC$, isomorphisms $λ_A:I⊗A≅A$ and $ρ_A:A⊗I≅A$.
-  \end{itemize}
-  These isomorphisms are subject to additional ``coherence conditions'', which
-  won't play a crucial role here. A monoidal category is
-  \begin{itemize}
-    \itemsep-0.2em
-    \item \define{symmetric} if there are additional isomorphisms
-      $s_{A,B}:A⊗B→B⊗A$ satisfying other coherence conditions; and is
-    \item \define{cartesian} if the monoidal product $⊗$ coincides with the
-      categorical product $×$.
-  \end{itemize}
-\end{definition}
-
-Only cartesian monoidal categories play a crucial role later in this section.
-
-\begin{remark}
-	For any categorical product there is a specified isomorphism $A×B≅B×A$, so any
-  cartesian monoidal category is also symmetric monoidal.
-\end{remark}
-
-\begin{example}
-  \
-  \begin{itemize}
-    \itemsep-0.2em
-    \item \vspace{-0.3em} $\Set$, $\universe$, $\Cat$, $\Grp$, and others are 
-      cartesian (so necessarily symmetric) monoidal under their categorical
-      products. 
-    \item $F\dVect$ is symmetric monoidal under $⊗$; the trivial vector space is
-      a unit.
-  \end{itemize}
-\end{example}
-
-\begin{definition}\label[definition]{def:exponentials}
-  An \define{internal hom} for a monoidal category $(\bfC,⊗)$
-  consists of, for each pair of objects $A,B∈\Obj\bfC$, an object
-  $A⇒B$ together an arrow $\eval:(A⇒B)×A→B$ satisfying the following universal
-  property: for any object $C∈\Obj\bfC$ and arrow $f:C⊗A→B$, there is an arrow
-  $λf:C→(A⇒B)$ making the following diagram commute:
-  \begin{center}
-    \begin{tikzcd}[sep=large]
-      C×A \arrow[dr, "f"] \arrow[d, swap, "λf×\id_A"] & {} \\
-      (A⇒B)×A \arrow[r, swap, "\eval"]      & B
-    \end{tikzcd}
-  \end{center}
-  When $\bfC$ is cartesian, $A⇒B$ is called an \define{exponential},
-  and is denoted $B^A$.
-\end{definition}
-
-\begin{definition}
-  A monoidal category $(\bfC,⊗)$ is \define{closed} when it has exponentials.
-\end{definition}
-
-\begin{remark}
-  (Compare to \cref{rmk:prod-coprod-universal-adj})
-  In a closed monoidal category, for all $A,B,C∈\Obj\bfC$,
-  $λ$ and $\eval$ define a bijection
-  \begin{equation*}
-    \Hom(A⊗B,C)≅\Hom(A,B⇒C).
-  \end{equation*}
-  This bijection can be taken as their definition
-  with an additional ``naturalality'' condition.
-  This bijection is often called \define{currying}.
-\end{remark}
-
-\begin{example*}
-  $\Set$ and $\universe$ are closed monoidal. Define $B⇒A\coloneqq \Hom(B,A)$.
-  Then this is an element of $\Set$/$\universe$. Mixing set- and type-theoretical
-  notation, the bijection is given by the mutually inverse functions
-  \begin{align*}
-    \Hom(A×B,C) &\longrightarrow \Hom(A,\Hom(B,C)) \\
-    f &\longmapsto \λ{a}{\λ{b}{\appply{f}{a}{b}}} \\
-    \Hom(A,\Hom(B,C)) &\longrightarrow \Hom(A×B,C) \\
-    g &\longmapsto \λ{p}{\appply{g}{(\appr{1}{a})}{(\appr{2}{b})}}
-  \end{align*}
-\end{example*}
-
-The following proof will only be accessible to readers with a background in
-category theory (specifically, who know what adjunctions and natural
-transformations are), but isn't necessary for the rest of the appendix.
-
-\begin{lemma}[\unimathname{CategoryTheory.categories.Cats.ExponentialsCat}]
-	The precategory of categories (\cref{def:precat-of-precats}) has exponentials.
-\end{lemma}
-\begin{proof}
-  Fix $A:\universe$. We need to define a functor $E:\ttfun{Cat}→\ttfun{Cat}$ which
-  is (RIGHT/LEFT) adjoint to $B↦A×B$. Define its action on objects by
-  \begin{align*}
-    E : \ttfun{Cat} &\longrightarrow \ttfun{Cat} \\
-    C &\longmapsto_0 [A,C]
-  \end{align*}
-  that is, $E$ maps each category to the category of functors $A→C$ (with
-  natural transformations as morphisms).
-  
-  Here things get a bit tricky: the action of $E$ on arrows takes a functor in
-  $[A,C]$ to one in $[A,D]$ for each functor $C→D$. This assignment must
-  \textit{itself} be functorial. Fix some categories $C$ and $D$ and a functor
-  $F:C→D$, and define $E'$ on objects as
-  \begin{align*}
-    E' : [A,C] &\longrightarrow [A,D] \\
-    G &\longmapsto_0 F_0∘G \\
-    η &\longmapsto_1 \braces{\apply{F_1}{η_a}}_{a:\Obj A}.
-  \end{align*}
-  On arrows, $E'$ maps a natural transformation $η:G⟹H$ to one
-  $\apply{E'}{η}:F∘G⟹F∘H$. To show that $\apply{E'}{η}$ is indeed a natural
-  transformation, let $a,b:\Obj A$ and $f:\appply{\Hom}{a}{b}$. We want to show
-  that the following square commutes:
-  \begin{center}
-    \begin{tikzcd}
-      \apply{(F∘G)}{a}
-        \arrow[r, "\apply{(F∘G)}{f}"]
-        \arrow[d, "\apply{F_1}{η}_a"] &
-      \apply{(F∘G)}{b}
-        \arrow[d, "\apply{F_1}{η}_b"] \\
-      \apply{(F∘H)}{a}
-        \arrow[r, "\apply{(F∘H)}{f}"] &
-      \apply{(F∘H)}{b}
-    \end{tikzcd}
-  \end{center}
-  This is essentially the diagram expressing the naturality of $η$, but with $F$
-  applied everywhere. The proof that it commutes reflects this structure:
-  \begin{align*}
-    F_1η_b ∘ \big(\apply{(F∘G)}{f}\big)
-    &\≡ F_1η_b ∘ \apply{F_1}{(\apply{G}{f})} \\
-    &\= \apply{F_1}{(η_b ∘ \apply{G}{f})} 
-    &&\text{Functoriality of }F \\
-    &\= \apply{F_1}{(\apply{H}{f} ∘ η_a)} 
-    &&\text{Naturality of }η \\
-    &\= \apply{F_1}{(\apply{H}{f})} ∘ F_1η_a 
-    &&\text{Functoriality of }F \\
-    &\≡ \big(\apply{(F∘H)}{f}\big) ∘ F_1η_a
-  \end{align*}
-\end{proof}
-
-\begin{definition}\label[definition]{def:cartesian-cat}
-  A category is \define{Cartesian closed}
-  when it is closed, cartesian monoidal, and has a terminal object.
-  Equivalently, it is cartesian closed when it has
-  \begin{itemize}
-    \itemsep-0.2em
-    \item \vspace{-0.1em} a terminal object (\cref{def:terminal-and-initial}),
-    \item binary products (\cref{def:product-and-coproduct}), and
-    \item exponentials (\cref{def:exponentials}).
-  \end{itemize}
-  ``CCC'' abbreviates ``Cartesian closed category''.
-\end{definition}
-
-\begin{remark}\label[remark]{rmk:lambek}
-	We now have the vocabulary to (informally) extend the correspondence of
-  \cref{sec:propositions-and-types} to statements about CCCs.
-  \cite{lambek}
-  \TODO{}
-\end{remark}
-
-\begin{remark}
-  The Curry-Howard-Lambek correspondence gives the barest hint of insight into
-  Voevodsky's innovation. He also gave a categorically-based model of a version
-  of the typed λ-calculus, but of full Martin-Löf dependent type theory. The
-  structure of higher/nested identity types
-  ($\propeq{\propeq{\cdots}{a}{b}}{p}{q}$) recalled ideas of homotopy theory,
-  where paths are considered identical up to the existence of ``higher
-  paths''.\TODO{}
-
-  For the initial development of the connection between locally Cartesian closed
-  categories (LCCCs) and type theory, see \cite{seely}.
-\end{remark}
-
+% TODO: uncomment me
+% \input{tex/appendix.tex}
 
 \backmatter % backmatter makes the index and bibliography appear properly in the TOC
 

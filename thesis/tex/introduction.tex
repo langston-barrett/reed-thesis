@@ -1,0 +1,79 @@
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+\chaptermark{Introduction}
+\markboth{Introduction}{Introduction}
+
+\section*{A short history of discomfort in mathematics}
+
+% \subsection*{Trouble in Cantor's Paradise}
+
+In the early 20\textsuperscript{th} century, mathematicians had a problem. Often
+held up as the pinnacle of necessary, undoubtable, \textit{a priori} truth,
+their discipline was suffering from an embarrassing lack of certainty. The
+intricate arguments of advanced analysis left mathematicians unable to confirm
+nor deny each other's proofs. Due to the wave of paradoxes unleashed by
+Cantor's na\"ive set theory, the need for a rigorous logical foundation for higher
+mathematics was so great that the enterprise of axiomatic set theory was pursued
+headlong until some kind of consensus was reached. To make a long, rich story
+brutally short, virtually every modern paper in mathematics and computer
+science uses a combination of Gentzen's first-order logic (\FOL)
+and an axiomatization of sets called
+\ZFC.\footnote{This ``consensus'' left out many
+  prominent schools of thought, such as the Intuitionists and constructivists, a
+  point we'll soon return to.}
+
+Despite the apparent rigor of \FOL+\ZFC,
+practitioners of the deductive sciences were still beset by issues of
+verifiability. Complexity, specialization and sheer length made modern proofs
+difficult to comprehend with the absolute certainty which is supposed to
+characterize these disciplines. In the 1970s, two teams of topologists proved
+contradictory results, and neither group could find the error in the other's
+proof \cite{kolata}. Wiles's famous proof of Fermat's last theorem was utterly
+unintelligible to the vast majority of mathematicians \cite{nyt}. The
+classification of the simple finite groups, one of the crowning achievements of
+modern mathematics, has a combined proof of over ten thousand pages. These
+examples illustrate merely a few of the practical epistemological challenges
+facing mathematicians; for a historical perspective see \cite{rigor-and-proof},
+and for a general overview see \cite{fidelity}.
+
+In 1990s, Fields medalist Vladimir Voevodsky grew concerned with the state
+of mathematical knowledge. In 1998, Carlos Simpson released a pre-print arguing
+that there was a major mistake in one of Voevodsky's papers. However, it was not
+clear whether Voevodsky had errored, or whether there was a flaw in Simpson's
+counterexample. In 1999, Pierre Deligne found a crucial mistake in Voevodsky's
+``Cohomological Theory of Presheaves with Transfers'', upon which he had based
+much of his work in the area of motivic cohomology. As he began to develop more
+and more complex arguments, Voevodsky wondered: ``And who would ensure that I
+did not forget something and did not make a mistake, if even the mistakes in
+much more simple arguments take years to uncover?'' \cite{voevodsky-ias}.
+
+The problems facing Voevodsky and his peers seemed insurmountable.
+As the requisite attention span, memory, and capacity for detail required to
+understand new developments in higer mathematics reached inhuman proportions,
+where was he to turn? He would not find a solution in the realm of pure
+mathematics, but rather in one of the finest examples of collaboration between
+mathematicians, computer scientists, and philosophers: the modern proof
+assistant. \TODO{reword}
+
+\section*{TODO}
+
+While much of the mathematical discipline was simply relieved to have ``solved''
+their foundational issues with axiomatic set theory, there remained a vocal
+opposition to the newly-adopted methods. Most mathematicians are dimly aware
+that there's some controversy about the Axiom of Choice (the ``C'' in
+\ZFC) \cite{martin-lof-100-years}, you don't have to look further
+than \FOL to find disagreements.
+
+\section*{Our contribution}
+
+(Co)inductive types and UniMath
+
+begin
+\begin{notation}
+  All of the results of this thesis have been formalized in the \Coq{} proof
+  assistant \cite{coq-manual}. The names of the formal proofs
+  appear in a monospaced font (e.g.\ \coqname{univalence}). Many results have
+  already been reviewed (by the \UniMath{} development team \cite{unimath} and
+  Anders Mörtberg) and accepted into the \UniMath{} library, these appear
+  with an underline (e.g.\ \unimathname{univalence}).
+\end{notation}

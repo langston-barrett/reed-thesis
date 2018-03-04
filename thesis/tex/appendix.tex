@@ -1,0 +1,209 @@
+\chapter{Cross-reference of names}
+
+The following table lists lemmas taken from \cite{book}.
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{c | c}
+    This thesis & The \HoTT book \\ \hline
+    \Cref{def:ua} & Axiom 2.10.3
+  \end{tabular}
+\end{table}
+
+The following table compares the terminology used in this thesis to that in our
+\Coq{} formalization (under the column \UniMath{}) and that of the \Agda{} development
+of \cite{non-wellfounded} (under the column \MTypes{}).
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{c | c | c }
+    This thesis & \UniMath{} & \MTypes{} \\ \hline
+  \end{tabular}
+\end{table}
+
+\chapter{CCCs and the λ-calculus}
+\label{chap:cccs-and-lc}
+
+\Cref{chap:category-theory} provides \textit{almost} enough background to
+understand an interesting connection between a certain kind of category and the
+λ-calculus.
+
+\begin{lemma}[\unimathname{CategoryTheory.categories.Types.ExponentialsType}]
+	Any fixed universe $\universe$ of types has exponentials.
+\end{lemma}
+\begin{proof}
+	
+\end{proof}
+
+\begin{definition}
+	A \define{monoidal category} consists of a category $\bfC$ together with
+  \begin{itemize}
+    \itemsep-0.2em
+    \item a bifunctor $\bfC×\bfC→\bfC$ called the \define{tensor product} or
+      \define{monoidal product},
+    \item an object $I∈\Obj\bfC$ called the \define{unit},
+    \item for all objects $A,B,C∈\Obj\bfC$, an isomorphism
+      $α_{A,B,C}:(A⊗B)⊗C≅A⊗(B⊗C)$, and
+    \item for all objects $A∈\Obj\bfC$, isomorphisms $λ_A:I⊗A≅A$ and $ρ_A:A⊗I≅A$.
+  \end{itemize}
+  These isomorphisms are subject to additional ``coherence conditions'', which
+  won't play a crucial role here. A monoidal category is
+  \begin{itemize}
+    \itemsep-0.2em
+    \item \define{symmetric} if there are additional isomorphisms
+      $s_{A,B}:A⊗B→B⊗A$ satisfying other coherence conditions; and is
+    \item \define{cartesian} if the monoidal product $⊗$ coincides with the
+      categorical product $×$.
+  \end{itemize}
+\end{definition}
+
+Only cartesian monoidal categories play a crucial role later in this section.
+
+\begin{remark}
+	For any categorical product there is a specified isomorphism $A×B≅B×A$, so any
+  cartesian monoidal category is also symmetric monoidal.
+\end{remark}
+
+\begin{example}
+  \
+  \begin{itemize}
+    \itemsep-0.2em
+    \item \vspace{-0.3em} $\Set$, $\universe$, $\Cat$, $\Grp$, and others are 
+      cartesian (so necessarily symmetric) monoidal under their categorical
+      products. 
+    \item $F\dVect$ is symmetric monoidal under $⊗$; the trivial vector space is
+      a unit.
+  \end{itemize}
+\end{example}
+
+\begin{definition}\label[definition]{def:exponentials}
+  An \define{internal hom} for a monoidal category $(\bfC,⊗)$
+  consists of, for each pair of objects $A,B∈\Obj\bfC$, an object
+  $A⇒B$ together an arrow $\eval:(A⇒B)×A→B$ satisfying the following universal
+  property: for any object $C∈\Obj\bfC$ and arrow $f:C⊗A→B$, there is an arrow
+  $λf:C→(A⇒B)$ making the following diagram commute:
+  \begin{center}
+    \begin{tikzcd}[sep=large]
+      C×A \arrow[dr, "f"] \arrow[d, swap, "λf×\id_A"] & {} \\
+      (A⇒B)×A \arrow[r, swap, "\eval"]      & B
+    \end{tikzcd}
+  \end{center}
+  When $\bfC$ is cartesian, $A⇒B$ is called an \define{exponential},
+  and is denoted $B^A$.
+\end{definition}
+
+\begin{definition}
+  A monoidal category $(\bfC,⊗)$ is \define{closed} when it has exponentials.
+\end{definition}
+
+\begin{remark}
+  (Compare to \cref{rmk:prod-coprod-universal-adj})
+  In a closed monoidal category, for all $A,B,C∈\Obj\bfC$,
+  $λ$ and $\eval$ define a bijection
+  \begin{equation*}
+    \Hom(A⊗B,C)≅\Hom(A,B⇒C).
+  \end{equation*}
+  This bijection can be taken as their definition
+  with an additional ``naturalality'' condition.
+  This bijection is often called \define{currying}.
+\end{remark}
+
+\begin{example*}
+  $\Set$ and $\universe$ are closed monoidal. Define $B⇒A\coloneqq \Hom(B,A)$.
+  Then this is an element of $\Set$/$\universe$. Mixing set- and type-theoretical
+  notation, the bijection is given by the mutually inverse functions
+  \begin{align*}
+    \Hom(A×B,C) &\longrightarrow \Hom(A,\Hom(B,C)) \\
+    f &\longmapsto \λ{a}{\λ{b}{\appply{f}{a}{b}}} \\
+    \Hom(A,\Hom(B,C)) &\longrightarrow \Hom(A×B,C) \\
+    g &\longmapsto \λ{p}{\appply{g}{(\appr{1}{a})}{(\appr{2}{b})}}
+  \end{align*}
+\end{example*}
+
+The following proof will only be accessible to readers with a background in
+category theory (specifically, who know what adjunctions and natural
+transformations are), but isn't necessary for the rest of the appendix.
+
+\begin{lemma}[\unimathname{CategoryTheory.categories.Cats.ExponentialsCat}]
+	The precategory of categories (\cref{def:precat-of-precats}) has exponentials.
+\end{lemma}
+\begin{proof}
+  Fix $A:\universe$. We need to define a functor $E:\ttfun{Cat}→\ttfun{Cat}$ which
+  is (RIGHT/LEFT) adjoint to $B↦A×B$. Define its action on objects by
+  \begin{align*}
+    E : \ttfun{Cat} &\longrightarrow \ttfun{Cat} \\
+    C &\longmapsto_0 [A,C]
+  \end{align*}
+  that is, $E$ maps each category to the category of functors $A→C$ (with
+  natural transformations as morphisms).
+  
+  Here things get a bit tricky: the action of $E$ on arrows takes a functor in
+  $[A,C]$ to one in $[A,D]$ for each functor $C→D$. This assignment must
+  \textit{itself} be functorial. Fix some categories $C$ and $D$ and a functor
+  $F:C→D$, and define $E'$ on objects as
+  \begin{align*}
+    E' : [A,C] &\longrightarrow [A,D] \\
+    G &\longmapsto_0 F_0∘G \\
+    η &\longmapsto_1 \braces{\apply{F_1}{η_a}}_{a:\Obj A}.
+  \end{align*}
+  On arrows, $E'$ maps a natural transformation $η:G⟹H$ to one
+  $\apply{E'}{η}:F∘G⟹F∘H$. To show that $\apply{E'}{η}$ is indeed a natural
+  transformation, let $a,b:\Obj A$ and $f:\appply{\Hom}{a}{b}$. We want to show
+  that the following square commutes:
+  \begin{center}
+    \begin{tikzcd}
+      \apply{(F∘G)}{a}
+        \arrow[r, "\apply{(F∘G)}{f}"]
+        \arrow[d, "\apply{F_1}{η}_a"] &
+      \apply{(F∘G)}{b}
+        \arrow[d, "\apply{F_1}{η}_b"] \\
+      \apply{(F∘H)}{a}
+        \arrow[r, "\apply{(F∘H)}{f}"] &
+      \apply{(F∘H)}{b}
+    \end{tikzcd}
+  \end{center}
+  This is essentially the diagram expressing the naturality of $η$, but with $F$
+  applied everywhere. The proof that it commutes reflects this structure:
+  \begin{align*}
+    F_1η_b ∘ \big(\apply{(F∘G)}{f}\big)
+    &\≡ F_1η_b ∘ \apply{F_1}{(\apply{G}{f})} \\
+    &\= \apply{F_1}{(η_b ∘ \apply{G}{f})} 
+    &&\text{Functoriality of }F \\
+    &\= \apply{F_1}{(\apply{H}{f} ∘ η_a)} 
+    &&\text{Naturality of }η \\
+    &\= \apply{F_1}{(\apply{H}{f})} ∘ F_1η_a 
+    &&\text{Functoriality of }F \\
+    &\≡ \big(\apply{(F∘H)}{f}\big) ∘ F_1η_a
+  \end{align*}
+\end{proof}
+
+\begin{definition}\label[definition]{def:cartesian-cat}
+  A category is \define{Cartesian closed}
+  when it is closed, cartesian monoidal, and has a terminal object.
+  Equivalently, it is cartesian closed when it has
+  \begin{itemize}
+    \itemsep-0.2em
+    \item \vspace{-0.1em} a terminal object (\cref{def:terminal-and-initial}),
+    \item binary products (\cref{def:product-and-coproduct}), and
+    \item exponentials (\cref{def:exponentials}).
+  \end{itemize}
+  ``CCC'' abbreviates ``Cartesian closed category''.
+\end{definition}
+
+\begin{remark}\label[remark]{rmk:lambek}
+	We now have the vocabulary to (informally) extend the correspondence of
+  \cref{sec:propositions-and-types} to statements about CCCs.
+  \cite{lambek}
+  \TODO{}
+\end{remark}
+
+\begin{remark}
+  The Curry-Howard-Lambek correspondence gives the barest hint of insight into
+  Voevodsky's innovation. He also gave a categorically-based model of a version
+  of the typed λ-calculus, but of full Martin-Löf dependent type theory. The
+  structure of higher/nested identity types
+  ($\propeq{\propeq{\cdots}{a}{b}}{p}{q}$) recalled ideas of homotopy theory,
+  where paths are considered identical up to the existence of ``higher
+  paths''.\TODO{}
+
+  For the initial development of the connection between locally Cartesian closed
+  categories (LCCCs) and type theory, see \cite{seely}.
+\end{remark}

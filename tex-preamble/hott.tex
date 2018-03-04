@@ -52,6 +52,7 @@
 \newcommand{\isContr}{\ttfun{isContr}}
 \newcommand{\isProp}{\ttfun{isProp}}
 \newcommand{\isSet}{\ttfun{isSet}}
+\newcommand{\hlevel}{\ttfun{hlevel}}
 
 %%% categorytheory
 
@@ -59,6 +60,10 @@
 \newcommand{\catarrow}{\rightharpoonup}
 \newcommand{\Precat}{\ttfun{Precat}}
 \newcommand{\Functor}{\ttfun{Functor}}
+\newcommand{\Cocone}{\ttfun{Cocone}}
+\newcommand{\Cone}{\ttfun{Cone}}
+\newcommand{\Lim}{\ttfun{Lim}}
+\newcommand{\Colim}{\ttfun{Colim}}
 
 %%% Relations
 
@@ -70,7 +75,8 @@
 % Others
 \newcommand{\jdeq}{\equiv}
 \newcommand{\defeq}{\vcentcolon\jdeq}
-\newcommand{\weq}[2]{#1 \simeq #2}
+\newcommand{\weqsign}{\simeq}
+\newcommand{\weq}[2]{#1 \weqsign #2}
 \newcommand{\homot}[2]{#1 \sim #2}
 
 \newcommand{\appr}[2]{\apply{\pr{#1}}{#2}} % a combination of apply and pr
@@ -78,6 +84,8 @@
 \newcommand{\apinr}[1]{\apply{\inr}{#1}}   % a combination of apply and inl
 
 \newcommand{\ap}[2]{\mathsf{ap}_{#1}{\paren{#2}}} % action on paths
+
+% univalence
 \newcommand{\ua}{\mathsf{ua}} % univalence axiom
 
 %%% Transport (covariant) %%%
