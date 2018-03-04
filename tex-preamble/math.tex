@@ -3,7 +3,7 @@
 \usepackage{mathtools}     % improvement on amsmath
 
 \usepackage{unicode-math}         % use OTF math fonts
-% \setoperatorfont\mathup % operators should be set in math font
+\setoperatorfont\mathup % operators should be set in math font
 % \AtBeginDocument{\let\setminus\minus}
 
 % \ExplSyntaxOn % fix xmapsto. https://github.com/wspr/unicode-math/issues/197
@@ -118,6 +118,7 @@
 \DeclareCategory{\Rep}{Rep}      % categories: representations
 \DeclareCategory{\Alg}{-Alg}     % categories: functor algebras
 \DeclareCategory{\Coalg}{\kern-1pt-Coalg} % categories: functor algebras
+\DeclareCategory{\omegacat}{ω} % categories: functor algebras
 
 % make letters in different fonts (bold, blackboard, caligraphic, fraktur)
 % https://tex.stackexchange.com/questions/156196/newcommand-with-variable-name

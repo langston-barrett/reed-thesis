@@ -145,18 +145,19 @@
 % if you want a list of figures, also optional
 % \listoffigures
 
-\chapter*{Abstract}
+% \chapter*{Abstract}
 
-In this thesis we explain Univalent type theory, a constructive and
-computationally meaningful foundational system for mathematics inspired by
-recent advances in the semantics of Per Martin-L\"of's intuitionistic type
-theory. We first develop the classical propositions/types correspondence between
-(the constructive subset of) intuitionistic natural dedication and the
-λ-calculus. We proceed to explicate Martin-L\"of's theory of dependent types and
-the central modern development in type theory: Vladimir Voevodsky's Univalence
-principle. We go on to examine the nature of coinduction within this theory,
-presenting a novel formalization of a recent result that M-types can be derived
-\textit{internally} in Univalent type theory.
+% In this thesis we explain Univalent type theory, a constructive and
+% computationally meaningful foundational system for mathematics inspired by
+% recent advances in the model theory of Per Martin-L\"of's intuitionistic type
+% theory. We first develop the classical propositions/types correspondence between
+% (the constructive subset of) intuitionistic natural dedication and the
+% λ-calculus. We proceed to explicate Martin-L\"of's theory of dependent types and
+% the central modern development in type theory: Vladimir Voevodsky's Univalence
+% principle. We go on to examine some category theory and the nature of coinduction
+% within this theory, presenting a novel formalization of a recent result that
+% M-types can be derived \textit{internally} in Univalent type theory.
+
 % \chapter*{Dedication}
 
 \mainmatter % here the regular arabic numbering starts
@@ -265,7 +266,8 @@ emphasized the importance of the notion of judgment (\cref{def:judgment})
 \cite{martin-lof-meanings} and justified the rules of his type theory
 by meaning explanations \cite{martin-lof-constructive}, which we will imitate
 in \cref{subsec:ipl-intro}. See \cite{modal-judgment} for a similar application
-of Martin-L\"of vocabulary to modal logic.
+of Martin-L\"of vocabulary to modal logic, and \cite{hott-meaning} for a
+justification of \HoTT using meaning explanations.
 
 The presentation of \crefrange{sec:ipl}{sec:the-lambda-calculus} is influenced by
 Philip Wadler \cite{wadler-propositions}, Frank Pfenning's lecture notes for
@@ -1816,9 +1818,33 @@ for \textit{all} types.
     \id :\∏{A:\universe}{A\to A} &&
     \id \defeq \λ{A}{\λ{a}{a}}
   \end{align*}
-  We will write its first argument as a subscript, as in $\id_{A}$.
 \end{definition}
 
+\begin{notation}\label[notation]{implicit-args}
+  Often in type theory, functions have ``extraneous'' arguments,
+  meaning their values can be deduced from context. For instance, 
+  in the (not wellformed) expression $\appply{\id}{\_}{a}$ for $a:A$, the only
+  value that can go in the blank is (something judgmentally equal to)
+  $A$.\footnote{In \Coq{}, one may actually write $\_$ in place of an
+  argument and it will be filled in by a component called the \textit{unifier},
+  or declare once and for all that such an argument never needs to be filled in
+  when calling the function (such arguments are called \textit{implicit}).}
+
+  As another example, an inhabitant of the following type witnesses the
+  associativity of function composition:
+  \begin{equation*}
+    \∏{A,B,C,D:\universe}{
+      \∏{f:A→B}{
+        \∏{g:B→C}{
+          \∏{h:C→D}{
+            \propeq{}{(h∘g)∘f}{h∘(g∘f)}
+    }}}}.\footnote{By the way, this identity is witnessed by reflexivity. To
+    convince yourself that this is so, recall \cref{def:implication-composition}.}
+  \end{equation*}
+  However, the arguments $A$, $B$, $C$, and $D$ can be inferred from the types
+  of $f$, $g$, and $h$. In the remainder of this thesis, such arguments may be
+  written as subscripts or left out entirely.
+\end{notation}
 
 \begin{remark}\label[remark]{rmk:universe-hierarchy}
 
@@ -2019,7 +2045,7 @@ We will examine category theory within \UTT{} in
 \TODO{Type theory and category theory are intimately connected via the
       discipline of \textit{topos theory}}%\index{Topos theory}.}
 
-\begin{definition}
+\begin{definition}\label[category]{def:category}
 	A \define{category}\index{Category} $\bfC$ consists of the following data:
   \begin{itemize}
     \itemsep-0.2em
@@ -2233,7 +2259,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \begin{definition}\label[definition]{def:product-and-coproduct}
   Given two objects $A,B\in\Obj\bfC$,
   \vspace{-0.3em}\dual{
-    a \define{product}\index{Product!In a category} of $A$ and $B$
+    a \define{(binary) product}\index{Product!In a category} of $A$ and $B$
     consists of an object $C\in\Obj\bfC$ together with arrows $p_1:C\to A$ and
     $p_2:C\to B$ satisfying the following universal property:
 
@@ -2250,7 +2276,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
     If $C$ is a product of $A$ and $B$, we will denote it by $A\times B$, and
     the unque arrow $u$ as $\langle f,g \rangle$.
   }{
-    a \define{coproduct}\index{Coproduct!In a category} of $A$ and $B$
+    a \define{(binary) coproduct}\index{Coproduct!In a category} of $A$ and $B$
     consists of an object $C\in\Obj\bfC$ together with arrows $i_1:A\to C$ and
     $i_2:B\to C$ satisfying the following universal property:
 
@@ -2675,137 +2701,11 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
   \define{has small (co)limits} when it has (co)limits of every shape.
 \end{definition}
 
-\section{CCCs and the λ-calculus}
-\label{sec:cccs-and-lc}
+Generally, one often says $\bfC$ ``has $x$'' for some object $x$ and
+collection of arrows defined by a universal property, e.g.\
+``$\bfC$ has (binary) products'' or ``$\bfC$ has internal homs''
+(\cref{def:exponentials}).
 
-This section isn't necessary for understanding later sections and chapters, but
-provides an interesting categorical framework for understanding the λ-calculus.
-\TODO{subsection}
-
-\begin{lemma}[\unimathname{CategoryTheory.categories.Types.ExponentialsType}]
-	Any fixed universe $\universe$ of types has exponentials.
-\end{lemma}
-\begin{proof}
-	
-\end{proof}
-
-\begin{definition}
-	A \define{monoidal category} consists of a category $\bfC$ together with
-  \begin{itemize}
-    \itemsep-0.2em
-    \item a bifunctor $\bfC×\bfC→\bfC$ called the \define{tensor product} or
-      \define{monoidal product},
-    \item an object $I∈\Obj\bfC$ called the \define{unit},
-    \item for all objects $A,B,C∈\Obj\bfC$, an isomorphism
-      $α_{A,B,C}:(A⊗B)⊗C≅A⊗(B⊗C)$, and
-    \item for all objects $A∈\Obj\bfC$, isomorphisms $λ_A:I⊗A≅A$ and $ρ_A:A⊗I≅A$.
-  \end{itemize}
-  These isomorphisms are subject to additional ``coherence conditions'', which
-  won't play a crucial role here. A monoidal category is
-  \begin{itemize}
-    \itemsep-0.2em
-    \item \define{symmetric} if there are additional isomorphisms
-      $s_{A,B}:A⊗B→B⊗A$ satisfying other coherence conditions; and is
-    \item \define{cartesian} if the monoidal product $⊗$ coincides with the
-      categorical product $×$.
-  \end{itemize}
-\end{definition}
-
-Only cartesian monoidal categories play a crucial role later in this section.
-
-\begin{remark}
-	For any categorical product there is a specified isomorphism $A×B≅B×A$, so any
-  cartesian monoidal category is also symmetric monoidal.
-\end{remark}
-
-\begin{example}
-  \
-  \begin{itemize}
-    \itemsep-0.2em
-    \item \vspace{-0.3em} $\Set$, $\universe$, $\Cat$, $\Grp$, and others are 
-      cartesian (so necessarily symmetric) monoidal under their categorical
-      products. 
-    \item $F\dVect$ is symmetric monoidal under $⊗$; the trivial vector space is
-      a unit.
-  \end{itemize}
-\end{example}
-
-\begin{definition}\label[definition]{def:exponentials}
-  An \define{internal hom} for a monoidal category $(\bfC,⊗)$
-  consists of, for each pair of objects $A,B∈\Obj\bfC$, an object
-  $A⇒B$ together an arrow $\eval:(A⇒B)×A→B$ satisfying the following universal
-  property: for any object $C∈\Obj\bfC$ and arrow $f:C⊗A→B$, there is an arrow
-  $λf:C→(A⇒B)$ making the following diagram commute:
-  \begin{center}
-    \begin{tikzcd}[sep=large]
-      C×A \arrow[dr, "f"] \arrow[d, swap, "λf×\id_A"] & {} \\
-      (A⇒B)×A \arrow[r, swap, "\eval"]      & B
-    \end{tikzcd}
-  \end{center}
-  When $\bfC$ is cartesian, $A⇒B$ is called an \define{exponential},
-  and is denoted $B^A$.
-\end{definition}
-
-\begin{definition}
-  A monoidal category $(\bfC,⊗)$ is \define{closed} when it has exponentials.
-\end{definition}
-
-\begin{remark}
-  (Compare to \cref{rmk:prod-coprod-universal-adj})
-  In a closed monoidal category, for all $A,B,C∈\Obj\bfC$,
-  $λ$ and $\eval$ define a bijection
-  \begin{equation*}
-    \Hom(A⊗B,C)≅\Hom(A,B⇒C).
-  \end{equation*}
-  This bijection can be taken as their definition
-  with an additional ``naturalality'' condition.
-  This bijection is often called \define{currying}.
-\end{remark}
-
-\begin{example*}
-  $\Set$ and $\universe$ are closed monoidal. Define $B⇒A\coloneqq \Hom(B,A)$.
-  Then this is an element of $\Set$/$\universe$. Mixing set- and type-theoretical
-  notation, the bijection is given by the mutually inverse functions
-  \begin{align*}
-    \Hom(A×B,C) &\longrightarrow \Hom(A,\Hom(B,C)) \\
-    f &\longmapsto \λ{a}{\λ{b}{\appply{f}{a}{b}}} \\
-    \Hom(A,\Hom(B,C)) &\longrightarrow \Hom(A×B,C) \\
-    g &\longmapsto \λ{p}{\appply{g}{(\appr{1}{a})}{(\appr{2}{b})}}
-  \end{align*}
-\end{example*}
-
-\begin{definition}\label[definition]{def:cartesian-cat}
-  A category is \define{Cartesian closed}
-  when it is closed, cartesian monoidal, and has a terminal object.
-  Equivalently, it is cartesian closed when it has
-  \begin{itemize}
-    \itemsep-0.2em
-    \item \vspace{-0.1em} a terminal object (\cref{def:terminal-and-initial}),
-    \item binary products (\cref{def:product-and-coproduct}), and
-    \item exponentials (\cref{def:exponentials}).
-  \end{itemize}
-  ``CCC'' abbreviates ``Cartesian closed category''.
-\end{definition}
-
-\begin{remark}\label[remark]{rmk:lambek}
-	We now have the vocabulary to (informally) extend the correspondence of
-  \cref{sec:propositions-and-types} to statements about CCCs.
-  \cite{lambek}
-  \TODO{}
-\end{remark}
-
-\begin{remark}
-  The Curry-Howard-Lambek correspondence gives the barest hint of insight into
-  Voevodsky's innovation. He also gave a categorically-based model of a version
-  of the typed λ-calculus, but of full Martin-Löf dependent type theory. The
-  structure of higher/nested identity types
-  ($\propeq{\propeq{\cdots}{a}{b}}{p}{q}$) recalled ideas of homotopy theory,
-  where paths are considered identical up to the existence of ``higher
-  paths''.\TODO{}
-
-  For the initial development of the connection between locally Cartesian closed
-  categories (LCCCs) and type theory, see \cite{seely}.
-\end{remark}
 
 \section{Functors and their algebras}
 \label{sec:functors-and-their-algebras}
@@ -2815,9 +2715,9 @@ Only cartesian monoidal categories play a crucial role later in this section.
   consists of the following data:
   \begin{itemize}
     \itemsep-0.2em
-    \item a map $F_0:\Obj \bfC\to\Obj \bfD$
+    \item a map $F_0:\Obj \bfC\to\Obj \bfD$, and
     \item for each pair of objects $A,B\in\Obj C$, a map \\
-      $F_1:\Hom_{\bfC}(A,B) \to\Hom_{\bfD}(F_0(A),F_0(B))$
+      $F_1:\Hom_{\bfC}(A,B) \to\Hom_{\bfD}(F_0(A),F_0(B))$.
   \end{itemize}
   These data are subject to the following axioms:
   \begin{enumerate}%[label=\Alph*.]
@@ -3125,8 +3025,195 @@ on category theory in univalent type theory \cite{book} \cite{unimath}
 
 For a pioneering development of univalent category theory, see \cite{rezk} (the
 formalization of which served as a foundation for \UniMath{}'s
-\unimathname{CategoryTheory} package).
+\unimathname{CategoryTheory} package). See also Chapter 9 of \cite{book}.
 
+Types in \UTT{} are the analogues of sets in \ZFC{}+\FOL{}, insofar as they also
+represent ``collections''. Therefore, a naïve translation of the definition
+would define a category to consist of a type $C:\universe$ of objects and a
+family $\ttHom_{C}:C→C→\universe$ of arrows.
+
+\begin{definition}\label[definition]{def:precategory}
+  A \define{precategory}\index{Precategory} consists of the following data:
+  \begin{itemize}
+    \itemsep-0.2em
+    \item a type $\bfC:\universe$ of \define{objects},
+    \item a family $\ttHom_{\bfC}:\bfC→\bfC→\universe$ which assigns to each pair
+      of types a \define{hom-type} which has \define{morphisms} as its elements, 
+    \item a map $\id:\∏{c:\bfC}{\appply{\ttHom_{\bfC}}{c}{c}}$
+      which assigns to each object an 
+      \define{identity morphism}\index{Identity!Morphism},
+    \item an operation
+      \begin{equation*}
+        ∘:\∏{a,b,c:\bfC}{\appply{\ttHom_{\bfC}}{b}{c}→\appply{\ttHom_{\bfC}}{a}{b}→\appply{\ttHom_{\bfC}}{a}{c}}
+      \end{equation*}
+      called \define{composition}\index{Composition!In a precategory}, and
+  \end{itemize}
+  together with maps witnessing\footnote{This is an expressly type-theoretic
+    presentation; one might instead use the more classical ``for all objects
+    $a,b$ of $\bfC$ and arrows $f:A$''. However, since such definitions appear
+    in the previous chapter, these are phrased more idiosyncratically to help the
+    reader get used to this more rigid formalism.} the following axioms:
+  \begin{enumerate}%[label=\Alph*.]
+    \itemsep-0.2em
+    \item left and right identity:
+      \begin{align*}
+        \∏{a,b:\bfC}{\∏{f:\appply{\ttHom_{\bfC}}{a}{b}}{&\id_B∘f=f}} \\
+        \∏{a,b:\bfC}{\∏{f:\appply{\ttHom_{\bfC}}{a}{b}}{&f∘\id_A=f}}
+      \end{align*}
+    \item associativity of composition:
+      \begin{equation*}
+        \∏{a,b,c,d:\bfC}{
+          \∏{f:\appply{\ttHom_{\bfC}}{a}{b}}{
+            \∏{g:\appply{\ttHom_{\bfC}}{b}{c}}{
+              \∏{h:\appply{\ttHom_{\bfC}}{c}{d}}{
+                \propeq{}{(h∘g)∘f}{h∘(g∘f)}
+        }}}}
+      \end{equation*}
+  \end{enumerate} 
+  We denote arrows $\appply{\ttHom}{a}{b}$ by $a\rightharpoonup b$ in an attempt
+  to distinguish it from the function type $a→b$. 
+  The type of all precategories is denoted $\Precat$.
+\end{definition}
+
+Many concepts from classical category theory can be translated with no further
+thought into the language of precategories. 
+
+\begin{definition}\label[definition]{def:functor-tt}
+	A \define{functor}\index{Functor} $F$ between $\bfC,\bfD:\Precat$
+  consists of the following data:
+  \begin{itemize}
+    \itemsep-0.2em
+    \item a map $F_0:\bfC\to\bfD$ and
+    \item a map
+      $F_1:\∏{a,b:\bfC}{\appply{\Hom_{\bfD}}{(\apply{F_0}{a})}{(\apply{F_0}{b})}}$
+  \end{itemize}
+  together with maps witnessing the following axioms:
+  \begin{enumerate}%[label=\Alph*.]
+    \itemsep-0.2em
+    \item preservation of identity:
+      \begin{equation*}
+        \∏{a:\bfC}{\apply{F_1}{\id_A}=\id_{(\apply{F_0}{A})}}
+      \end{equation*}
+    \item preservation of composition:
+      \begin{equation*}
+        \∏{a,b,c:\bfC}{
+          \∏{f:\appply{\ttHom_{\bfC}}{a}{b}}{
+            \∏{g:\appply{\ttHom_{\bfC}}{b}{c}}{
+              \propeq{}{\apply{F_1}{(g∘f)}}{\apply{F_1}{g}∘\apply{F_1}{f}}
+        }}}.
+      \end{equation*}
+  \end{enumerate}
+  The type of functors from $\bfC$ to $\bfD$ is denoted
+  $\appply{\Functor}{\bfC}{\bfD}$.
+\end{definition}
+
+\begin{example}[\coqname{CategoryTheory.categories.Cats.precat\_precat},
+                \\ \coqname{CategoryTheory.categories.Cats.cat\_precat}]
+  \label[example]{ex:precat-of-precats}
+  There is a precategory of precategories, with object type
+  $\Precat$ and morphism type 
+  $\ttfun{Functor}$;\footnote{This is a great example of how universes deal
+    elegantly with problems of size: this precategory isn't a member of itself,
+    because it is really only a precategory of $\universei{i}$-small
+    precategories for fixed $i$, and itself is an element of 
+    $\universei{\apply{\suc}{i}}$.}
+  there is also a precategory with object type $\ttfun{Category}$.
+\end{example}
+
+Many such ``translated'' definitions are so near to the originals that we won't
+treat them here (e.g.\ commutative diagrams, isomorphisms, and the specific
+kinds of (co)limits).
+
+However, when proving analogous results about such constructions in
+precategories, one soon runs into difficulty. The
+root of the problem is that the hom-types may have ``higher homotopical
+structure'', and to account for this structure would require infinitely many
+additional axioms.\footnote{The precise nature of this structure and how it
+  interferes with classical intuitions is outside the scope of this thesis,
+  though certain instructional difficulties will arise in
+  \cref{chap:coinductive-types-in-univalent-type-theory} (indeed, that whole
+  chapter may be seen as an attempt to use 1-category theoretic-intuitions
+  outside their domain of applicability).} For most applications, it suffices 
+to restrict the hom-types to be hom-sets:
+\begin{definition}\label[definition]{def:category-tt}
+  A precategory $\bfC$ \define{has hom-sets}\index{Having hom-sets} if the type
+  \begin{equation*}
+    \pit{a,b:\bfC}{\apply{\isSet}{(\appply{\ttHom}{a}{b})}}
+  \end{equation*}
+  is inhabited. A precategory with hom-sets is called a \define{category}.
+\end{definition}
+
+In \cref{chap:coinductive-types-in-univalent-type-theory}, we will be most
+concerned with a precategory that is emphatically \textit{not} a category,
+namely $\universe$. In particular, $M$-types are constructed as limits
+in $\universe$. The next few lemmas explore some particular examples
+before defining and constructing general limits.
+
+\begin{lemma}\label[lemma]{lemma:universe-binproducts}
+	The precategory of types has binary
+  products.\footnote{Again, where these are defined by rote translation from
+    \cref{def:product-and-coproduct}.}
+\end{lemma}
+
+While there are more direct proofs of this lemma, the following is based on the
+observation made in \cref{rmk:prod-coprod-universal-adj}, and will carry over to
+the case of general limits. We begin with another lemma:
+
+\begin{lemma}
+	There is an equivalence of types
+  \begin{equation*}
+    (C→A)×(C→B)≃(C→A×B)
+  \end{equation*}
+  for all $A,B,C:\universe$.\footnote{This result originally appeared in
+    Voevodsky's ``Foundations'' library, a precursor to \UniMath{}.}
+\end{lemma}
+\begin{proof}
+  Define
+  \begin{align*}
+    \begin{split}
+      f : &(C→A×B) → \\
+          &(C→A)×(C→B) \\
+      \apply{f}{h} &\defeq (\pr{1}∘\apply{h},\pr{2}∘\apply{h})
+    \end{split}
+    \begin{split}
+      g : &(C→A)×(C→B) → \\
+          &(C→A×B) \\
+      \apply{g}{(h,i)} &\defeq \λ{c}{(\apply{h}{c},\apply{i}{c})}
+    \end{split}
+  \end{align*}
+  Then
+  \begin{align*}
+    \apply{(g∘f)}{h}
+    &\≡ \apply{g}{(\pr{1}∘\apply{h},\pr{2}∘\apply{h})} \\
+    &\≡ \λ{c}{(\pr{1}∘\apply{h},\pr{2}∘\apply{h})} \\
+    &\= h
+  \end{align*}
+  where the final equality is due to function extensionality (\cref{thm:funext})
+  and the η-rule for the product type \TODO{reference}. Further,
+  \begin{align*}
+    \apply{(f∘g)}{(h,i)}
+    &\≡ \apply{f}{(\λ{c}{(\apply{h}{c},\apply{i}{c})})} \\
+    &\≡ (\pr{1}∘\λ{c}{(\apply{h}{c},\apply{i}{c})},\pr{2}∘\λ{c}{(\apply{h}{c},\apply{i}{c})}) \\
+    &\= (h,i)
+  \end{align*}
+  where the final equality is again due to function extensionality
+  and the η-rule for the product type \TODO{reference}.
+\end{proof}
+
+\begin{lemma}
+  Let $\bfC$ be a precategory, let $a,b,c:\bfC$, and let $p_1:c\catarrow a$,
+  $p_2:c\catarrow b$. Define a function
+  \begin{gather*}
+    \ttfun{postcomp}:\∏{d:\bfC}{\∏{f:d\catarrow c}{
+      (d \catarrow a)×(d \catarrow b)
+    }} \\
+    \appply{d}{f} \defeq (p_1∘f,p_2∘f)
+  \end{gather*}
+  If $\ttfun{postcomp}$ is an equivalence, $c$ is a product of $a$ and $b$.
+\end{lemma}
+\begin{proof}
+	TODO: define hfiber, etc
+\end{proof}
 
 \begin{theorem}
 	The precategory $\universe$ of types is complete
@@ -4056,7 +4143,196 @@ of \cite{non-wellfounded} (under the column \MTypes{}).
     This thesis & \UniMath{} & \MTypes{} \\ \hline
   \end{tabular}
 \end{table}
-% \chapter{The Second Appendix, for Fun}
+
+\chapter{CCCs and the λ-calculus}
+\label{chap:cccs-and-lc}
+
+\Cref{chap:category-theory} provides \textit{almost} enough background to
+understand an interesting connection between a certain kind of category and the
+λ-calculus.
+
+\begin{lemma}[\unimathname{CategoryTheory.categories.Types.ExponentialsType}]
+	Any fixed universe $\universe$ of types has exponentials.
+\end{lemma}
+\begin{proof}
+	
+\end{proof}
+
+\begin{definition}
+	A \define{monoidal category} consists of a category $\bfC$ together with
+  \begin{itemize}
+    \itemsep-0.2em
+    \item a bifunctor $\bfC×\bfC→\bfC$ called the \define{tensor product} or
+      \define{monoidal product},
+    \item an object $I∈\Obj\bfC$ called the \define{unit},
+    \item for all objects $A,B,C∈\Obj\bfC$, an isomorphism
+      $α_{A,B,C}:(A⊗B)⊗C≅A⊗(B⊗C)$, and
+    \item for all objects $A∈\Obj\bfC$, isomorphisms $λ_A:I⊗A≅A$ and $ρ_A:A⊗I≅A$.
+  \end{itemize}
+  These isomorphisms are subject to additional ``coherence conditions'', which
+  won't play a crucial role here. A monoidal category is
+  \begin{itemize}
+    \itemsep-0.2em
+    \item \define{symmetric} if there are additional isomorphisms
+      $s_{A,B}:A⊗B→B⊗A$ satisfying other coherence conditions; and is
+    \item \define{cartesian} if the monoidal product $⊗$ coincides with the
+      categorical product $×$.
+  \end{itemize}
+\end{definition}
+
+Only cartesian monoidal categories play a crucial role later in this section.
+
+\begin{remark}
+	For any categorical product there is a specified isomorphism $A×B≅B×A$, so any
+  cartesian monoidal category is also symmetric monoidal.
+\end{remark}
+
+\begin{example}
+  \
+  \begin{itemize}
+    \itemsep-0.2em
+    \item \vspace{-0.3em} $\Set$, $\universe$, $\Cat$, $\Grp$, and others are 
+      cartesian (so necessarily symmetric) monoidal under their categorical
+      products. 
+    \item $F\dVect$ is symmetric monoidal under $⊗$; the trivial vector space is
+      a unit.
+  \end{itemize}
+\end{example}
+
+\begin{definition}\label[definition]{def:exponentials}
+  An \define{internal hom} for a monoidal category $(\bfC,⊗)$
+  consists of, for each pair of objects $A,B∈\Obj\bfC$, an object
+  $A⇒B$ together an arrow $\eval:(A⇒B)×A→B$ satisfying the following universal
+  property: for any object $C∈\Obj\bfC$ and arrow $f:C⊗A→B$, there is an arrow
+  $λf:C→(A⇒B)$ making the following diagram commute:
+  \begin{center}
+    \begin{tikzcd}[sep=large]
+      C×A \arrow[dr, "f"] \arrow[d, swap, "λf×\id_A"] & {} \\
+      (A⇒B)×A \arrow[r, swap, "\eval"]      & B
+    \end{tikzcd}
+  \end{center}
+  When $\bfC$ is cartesian, $A⇒B$ is called an \define{exponential},
+  and is denoted $B^A$.
+\end{definition}
+
+\begin{definition}
+  A monoidal category $(\bfC,⊗)$ is \define{closed} when it has exponentials.
+\end{definition}
+
+\begin{remark}
+  (Compare to \cref{rmk:prod-coprod-universal-adj})
+  In a closed monoidal category, for all $A,B,C∈\Obj\bfC$,
+  $λ$ and $\eval$ define a bijection
+  \begin{equation*}
+    \Hom(A⊗B,C)≅\Hom(A,B⇒C).
+  \end{equation*}
+  This bijection can be taken as their definition
+  with an additional ``naturalality'' condition.
+  This bijection is often called \define{currying}.
+\end{remark}
+
+\begin{example*}
+  $\Set$ and $\universe$ are closed monoidal. Define $B⇒A\coloneqq \Hom(B,A)$.
+  Then this is an element of $\Set$/$\universe$. Mixing set- and type-theoretical
+  notation, the bijection is given by the mutually inverse functions
+  \begin{align*}
+    \Hom(A×B,C) &\longrightarrow \Hom(A,\Hom(B,C)) \\
+    f &\longmapsto \λ{a}{\λ{b}{\appply{f}{a}{b}}} \\
+    \Hom(A,\Hom(B,C)) &\longrightarrow \Hom(A×B,C) \\
+    g &\longmapsto \λ{p}{\appply{g}{(\appr{1}{a})}{(\appr{2}{b})}}
+  \end{align*}
+\end{example*}
+
+The following proof will only be accessible to readers with a background in
+category theory (specifically, who know what adjunctions and natural
+transformations are), but isn't necessary for the rest of the appendix.
+
+\begin{lemma}[\unimathname{CategoryTheory.categories.Cats.ExponentialsCat}]
+	The precategory of categories (\cref{def:precat-of-precats}) has exponentials.
+\end{lemma}
+\begin{proof}
+  Fix $A:\universe$. We need to define a functor $E:\ttfun{Cat}→\ttfun{Cat}$ which
+  is (RIGHT/LEFT) adjoint to $B↦A×B$. Define its action on objects by
+  \begin{align*}
+    E : \ttfun{Cat} &\longrightarrow \ttfun{Cat} \\
+    C &\longmapsto_0 [A,C]
+  \end{align*}
+  that is, $E$ maps each category to the category of functors $A→C$ (with
+  natural transformations as morphisms).
+  
+  Here things get a bit tricky: the action of $E$ on arrows takes a functor in
+  $[A,C]$ to one in $[A,D]$ for each functor $C→D$. This assignment must
+  \textit{itself} be functorial. Fix some categories $C$ and $D$ and a functor
+  $F:C→D$, and define $E'$ on objects as
+  \begin{align*}
+    E' : [A,C] &\longrightarrow [A,D] \\
+    G &\longmapsto_0 F_0∘G \\
+    η &\longmapsto_1 \braces{\apply{F_1}{η_a}}_{a:\Obj A}.
+  \end{align*}
+  On arrows, $E'$ maps a natural transformation $η:G⟹H$ to one
+  $\apply{E'}{η}:F∘G⟹F∘H$. To show that $\apply{E'}{η}$ is indeed a natural
+  transformation, let $a,b:\Obj A$ and $f:\appply{\Hom}{a}{b}$. We want to show
+  that the following square commutes:
+  \begin{center}
+    \begin{tikzcd}
+      \apply{(F∘G)}{a}
+        \arrow[r, "\apply{(F∘G)}{f}"]
+        \arrow[d, "\apply{F_1}{η}_a"] &
+      \apply{(F∘G)}{b}
+        \arrow[d, "\apply{F_1}{η}_b"] \\
+      \apply{(F∘H)}{a}
+        \arrow[r, "\apply{(F∘H)}{f}"] &
+      \apply{(F∘H)}{b}
+    \end{tikzcd}
+  \end{center}
+  This is essentially the diagram expressing the naturality of $η$, but with $F$
+  applied everywhere. The proof that it commutes reflects this structure:
+  \begin{align*}
+    F_1η_b ∘ \big(\apply{(F∘G)}{f}\big)
+    &\≡ F_1η_b ∘ \apply{F_1}{(\apply{G}{f})} \\
+    &\= \apply{F_1}{(η_b ∘ \apply{G}{f})} 
+    &&\text{Functoriality of }F \\
+    &\= \apply{F_1}{(\apply{H}{f} ∘ η_a)} 
+    &&\text{Naturality of }η \\
+    &\= \apply{F_1}{(\apply{H}{f})} ∘ F_1η_a 
+    &&\text{Functoriality of }F \\
+    &\≡ \big(\apply{(F∘H)}{f}\big) ∘ F_1η_a
+  \end{align*}
+\end{proof}
+
+\begin{definition}\label[definition]{def:cartesian-cat}
+  A category is \define{Cartesian closed}
+  when it is closed, cartesian monoidal, and has a terminal object.
+  Equivalently, it is cartesian closed when it has
+  \begin{itemize}
+    \itemsep-0.2em
+    \item \vspace{-0.1em} a terminal object (\cref{def:terminal-and-initial}),
+    \item binary products (\cref{def:product-and-coproduct}), and
+    \item exponentials (\cref{def:exponentials}).
+  \end{itemize}
+  ``CCC'' abbreviates ``Cartesian closed category''.
+\end{definition}
+
+\begin{remark}\label[remark]{rmk:lambek}
+	We now have the vocabulary to (informally) extend the correspondence of
+  \cref{sec:propositions-and-types} to statements about CCCs.
+  \cite{lambek}
+  \TODO{}
+\end{remark}
+
+\begin{remark}
+  The Curry-Howard-Lambek correspondence gives the barest hint of insight into
+  Voevodsky's innovation. He also gave a categorically-based model of a version
+  of the typed λ-calculus, but of full Martin-Löf dependent type theory. The
+  structure of higher/nested identity types
+  ($\propeq{\propeq{\cdots}{a}{b}}{p}{q}$) recalled ideas of homotopy theory,
+  where paths are considered identical up to the existence of ``higher
+  paths''.\TODO{}
+
+  For the initial development of the connection between locally Cartesian closed
+  categories (LCCCs) and type theory, see \cite{seely}.
+\end{remark}
+
 
 \backmatter % backmatter makes the index and bibliography appear properly in the TOC
 
