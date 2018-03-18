@@ -174,13 +174,16 @@ typed versions \STLC{} and \TLC{}). Finally, in
 harmonious relation between these systems known as the Curry-Howard
 correspondence.\TODO{Motivate the formality of this chapter}
 
-The vocabulary of \cref{sec:discussing-logic} is due to Martin-L\"of. He
+The vocabulary of \cref{sec:discussing-logic} is due to Martin-Löf. He
 emphasized the importance of the notion of judgment (\cref{def:judgment})
 \cite{martin-lof-meanings} and justified the rules of his type theory
 by meaning explanations \cite{martin-lof-constructive}, which we will imitate
 in \cref{subsec:ipl-intro}. See \cite{modal-judgment} for a similar application
 of Martin-L\"of vocabulary to modal logic, and \cite{hott-meaning} for a
 justification of \HoTT using meaning explanations.
+
+In addition to Martin-Löf-style meaning explanantions, in
+\cref{subsec:proof-terms} we explore  Dummett's 
 
 The presentation of \crefrange{sec:ipl}{sec:the-lambda-calculus} is influenced by
 Philip Wadler \cite{wadler-propositions}, Frank Pfenning's lecture notes for
@@ -2038,7 +2041,9 @@ The results in this chapter all appear in the \UniMath{} package
       discipline of \textit{topos theory}}%\index{Topos theory}.}
 
 \begin{definition}\label[category]{def:category}
-	A \define{category}\index{Category} $\bfC$ consists of the following data:
+	A \define{category}\index{Category}\footnote{In more general contexts, this
+    may be called a \define{$1$-category} or even a $(1,1)$-category.}
+  $\bfC$ consists of the following data:
   \begin{itemize}
     \itemsep-0.2em
     \item a collection of \define{objects}, denoted $\Obj \bfC$,
@@ -2074,6 +2079,8 @@ The results in this chapter all appear in the \UniMath{} package
     \itemsep-0.2em
     \item $\Set$: The category with sets as objects, functions as morphisms,
       the usual composition of functions, and identity functions.
+    \item $\FinSet$: The category with finite sets as objects, functions as
+      morphisms, the usual composition of functions, and identity functions.
     \item $\Grp$: The category of groups\index{Group} with group homomorphisms
       as morphisms. Note that the identity function of sets is the required
       identity morphism and that for any homomorphsisms $ϕ:G\to H$ and
@@ -2244,7 +2251,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 	Suppose $A$ and $B$ are terminal objects.
   There are unique arrows $f:A\to B$ and $g:B\to A$.
   Then $g∘ f:A\to A$ and $f∘ g:B\to B$, but as per
-  \cref{remark:terminal-object-id-unique}\TODO{how to make this ``remark''?},
+  \cref{remark:terminal-object-id-unique}
   $g∘ f=\id_A$ and $f∘ g=\id_B$.
 \end{proof}
 
@@ -2445,11 +2452,15 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
           sends each element of $b$ to its equivalence class is the coequalizer
           of $f$ and $g$.
       \end{itemize}
-    \item $\universe$: 
+    \item $\universe$: Let $A,B:\universe$ and $f,g:A→B$
       \begin{itemize}\renewcommand{\labelitemi}{$∘$}
         \itemsep-0.2em
-        \item{} \vspace{-0.6em} \TODO{}
-        \item{} \TODO{}
+        \item{} \vspace{-0.6em} The equalizer of $f$ and $g$
+          is the type $E\defeq\∑{a:A}{\propeq{}{\apply{f}{a}}{\apply{g}{a}}}$.
+          The function $E→A$ is the first projection.
+        \item{} The issue of general quotients of types is actually somewhat
+          intricate. The univalence axiom helps to construct them, but this is
+          outside of the scope of this thesis.
       \end{itemize}
     \item $F\dVect$: A coequalizer for a linear map $f:A→B$ is the quotient
       space $B/\im f$.
@@ -2497,8 +2508,8 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
         \& B \arrow[d, "i_2"] \arrow[ddr, "j_2", bend left=20] \& {} \\
         A \arrow[r, swap, "i_1"]
           \arrow[drr, "j_1", swap, bend right=20]
-        \& D \arrow[dr, dashed, "u"] \& {} \\
-        {} \& {} \& P
+        \& P \arrow[dr, dashed, "u"] \& {} \\
+        {} \& {} \& D
       \end{tikzcd}
     \end{center}
     The object $P$ is denoted $A+_C B$, or better $A+_{[f,g]}B$.
@@ -2511,11 +2522,12 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
     \itemsep-0.2em
     \item $\Set$: 
       \begin{itemize}\renewcommand{\labelitemi}{$∘$}
-        \itemsep-0.2em
+        \itemsep-0.1em
         \item \vspace{-0.6em}
           Let $A,B,C$ be sets $f:A→C$, and $g:B→C$.
           The pullback of $f$ and $g$ is the set
-          $P\coloneqq$; the maps $P→A$ TODO
+          $P\coloneqq \braces{(a,b)∈A×B:\apply{f}{a}=\apply{g}{b}}$; 
+          the maps $P→A$ and $P→B$ are just the projections.
         \item 
           Let $A,B,C$ be sets $f:C→A$, and $g:C→B$.
           The pushout of $f$ and $g$ is the disjoint union quotiented by the
@@ -2525,23 +2537,69 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
       \end{itemize}
     \item $\universe$: 
       \begin{itemize}\renewcommand{\labelitemi}{$∘$}
-        \itemsep-0.2em
-        \item{} \vspace{-0.6em} \TODO{}
-        \item{} \TODO{}
+        \itemsep-0.1em
+        \item{} \vspace{-0.6em} Let $A,B,C:\universe$, $f:A→C$, and $g:B→C$.
+          The pullback of $f$ and $g$ is the type 
+          $\∑{a:A}{\∑{b:B} \apply{f}{a}=\apply{g}{b}}$,
+          the functions $P→A$ and $P→B$ are just the projections.
       \end{itemize}
   \end{itemize}
 \end{example}
-\begin{example}\label[example]{ex:equalizer-and-coequalizer}
-\end{example}
 
-\begin{example}\label[example]{ex:pullback-special-cases-top}
+\begin{example}\label[example]{ex:pullback-special-cases-set}
 	The pullback and pushout are complex; it is less immediately clear where they
   arise in standard mathematics than, say, the product and coproduct.
-  Two special cases of the pullback in $\Set$ help motivate these constructions.
-  TODO
+  Three special cases of the pullback in $\Set$ help motivate these constructions.
+
+  \begin{enumerate}%[label=\Alph*.]
+    \itemsep-0.2em
+    \item A pullback where one of $A$ or $B$ is the terminal object in a 
+      category defines the notion of a ``fiber''. Consider the pullback $P$ in
+      the following square (where $\braces{∗}$ is any one-point set, a terminal
+      object):
+      \begin{center}
+        \begin{tikzcd}[sep=large]
+          P \arrow[r, "p_2"] \arrow[d, "!"] & B \arrow[d, "g"] \\
+          \braces{∗} \arrow[r, swap, "f"] & C
+        \end{tikzcd}
+      \end{center}
+      The arrow $f$ picks out a single element of $C$, namely $\apply{f}{∗}∈C$.
+      Call this $c$. Since the square commutes, we have $f∘!=g∘p_2$, that is,
+      $\apply{(g∘p_2)}{x}=c$ for all $x∈P$. By the explicit
+      construction of \cref{ex:pullback-and-pushout},
+      \begin{equation*}
+          P= \braces{(∗,b)∈\braces{∗}×B:\apply{f}{∗}=\apply{g}{b}}
+           ≅ \braces{b∈B:c=\apply{g}{b}}.
+      \end{equation*}
+      This says that $P$ is (isomorphic to) the \define{fiber of $g$ above $c$}.
+    \item More generally, we can consider the \define{inverse image} of a subset
+      $S⊆C$. Again, let $B$ and $C$ be arbitrary sets and let $f:B→C$.
+      Let $i:S↣C$ be the inclusion function. Then the pullback of $i$ and
+      $f$ is
+      \begin{align*}
+        P&=\braces{(s,b)∈S×B:\apply{i}{s}=\apply{f}{b}} \\
+         &=\braces{(s,b)∈S×B:s=\apply{f}{b}} \\
+         &≅\braces{b∈B:\apply{f}{b}∈S},
+      \end{align*}
+      which is the inverse image of $S$ under $f$, denoted
+      $\apply{f^{-1}}{V}$.\footnote{The notation
+        $f^{-1}$ generalizes the notation for the inverse of a function.
+        We can consider $f^{-1}$ to be a function $C→\caP(A)$ into the powerset---
+        the set of all subsets---of $A$. In the case that $f$ is bijective,
+        it sends each $c∈C$ to a singleton, and defines a function $C→A$,
+        also denoted $f^{-1}$.}
+    \item Let $S,R⊆C$. The pullback of the inclusions $i:S↣C$ and $j:R↣C$ is
+      (isomorphic to) the \define{intersection} $S∩R$:
+      \begin{align*}
+        P&=\braces{(s,r)∈S×R:\apply{i}{s}=\apply{j}{r}} \\
+         &=\braces{(s,r)∈S×R:s=r} \\
+         &≅\braces{c∈C:c∈S\text{ and }c∈R} \\
+         &=S∩R
+      \end{align*}
+  \end{enumerate}
 \end{example}
 
-\begin{example}\label[example]{ex:pullback-special-cases-top}
+\begin{example}\label[example]{ex:pushout-special-cases-top}
   In $\Top$, the wedge sum $A∨B$ is an instance of a pushout.
   Suppose $a∈A$ and $b∈B$ are the basepoints to be ``glued''.
   Define (necessarily continuous) functions
@@ -2819,6 +2877,13 @@ One consequence is that functors preserve isomorphism.
   domain and codomain.
 \end{definition}
 
+Endofunctors provide a concise way to encapsulate a
+\define{signature}\index{Signature}, a way of describing an object of a
+category together with some arrows into it. Signatures are a basic structure
+of universal algebra, the zoomed-out study of algebraic structure (as opposed to
+algebra, the study of specific algebraic structures e.g.\ monoids, posets,
+lattices, rings).
+
 \begin{definition}\label[definition]{def:f-coalgebra}
   \
   \vspace{-0.3em}\dual{
@@ -2832,6 +2897,36 @@ One consequence is that functors preserve isomorphism.
     \cite{category-theory-for-computing-science}.
   }
 \end{definition}
+
+\begin{remark}\label[remark]{rmk:universal-algebra}
+  By the universal property of coproducts, an algebra for a functor of the form
+  $A↦(A×A)+A+1$ consists of:
+  \begin{itemize}
+    \itemsep0em
+    \item an arrow $A×A→A$ (a binary operation on $A$),
+    \item an arrow $A→A$ (a unary operation on $A$),
+    \item and a distinguished element $1→A$.
+  \end{itemize}
+  This is exactly the signature of a \define{group}\index{Group} (the arrow
+  $A×A→A$ corresponds the group operation, $A→A$ to inversion, and $1→A$ to the
+  identity).
+
+  There is an unfortunate profusion of terms in mathematics using ``algebra'' in
+  their name. Functor algebras are unrelated to elementary algebra (the
+  solution of equations with unknowns). Their relation to
+  algebraic structures like groups is a bit more complex.
+
+  Not every algebra for the above functor will be a group. The functor doesn't
+  encode the \textit{equational laws}, e.g.\ that the operation $A×A→A$ is
+  associative. To represent such relations, one needs the richer
+  structure of a \define{monad}\indeX{Monad}. Monads also have algebras, and it
+  is difficult to say whether these generalize $F$-algebras or the other way
+  around. Particular groups, rings, algebras over a field, etc.\
+  are examples of $F$-algebras (for various choices of $F$), but the definition
+  of a $F$-algebra don't encode sufficient information such that
+  \textit{every} $F$-algebra for the ``group signature functor'' is indeed a
+  group.
+\end{remark}
 
 For the remainder of this section when a definition or result is presented only
 for coalgebras or algebras, it holds dually for the other.
@@ -2858,8 +2953,9 @@ category, which we will call $F\Coalg$.\TODO{Proof?}
     An \define{initial $F$-algebra}\index{Initial algebra} is an initial
     object of $F\Alg$.
   }{
-    An \define{final $F$-coalgebra}\index{Final coalgebra} is a terminal
-    object of $F\Coalg$.
+    An \define{terminal $F$-coalgebra}\index{Terminal coalgebra} is a terminal
+    object of $F\Coalg$ (these are more commonly known as
+    \define{final coalgebras in the computer science literature}).
   }
 \end{definition}
 
@@ -2946,7 +3042,7 @@ The following example is crucial to
   Well, we've successfully rephrased the property of initiality, but it seems
   just as cryptic now as it was then. Let's see if we can figure out what an
   type with this property would look like in our favorite category \universe, the
-  universe of small types in \ITT!
+  universe of small types in \UTT!
 
   Let \List{\N} be the type of lists of natural numbers
   as in \cref{subsubsec:lists}. To utilize the above property, we need
@@ -2992,24 +3088,10 @@ The following example is crucial to
   \cite{adamek}.
 \end{example}
 
-\begin{remark}\label[remark]{rmk:universal-algebra}
-  The form of the functor encodes what a student of universal algebra would call
-  a \define{signature}\index{Signature}. By the universal property of
-  coproducts, of an algebra for an functor of the form $A↦(A×A)+A+1$ consists
-  of:
-  \begin{itemize}
-    \itemsep0em
-    \item an arrow $A×A→A$ (a binary operation on $A$),
-    \item an arrow $A→A$ (a unary operation on $A$),
-    \item and a distinguished element $1→A$.
-  \end{itemize}
-  This is exactly the signature of a \define{group}\index{Group} (the arrow
-  $A×A→A$ corresponds the group operation, $A→A$ to inversion, and $1→A$ to the
-  identity).\footnote{However, an algebra for this functor will not form a group
-    in general: the signature doesn't encode the group laws (the operation is
-    associative, etc.). To encode these relations, one needs the richer
-    structure of a \define{monad}\indeX{Monad}.}
-\end{remark}
+\begin{example}
+	Fascinatingly, the closed real interval can be understood as a final
+  coalgebra \cite{freyd}. \TODO{}
+\end{example}
 
 \begin{example}\label[example]{ex:initial-algebras}
   \
@@ -3265,7 +3347,7 @@ property of the product.
     \apply{\ttfun{postcomp}}{f} \defeq 
     (X, \λ{v}{p_v∘f})
   \end{gather*}
-  (Compare to \cref{rmk:limit-colimit-universal-adj}.)
+  (Compare to \cref{rmk:limit-colimit-universal-adj}.) 
 \end{definition}
 
 \begin{figure}[ht]
@@ -3290,18 +3372,17 @@ property of the product.
   The \define{standard limit} of a diagram $D$ for a graph $G$ is the type
   \begin{equation*}
     \∑{x:\∏{v:G_0}{\apply{D}{v}}}
-      {\∏{u,v:G_0}{\∏{u:\appply{G_1}{u}{v}}{\propeq{}{\appply{D}{e}{(\apply{x}{u})}}{(\apply{x}{v})}}}}
+      {\∏{u,v:G_0}{\∏{u:\appply{G_1}{u}{v}}{\propeq{}{\appply{D}{e}{(\apply{x}{u})}}{\apply{x}{v}}}}}
   \end{equation*}
   (Note that, since we are focusing on $\universe$, we know that edges
   $\apply{D}{e}$ are in fact functions, and so we can apply them.)
 \end{definition}
 
-\begin{theorem}
-  Every diagram in $\universe$ has a limit cone \cite{homotopy-limits}.
+\begin{theorem}[\unimathname{Induction.M.Limits.limit\_universal}]
+  Every diagram in $\universe$ has a limit cone with the standard limit as its
+  tip \cite{homotopy-limits}.
 \end{theorem}
 \begin{proof}
-  Define the \define{standard limit}
-
 \end{proof}
 
 \chapter{Coinductive types in univalent type theory}
@@ -3466,7 +3547,8 @@ include all examples in \cref{sec:functors-and-their-algebras}.
 	Technically, polynomial functors aren't functors, since $\universe$ isn't
   a category (the whole point of the univalent perspective is that it behaves
   more like a weak higher category). It has functorial properties only up to
-  \textit{propositional} equality, which will suffice for the following proofs:
+  \textit{propositional} equality (as in \cref{def:functor-tt}), which will
+  suffice for the following proofs. That is, we have
   \begin{align*}
     \apply{P^*}{g∘f} = \apply{P^*}{g}∘\apply{P^*}{f}
     &&
