@@ -93,6 +93,9 @@
 \newcommand{\Fibalgtype}{\ensuremath{\ttfun{FiberedAlg}}}
 \newcommand{\Coalgtype}{\ensuremath{\ttfun{Coalg}}}
 \newcommand{\Final}{\ensuremath{\ttfun{Final}}}
+\newcommand{\Stdlim}[1]{\ensuremath{\apply{\ttfun{Stdlim}}{#1}}}
+\newcommand{\postcomp}{\ensuremath{\ttfun{postcomp}}}
+\newcommand{\HomotCone}{\ensuremath{\ttfun{HomotCone}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% My stuff:
 
@@ -128,7 +131,7 @@
 %     \HoTT  	&  Homotopy type theory \\
 %     \UTT{}  	&  Univalent type theory \\
 %     \ITT  	&  Intensional type theory \\
-%     \FOL  	&  Classical first-order logic \\
+%     \FOL{}  	&  Classical first-order logic \\
 %     \IPL{}  	&  Intuitionistic propositional logic \\
 %     \LC{}  	  &  Church's untyped λ-calculus \\
 %     \STLC{}  	&  Simply-typed λ-calculus \\
@@ -167,7 +170,7 @@ intuitionistic, proof-relevant version of Gentzen's natural deduction
 mathematicians, computer scientists, and philosophers are familiar with some
 version of first-order logic, this section will focus on the introduction of
 notation, meta-logical concerns, and the key differences between
-\IPL{} and \FOL. In \cref{sec:the-lambda-calculus}, we
+\IPL{} and \FOL{}. In \cref{sec:the-lambda-calculus}, we
 will introduce Church's λ-calculus \LC{} (and the simply-typed and
 typed versions \STLC{} and \TLC{}). Finally, in
 \cref{sec:propositions-and-types}, we will discuss the fundamental and
@@ -235,10 +238,10 @@ when discussing and defining formal systems for logic and computation.
   \
   \begin{itemize}
     \itemsep0em
-    \item In the statement ``\FOL is complete'', \FOL
+    \item In the statement ``\FOL{} is complete'', \FOL{}
       is the object language, and the metalanguage is English.
     \item G\"odel's second incompleteness theorem is a statement in the
-      metalanguage of \FOL+\ZFC, about the object
+      metalanguage of \FOL{}+\ZFC{}, about the object
       language of Peano arithmetic.
   \end{itemize}
 \end{example}
@@ -443,7 +446,7 @@ of uses of metavariables.
       & Material implication or function type \\
     $×$
       &
-      & \ZFC+\FOL, \TLC{}, \UTT{}
+      & \ZFC{}+\FOL{}, \TLC{}, \UTT{}
       & Cartesian or categorical product, product type \\
     $+$
       &
@@ -506,7 +509,7 @@ proposition.\footnote{Why do we judge that terms are propositions, instead of
   refrain from specifying our syntax via formal BNF (or similar) grammars.}
 Indeed, we denote the judgment that some term $\mvar{a}$ represents a
 proposition by $\prop{\mvar{a}}$. The following are the \define{formation
-rules}\index{Formation!In \IFOL}:\footnote{For the less
+rules}\index{Formation!In \IFOL{}}:\footnote{For the less
   logically-versed reader: $⊤$ is read ``true'', $⊥$ is read ``false'',
   $\lnot$ is read ``not'', $\lor$ is read ``or'',
   $\land$ is read ``and'', $→$ is read ``implies'', $∀$ is read
@@ -577,7 +580,7 @@ understand the meanings of the formation rules, we must define the judgment
 ways of proving a proposition are called \define{introduction rules}.
 
 The symbol $⊤$ represents the trivially true proposition. Accordingly, we
-give it a trivial proof (with a weird name which will make sense later):
+give it a trivial proof:
 \begin{equation*}
   \prftree[r]{}{}{Γ ⊢ \unitelem:⊤}.
 \end{equation*}
@@ -1196,7 +1199,7 @@ unicity rule:
 
 \begin{example*}\label[example]{ex:fixed-point}
   A \define{fixed point} of a function $f$ (in \LC{},
-  \FOL+\ZFC, or any other formal system or programming language)
+  \FOL{}+\ZFC, or any other formal system or programming language)
   is an input $x$ such that $\apply{f}{x}=x$. Every term of \LC{}
   has a fixed point (up to judgmental equality $\≡$). To see this, define
   $θ \defeq (\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})$ and let
@@ -1477,7 +1480,7 @@ The type $\mvar{a}×\mvar{b}$ contains (ordered) pairs, with one element from
 $\mvar{a}$ and one from $\mvar{b}$:
 \begin{equation*}
   \prftree[r]{}
-    {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \prop{\mvar{b}}}
+    {Γ ⊢ \type{\mvar{a}}}{Γ ⊢ \type{\mvar{b}}}
     {Γ ⊢ \mvar{p}:\mvar{a}}{Γ ⊢ \mvar{q}:\mvar{b}}
     {Γ ⊢ (\mvar{p},\mvar{q}):\mvar{a}×\mvar{b}}.
 \end{equation*}
@@ -1486,15 +1489,15 @@ contains tagged elements of $\mvar{a}$ or $\mvar{b}$:
 \begin{align*}
   \prftree[r]{}
     {\prftree[r, noline]{}
-      {Γ ⊢ \prop{\mvar{a}}}
-      {Γ ⊢ \prop{\mvar{b}}}}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
     {Γ ⊢ \mvar{p}:\mvar{a}}
     {Γ ⊢ \apply{\inl}{\mvar{p}}:\mvar{a}+\mvar{b}},
   &&
   \prftree[r]{}
     {\prftree[r, noline]{}
-      {Γ ⊢ \prop{\mvar{a}}}
-      {Γ ⊢ \prop{\mvar{b}}}}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
     {Γ ⊢ \mvar{p}:\mvar{b}}
     {Γ ⊢ \apply{\inr}{\mvar{p}}:\mvar{a}+\mvar{b}}.
 \end{align*}
@@ -1505,23 +1508,23 @@ the introduction rules:
 \begin{gatherjot}
   \prftree[r]{}
     {\prftree[r, noline]{}
-      {Γ ⊢ \prop{\mvar{a}}}
-      {Γ ⊢ \prop{\mvar{b}}}}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
     {Γ ⊢ \mvar{p}:\mvar{a}×\mvar{b}}
     {Γ ⊢ \appr{1}\mvar{p}:\mvar{a}}
   \qquad
   \prftree[r]{}
     {\prftree[r, noline]{}
-      {Γ ⊢ \prop{\mvar{a}}}
-      {Γ ⊢ \prop{\mvar{b}}}}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
     {Γ ⊢ \mvar{p}:\mvar{a}×\mvar{b}}
     {Γ ⊢ \appr{2}\mvar{p}:\mvar{b}} \\
   \prftree[r]{}
     {\prftree[r, noline]{}
       {\prftree[r, noline]{}
-        {Γ ⊢ \prop{\mvar{a}}}
-        {Γ ⊢ \prop{\mvar{b}}}}
-      {Γ ⊢ \prop{\mvar{c}}}}
+        {Γ ⊢ \type{\mvar{a}}}
+        {Γ ⊢ \type{\mvar{b}}}}
+      {Γ ⊢ \type{\mvar{c}}}}
     {\prftree[r, noline]{}
       {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
       {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
@@ -1529,7 +1532,7 @@ the introduction rules:
     {Γ ⊢ \apppply{\rec_{+}}{\mvar{p}}{\mvar{q}}{\mvar{r}}:\mvar{c}}
   \qquad
   \prftree[r]{}
-    {Γ ⊢ \prop{\mvar{a}}}
+    {Γ ⊢ \type{\mvar{a}}}
     {Γ ⊢ \mvar{p}:⊥}
     {Γ ⊢ \apply{\rec_{⊥}}{\mvar{p}}:\mvar{a}}.
 \end{gatherjot}
@@ -1556,9 +1559,10 @@ While perhaps less surprising due to the notational conveniences of hindsight,
 this observation has startling and deep consequences (and a rich intellectual
 history). It is known as the
 Curry-Howard(-Lambek)\footnote{More on Lambek's part in \cref{rmk:lambek}}
-correspondence, or the propositions-as-types interpretation. First investigated
-by Curry \cite{curry-howard}, who noticed that the types of the ``combinators''
-of his computational system\footnote{Equivalent to the λ-calculus, of course}
+correspondence, or the propositions-as-types interpretation. This interpretation
+was first investigated by Curry \cite{curry-howard}, who noticed that the types
+of the ``combinators'' of his computational formalism\footnote{Equivalent to the
+λ-calculus, of course.}
 could be interpreted as valid propositions in \IPL{}. This
 observation squared nicely with what's called the Brouwer-Heyting-Kolmogorov
 interpretation of \IPL{}, which asserts that the semantics thereof
@@ -1576,6 +1580,8 @@ encoded into \TLC{}. This translation has the nice property that
 type-checking (the process of determining whether or not has a given type in a
 given context $Γ$) is decidable: it can be performed mechanically, preferably by
 a computer. This gives such proofs a strong epistemological footing.
+
+TODO: talk about proof assistants 
 
 \begin{sidewaystable}
   \centering
@@ -1651,7 +1657,7 @@ a computer. This gives such proofs a strong epistemological footing.
 
 Whatever the meaning of the Curry-Howard correspondence, its utility is
 circumscribed by the fact that \IPL{}/\TLC{} as
-presented do not match the expressive power of classical \FOL:
+presented do not match the expressive power of classical \FOL{}:
 there are no types expressing quantification over some domain, nor propositions
 or relations that may ``apply'' to terms and variables. Certainly, they are
 missing the infinite structures of classical set theory.
@@ -1662,7 +1668,7 @@ including our first examples of \textit{inductive types}
 (\cref{subsec:natural-numbers-and-lists}). Additionally, we define and include
 Voevodsky's univalence axiom (\cref{sec:univalence}). The
 resulting system (univalent type theory, or \UTT{}) has similar
-expressive power to \ZFC+\FOL.\footnote{Indeed, the
+expressive power to \ZFC{}+\FOL{}.\footnote{Indeed, the
   ``set types'' (\cref{def:sets}) behave very much like sets in classical
   mathematics, especially when a few classically-minded axioms are assumed. See
   \cite{book} for more commentary.}
@@ -1893,6 +1899,11 @@ assistants: nothing else computes.
     and complexity (h-level).}
 \end{figure}
 
+\begin{lemma}\label[lemma]{lemma:impred}
+  If $X:\universe$, $Y:X→\universe$, and each $\apply{Y}{x}$ is of h-level $n$,
+  then $\∏{x:X}{\apply{Y}{x}}$ is of h-level $n$.
+\end{lemma}
+
 \section{Univalence}
 \label{sec:univalence}
 
@@ -1918,12 +1929,18 @@ assistants: nothing else computes.
       $\∏{b:B}{\apply{\isContr}{\apply{\ttfun{fiber}_f}{b}}}$
     \item TODO
   \end{itemize}
+  We abusively denote the type of any of these conditions by
+  $\apply{\isEquiv}{f}$.
 \end{definition}
 
 \begin{notation}\label[notation]{notation:weq-coerce}
   We may treat a weak equivalence as if it were a function and apply it to an
   argument. This amounts to implicitly applying $\pr{1}$.
 \end{notation}
+
+\begin{lemma}\label[lemma]{lemma:isequiv-prop}
+	The property of being an equivalence is a proposition.
+\end{lemma}
 
 \begin{lemma}\label[lemma]{lemma:contr-weq-unit}
 	Any contractible type is weakly equivalent to $\unittype$.
@@ -1971,6 +1988,16 @@ The following restates the η-rule for the product type as a weak equivalence:
   \end{equation*}
 \end{lemma}
 
+\begin{lemma}\label[lemma]{lemma:weqfibtototal}
+  For any $A:\universe$ and $P,Q:A→\universe$,
+  if $\weq{\apply{P}{a}}{\apply{Q}{a}}$ for every $a:A$, then
+  \begin{align*}
+    \weq{\∏{a:A}{\apply{P}{a}}}{\∏{a:A}{\apply{Q}{a}}}
+    &&\text{and}&&
+    \weq{\∑{a:A}{\apply{P}{a}}}{\∑{a:A}{\apply{Q}{a}}}
+  \end{align*}
+\end{lemma}
+
 \subsection{The univalence axiom}
 \label{subsec:the-univalence-axiom}
 
@@ -2015,7 +2042,7 @@ trivially true.
 
 Category theory presents a challange to set-theoretic mathematicians: the
 canonical example of a category is $\Set$, the collection of all sets. In
-\ZFC+\FOL, this category is undefinable\footnote{In
+\ZFC+\FOL{}, this category is undefinable\footnote{In
   particular, its formation is prevented by the axiom of regularity
   \cite{vonneumann}, which was included in \ZFC to avoid the
   paradoxes of Burali-Forti and Russell. The discovery of said paradoxes
@@ -2635,7 +2662,7 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
 
 \begin{definition}\label[definition]{def:graph-diagram}
 	A \define{graph}\index{Graph} $G$ consists of a (not necessarily finite)
-  collection $G_0$ of vertices, and a map $G_1:G_0×G_0→\universe$ which assigns
+  collection $G_0$ of vertices, and a map $G_1$ which assigns
   to each ordered pair of vertices a collection of directed edges between
   them.\footnote{This definition may seem obtuse to a classically-trained
     mathematician, but it translates more elegantly into the type-theoretic
@@ -2654,7 +2681,7 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
   Let $D$ be a diagram in $\bfC$ for a graph $G$.
   \vspace{-0.3em}\dual{
     A \define{cone}\index{Cone} for $D$ consists of an object $C\in\Obj\bfC$
-    together with \define{projections}
+    (the \define{apex}) together with \define{projections}
     $\braces{p_{v}:C→\apply{D}{v}}_{v∈G_0}$ such that the following triangle
     commutes for all $u,v∈G_0$ and $e∈G_1(u,v)$:
     \begin{center}
@@ -2665,9 +2692,9 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
     \end{center}
   }{
     A \define{cocone}\index{Cocone} for $D$ consists of an object $C\in\Obj\bfC$
-    together with \define{injections} $\braces{i_{v}:\apply{D}{v}→C}_{v∈G_0}$
-    such that the following triangle commutes for all $u,v∈G_0$ and
-    $e∈G_1(u,v)$:
+    (the \define{nadir}) together with \define{injections}
+    $\braces{i_{v}:\apply{D}{v}→C}_{v∈G_0}$ such that the following triangle
+    commutes for all $u,v∈G_0$ and $e∈G_1(u,v)$:
     \begin{center}
       \begin{tikzcd}[row sep=large, column sep=small, ampersand replacement=\&]
         \apply{D}{u}\arrow[dr, bend right=20, swap, "i_u"] \arrow[rr, "\apply{D}{e}"]\& {} \&
@@ -2740,11 +2767,10 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
       \end{tikzcd}
     \end{center}
   }
-  If $(L,f_u)$ is a cone or cocone, $L$ is the \define{tip} of the cone.
-  If $\bfC$ has a (co)limit for a diagram $D$, its tip is denoted
-  $\apply{\Lim}{D}$ (resp.\ $\apply{\Colim}{D}$).
-  The collection of cones over a diagram $D$ with tip $X$ is denoted
-  $\appply{\Cone}{D}{X}$.
+  If $\bfC$ has a (co)limit for a diagram $D$, its apex (resp.\ nadir)
+  is denoted $\apply{\Lim}{D}$ (resp.\ $\apply{\Colim}{D}$).
+  The collection of (co)cones over a diagram $D$ with apex (resp.\ nadir) $X$ is
+  denoted $\appply{\Cone}{D}{X}$ (resp.\ $\appply{\Cocone}{D}{X}$).
 \end{definition}
 
 \begin{remark}\label[remark]{rmk:limit-colimit-universal-adj}
@@ -2760,7 +2786,7 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
 \end{remark}
 
 \begin{definition}\label[definition]{def:complete-and-cocomplete}
-  A category $\bfC$ \define{has (co)limits of shape $G$} any diagram of shape
+  A category $\bfC$ \define{has (co)limits of shape $G$} if any diagram of shape
   $G$ has a (co)limit in $\bfC$. A category is \define{(co)complete} or
   \define{has small (co)limits} when it has (co)limits of every shape.
 \end{definition}
@@ -2769,7 +2795,6 @@ Generally, one often says $\bfC$ ``has $x$'' for some object $x$ and
 collection of arrows defined by a universal property, e.g.\
 ``$\bfC$ has (binary) products'' or ``$\bfC$ has internal homs''
 (\cref{def:exponentials}).
-
 
 \section{Functors and their algebras}
 \label{sec:functors-and-their-algebras}
@@ -3224,8 +3249,8 @@ additional axioms.\footnote{The precise nature of this structure and how it
   though certain instructional difficulties will arise in
   \cref{chap:coinductive-types-in-univalent-type-theory} (indeed, that whole
   chapter may be seen as an attempt to use 1-category theoretic-intuitions
-  outside their domain of applicability).} For most applications, it suffices 
-to restrict the hom-types to be hom-sets:
+  outside their domain of applicability).} 
+For most applications, it suffices to restrict the hom-types to be hom-sets:
 \begin{definition}\label[definition]{def:category-tt}
   A precategory $\bfC$ \define{has hom-sets}\index{Having hom-sets} if the type
   \begin{equation*}
@@ -3233,6 +3258,19 @@ to restrict the hom-types to be hom-sets:
   \end{equation*}
   is inhabited. A precategory with hom-sets is called a \define{category}.
 \end{definition}
+
+\begin{example}
+  The following examples illustrate to readers familiar with category theory the
+  difficulty of working with precategories rather than categories. 
+  \begin{itemize}
+    \itemsep0em
+    \item The type $\appply{\Functor}{\bfC}{\bfD}$ doesn't form a precategory
+      with natural transformations as morphisms unless $\bfD$ has hom-sets. 
+    \item Slices (resp.\ coslices) over (resp.\ under) an object $X$ don't form
+      precategories unless the homs-types $\appply{\Hom}{-}{X}$ (resp.\
+      $\appply{\Hom}{X}{-}$) are all sets.
+  \end{itemize}
+\end{example}
 
 \subsection{Products in $\universe$}
 \label{subsec:products-in-universe}
@@ -3259,7 +3297,7 @@ the case of general limits. We begin a general lemma:
   Let $\bfC$ be a precategory, let $a,b,c:\bfC$, and let $p_1:c\catarrow a$,
   $p_2:c\catarrow b$. Define a function
   \begin{gather*}
-    \ttfun{postcomp}:\∏{d:\bfC}{(d\→ c)→ (d \→ a)×(d \→ b)
+    \postcomp:\∏{d:\bfC}{(d\→ c)→ (d \→ a)×(d \→ b)
     } \\
     \appply{\ttfun{postcomp}}{f} \defeq (p_1∘f,p_2∘f)
   \end{gather*}
@@ -3335,20 +3373,60 @@ property of the product.
   binary products.
 \end{proof}
 
-\subsection{Limits in $\universe$}
-\label{subsec:limits-in-universe}
+\subsection{General limits}
+\label{subsec:general-limits}
 
+The following definitions are mere translations of those in
+\cref{chap:category-theory}, but their specific constructions will be important
+when proving results about them.
+
+\begin{definition}
+  Let $G$ be a graph. A diagram for $G$ in $\bfC$ is an element of
+  \begin{equation*}
+    \∑{f:G_0→\bfC}{\∏{u,v:G_0} \appply{G_1}{u}{v}→(\apply{f}{u}\catarrow\apply{f}{v})}
+  \end{equation*}
+  If $D$ is a diagram, we denote the application of both projections by just
+  $D$, as in $\apply{D}{v}$ for a vertex $v:G_0$ or $\apply{D}{e}$ for an edge $e$.
+  The type of cones over a diagram $D$ with apex $X:\bfC$ is
+  \begin{gather*}
+    \appply{\Cone}{D}{X}\defeq
+    \∑{x:\∏{v:G_0}{X\catarrow \apply{D}{v}}}
+      {\∏{u,v:G_0}
+        {\∏{e:\appply{G_1}{u}{v}}{\propeq{}{\apply{D}{e}∘\apply{x}{u}}{\apply{x}{v}}}}}
+  \end{gather*}
+  where the composition is that of $\bfC$. The application of the first
+  projection of a cone is written with a subscript, as in the next definition.
+\end{definition}
 
 \begin{definition}\label[definition]{def:limit-cone}
-	A cone $(L,p_u):\appply{\Cone}{D}{L}$ is a \define{limit cone} for a diagram $D$
-  if the following function is an equivalence
+  Let $D$ be a diagram and $\dpair{p}{P}:\appply{\Cone}{D}{L}$. There is a
+  function
   \begin{gather*}
-    \ttfun{postcomp} : \∏{X:\universe} (X→L)→\appply{\Cone}{D}{X} \\
-    \apply{\ttfun{postcomp}}{f} \defeq 
-    (X, \λ{v}{p_v∘f})
+    \postcomp : \∏{X:\universe} (X\catarrow L)→\appply{\Cone}{D}{X}
   \end{gather*}
-  (Compare to \cref{rmk:limit-colimit-universal-adj}.) 
+  that works by postcomposing $f$ with the projections $p$.
+	Then $\dpair{p}{P}$ is a \define{limit cone} for $D$ if for all $X:\universe$,
+  $\apply{\postcomp}{X}$ is an equivalence. (Compare to
+  \cref{rmk:limit-colimit-universal-adj}.)
 \end{definition}
+
+In univalent type theory, it's generally useful to know the $h$-level of a given
+type, especially if it is $-2$ (contractible), $-1$ (a proposition), or
+$0$ (a set). The following lemma is not used after its proof, but shows us that
+the property of being a limit is in some sense a ``logical'' property. 
+
+\begin{lemma}\label[lemma]{lemma:limit-prop}
+  The property of being a limit cone is a proposition. Explicitly, for any
+  category $\bfC$, graph $G$, diagram $D$ of shape $G$ in $\bfC$,
+  and object $X:\bfC$,
+  \begin{equation*}
+    \apply{\isProp}
+          {\paren{\∏{X:\universe}{\apply{\isEquiv}{(\apply{\postcomp}{X})}}}}
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+	Apply \cref{lemma:impred} and \cref{lemma:isequiv-prop}.
+\end{proof}
 
 \begin{figure}[ht]
   \centering
@@ -3365,24 +3443,135 @@ property of the product.
       \apply{D}{u}\arrow[rr, swap, "\apply{D}{e}"] \& {} \& \apply{D}{v}
     \end{tikzcd}
   \end{center}
-  \caption{\label{fig:postcomp} The action of $\ttfun{postcomp}$}
+  \caption{\label{fig:postcomp} The action of $\postcomp$}
 \end{figure}
+
+\subsection{Limits in $\universe$}
+\label{subsec:limits-in-universe}
+
+The goal of this section is to prove the following theorem. We'll start with
+several preliminary definitions and lemmas.
+
+\begin{theorem}\label[theorem]{thm:universe-limits}
+  The precategory $\universe$ of types has all limits, in the sense that for any
+  graph $G$ and diagram $D$ of shape $G$ in $\universe$, there is a type $L$
+  and an equivalence
+  \begin{equation*}
+    (X→L)≃\appply{\Cone}{D}{X}.
+  \end{equation*}
+\end{theorem}
+
+This is a somewhat weaker condition than \cref{def:limit-cone} (we're not
+claiming a particular function is an equivalence, just that there is one), but
+it's all we'll need later. It corresponds directly to the proof in 
+\cite{homotopy-limits}. The reason is that we'll use a different but equivalent
+definition of cones, which requires a corresponding revision to $\postcomp$.
+
+\begin{lemma}[\coqname{Induction.M.Limits.homot\_cone\_weq\_cone}]
+  \label[lemma]{lemma:weq-homot-cone}
+	There is a weak equivalence between cones for a diagram $D$ with apex $X$ and 
+  \define{homotopy cones} for the same diagram with the same apex:
+  \begin{gather*}
+    \weq{\appply{\Cone}{D}{X}}{
+      \∑{x:\∏{v:G_0}{X\catarrow \apply{D}{v}}}
+        {\∏{u,v:G_0}{\∏{e:\appply{G_1}{u}{v}}
+                    {\homot{\apply{D}{e}∘\apply{x}{u}}{\apply{x}{v}}}}}
+        \defeqback \appply{\HomotCone}{D}{X}
+    }
+  \end{gather*}
+\end{lemma}
+\begin{proof}
+	The ``outer layers'' of these types are identical (see
+  \cref{lemma:weqfibtototal}), and the innermost
+  equivalence is the statement of function extensionality (\cref{thm:funext}).
+\end{proof}
+
+\begin{definition}\label[definition]{def:limit-homot-cone}
+  Let $D$ be a diagram and $\dpair{p}{P}:\appply{\HomotCone}{D}{L}$. Define
+  \begin{gather*}
+    \postcomp : \∏{X:\universe} (X\catarrow L)→\appply{\Cone}{D}{X} \\
+    \appply{\postcomp}{X}{f}\defeq \dpair{\λ{v}{p_v∘f}}
+           {\λ{u}{\λ{v}{\λ{e}{P_{u,v,e}∘f}}}}
+  \end{gather*}
+	Then $\dpair{p}{P}$ is a \define{limit homotopy cone} for $D$ if for all
+  $X:\universe$, $\apply{\postcomp}{X}$ is an equivalence.
+\end{definition}
+
+Similarly to \cref{lemma:limit-prop}, the property of being a limiting homotopy
+cone is also a proposition.
 
 \begin{definition}
   The \define{standard limit} of a diagram $D$ for a graph $G$ is the type
   \begin{equation*}
+    \Stdlim{D}\defeq
     \∑{x:\∏{v:G_0}{\apply{D}{v}}}
-      {\∏{u,v:G_0}{\∏{u:\appply{G_1}{u}{v}}{\propeq{}{\appply{D}{e}{(\apply{x}{u})}}{\apply{x}{v}}}}}
+      {\∏{u,v:G_0}{\∏{e:\appply{G_1}{u}{v}}{\propeq{}{\appply{D}{e}{(\apply{x}{u})}}{\apply{x}{v}}}}}
   \end{equation*}
   (Note that, since we are focusing on $\universe$, we know that edges
   $\apply{D}{e}$ are in fact functions, and so we can apply them.)
+  The \define{standard limit homotopy cone} is given by
+  \begin{equation*}
+    \dpair{\λ{v}{\λ{L}{\apply{\appr{1}{L}}{v}}}}
+          {\λ{u}{\λ{v}{\λ{e}{\λ{L}{\apppply{\appr{2}{L}}{u}{v}{e}}}}}}
+    : \appply{\HomotCone}{D}{(\Stdlim{D})}
+  \end{equation*}
 \end{definition}
 
-\begin{theorem}[\unimathname{Induction.M.Limits.limit\_universal}]
-  Every diagram in $\universe$ has a limit cone with the standard limit as its
-  tip \cite{homotopy-limits}.
-\end{theorem}
-\begin{proof}
+(In the \Coq{} formalization, we additionally provide a characterization of the
+paths in $\Stdlim{D}$.)
+
+\begin{proof}[Proof of \cref{thm:universe-limits}]
+  Let $G$ be a graph, $D$ be a diagram of shape $G$ in $\universe$ and let
+  $X:\universe$. Using \cref{lemma:weq-homot-cone} and the fact that the
+  composite of two weak equivalences is a weak equivalence, it suffices to show
+  \begin{equation*}
+    \weq{(X→\Stdlim{D})}{\appply{\HomotCone}{D}{X}}.
+  \end{equation*} 
+  We construct an explicit inverse; the composites are judgmentally the
+  appropriate identities.
+
+  Let $\dpair{q}{Q}:\appply{\HomotCone}{D}{X}$ and $x:X$.
+  To define a function into a Σ-type, it suffices to give both
+  projections. The first projection has type $\∏{v:G_0}{\apply{D}{v}}$, define this
+  to be $f\defeq\λ{v}{\apply{q_v}{x}}$ (since $q_v:X→\apply{D}{v}$). 
+  Now, we must show that
+  \begin{equation*}
+    \∏{u,v:G_0}
+      {\∏{e:\appply{G_1}{u}{v}}
+         {\propeq{}{\appply{D}{e}{(\apply{f}{u})}}{\apply{f}{v}}}}
+  \end{equation*} 
+  This follows immediately from the fact that $q$ forms a cone. In summary,
+  we have a function
+  \begin{gather*}
+    φ:\appply{\HomotCone}{D}{X}→(X→\Stdlim{D}) \\
+    \appply{φ}{\dpair{q}{Q}}{x}\defeq\dpair{\λ{v}{\apply{q_v}{x}}}
+              {\λ{u}{\λ{v}{\λ{e}{Q_{u,v,e}x}}}}
+  \end{gather*}
+
+  It remains to show that $\propeq{}{φ∘\apply{\postcomp}{X}}{\id_{X→L}}$ and
+  vice versa. By function extensionality, it suffices to show
+  this when they are fully applied. Let $x:X$ and $f:X→\Stdlim{D}$. 
+  By definition of the standard limit homotopy cone
+  and η-rules for function and Σ-types,
+  \begin{align*}
+    &\apply{(\apply{(φ∘\apply{\postcomp}{X})}{f})}{x} \\
+    &\jdeq
+      \appply{φ}
+      {\dpair{\λ{v}{(\λ{L}{\apply{\appr{1}{L}}{v}})∘f}}
+            {\λ{u}{\λ{v}{\λ{e}{\λ{L}{\apppply{\appr{2}{L}}{u}{v}{e}}∘f}}}}}
+      {x} \\
+    &\jdeq
+      \dpair{\λ{v}{\apply{((\λ{L}{\apply{\appr{1}{L}}{v}})∘f)}{x}}}
+            {\λ{u}{\λ{v}{\λ{e}{\apply{(\λ{L}{\apppply{\appr{2}{L}}{u}{v}{e}}∘f)}{x}}}}} \\
+    &\jdeq \dpair{\λ{v}{\apply{(\appr{1}{(\apply{f}{x})})}{v}}}
+                 {\λ{u}{\λ{v}{\λ{e}{\apppply{(\appr{2}{(\apply{f}{x})})}{u}{v}{e}}}}} \\
+    &\jdeq \dpair{\appr{1}{(\apply{f}{x})}}{\appr{2}{(\apply{f}{x})}} \\
+    &\jdeq \apply{f}{x}
+  \end{align*}
+  The other direction also works via such routine
+  calculation.\footnote{One of the great benefits of working in a computer proof
+    assistant is that such chains of judgmental equalities can be dispatched
+    in a single line that essentially says: ``Calculate!''}
 \end{proof}
 
 \chapter{Coinductive types in univalent type theory}
