@@ -1,0 +1,1496 @@
+\documentclass[./thesis.tex]{subfiles}
+\begin{document}
+\chapter{Propositions and Types}
+\label[chapter]{chap:propositions-and-types}
+
+In this chapter, we will present first a logical and then a computational
+framework. We will begin with general remarks on discussing and defining formal
+systems in \cref{sec:discussing-logic}. \Cref{sec:ipl} begins with an
+intuitionistic, proof-relevant version of Gentzen's natural deduction
+\cite{gentzen1935untersuchungen} called \IPL{}. As most
+mathematicians, computer scientists, and philosophers are familiar with some
+version of first-order logic, this section will focus on the introduction of
+notation, meta-logical concerns, and the key differences between
+\IPL{} and \FOL{}. In \cref{sec:the-lambda-calculus}, we
+will introduce Church's λ-calculus \LC{} (and the simply-typed and
+typed versions \STLC{} and \TLC{}). Finally, in
+\cref{sec:propositions-and-types}, we will discuss the fundamental and
+harmonious relation between these systems known as the Curry-Howard
+correspondence.\TODO{Motivate the formality of this chapter}
+
+The vocabulary of \cref{sec:discussing-logic} is due to Martin-Löf. He
+emphasized the importance of the notion of judgment (\cref{def:judgment})
+\cite{martin-lof-meanings} and justified the rules of his type theory
+by meaning explanations \cite{martin-lof-constructive}, which we will imitate
+in \cref{subsec:ipl-intro}. See \cite{modal-judgment} for a similar application
+of Martin-L\"of vocabulary to modal logic, and \cite{hott-meaning} for a
+justification of \HoTT using meaning explanations.
+
+In addition to Martin-Löf-style meaning explanantions, in
+\cref{subsec:proof-terms} we explore  Dummett's 
+
+The presentation of \crefrange{sec:ipl}{sec:the-lambda-calculus} is influenced by
+Philip Wadler \cite{wadler-propositions}, Frank Pfenning's lecture notes for
+``Constructive Logic'', and Robert Harper's lectures on
+\HoTT.\TODO{citation}
+
+Two recent Reed graduates wrote theses on the Curry-Howard correspondence, both
+taking a different approach in presentation that may complement this work,
+\cite{curry-howard-reed-thesis} and \cite{process-calculi-reed-thesis}.
+
+\begin{notation}\label[notation]{notation:parens}
+  Throughout this thesis, we will omit parentheses when applying function-like
+  constructions wherever this results in no ambiguity. Function application is
+  left-associative. For example, for function-like constructions $f$, $g$, $h$,
+  and $i$ we have
+  \begin{align*}
+    \apply{f}{h}=f(h) &&
+    f(\apply{g}{h})=f(g(h)) && \appply{f}{(\apply{g}{i})}{h}=f(g(i))(h)
+  \end{align*}
+  and so on.
+\end{notation}
+
+\section{Discussing logic}
+\label{sec:discussing-logic}
+
+The observant student of logic may notice a problem in the usual definition of
+implication: one usually defines $P→ Q$ as ``if whenever $P$ is true,
+$Q$ is true, then $P→ Q$ is true''. It seems that in order to understand
+implication, one must first understand implication! More perniciously,
+philosophers and mathematicians alike have argued that Skolem's
+``paradox''\footnote{(An application of) the L\"owenheim-Skolem theorem states
+  that if there is a model of \ZFC, there is a countable one.
+  The paradox is that the statement ``there are uncountable sets'' is (famously)
+  a theorem of \ZFC, Cantor's.}
+has deep and significant consequences for the philosophy of
+mathematics \cite{skolem}. These misunderstandings both arise from a common
+root: the failure to distinguish between object language and metalanguage. In
+this section, we will attempt to mitigate some of the difficulties that arise
+when discussing and defining formal systems for logic and computation.
+
+\begin{definition}\label[definition]{def:object-meta-language}
+  When discussing or defining a formal language (most commonly, a
+  logico-deductive framework), we call that language the
+  \define{object language}\index{object language}. Our discussion takes place in
+  a \define{metalanguage}.
+\end{definition}
+
+\begin{example}
+  \
+  \begin{itemize}
+    \itemsep0em
+    \item In the statement ``\FOL{} is complete'', \FOL{}
+      is the object language, and the metalanguage is English.
+    \item G\"odel's second incompleteness theorem is a statement in the
+      metalanguage of \FOL{}+\ZFC{}, about the object
+      language of Peano arithmetic.
+  \end{itemize}
+\end{example}
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=1.1]{figures/nested-languages.pdf}
+  \caption{\label{fig:nested}Nested languages, formal and informal. Outer boxes
+    are meta-languages, inner boxes are object languages.}
+\end{figure}
+
+\begin{definition}\label[definition]{def:metavariable}
+	A \define{metavariable}\index{Metavariable} (also called a \define{schematic
+  variable}) is a variable in the metalanguage meant to stand for any expression
+  of our object language.
+\end{definition}
+
+\begin{notation}
+  In imitation of various proof assistants, we will prefix metavariables with
+  question mark, e.g.\ $\mvar{a}$.
+\end{notation}
+
+See \cref{fig:structure}, \cref{ex:judgments}, and \cref{sec:ipl} for examples
+of uses of metavariables.
+
+\begin{definition}\label[definition]{def:judgment}
+	A \define{judgment}\index{Judgment} is something that could be known. A
+  judgment is \define{evident} if one does, in fact, know it.
+  A \define{proof} evidence for a judgment.
+  A \define{hypothetical judgment}\index{Judgment!Hypothetical} is one that
+  holds under the assumption that some other judgments hold.
+\end{definition}
+
+\begin{example}\label[example]{ex:judgments}
+  Here are some examples of common judgments in logic (where the metavariables
+  in these examples are to be understood as ranging over expressions of some
+  unspecified object language):
+  \begin{itemize}
+    \itemsep0em
+    \item $\mvar{a}$ is a well-formed formula
+    \item $\mvar{a}$ is a proposition
+    \item if $\mvar{a}$ and $\mvar{b}$ are propositions, then
+      $\mvar{a}\land \mvar{b}$ is a proposition (this judgment is hypothetical)
+    \item $\mvar{a}$ will happen in the future
+    \item $\mvar{a}$ is a program with type $\mvar{t}$
+    \item $\mvar{a}$ is true
+    \item the variable $v$ is free (resp.\ bound) in $\mvar{a}$
+  \end{itemize}
+  If one is working in a formal metalanguage, judgments may be defined
+  inductively in it.
+\end{example}
+
+\begin{figure}
+  \centering
+  \begin{equation*}
+    \overbrace{\text{I know} \overbrace{\underbrace{\mvar{A}}_{\text{Expression}}\text{ is true}}^{\text{Judgment}}}^{\text{Evident judgment}}
+  \end{equation*}
+  \caption{\label{fig:structure}The structure of a judgment (transcribed
+    from \cite{martin-lof-meanings})}
+\end{figure}
+
+% Since this thesis will define several different formal systems, it
+% will be useful to establish some uniform notation for such definitions.
+% Therefore, the following definitions and notations are part of our
+% meta-language, which is plain English.
+
+\begin{notation}\label[notation]{notation:proof-tree}
+  The premises and conclusions of proofs or rules of deduction are always
+  judgments. If we can deduce a conclusion $K$ from premises $J_1,\ldots,J_n$
+  via some rule R (again: $J_1,\ldots,J_n$ and $K$ are \textit{judgments},
+  phrased in plain Enlgish, not terms of an object language)\footnote{These
+    could be called meta-metavariables.},
+  we will write
+  \begin{align*}
+    \prftree[r]{\footnotesize R}
+      {J_1}{J_2}{\ldots}{J_n}
+      {K}
+    &&\text{or}&&
+    \prftree[r]{\footnotesize R}
+      {\prftree[r, noline]{}
+        {J_1}
+        {J_2}}
+      {\prftree[r, noline]{}
+        {J_3}
+        {J_4}}
+      {\ldots}{J_n}
+      {K}.
+  \end{align*}
+  Iterating this notation, we can write long derivations as trees with the
+  conclusion as their root.
+\end{notation}
+
+\begin{notation}\label[notation]{notation:sequent}
+  If $K$ is a hypothetical judgment holding under assumptions $J_1,\ldots,J_n$,
+  we denote this by $J_1,\ldots,J_n⊢ K$ (``$⊢$'' can be read ``entails'').
+  There are three (seemingly) related notions that entailment is distinct from:
+  \begin{enumerate}
+    \itemsep0em
+    \item Gentzen's notion of syntactic entailment, which we won't discuss here,
+    \item the deduction of $K$ from premises $J_1,\ldots,J_n$ (shown in
+      \cref{notation:proof-tree}), and
+    \item implication (see \cref{subsec:ipl-intro} for more discussion of this
+      distinction).
+  \end{enumerate}
+  To denote some arbitrary sequence of hypotheses, we will use capital Greek
+  letters $Γ$, $Δ$, and $Θ$.\footnote{Again, these are sorts of
+  meta-metavariables.}
+\end{notation}
+
+\begin{definition}\label[definition]{def:entailment-rules}
+  Our notions of entailment will always allow for \define{reflexivity},
+  \define{weakening}, \define{contraction}, \define{substitution}, and
+  \IPL{} will allow for \define{exchange}, which are the following
+  ``meta-rules'' (where $J$, $K$, and $L$ stand for judgments):
+  \begin{gatherjot}
+    \prftree[r]{\footnotesize refl}{}
+      {Γ,J,Δ ⊢ J}
+    \qquad
+    \prftree[r]{\footnotesize weak}
+      {Γ ⊢ J}
+      {Γ,K ⊢ J}
+    \qquad
+    \prftree[r]{\footnotesize contr}
+      {Γ,K,Δ,K,Θ ⊢ J}
+      {Γ,K,Δ,Θ ⊢ J} \\
+    \prftree[r]{\footnotesize subst}
+      {Γ,K,Δ ⊢ J}{Γ ⊢ K}
+      {Γ,Δ ⊢ J}
+    \qquad
+    \prftree[r]{\footnotesize ex}
+      {Γ,J,Δ,K,Θ ⊢ L}
+      {Γ,K,Δ,J,Θ ⊢ L}
+  \end{gatherjot}
+\end{definition}
+
+\begin{notation}\label[notation]{notation:substitution}
+  We denote the substitution of a term $t$ for all free occurrences variable $v$
+  in an expression $e$ by $e[v\coloneqq t]$. We will not deal directly with the
+  issues of variable capture, scoping, and substitution here, for a rigorous
+  treatment see any thorough textbook on logic.
+\end{notation}
+
+\begin{sidewaystable}
+  \centering
+  \begin{tabular}{c | l | l | l}
+    Symbol               & Introduced & Language & Meaning \\ \hline
+    $J,K,L$
+      & \cref{notation:proof-tree}
+      & English
+      & Some arbitrary judgment \\
+    $Γ,Δ,Θ$
+                         & \cref{notation:proof-tree}
+      & English                & Some arbitrary ordered sequence of judgments \\
+    $Γ ⊢ J$
+      & \cref{notation:sequent}
+      & English
+      & Under the hypotheses $Γ$, $J$ holds \\
+    $\mvar{a},\mvar{b}$
+      & \cref{def:metavariable}
+      & English
+      & Metavariable: a term in the object language \\
+    $x\≔\mvar{a}$
+      & TODO
+      & English
+      & ``x'' is a shorthand for the expression $\mvar{a}$ \\
+    $\mvar{a}[\mvar{b} \≔ \mvar{c}]$
+      & \cref{notation:substitution}
+      & English
+      & Substitute the expression $\mvar{c}$ for $\mvar{b}$ in $\mvar{a}$ \\
+    $\prop{\mvar{a}}$
+      & \cref{subsec:ipl-intro}
+      & English
+      & Judgment: $\mvar{a}$ is a proposition \\
+    $\mvar{a}:\mvar{p}$
+      & \cref{subsec:ipl-intro}, TODO: \STLC{}
+      & English
+      & Judgment: $\mvar{a}$ is a proof of (or has type) $\mvar{p}$ \\
+    $\mvar{a}\≡\mvar{b}:\mvar{p}$
+      & \cref{def:jdeq-ipl}
+      & English
+      & Judgment: $\mvar{a}$ is equal to $\mvar{b}$ proofs/elements of $\mvar{p}$ \\
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\apply{\mvar{a}}{\mvar{b}}$
+      & \cref{notation:parens}
+      &  All
+      & Application of $\mvar{a}$ to $\mvar{b}$ \\
+    $v,w,x,y,z$
+      &
+      & All
+      & Variables (free or bound) \\
+    % $c_0,c_1,\ldots$
+    %   &
+    %   & \(S)TLC
+    %   & Constants \\
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\λ{x}\mvar{a}$
+      &
+      & \IPL{}, \formalsystem{((S)T)LC}, \UTT{}
+      & A function that takes an input $x$ \\
+    $→$
+      &
+      & \IPL{}, \formalsystem{(S)TLC}, \UTT{}
+      & Material implication or function type \\
+    $×$
+      &
+      & \ZFC{}+\FOL{}, \TLC{}, \UTT{}
+      & Cartesian or categorical product, product type \\
+    $+$
+      &
+      & \TLC{}, \UTT{}
+      & Coproduct type, categorical coproduct \\
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $(a,b)$
+      &
+      & \IPL{}, \TLC{}, \UTT{}
+      & Constructor of the pair type \\
+    $\inl$, $\inr$
+      &
+      & \IPL{}, \TLC{}, \UTT{}
+      & Constructor of the coproduct type \\
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\pr{1}$, $\pr{2}$
+      &
+      & \IPL{}, \TLC{}, \UTT{}
+      & Destructor of the product type \\
+    $\case$
+      &
+      & \IPL{}, \TLC{}
+      & Destructor of the coproduct type \\
+    $\rec$
+      & Various
+      & \IPL{}, \TLC{}, \UTT{}
+      & Recursion principle or elimination rule \\
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\∑{\mvar{a}:\mvar{p}}{\apply{\mvar{b}}{\mvar{a}}}$
+      &
+      & \UTT{}
+      & Σ or dependent pair type \\
+    $\∏{\mvar{a}:\mvar{p}}{\apply{\mvar{b}}{\mvar{a}}}$
+      &
+      & \UTT{}
+      & Π or dependent pair type \\
+  \end{tabular}
+  \caption{\label{tab:symbols}Symbols and their interpretations}
+\end{sidewaystable}
+
+\section{Intuitionistic propositional logic}
+\label{sec:ipl}
+
+With these notations, we are prepared to define \IPL{}.
+\Crefrange{sec:ipl}{sec:the-lambda-calculus} present these systems in some
+degree of formality. Proofs in later chapters are not written in this style, but
+it is important to see precisely specified versions of these logics in order to
+understand \cref{sec:propositions-and-types}.
+
+\subsection{Formation rules}
+\label{subsec:ipl-form}
+
+Since \IPL{} is supposed to be a logic, we better have a notion of a
+proposition.\footnote{Why do we judge that terms are propositions, instead of
+  well-formed formulae? Propositions are strictly more general. With
+  hypothetical judgments, we can have a judgment of the form
+  $\true{\mvar{a}}⊢ \prop{\mvar{b}}$, expressing that $\mvar{b}$ is a
+  proposition \textit{under the assumption that $\mvar{a}$ is true}. We will
+  need such expressive power in \cref{chap:type-theory}. This is also why we
+  refrain from specifying our syntax via formal BNF (or similar) grammars.}
+Indeed, we denote the judgment that some term $\mvar{a}$ represents a
+proposition by $\prop{\mvar{a}}$. The following are the \define{formation
+rules}\index{Formation!In \IFOL{}}:\footnote{For the less
+  logically-versed reader: $⊤$ is read ``true'', $⊥$ is read ``false'',
+  $\lnot$ is read ``not'', $\lor$ is read ``or'',
+  $\land$ is read ``and'', $→$ is read ``implies'', $∀$ is read
+  ``for all'', and $∃$ is read ``there exists''.
+  \Cref{subsec:ipl-intro} attempts to justify these readings.}
+\begin{gatherjot}
+  \prftree[r]{}{}{Γ⊢\prop{⊤}}
+  \qquad
+  \prftree[r]{}{}{Γ⊢\prop{⊥}}
+  \qquad
+  \prftree[r]{}
+    {\prop{Γ⊢\mvar{a}}}
+    {\prop{Γ⊢\lnot \mvar{a}}} \\
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ⊢\prop{\mvar{a}→\mvar{b}}}
+  \qquad
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ⊢\prop{\mvar{a}\land \mvar{b}}}
+  \qquad
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ⊢\prop{\mvar{a}\lor\mvar{b}}} \\
+  % \prftree[r]{}
+  %    {\mvar{a}\prop}{v∉\FV(\mvar{a})}
+  %    {∀ v.\mvar{a}}
+  % \qquad
+  % \prftree[r]{}
+  %    {\mvar{a}\prop}{v∉\FV(\mvar{a})}
+  %    {∃ v.\mvar{a}}
+\end{gatherjot}
+We add parentheses where necessary to disambiguate compound expressions.
+As noted in \cref{tab:symbols}, ``$Γ$'', ``$⊢$'', and the horizontal line
+``$\frac{\hspace{1em}}{\hspace{1em}}$'' are symbols in our metalanguage
+(English), whereas ``$⊤,⊥,¬,→,∧,∨$'' are symbols in the object language
+(\IPL{}). See \cref{tab:incoherent} for examples of some valid
+expressions we could form with the above rules. Such valid expressions (in the
+left column) are things that could be substituted in for our metavariables like
+$\mvar{a}$.
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{l | l}
+    \IPL{}                      & Incoherent \\ \hline
+    $(\mvar{a}∧\mvar{b})∨\mvar{c}$          & $(Γ ⊢ \prop{\mvar{a}})∨\mvar{b}$ \\
+    $(\mvar{a}→\mvar{b})→\mvar{c}$          & $∧∨→$ \\
+    $⊤∨\mvar{a}_1∨\mvar{a}_2∨⋯∨\mvar{a}_n$  & $Γ⊢Θ$ \\
+    $⊤→⊥$                                   & $\prop{\mvar{a}}→\mvar{b}∧\mvar{c}$ \\
+  \end{tabular}
+  \caption{\label{tab:incoherent}Valid \IPL{} expressions and incoherent
+    nonsense.}
+\end{table}
+
+\subsection{Introduction rules}
+\label{subsec:ipl-intro}
+
+Martin-L\"of said ``The meaning of a proposition is determined by [...] what
+counts as a verification of it'' \cite{martin-lof-meanings}. To
+understand the meanings of the formation rules, we must define the judgment
+``$\mvar{p}:\mvar{a}$'', read ``$\mvar{p}$ is a proof of $\mvar{a}$''. The
+ways of proving a proposition are called \define{introduction rules}.
+
+The symbol $⊤$ represents the trivially true proposition. Accordingly, we
+give it a trivial proof:
+\begin{equation*}
+  \prftree[r]{}{}{Γ ⊢ \unitelem:⊤}.
+\end{equation*}
+
+How do we know a conjunction? Intuitively, we know (have a proof of) $\mvar{a}$
+and $\mvar{b}$ (written $\mvar{a}\land\mvar{b}$) just when we know (have a proof
+of) both $\mvar{a}$ and $\mvar{b}$. In symbols,
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \prop{\mvar{b}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}}{Γ ⊢ \mvar{q}:\mvar{b}}
+    {Γ ⊢ (\mvar{p},\mvar{q}):\mvar{a}\land\mvar{b}}.
+\end{equation*}
+
+What about disjunction? There are two ways to know $\mvar{a}$ or
+$\mvar{b}$ (written $\mvar{a}\lor\mvar{b}$). We can either know $\mvar{a}$ or
+know $\mvar{b}$. Correspondingly, we have two introduction rules:
+\begin{align*}
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}}
+    {Γ ⊢ \apply{\inl}{\mvar{p}}:\mvar{a}\lor\mvar{b}}
+  &&\text{and}&&
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{b}}
+    {Γ ⊢ \apply{\inr}{\mvar{p}}:\mvar{a}\lor\mvar{b}}.
+\end{align*}
+The symbol $⊥$ represents falsehood. We say a logic is
+\define{consistent}\index{Consistency} if it cannot prove falsehood (a highly
+desirable property!). To this end, we have no introduction rule for $⊥$.
+
+What does it mean to know a negation? We'll define
+$\lnot\mvar{a}\defeq \mvar{a}→⊥$ and instead worry about when we
+know an implication.\footnote{This definition suggests the following ``derived
+  introduction rule'' for $⊥$:
+  \begin{equation*}
+    \prftree[r]{}
+      {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \mvar{p}:\mvar{a}}{Γ ⊢ \mvar{q}:\lnot\mvar{a}}
+      {Γ ⊢ \ttfun{whoops!}(\mvar{p},\mvar{q}):⊥}.
+  \end{equation*}
+  The derivation of this rule from the elimination rule for $→$
+  (\cref{subsec:ipl-elim}) is immediate.}
+An implication is true just when we have a hypothetical judgment where the
+hypothesis is the antecedent and the conclusion is the consequent. Implication
+allows us to \textit{internalize}\index{Internalizing!Hypothetical judgments}
+the meta-theoretical notion of hypothetical judgments by turning them into
+non-hypothetical ones. To define the introduction rule for $→$, we
+assume the presence of a countably-infinite set of \define{variables}
+$v,w,\ldots$
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \prop{\mvar{b}}}
+    {Γ,\mvar{p}:\mvar{a},Δ⊢ \mvar{q}:\mvar{b}}
+    {Γ,Δ⊢\λ{v}{\mvar{q}[\mvar{p}\coloneqq v]}:\mvar{a}→\mvar{b}}.
+\end{equation*}
+
+\begin{definition}\label[definition]{def:valid-theorem}
+  If know that under no hypotheses $\mvar{a}$ is a proposition and has a proof,
+  then we may judge that $\mvar{a}$ is \define{valid}\index{Valid!In
+  \IPL{}}:
+  \begin{equation*}
+    \prftree[r]{}
+      {⊢\prop{\mvar{a}}}{⊢\mvar{p}:\mvar{a}}
+      {⊢\valid{\mvar{a}}}.
+  \end{equation*}
+  In this case, we say that $\mvar{a}$ is a \define{theorem}\index{Theorem!Of
+  \IPL{}} of \IPL{}.
+\end{definition}
+
+\subsection{Elimination rules}
+\label{subsec:ipl-elim}
+
+Once we know a judgment, how do we use it in a derivation?
+We need \define{elimination rules}. How do we know what they should be?
+In a sense to be made precise in \crefrange{subsec:proof-terms}{subsec:ipl-uni},
+they should be dual to our introduction rules: we should be able to extract the
+same amount of information from a proposition that went into its proof.
+
+For conjunction, we should be able to recover proofs of both conjuncts:
+\begin{align*}
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}\land\mvar{b}}
+    {Γ ⊢ \appr{1}\mvar{p}:\mvar{a}}
+  &&\text{and}&&
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \prop{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}\land\mvar{b}}
+    {Γ ⊢ \appr{2}\mvar{p}:\mvar{b}}.
+\end{align*}
+If both disjuncts imply a hypothesis, so does their disjunction:
+\begin{align*}
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {\prftree[r, noline]{}
+        {Γ ⊢ \prop{\mvar{a}}}
+        {Γ ⊢ \prop{\mvar{b}}}}
+      {Γ ⊢ \prop{\mvar{c}}}}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
+      {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
+    {Γ ⊢ \mvar{r}:\mvar{a}\lor\mvar{b}}
+    {Γ ⊢ \apppply{\case}{\mvar{p}}{\mvar{q}}{\mvar{r}}:\mvar{c}}.
+\end{align*}
+The elimination rule for implication has the common name
+\define{modus ponens}\index{Modus ponens}, and expresses the idea that, if we
+had a hypothetical judgment and then come to know all of the hypotheses, we can
+deduce the consequence:
+\begin{align*}
+  \prftree[r]{}
+    {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \prop{\mvar{b}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}→ \mvar{b}}
+    {Γ ⊢ \mvar{q}:\mvar{a}}
+    {Γ ⊢ \apply{\mvar{p}}{\mvar{q}}:\mvar{b}}.
+\end{align*}
+The elimination rule for falsehood comes from the principle
+\textit{ex falso quod libet}, ``from falsehood anything follows'' (also more
+dramatically called the ``principle of explosion''). If we've been
+able to prove $⊥$, our whole logic is bankrupt and we can derive anything we
+please:
+\begin{align*}
+  \prftree[r]{}
+    {Γ ⊢ \prop{\mvar{a}}}
+    {Γ ⊢ \mvar{p}:⊥}
+    {Γ ⊢ \apply{\rec_{⊥}}{\mvar{p}}:\mvar{a}}.
+\end{align*}
+
+At this point, we'll begin to see some full proofs. Since these quickly become
+unmanageably large, we'll implicitly hypothesize that all metavariables involved
+represent propositions.
+
+\begin{example}\label[example]{ex:ipl-and-comm}
+  The following proves the classical tautology that $\land$ is commutative:
+  $\mvar{a}\land\mvar{b}⊢ \mvar{b}\land\mvar{a}$.
+  \begin{equation*}
+    \prftree[r]{}
+      {\prftree[r]{}
+        {Γ ⊢ \mvar{p}:\mvar{a}\land\mvar{b}}
+        {Γ ⊢ \appr{2}{\mvar{p}}:\mvar{b}}}
+      {\prftree[r]{}
+        {Γ ⊢ \mvar{p}:\mvar{a}\land\mvar{b}}
+        {Γ ⊢ \appr{1}{\mvar{p}}:\mvar{a}}}
+      {Γ ⊢ (\appr{2}{\mvar{p}},\appr{1}{\mvar{p}}):\mvar{b}\land\mvar{a}}
+  \end{equation*}
+  This derivation serves as a small-scale verification that the introduction and
+  elimination rules for conjunction complement one another well.
+\end{example}
+
+\begin{definition}\label[definition]{def:lem-dne}
+  The \define{law of the excluded middle}\index{Law of excluded middle} (from
+  the syllogistic principle \textit{tertium non datur}, ``no third is given'')
+  is the following rule of deduction:
+  \begin{equation*}
+    \prftree[r]{\footnotesize LEM}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \apply{\ttfun{lem}}{\mvar{a}}:\true{\mvar{a}\lor\lnot\mvar{a}}}.
+  \end{equation*}
+  It is inter-derivable with the rule of \define{double negation elimination}:
+  \index{Double negation elimination}
+  \begin{equation*}
+    \prftree[r]{\footnotesize DNE}
+      {Γ ⊢ \prop{\mvar{a}}}{\mvar{p}:\lnot\lnot\mvar{a}}
+      {Γ ⊢ \apply{\ttfun{dne}}{\mvar{p}}:\mvar{a}}.
+  \end{equation*}
+  that is, using the rule LEM, you can construct a proof of DNE and vice versa.
+\end{definition}
+
+\begin{example}\label[example]{ex:ipl-not-not-lem}
+  A crucial consequence of the definition of \IPL{} is that the law
+  of excluded middle isn't a theorem. However, we can demonstrate that
+  its negation isn't either. While reading this proof, keep the following in
+  mind:
+  \begin{itemize}
+    \itemsep0em
+    \item for brevity, we abbreviate our hypothesis
+      $\mvar{h}:\lnot(\mvar{a}\lor\lnot \mvar{a})$ as $\mvar{h}:H$
+    \item $\lnot\mvar{a}\equiv \mvar{a}→⊥$
+  \end{itemize}
+  \begin{center}
+  \noindent\makebox[\textwidth]{%
+    \prftree[r]{}
+      {\prftree[r]{}
+        {\prftree[r]{}
+          {\prftree[r]{}
+            {\prftree[r]{}
+              {\prftree[r]{\footnotesize weak}
+                {\prftree[r]{}
+                  {\prftree[r]{\footnotesize refl}
+                    {\mvar{p}:\mvar{a}⊢\mvar{p}:\mvar{a}}}
+                  {\mvar{p}:\mvar{a}⊢\apply{\inl}{\mvar{p}}:\mvar{a}\lor\lnot\mvar{a}}}
+                {\mvar{p}:\mvar{a},\mvar{h}:H⊢\apply{\inl}{\mvar{p}}:\mvar{a}\lor\lnot\mvar{a}}}
+              {\prftree[r]{\footnotesize ex}
+                {\prftree[r]{\footnotesize weak}
+                  {\prftree[r]{\footnotesize refl}
+                    {\mvar{h}:H⊢\mvar{h}:H}}
+                  {\mvar{h}:H,\mvar{p}:\mvar{a}⊢\mvar{h}:H}}
+                {\mvar{p}:\mvar{a},\mvar{h}:H⊢\mvar{h}:H}}
+              {\mvar{p}:\mvar{a},\mvar{h}:H⊢\apply{\mvar{h}}{(\apply{\inl}{\mvar{p}})}:⊥}}
+            {\mvar{h}:H⊢\λ{v}\apply{\mvar{h}}{(\apply{\inl}{v})}:\lnot\mvar{a}}}
+          {\mvar{h}:H⊢\apply{\inr}{(\λ{v}\apply{\mvar{h}}{(\apply{\inl}{v})})}:\mvar{a}\lor\lnot \mvar{a}}}
+        {\prftree[r]{\footnotesize refl}
+          {\mvar{h}:H⊢\mvar{h}:H}}
+        {\mvar{h}:H⊢ \apply{\mvar{h}}{(\inr(\λ{v}\apply{\mvar{h}}{(\apply{\inl}{v})}))}:⊥}}
+      {⊢\λ{w}\apply{w}{(\inr(\λ{v}\apply{w}{(\apply{\inl}{v})}))}:\lnot (\lnot(\mvar{a}\lor\lnot \mvar{a}))}
+  }
+  \end{center}
+  The law of the excluded middle will be discussed further in \cref{subsec:on-lem}.
+  \TODO{cite bob harper}
+\end{example}
+
+\subsection{Proof terms and harmony}
+\label{subsec:proof-terms}
+
+As we can see in \cref{ex:ipl-and-comm}, and \cref{ex:ipl-not-not-lem},
+derivations in \IPL{} end with a \define{proof term} which
+summarizes the whole proof tree. To demonstrate this, let's attempt to
+reconstruct a proof tree based on a judgment including such a term. Suppose your
+friend tells you they apprehended the following hypothetical judgment
+in a dream, but upon waking, couldn't recall the derivation:
+\begin{equation*}
+    {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+\end{equation*}
+Well, it certainly had to end with an application of implication eliimination
+to hypotheses of the form $\mvar{b}$ and $\mvar{b}→ \mvar{d}$:
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
+    {\prftree[r]{}
+      {?}
+      {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+    {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+\end{equation*}
+and if the term of type $\mvar{b}$ was produced from the application of
+$\pr{1}$, the term it was applied to had to be a proof of
+$\mvar{b}\land \mvar{c}$ for some $\mvar{c}$:
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
+    {\prftree[r]{}
+      {\prftree[r]{}
+        {?}
+        {Γ ⊢ \apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
+      {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+    {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+\end{equation*}
+which itself had to be applied to proofs of $\mvar{a}$ and
+$\mvar{a}→\mvar{b}\land\mvar{c}$ for some $\mvar{a}$:
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ \mvar{r}:\mvar{b}→\mvar{d}}
+    {\prftree[r]{}
+      {\prftree[r]{}
+        {Γ ⊢ \mvar{p}:\mvar{a}→(\mvar{b}\land\mvar{c})}
+        {Γ ⊢ \mvar{q}:\mvar{a}}
+        {Γ ⊢ \apply{\mvar{p}}{\mvar{q}}:\mvar{b}\land\mvar{c}}}
+      {Γ ⊢ \appr{1}{(\apply{\mvar{p}}{\mvar{q}})}:\mvar{b}}}
+    {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
+\end{equation*}
+At this point, we can (un)deduce no further. The form of the judgment allowed
+us no discretion; this is the only derivation (up to\footnote{For the
+  non-mathematical reader: When a mathematician says ``X is true up to $R$''
+  for some (equivalence) relation $R$, it means that all objects related by $R$
+  are considered equivalent. In this case, ``unique up to isomorphism'' means that
+  there may be other terminal objects, but all of them are mutually isomorphic.}
+renaming of metavariables) that could have produced that conclusion.
+
+The proof term in longer arguments is often cumbersome, and we might wonder if
+there are any benefits to internalizing\index{Internalizing!Proofs} proof. The
+answer to this question will become clear in
+\crefrange{subsec:ipl-compute}{subsec:ipl-uni}, and will play a critical role in
+\cref{sec:propositions-and-types}. In short, they will allow us to
+verify the \define{harmony}\index{Harmony} of our logic: that the introduction
+rules complement the elimination rules with respect to two specific
+criteria.\footnote{On the philosophical side, Martin-L\"of made an interesting
+  argument that judgments involving proof terms are analytic, whereas
+  proof-irrelevant mathematical arguments are synthetic: one must go
+  beyond conceptual analysis and view the proof to be convinced of them
+  \cite{martin-lof-analytic}.}
+
+\begin{definition}\label[definition]{def:local-soundness-completeness}
+  \define{Local soundness}\index{Soundness!Local} is the condition that
+  elimination rules can't extract more information than was put into a
+  conclusion by introduction rules; they aren't too strong.
+
+  \define{Local completeness}\index{Completeness!Local} is the condition that
+  elimination rules can recover all the information that was put into a conclusion
+  by introduction rules; they aren't too weak.
+\end{definition}
+
+\subsection{Computation rules and judgmental equality}
+\label{subsec:ipl-compute}
+
+Some proofs are needlessly roundabout, and can be shortened.
+Consider:
+\begin{equation*}
+  {\prftree[r]{}
+    {\prftree[r]{}
+      {Γ ⊢ \mvar{p}:\mvar{a}}
+      {Γ ⊢ \mvar{q}:\mvar{b}}
+      {Γ ⊢ (\mvar{p},\mvar{q}):\mvar{a}\land\mvar{b}}}
+    {Γ ⊢ \appr{1}{(\mvar{p},\mvar{q})}:\mvar{a}}}.
+\end{equation*}
+This derivation could be eliminated entirely: we had a proof of $\mvar{a}$ to
+begin with! This is an instance of a general pattern: whenever we have an
+elimination rule for a connective just after its introduction, we can avoid the
+circumlocution and cut straight to the conclusion.
+
+Do such shortcuts result in \textit{the same} proof? To phrase this
+question precisely, one needs a notion of identity for proof terms.
+This notion is constructed just so we can answer this question in the
+affirmative.
+
+\begin{definition}\label[definition]{def:jdeq-ipl}
+	\define{Judgmental equality} of proof terms, denoted
+  $\mvar{p}\jdeq\mvar{q}:mvar{a}$, is the least congruence closed under the
+  following
+  \define{computation rules}\index{Computation rules!In \IPL{}}
+  (also called \define{β-rules}):
+  \begin{gatherjot}
+    {\prftree[r]{\footnotesize β$∧$\textsubscript{l}}
+      {Γ ⊢ \mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
+      {Γ ⊢ \appr{1}{(\mvar{p},\mvar{q})}\jdeq \mvar{p}:\mvar{a}}}
+    \qquad
+    {\prftree[r]{\footnotesize β$∧$\textsubscript{r}}
+      {Γ ⊢ \mvar{p}:\mvar{a}}{\mvar{q}:\mvar{b}}
+      {Γ ⊢ \appr{2}{(\mvar{p},\mvar{q})} \jdeq \mvar{q}:\mvar{b}}} \\
+    {\prftree[r]{\footnotesize β$→$}
+      {Γ, \mvar{p}:\mvar{a}⊢\mvar{q}:\mvar{b}}
+      {Γ ⊢ \mvar{r}:\mvar{a}}
+      {Γ ⊢ \apply{(\λ{v}\mvar{q})}{\mvar{r}}\jdeq
+        \mvar{q}[\mvar{p}\coloneqq\mvar{r}]:\mvar{b}}} \\
+    {\prftree[r]{\footnotesize β$∨$\textsubscript{l}}
+      {\prftree[r, noline]{}
+        {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
+        {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
+      {Γ ⊢ \mvar{r}:\mvar{a}}
+      {Γ ⊢ \apppply{\case}{\mvar{p}}{\mvar{q}}{(\apply{\inl}{\mvar{r}})}\jdeq
+        \apply{\mvar{p}}{\mvar{r}}:\mvar{c}}}
+    \qquad
+    {\prftree[r]{\footnotesize β$∨$\textsubscript{r}}
+      {\prftree[r, noline]{}
+        {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
+        {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
+      {Γ ⊢ \mvar{r}:\mvar{b}}
+      {Γ ⊢ \apppply{\case}{\mvar{p}}{\mvar{q}}{(\apply{\inr}{\mvar{r}})}\jdeq
+        \apply{\mvar{q}}{\mvar{r}}:\mvar{c}}}.
+  \end{gatherjot}
+  (Recall \cref{notation:substitution} for the meaning of
+  $\mvar{q}[\mvar{p}\coloneqq\mvar{r}]$).\footnote{
+    Since the elimination rule for falsehood (\cref{subsec:ipl-elim}) gives back a
+    proof of an arbitrary proposition (which is not in general one of the ``inputs''
+    to falsehood introduction), there's no corresponding β-rule.}
+\end{definition}
+
+Besides allowing us to write shorter proofs, these rules witness local
+soundness; they show that the elimination rules never prove any conclusion that
+wasn't given to an introduction rule.
+
+\subsection{Unicity rules}
+\label{subsec:ipl-uni}
+
+% Just because a logic doesn't give us an easy way to do something unexpected
+% doesn't mean it can't be done. The prime example is proving a contradiction.
+% History is filled with deductive systems that were thought to be sound, but
+% were shown to be useless by some clever argument. Russell's paradox dispensed
+% with Frege's \textit{Begriffsschrift}, the Burali-Forti antimony unraveled
+% na\"ive set theories, and Girard's paradox revealed a fatal flaw in
+% Martin-L\"of's early attempts at dependent type theory.
+
+One worry we might have when designing our logic is that our propositions have
+proofs of a non-standard form. We might \textit{think} that every proof of
+$\mvar{a}∧\mvar{b}$ has the form $(\mvar{p},\mvar{q})$ for $\mvar{p}:\mvar{a}$ and
+$\mvar{q}:\mvar{b}$, but how do we \textit{know}? The answer was is in
+following \define{unicity rules}\index{Unicity rules}, (also known as
+\define{η-rules} or \define{uniqueness principles}):
+\begin{gatherjot}
+  {\prftree[r]{\footnotesize η$⊤$}
+    {Γ ⊢ \mvar{p}:⊤}
+    {Γ ⊢ \mvar{p}\jdeq \unitelem : ⊤}}
+  \qquad
+  {\prftree[r]{\footnotesize η$∧$}
+    {Γ ⊢ \mvar{p}:\mvar{a}∧\mvar{b}}
+    {Γ ⊢ (\appr{1}{\mvar{p}},\appr{2}{\mvar{p}})\jdeq
+      \mvar{p}:\mvar{a}∧\mvar{b}}} \\
+  {\prftree[r]{\footnotesize η$→$}
+    {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{b}}
+    {Γ ⊢ \λ{v}{(\apply{\mvar{p}}{v})}\jdeq \mvar{p}:\mvar{a}→\mvar{b}}}
+  \qquad
+  {\prftree[r]{\footnotesize η$∨$}
+    {Γ ⊢ \mvar{p}:\mvar{a}∨\mvar{b}}
+    {Γ ⊢ \apppply{\case}{\inl}{\inr}{\mvar{p}}\jdeq \mvar{p}:\mvar{a}∨\mvar{b}}}.
+\end{gatherjot}
+Naturally, these rules witness local completeness; after applying elimination
+rules and then introduction rules we can recover our original proofs.
+
+\subsection{Diagrams}
+\label{subsec:ipl-diagrams}
+
+One of the ways that we can understand our computation rules is via a clever
+sort of diagram. This section foreshadows some connections between
+\IPL{} and the content of \cref{chap:category-theory}.
+
+\begin{definition}\label[definition]{def:implication-composition}
+  Suppose given terms $\mvar{p}:\mvar{a}→\mvar{b}$ and
+  $\mvar{q}:\mvar{b}→\mvar{c}$ under some hypotheses $\Gamma$. We define the
+  \define{composition}\index{Composition!Of proof terms}
+  $\mvar{q}∘\mvar{p}:\mvar{a}→\mvar{c}$ to be the term in the conclusion of the
+  following deduction:
+  \begin{equation*}
+  {\prftree[r]{}
+    {\prftree[r]{}
+      {\prftree[r]{}
+        {\prftree[r]{\footnotesize refl}
+          {}
+          {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{r}:\mvar{a}}}
+        {\prftree[r]{\footnotesize weak}
+          {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{b}}
+          {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{p}:\mvar{a}→\mvar{b}}}
+        {Γ, \mvar{r}:\mvar{a} ⊢ \apply{\mvar{p}}{\mvar{r}}:\mvar{b}}}
+      {\prftree[r]{\footnotesize weak}
+        {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}
+        {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
+      {Γ, \mvar{r}:\mvar{a} ⊢ \apply{\mvar{q}}{(\apply{\mvar{p}}{\mvar{r}})}:\mvar{c}}}
+    {Γ ⊢ \λ{v}{\apply{\mvar{q}}{(\apply{\mvar{p}}{v}})}:\mvar{a}→\mvar{c}}}.
+  \end{equation*}
+  In short, $\mvar{q}∘\mvar{p}\defeq \λ{v}{\apply{\mvar{q}}{(\apply{\mvar{p}}{v}})}$.
+\end{definition}
+
+Now suppose we have terms $\mvar{p}:\mvar{a}→\mvar{c}$ and
+$\mvar{q}:\mvar{b}→\mvar{c}$. Via the elimination rule for $∨$, there is a
+term $\apppply{\case}{\mvar{p}}{\mvar{q}}:\mvar{a}∨\mvar{b}→\mvar{c}$.
+We can rewrite the β-rules using the composition we just defined:
+\begin{align*}
+  \appply{\case}{\mvar{p}}{\mvar{q}}∘\inl &\jdeq \mvar{p} \\
+  \appply{\case}{\mvar{p}}{\mvar{q}}∘\inr &\jdeq \mvar{q}
+\end{align*}
+Similarly, given $\mvar{p}:\mvar{c}→\mvar{a}$ and $\mvar{q}:\mvar{c}→\mvar{b}$,
+the introduction rule for $∧$ guarantees a function
+$\mvar{f}\defeq\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}:\mvar{c}→\mvar{a}∧\mvar{b}$.
+The computation rules give us the following equalities:
+\begin{align*}
+  \pr{1}∘f &\jdeq \mvar{p} \\
+  \pr{2}∘f &\jdeq \mvar{q}
+\end{align*}
+We can express these equalities using the following \define{commutative diagram}
+(skip ahead to \cref{def:commutative-diagram} for details).
+
+% Now suppose we have another term $\mvar{r}:\mvar{a}∨\mvar{b}→\mvar{c}$ which
+% obeys the same equalities,
+% \begin{align*}
+%   \mvar{r}∘\inl &\jdeq \mvar{p} \\
+%   \mvar{r}∘\inr &\jdeq \mvar{q}
+% \end{align*}
+
+% \begin{lemma}
+% 	For any $\mvar{f}:\mvar{c}→\mvar{d}$,
+%   \begin{equation*}
+%     \appply{\case}{(f∘\inl)}{(f∘\inr)}
+%     \jdeq f∘\appply{\case}{\inl}{\inr}
+%   \end{equation*}
+% \end{lemma}
+% \begin{proof}
+% 	\begin{align*}
+%     \appply{\case}{(f∘\mvar{p})}{(f∘\mvar{q})}
+%     &= \λ{v}{\apply{(\appply{\case}{(f∘\mvar{p})}{(f∘\mvar{q})})}{v}}
+%   \end{align*}
+% \end{proof}
+
+\begin{center}
+  \begin{minipage}[b]{0.47\linewidth}
+    \centering
+      \begin{tikzcd}[sep=large]
+        A \arrow[dr, "\inl"{name=I1}]\arrow[ddr, swap, "\mvar{p}"{name=F}, bend right] &
+        {} & B\arrow[dl, "\inr"{name=I2},swap] \arrow[ddl,"\mvar{q}"{name=G}, bend left] \\
+        {} & A+B \arrow[d,dashed, "\appply{\case}{\mvar{p}}{\mvar{q}}"] & {} \\
+        {} & C & {}
+        % filling in the cells
+        \arrow[phantom, shift left=0.3em, from=I1, to=F, "(\beta)"]
+        \arrow[phantom, shift right=0.3em, from=I2, to=G, "(\beta)"]
+        % \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
+      \end{tikzcd}
+  \end{minipage}
+  \begin{minipage}[b]{0.47\linewidth}
+    \centering
+      \begin{tikzcd}[sep=large]
+        {} & C\arrow[ddl, bend right, swap, "\mvar{p}"{name=F}]\arrow[ddr, bend left, "\mvar{q}"{name=G}]
+              % \arrow[d,dashed, bend right, swap, "\mathsf{rec}"{name=FG1}]
+              \arrow[d,dashed, "\langle \mvar{p}\comma \mvar{q} \rangle"{name=FG2}] & {} \\
+        {} & A\times B \arrow[dl, "\pr{1}"{name=P1}]
+                      \arrow[dr,swap, "\pr{2}"{name=P2}] & {} \\
+        A & {} & B
+        % filling in the cells
+        \arrow[phantom, shift right=0.3em, from=P1, to=F, "(\beta)"]
+        \arrow[phantom, shift left=0.3em, from=P2, to=G, "(\beta)"]
+        % \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
+      \end{tikzcd}
+  \end{minipage}
+\end{center}
+In short, each of the two respective computation rules ensure that, whichever
+(directed) path you take around the perimeters of the two triangles, composing
+as you go, you get judgmentally equal results.
+
+\section{The λ-calculus}
+\label{sec:the-lambda-calculus}
+
+In the 1930s, mathematicians and computer scientists (though they were not
+called ``computer scientists'' then) sought a rigorous foundation for terms like
+``effectively computable'' and ``systematic''. They sought to lay on a rigorous
+logical foundation an intuitive idea of what a(n idealized) human being could
+accomplish with specific\footnote{(finite)} instructions and arbitrarily much
+paper, pen, and time. Many particular mathematical models were proposed,
+including the λ-calculus (\LC{}), Turing machines, Post systems,
+register machines, combinatory definability, and more \cite{sep-church-turing}.
+The \textit{Church-Turing thesis} proposes that the proper definition is (any
+model equivalent to) the λ-calculus.\footnote{Perhaps the strongest reason to
+  accept such a thesis is the theorem that all models just mentioned are
+  equivalent.}
+Computer scientists widely adopt this thesis, and the λ-calculus and its
+variants are of central importance to the study of computation in
+general.
+
+A comprehensive study of \LC{} is beyond the scope
+of this thesis. For a tutorial on \LC{} and \STLC{} to
+complement the presentation here, see \cite{lambda-lecture}. For a standard
+reference on \LC{} (with an appendix on \STLC{}), see
+\cite{barendregt}.
+
+The type theory considered in \cref{chap:type-theory} is an extension of the
+typed λ-calculus (\TLC{}) of \cref{subsec:more-complex-types}, which
+itself an extension of the simply-typed λ-calculus (\STLC{}) of
+\cref{subsec:the-simply-typed-lambda-calculus}.
+
+\subsection{The untyped λ-calculus}
+\label{subsec:the-untyped-lambda-calculus}
+
+The formation\index{Formation!In the λ-calculus} (really, all) rules of the
+λ-calculus are brilliantly simple.\footnote{Again, ignoring issues of variable
+binding.} We will again assume the presence of a countably infinite set of
+variables $v,w,\ldots$:
+\begin{align*}
+  {\prftree[r]{}
+    {}
+    {Γ ⊢ \term{v}}}
+  &&
+  {\prftree[r]{}
+    {Γ ⊢ \term{\mvar{a}}}
+    {Γ ⊢ \term{\mvar{b}}}
+    {Γ ⊢ \term{\apply{\mvar{a}}{\mvar{b}}}}}
+  &&
+  {\prftree[r]{}
+    {Γ ⊢ \mvar{a}}
+    {Γ ⊢ \term{\lam{v}{\mvar{a}}}}}
+\end{align*}
+In short, we have variables, application of one term to another, and
+\define{function abstraction}. The λ-calculus is the inspiration for our
+notation of function application by juxtaposition (\cref{notation:parens}).
+Accordingly, function application is left-associative.
+
+There are no elimination rules. Again, we define judgmental equality λ-terms to
+be the least congruence closed under the following computation
+rule\index{Computation rules!In \LC{}} and subject to the following
+unicity rule:
+\begin{align*}
+  {\prftree[r]{\footnotesize β}
+    {Γ ⊢ \term{\mvar{a}}}
+    {Γ ⊢ \term{\mvar{b}}}
+    {Γ ⊢ \apply{(\λ{v}\mvar{a})}{\mvar{b}}\jdeq
+      \mvar{a}[v\coloneqq\mvar{b}]}}
+  &&
+  {\prftree[r]{\footnotesize η}
+    {Γ ⊢ \term{\mvar{a}}}
+    {Γ ⊢ \λ{v}{(\apply{\mvar{a}}{v})}\jdeq \mvar{a}}}.
+\end{align*}
+
+\begin{notation}\label[notation]{notation:beta}
+  If we apply the computation rule to $\mvar{a}$ and get some term $\mvar{a}'$,
+  we write $\mvar{a} \betato \mvar{a}'$. If we apply it an arbitrary but finite
+  (possibly zero) amount of times to get $\mvar{a}''$, we write $\mvar{a}
+  \betatoo \mvar{a}''$.
+\end{notation}
+
+\begin{example*}\label[example]{ex:calculations-in-lc}
+  Under the computation rule, we have
+  \begin{align*}
+    &\appply
+      {(\λ{u}{\λ{v}{\λ{w}{\appply{\mvar{x}}{v}{w}}}})}
+      {(\λ{y}{y})}
+      {(\λ{z}{\apply{z}{\mvar{a}}})} \\
+    \≡ &\apply
+      {(\λ{v}{\λ{w}{\appply{\mvar{x}}{v}{w}}})[u\≔ (\λ{y}{y})]}
+      {(\λ{z}{\apply{z}{\mvar{a}}})}
+    &&\quad\text{(β)} \\
+    \≡ &\apply
+      {(\λ{v}{\λ{w}{\appply{\mvar{x}}{v}{w}}})}
+      {(\λ{z}{\apply{z}{\mvar{a}}})}
+    &&\quad\text{(substitution)} \\
+    \≡ & (\λ{w}{\appply{\mvar{x}}{v}{w}})[v\≔ \λ{z}{\apply{z}{\mvar{a}}}]
+    &&\quad\text{(β)} \\
+    \≡ & (\λ{w}{\appply{\mvar{x}}{(\λ{z}{\apply{z}{\mvar{a}}})}{w}})
+    &&\quad\text{(substitution)}.
+  \end{align*}
+  (Recall the meta-theoretical notation $\mvar{a}[\mvar{b} \≔ \mvar{c}]$,
+  \cref{notation:substitution}.)
+  Since $\mvar{x}$ is some arbitrary term, we can reduce this expression no
+  further.
+\end{example*}
+
+\begin{example*}\label[example]{ex:fixed-point}
+  A \define{fixed point} of a function $f$ (in \LC{},
+  \FOL{}+\ZFC, or any other formal system or programming language)
+  is an input $x$ such that $\apply{f}{x}=x$. Every term of \LC{}
+  has a fixed point (up to judgmental equality $\≡$). To see this, define
+  $θ \defeq (\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})$ and let
+  $𝚯\defeq \apply{θ}{θ}$. Let $\mvar{f}$ be any term of \LC{}. Then
+  \begin{align*}
+    \apply{𝚯}{f}
+    &\≡ \appply{θ}{θ}{f} \\
+    &\≡ \appply{(\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})}{θ}{f} \\
+    &\≡ \apply{f}{(\appply{θ}{θ}{f})} \\
+    &\≡ \apply{f}{(\apply{𝚯}{f})}
+  \end{align*}
+  The term $𝚯$ is called the \define{Turing fixed-point combinator}, and it can
+  be used to define recursive functions in \LC{} and its derivatives
+  \cite{lambda-lecture}.
+\end{example*}
+
+We can make choices about what part of an expression to apply the computation
+rule to. Consider the following computations:
+\begin{center}
+  \begin{tikzpicture}[node distance=1.5cm]
+    \node[] (A) at (0, 0) {$
+      \apply{(\apply{(\λ{x}{\apply{x}{x}})}
+                    {(\λ{y}{\mvar{a}})})}
+            {(\apply{(\λ{z}{\apply{z}{\mvar{b}}})}
+                      {(\λ{w}{\mvar{c}})})}
+    $};
+    %%%%%%%%%%%%%%%%%%%%%%% LEFT
+    \node[below of=A, xshift=-8em] (B) {$
+      \apply{(\apply{(\λ{y}{\mvar{a}})}{(\λ{y}{\mvar{a}})})}
+            {(\apply{(\λ{z}{\apply{z}{\mvar{b}}})}
+                      {(\λ{w}{\mvar{c}})})}
+    $};
+    \node[below of=B] (C) {$
+      \apply{(\apply{(\λ{y}{\mvar{a}})}{\mvar{a})})}
+            {(\apply{(\λ{z}{\apply{z}{\mvar{b}}})}
+                      {(\λ{w}{\mvar{c}})})}
+    $};
+    \node[below of=C] (D) {$
+      \apply{\apply{\mvar{a}}{\mvar{a}}}
+            {(\apply{(\λ{z}{\apply{z}{\mvar{b}}})}
+                      {(\λ{w}{\mvar{c}})})}
+    $};
+    \node[below of=D] (E) {$
+      \apply{\apply{\mvar{a}}{\mvar{a}}}
+            {(\apply{(\λ{w}{\mvar{c}})}{\mvar{b}})}
+    $};
+    %%%%%%%%%%%%%%%%%%%%%%% RIGHT
+    \node[below of=A, xshift=8em] (F) {$
+      \apply{(\apply{(\λ{x}{\apply{x}{x}})}
+                    {(\λ{y}{\mvar{a}})})}
+            {(\apply{(\λ{w}{\mvar{c}})}{\mvar{b}})}
+    $};
+    \node[below of=F] (G) {$
+      \apply{(\apply{(\λ{x}{\apply{x}{x}})}
+                    {(\λ{y}{\mvar{a}})})}
+            {(\apply{\mvar{b}}{\mvar{c}})}
+    $};
+    \node[below of=G] (H) {$
+      \apply{(\apply{(\λ{y}{\mvar{a}})}{(\λ{y}{\mvar{a}})})}
+            {(\apply{\mvar{b}}{\mvar{c}})}
+    $};
+    %%%%%%%%%%%%%%%%%%%%%%% LAST
+    \node[below of=A, yshift=-13em] (Z) {$
+      \appply{\mvar{a}}{\mvar{a}}{(\apply{\mvar{b}}{\mvar{c}})}
+    $};
+    %%%%%%%%%%%%%%%%%%%%%%% ARROWS
+    %%%%% LEFT
+    \draw (A) edge [->] node[above] {\scriptsize β} (B);
+    \draw (B) edge [->] node[left] {\scriptsize β} (C);
+    \draw (C) edge [->] node[left] {\scriptsize β} (D);
+    \draw (D) edge [->] node[left] {\scriptsize β} (E);
+    \draw (E) edge [->] node[below] {\scriptsize β} (Z);
+    %%%%% RIGHT
+    \draw (A) edge [->] node[above] {\scriptsize β} (F);
+    \draw (F) edge [->] node[right] {\scriptsize β} (G);
+    \draw (G) edge [->] node[right] {\scriptsize β} (H);
+    \draw (H) edge [->] node[below] {\scriptsize β} (Z);
+  \end{tikzpicture}
+\end{center}
+In the left column, we reduce the leftmost expression first, whereas in the
+right column, we reduce the rightmost expression first. In this example, they
+result in the same term, but there is \textit{a priori} no reason to think this
+is so in general.
+
+\begin{theorem}[Church-Rosser]\label[theorem]{thm:church-rosser}
+  The order in which we apply computation rules to a term of \LC{}
+  doesn't matter. More specifically, if $\mvar{a}\betatoo\mvar{b}$ and
+  $\mvar{a}\betatoo\mvar{c}$, then there is a term $\mvar{d}$ such that
+  $\mvar{b}\betatoo\mvar{d}$ and $\mvar{c}\betatoo \mvar{d}$.
+  Diagrammatically,
+  \begin{center}
+    \begin{tikzcd}[sep=small, every arrow/.append style={two heads, "β"}]
+      {} &
+      \mvar{a}
+        \arrow[dl, swap]
+        \arrow[dr] &
+      {} \\
+      \mvar{b}
+        \arrow[dr, dashed, swap] &
+      {} &
+      \mvar{c}
+        \arrow[dl, dashed] \\
+      {} & \mvar{d} & {}
+    \end{tikzcd}
+  \end{center}
+\end{theorem}
+
+Note that the Church-Rosser Theorem doesn't claim judgmental equality
+$\≡$,\footnote{If it did, it would be trivial; the β-rules preserve judgmental
+equality.} but actual \textit{syntactic identity}, they compute to the exact
+same term.
+
+\begin{definition}\label[definition]{def:normal-form}
+	If $\mvar{a}$ is a term of \LC{} such that there does not exist
+  a term $\mvar{a}'$ with $\mvar{a}\betato \mvar{a}'$, then we say that
+  $\mvar{a}$ is in \define{(β-)normal form}\index{Normal form}.
+  If $\mvar{b}\betatoo\mvar{b}'$ and $\mvar{b}'$ is in normal form, we say
+  $\mvar{b}'$ is the normal form of $\mvar{b}$.
+\end{definition}
+
+The use of the definite article in \cref{def:normal-form} is justified by
+Church-Rosser: every term has at most one β-normal form. However, not every
+term has a β-normal form.
+
+\begin{example*}\label[example]{ex:non-terminating}
+  Consider the term $⊥\≔ \λ{v}{\appply{v}{v}{v}}$. Using the computation rule,
+  \begin{align*}
+    \apply{⊥}{⊥}
+    &\≡ \apply{(\λ{v}{\appply{v}{v}{v}})}{⊥}
+    &&\quad\text{(Definition)} \\
+    &\≡ (\appply{v}{v}{v})[v \defeq ⊥]
+    &&\quad\text{(β)} \\
+    &\≡ \appply{⊥}{⊥}{⊥}
+    &&\quad\text{(Substitution)} \\
+    &\≡ \apppply{⊥}{⊥}{⊥}{⊥}
+    &&\quad\text{(…)} \\
+    &\≡ \appppply{⊥}{⊥}{⊥}{⊥}{⊥} \\
+    &\≡ ⋯
+  \end{align*}
+  Not only can we build terms that don't really ``progress'' when we try to
+  ``compute'', but we can build terms that actually \textit{expand} under rules
+  meant to \textit{reduce} them, that are judgmentally equal to infinitely many
+  other terms!
+\end{example*}
+
+While an ability to loop indefinitely is essential to Turing-Completeness (the
+property of being equivalent to a Turing machine model of computation), we
+might ask if there is another system in which we could express many of the same
+ideas and computations, but with a computation rule that always ``terminates''.
+
+\subsection{The simply-typed λ-calculus}
+\label{subsec:the-simply-typed-lambda-calculus}
+
+In order to fix the problem raised in \cref{ex:non-terminating}, we can add
+\define{types}\index{Types!Simply-typed λ-calculus} to \LC{} to get
+\STLC{}, the simply-typed λ-calculus. We consider two new judgments
+of the form ``$\type{\mvar{t}}$'' and ``$\mvar{a}:\mvar{t}$'', read
+``\mvar{t} is a type'' and ``\mvar{a} has type \mvar{t}'', respectively (recall
+that ``$:$'' is a symbol of the meta-language, it is just shorthand for writing
+a judgment). In writing these judgments, we implicitly assume that all
+expressions are well-formed terms. As a first approximation, a type can be
+thought of as a description of a program's behavior.
+
+This language begins with additional formation rules
+\begin{align*}
+  {\prftree[r]{}
+    {}
+    {Γ ⊢ \type{\groundtype_i}}}
+  &&
+  {\prftree[r]{}
+    {Γ ⊢ \type{\mvar{s}}}
+    {Γ ⊢ \type{\mvar{t}}}
+    {Γ ⊢ \type{\mvar{s}→\mvar{t}}}}
+\end{align*}
+The $\groundtype_i$ are called \define{ground types}, \define{base types}, or
+\define{atomic types}.\footnote{There can be as many ground types as necessary
+  or only one, it doesn't fundamentally change the character of the resulting
+  theory.}
+The term $\mvar{a}→\mvar{b}$ is the type of functions from $\mvar{a}$ to
+$\mvar{b}$. The introduction
+rule\index{Introduction rules!In \STLC{}} tells us how to form
+elements of these types:
+\begin{align*}
+  {\prftree[r]{}
+    {Γ, \mvar{a}:\mvar{s} ⊢ \mvar{b}:\mvar{t}}
+    {Γ ⊢ \λ{v}{\mvar{b}}:\mvar{s}→\mvar{t}}}
+    % {Γ ⊢ \λ{v}{\mvar{b}}[\mvar{a}\defeq v]:\mvar{s}→\mvar{t}}}
+\end{align*}
+Introduction rules for some ground type(s) are reasonable additional axioms, but
+they are not necessary for the development of the theory.\footnote{This might
+look like
+\begin{align*}
+  {\prftree[r]{}
+    {}
+    {Γ ⊢ z:\groundtype_0}}.
+\end{align*}
+which would assert the existence of an element $z$ of the 0\textsuperscript{th}
+ground type $\groundtype_0$.
+} An elimination rule balances this introduction:
+\begin{align*}
+  {\prftree[r]{}
+    {Γ ⊢ \mvar{a}:\mvar{s}→\mvar{t}}
+    {Γ ⊢ \mvar{b}:\mvar{s}}
+    {Γ ⊢ \apply{\mvar{a}}{\mvar{b}}:\mvar{t}}}
+\end{align*}
+The computation rules\index{Computation rules!In \STLC{}} and
+unicity rules remain much the same, only now with some restrictions on the types
+of the expressions involved:
+\begin{align*}
+  {\prftree[r]{\footnotesize β}
+    {Γ, \mvar{a}:\mvar{s} ⊢ \mvar{b}:\mvar{t}}
+    {Γ ⊢ \mvar{c}:\mvar{s}}
+    {Γ ⊢ \apply{(\λ{v}\mvar{b})}{\mvar{c}}\jdeq
+      \mvar{b}[\mvar{a}\coloneqq\mvar{c}]}}
+  &&
+  {\prftree[r]{\footnotesize η}
+    {Γ ⊢ \term{\mvar{a}}}
+    {Γ ⊢ \λ{v}{(\apply{\mvar{a}}{v})}\jdeq \mvar{a}}}.
+\end{align*}
+Variables may stand in for terms of arbitrary type.
+
+\begin{theorem}\label[theorem]{thm:strong-normalization}
+  \STLC{} is \define{strongly normalizing}; every term has exactly
+  one normal form.
+\end{theorem}
+
+\begin{example}
+	Recall the problematic term of \cref{ex:non-terminating}:
+  $⊥\≔ \λ{v}{\apply{v}{v}}$. Can the introduction rules assign this term a type?
+  To determine the overall type of $⊥$, we must determine the type of its
+  argument. Its argument gets applied to a term, so it must have a function type
+  $\mvar{a} → \mvar{b}$. However, since it is applied to
+  itself, it must have type $(\mvar{a} → \mvar{b}) → \mvar{b}$. But now it still
+  can't be applied to itself, so it must have type
+  $((\mvar{a} → \mvar{b}) → \mvar{b}) → \mvar{b}$. Of course, this problem
+  persists no matter how many layers are added, and leads us to the following
+  conclusion: no well-typed term may be applied to itself.
+\end{example}
+
+\subsection{More complex types}
+\label{subsec:more-complex-types}
+
+The ontology of \STLC{} is severely limited: it can only express
+ground type(s) and functions between them. This section develops
+various \define{type formers}, which build up more complex types
+from simpler ones (e.g.\ $→$ from \STLC{}). In
+\cref{sec:propositions-and-types}, we will see that these types conform to
+intuitions from \cref{sec:ipl}.
+
+We will specifically consider four additional types (plus $→$), formed via the
+following rules\index{Formation rules!In \TLC{}}:
+\begin{gatherjot}
+  \prftree[r]{}{}{Γ⊢\type{⊤}}
+  \qquad
+  \prftree[r]{}{}{Γ⊢\type{⊥}}
+  \qquad
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
+    {Γ⊢\type{\mvar{a}×\mvar{b}}}
+  \qquad
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
+    {Γ⊢\type{\mvar{a}+\mvar{b}}}
+\end{gatherjot}
+
+Perhaps unsurprisingly, the type $⊥$ is empty, it has no elements.
+The type $⊤$ has one element:\footnote{This rule only really says we have one
+  known way to construct an element of $⊤$, but the η-rules for this type
+  justify the claim that this is the only such element.}
+\begin{equation*}
+  \prftree[r]{}{}{Γ ⊢ \unitelem:⊤}.
+\end{equation*}
+The type $\mvar{a}×\mvar{b}$ contains (ordered) pairs, with one element from
+$\mvar{a}$ and one from $\mvar{b}$:
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ \type{\mvar{a}}}{Γ ⊢ \type{\mvar{b}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}}{Γ ⊢ \mvar{q}:\mvar{b}}
+    {Γ ⊢ (\mvar{p},\mvar{q}):\mvar{a}×\mvar{b}}.
+\end{equation*}
+The type $\mvar{a}+\mvar{b}$ is sometimes called ``option'' or ``either'': it
+contains tagged elements of $\mvar{a}$ or $\mvar{b}$:
+\begin{align*}
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}}
+    {Γ ⊢ \apply{\inl}{\mvar{p}}:\mvar{a}+\mvar{b}},
+  &&
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{b}}
+    {Γ ⊢ \apply{\inr}{\mvar{p}}:\mvar{a}+\mvar{b}}.
+\end{align*}
+
+The elimination rules\index{Elimination rules!In \TLC{}}
+act as one might expect, given the reuse of the notation from \cref{sec:ipl} for
+the introduction rules:
+\begin{gatherjot}
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}×\mvar{b}}
+    {Γ ⊢ \appr{1}\mvar{p}:\mvar{a}}
+  \qquad
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \type{\mvar{a}}}
+      {Γ ⊢ \type{\mvar{b}}}}
+    {Γ ⊢ \mvar{p}:\mvar{a}×\mvar{b}}
+    {Γ ⊢ \appr{2}\mvar{p}:\mvar{b}} \\
+  \prftree[r]{}
+    {\prftree[r, noline]{}
+      {\prftree[r, noline]{}
+        {Γ ⊢ \type{\mvar{a}}}
+        {Γ ⊢ \type{\mvar{b}}}}
+      {Γ ⊢ \type{\mvar{c}}}}
+    {\prftree[r, noline]{}
+      {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
+      {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
+    {Γ ⊢ \mvar{r}:\mvar{a}+\mvar{b}}
+    {Γ ⊢ \apppply{\rec_{+}}{\mvar{p}}{\mvar{q}}{\mvar{r}}:\mvar{c}}
+  \qquad
+  \prftree[r]{}
+    {Γ ⊢ \type{\mvar{a}}}
+    {Γ ⊢ \mvar{p}:⊥}
+    {Γ ⊢ \apply{\rec_{⊥}}{\mvar{p}}:\mvar{a}}.
+\end{gatherjot}
+Just as with the formation, introduction, and elimination rules,
+the computation and unicity rules are identical to those in \IPL{}
+(modulo notational differences), and so are omitted here.
+
+Examples of (somewhat) practical programs that can be written in an extension
+of this theory abound in \cref{chap:type-theory}.
+
+\subsection{Propositions and Types}
+\label{sec:propositions-and-types}
+
+What just happened? \Cref{sec:ipl} defined a logico-deductive system, capable of
+expressing many familiar proofs of sentential logic (with some differences
+stemming from its constructivist nature). \Cref{sec:the-lambda-calculus} took a
+sharp left turn, describing a formalism for capturing a notion of algorithmic
+computability. However, the system obtained by adding a few reasonable features
+for describing more complicated data to \STLC{} looked not merely
+analogous, but \textit{identical to} \IPL{} (again, modulo simple
+notational changes, see \cref{tab:curry-howard}).
+
+While perhaps less surprising due to the notational conveniences of hindsight,
+this observation has startling and deep consequences (and a rich intellectual
+history). It is known as the
+Curry-Howard(-Lambek)\footnote{More on Lambek's part in \cref{rmk:lambek}}
+correspondence, or the propositions-as-types interpretation. This interpretation
+was first investigated by Curry \cite{curry-howard}, who noticed that the types
+of the ``combinators'' of his computational formalism\footnote{Equivalent to the
+λ-calculus, of course.}
+could be interpreted as valid propositions in \IPL{}. This
+observation squared nicely with what's called the Brouwer-Heyting-Kolmogorov
+interpretation of \IPL{}, which asserts that the semantics thereof
+are to be interpreted as referring not exactly to propositions and their proofs,
+but more general ``problems'' and their ``solutions'' \cite{kolmogorov}.
+
+So what does this correspondence really say? It can be understood in many
+ways.\footnote{Read in a particular light, the univalence principle
+  \cref{sec:univalence} might suggest that this ``isomorphism'' be read
+  as an \textit{identity}, an expression of the fundamental sameness of logic
+  and computation.}
+It says that \TLC{} can be used to provide semantics for programming
+languages \cite{landin}. It says that proofs of \IPL{} can be
+encoded into \TLC{}. This translation has the nice property that
+type-checking (the process of determining whether or not has a given type in a
+given context $Γ$) is decidable: it can be performed mechanically, preferably by
+a computer. This gives such proofs a strong epistemological footing.
+
+TODO: talk about proof assistants 
+
+\begin{sidewaystable}
+  \centering
+  \begin{tabular}{l | l | l | l | l}
+    \ZFC & \IPL & \UTT & Category theory & Homotopy theory \\ \hline
+    Set
+      & Proposition
+      & Type
+      & Object
+      & Space \\
+    Element
+      & Proof
+      & Term/program
+      & ``Element'' ($⊤→X$)
+      & Point \\
+    Product ($A×B$)
+      & Conjunction ($a∧b$)
+      & Pair type (${a}×{b}$)
+      & Product (${a}×{b}$)
+      & Product space (${A}×{B}$) \\
+    Disjoint union (${A}\amalg {B}$)
+      & Disjunction (${a}∨{b}$)
+      & Sum type ($a+b$)
+      & Coprod.\ type ($A+B$)
+      & Coprod.\ space ($A+B$) \\
+    Empty set ($\emptyset$)
+      & Falsehood
+      & Empty type ($\emptytype$)
+      & Initial object
+      & Empty space \\
+    Singleton set
+      & Truth
+      & Unit type ($\unittype$)
+      & Final object
+      & Singeton space \\
+    Function ($f:A→B$)
+      & Impl.\ ($p:a→b$)
+      & Function ($f:A→B$)
+      & Morphism ($f:A→B$)
+      & Continuous function \\
+    Equality ($A=B$)
+      & Judg.\ eq.\ ($A\≡ B$)
+      & Judg.\ eq.\ ($A\≡ B$)
+      & Equality ($A=B$)
+      & Equality ($A=B$) \\
+    Path $f:[0,1]→X$
+      &
+      & Prop. eq.\ ($\propeq{A}{a}{b}$)
+      & Equality ($A=B$)
+      & Path \\
+    {}
+      & {}
+      & Weak equiv.\ $\weq{A}{B}$
+      & Isomorphism $A≅B$
+      & Equivalence $A\simeq B$ \\
+    Universal q.\ ($∀x.Px$)
+      & {}
+      & Π-type ($\prod_{x:A}\apply{P}{x}$)
+      & {}
+      & Section \\
+    Existential q.\ ($∃x.Px$)
+      & {}
+      & Σ-type ($\sum_{x:A}\apply{P}{x}$)
+      & {}
+      & Total space
+  \end{tabular}
+  \caption{\label{tab:curry-howard}A table of metaphors, including but not
+    limited to the Curry-Howard-Lambek-Voevodsky correspondence.}
+\end{sidewaystable}
+\end{document}

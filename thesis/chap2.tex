@@ -1,0 +1,505 @@
+\documentclass[./thesis.tex]{subfiles}
+\begin{document}
+\chapter{Type theory}
+\label{chap:type-theory}
+
+Whatever the meaning of the Curry-Howard correspondence, its utility is
+circumscribed by the fact that \IPL{}/\TLC{} as
+presented do not match the expressive power of classical \FOL{}:
+there are no types expressing quantification over some domain, nor propositions
+or relations that may ``apply'' to terms and variables. Certainly, they are
+missing the infinite structures of classical set theory.
+
+The system described in this section enriches \TLC{} with
+\textit{dependent types} (\cref{sec:dependent-types}) and a few more base types,
+including our first examples of \textit{inductive types}
+(\cref{subsec:natural-numbers-and-lists}). Additionally, we define and include
+Voevodsky's univalence axiom (\cref{sec:univalence}). The
+resulting system (univalent type theory, or \UTT{}) has similar
+expressive power to \ZFC{}+\FOL{}.\footnote{Indeed, the
+  ``set types'' (\cref{def:sets}) behave very much like sets in classical
+  mathematics, especially when a few classically-minded axioms are assumed. See
+  \cite{book} for more commentary.
+
+  Conversely, \ZFC{} and infinitely many inaccessible cardinals models the
+  similar system \HoTT{} (via Voevodsky's simplicial set construction).}
+
+\UTT{} mirrors the type theory $\caH'$ of \cite{homotopy-limits}, which itself
+is the system $\caH$ in \cite{inductive} and \cite{homotopy-initial} with the
+addition of the natural numbers and a universe. The results of
+\cref{chap:coinductive-types-in-univalent-type-theory} don't
+require the full power of homotopy type theory (\HoTT), specifically we leave
+out the axioms asserting the existence of higher inductive types.
+
+\begin{notation}
+  In this section, we denote variables and schematic/meta-variables with the
+  same script.
+\end{notation}
+
+\section{Dependent types}
+\label{sec:dependent-types}
+
+One of the slogans of dependently typed programming is that \textit{types are
+terms}. Propositions, like proof terms, can now be subsumed as objects of study
+in their own right. However, all terms must have a type. What, if anything, is
+the type of types?
+
+\begin{definition}\label[definition]{def:universes}
+  All the base types we have considered up to this point ($⊤$, $⊥$) are members
+  of a \define{universe} \universei{0}, formed via the following rule:
+  \begin{equation*}
+    \prftree[r]{}
+      {}
+      {Γ⊢\type{\universei{0}}}
+  \end{equation*}
+  The type formers $×$, $+$, and $→$
+  preserve membership of this universe, i.e.\
+  \begin{gatherjot}
+    \prftree[r]{}{}{Γ⊢⊤:\universei{0}}
+    \qquad
+    \prftree[r]{}{}{Γ⊢⊥:\universei{0}}
+    \qquad
+    \prftree[r]{}
+      {\prftree[r, noline]{}
+        {Γ ⊢ {a}:\universei{0}}
+        {Γ ⊢ {b}:\universei{0}}}
+      {Γ⊢{a}×{b}:\universei{0}}
+    \qquad
+    \prftree[r]{}
+      {\prftree[r, noline]{}
+        {Γ ⊢ {a}:\universei{0}}
+        {Γ ⊢ {b}:\universei{0}}}
+      {Γ⊢{a}+{b}:\universei{0}}
+  \end{gatherjot}
+  Conversely, if something is a member of the universe, we may conclude that
+  it is a type:
+  \begin{equation*}
+    \prftree[r]{}
+      {Γ ⊢ {a}:\universei{0}}
+      {Γ⊢\type{{a}}}
+  \end{equation*}
+\end{definition}
+
+Universes blur (well, destroy) the distinction between what goes
+on the left- and right-hand side of the typing judgment (``$:$'').
+Additional commentary on the universe follows in
+\cref{rmk:universe-hierarchy}.
+
+\begin{remark}\label[remark]{rmk:meaningless-judgments}
+  If terms can go on either side of ``$:$'', how can we tell what corresponds to
+  a proposition and what corresponds to a proof? How do we avoid falling into
+  incoherence? These issues besiege classical mathematics as well. Certain
+  well-formed propositions might not be particularly meaningful. Consider: what is
+  the content of ``$\emptyset∈\pi$'' (where $π∈\R$ is the usual real number)? 
+  How can we tell whether a certain proposition has ``meaningful'' content?
+  This is a deep and important issue, but decidedly a non-mathematical one.
+\end{remark}
+
+\begin{definition}
+	A \define{dependent type} or \define{type family} is a term with a ``gap'' of
+  a specified type, which, when filled in with any term of said type, is a type.
+  In other words, $B$ is a dependent type with ``gap'' of type $A$ if for some $Γ$,
+  \begin{equation*}
+    Γ,a:A⊢\type{B}.
+  \end{equation*}
+  That is, a dependent type is a \textit{type} that \textit{depends} on a
+  \textit{value}. 
+\end{definition}
+
+Using the introduction rule for functions, we may (perhaps imprecisely)
+identify dependent types with \textit{functions} $B:A→\universei{0}$. 
+In the interpretation of types as propositions, dependent types correspond to
+properties. Suppose we have a type $ℕ$ with an element $0$ and an introduction
+rule (or ``constructor'')
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ n:\ℕ}
+    {Γ ⊢ \apply{S}{n}:\ℕ}
+\end{equation*}
+($S$ is what a logician might call a ``function symbol''). We
+might define a type family
+\begin{alignat*}{3}
+  &\ttfun{Even} &&: \ℕ → \universei{0} \\
+  &\apply{\ttfun{Even}}{0} &&\defeq \unittype  \\
+  &\apply{\ttfun{Even}}{(\apply{S}{0})} &&\defeq \emptytype  \\
+  &\apply{\ttfun{Even}}{(\apply{S}{(\apply{S}{n})})} &&\defeq \apply{\ttfun{Even}}{n}
+\end{alignat*}
+(definitions by cases like this will be introduced in \TODO{ref}, but it means
+what you think it means). Then $\apply{\ttfun{Even}}{n}$ is inhabited ($≅$true)
+when $n$ is even, and empty ($≅$false) otherwise.
+
+\begin{remark}
+	Echoing \cref{rmk:meaningless-judgments}, here's another opportunity for
+  confusion: is a type like $\ℕ$ ``true''? It's certainly inhabited. Again,
+  we, as humans, must decide which types to interpret as propositions,
+  properties, etc. \Cref{sec:h-levels and truncation} covers types
+  that essentially contain no other information other than whether or not they
+  are inhabited, these are called ``propositions''.
+\end{remark}
+
+\subsection{Π-types}
+\label{subsec:pi-types}
+
+The \define{dependent function type}, or Π-type, generalizes the direct product
+and function types. It is formed via the following rule:
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ A:\universei{0}}
+    {Γ ⊢ B:A→\universei{0}}
+    {Γ ⊢ \pitt{a:A}{\apply{B}{a}}:\universei{0}}
+\end{equation*}
+This type represents functions with output \textit{types} that depend on the
+\textit{value} of an \textit{input}. They associate to each $a:A$ some element
+of the type $\apply{B}{a}$. Thus, the introduction rule (dropping hypotheses
+that appear in the formation rule):
+\begin{equation*}
+  \prftree[r]{}
+    {Γ, a:A ⊢ b:\apply{B}{a}}
+    {Γ ⊢ \λ{a}{b}:\pitt{a:A}{\apply{B}{a}}}
+\end{equation*}
+where the term $b$ usually has a free occurrence of $a$. If it doesn't, the Π-type
+specializes to the normal function type. The elimination, computation, and
+unicity rules are also straightforward generalizations of normal functions types:
+\begin{gatherjot}
+  \prftree[r]{}
+    {Γ ⊢ {f}:\pitt{a:A}{\apply{B}{a}}}
+    {Γ ⊢ {a}:{A}}
+    {Γ ⊢ \apply{p}{a}:\apply{B}{a}}
+  \qquad
+  \prftree[r]{}
+    {Γ, a:A ⊢ b:\apply{B}{a}}
+    {Γ ⊢ x:A}
+    {Γ ⊢ \apply{\λ{a}{b}}{x}\jdeq b[a\defeq x]:\apply{B}{a}} \\
+  \prftree[r]{}
+    {Γ ⊢ f : \pitt{a:A}{\apply{B}{a}}}
+    {Γ ⊢ \λ{x}{\apply{f}{x}}\jdeq f:\pitt{a:A}{\apply{B}{a}}}
+\end{gatherjot}
+
+Such functions might initially seem obscure and their utility unclear. After all,
+most programming languages seem to get along just fine without them!
+However, their applications to both logic and computing are myriad. For instance,
+they subsume Haskell- and ML-style parametric polymorphism when
+$A\defeq\universei{0}$.\footnote{Those familiar with logics such as System F
+  will recognize the next definition, although we write lowercase λ for type
+  inputs as well as term inputs. Why? We couldn't do otherwise: there is no
+  syntactic distinction.} Accordingly, we now have the power to write an
+\textit{single} identity function that works for \textit{all} types.
+
+\begin{definition}\label[definition]{def:id-polymorphic}
+  The identity function is
+	\begin{align*}
+    \id :\∏{A:\universei{0}}{A\to A} &&
+    \id \defeq \λ{A}{\λ{a}{a}}.
+  \end{align*}
+\end{definition}
+
+\begin{notation}\label[notation]{implicit-args}
+  Often in type theory, functions have ``extraneous'' arguments,
+  meaning their values can be deduced from context. For instance, 
+  in the (not wellformed) expression $\appply{\id}{\_}{a}$ for $a:A$, the only
+  value that can go in the blank is (something judgmentally equal to)
+  $A$.\footnote{In \Coq{}, one may actually write $\_$ in place of an
+  argument and it will be filled in by a component called the \textit{unifier},
+  or declare once and for all that such an argument never needs to be filled in
+  when calling the function (such arguments are called \textit{implicit}).}
+
+  As another example, an inhabitant of the following type witnesses the
+  associativity of function composition:
+  \begin{equation*}
+    \∏{A,B,C,D:\universe}{
+      \∏{f:A→B}{
+        \∏{g:B→C}{
+          \∏{h:C→D}{
+            \propeq{}{(h∘g)∘f}{h∘(g∘f)}
+    }}}}.\footnote{By the way, this identity is witnessed by reflexivity. To
+    convince yourself that this is so, recall \cref{def:implication-composition}.}
+  \end{equation*}
+  However, the arguments $A$, $B$, $C$, and $D$ can be inferred from the types
+  of $f$, $g$, and $h$. In the remainder of this thesis, such arguments may be
+  written as subscripts or left out entirely.
+\end{notation}
+
+A skeptical reader might point out a possible mistake. If Π-types correspond
+to quantification and they can quantify over $\universei{0}$, but they also
+\text{are} types, how can we prevent circular (or \textit{impredicative})
+definitions?\footnote{Indeed, this was Russell's motivation for introducing type
+theory in the first place!} Looking back at the formation rule, however, shows
+that Π-types can only be formed when $A$ is in $\universei{0}$. It's not the
+case that $\universei{0}:\universei{0}$.
+
+\begin{remark}\label[remark]{rmk:universe-hierarchy}
+  Of course, sometimes one \textit{does} want to quantify over the whole
+  universe. For instance, using the introduction for $×$, we can construct a
+  function 
+  look something like the following
+\end{remark}
+
+% Π-types correspond to
+% universal quantification.
+
+\subsection{Σ-types}
+\label{subsec:sigma-types}
+
+\begin{lemma}[Paths in $Σ$-types]\label[lemma]{lemma:path-sigma}
+	If $x,y:\∑{a:A}{B(a)}$, then
+  \begin{equation*}
+    \weq{
+      (\propeq{}{x}{y})
+    }{
+      \∑{
+        p:\propeq{}{\appr{1}{x}}{\appr{1}{y}}
+      }{
+        \propeq{}{
+          \transport{}{p}{\appr{2}{x}}
+        }{
+          \appr{2}{y}
+        }
+      }
+    }.
+  \end{equation*}
+  \TODO{cite with page number}
+\end{lemma}
+
+\subsection{Natural numbers and lists}
+\label{subsec:natural-numbers-and-lists}
+
+\subsubsection{On the law of the excluded middle}
+\label{subsec:on-lem}
+
+\TODO{introduce the topic based on previous sections}
+
+Consider functions with the following types:
+\begin{itemize}
+  \itemsep0em
+  \item $\ttfun{dne}:\∏{A:\universe}{((A\to⊥)\to⊥)\to A}$
+  \item $\ttfun{lem}:\∏{A:\universe}{A+(A\to⊥)}$
+\end{itemize}
+What can we tell about these functions from their type signatures?
+The term $\ttfun{dne}$ takes as argument a term $x:(A\to⊥)\to⊥$,
+that is, a term showing that $A$ is not the empty type\footnote{More precisely,
+  $x$ demonstrates that $A$ is not \textit{isomorphic} or \textit{equivalent} to
+  $⊥$, in the sense of \cref{subsec:weak-equivalences}. If $A$ were isomorphic
+  to $⊥$, then that isomorphism would be an inhabitant of $A\to⊥$.}, and
+produces some element of $A$. This seems like a very tricky function to write:
+how can we give a term of type $A$ just by knowing $A$ has terms? We don't
+know what form data of type $A$ have! The function $\ttfun{lem}$ seems
+similarly quagmired. Given a type $A$, this function either has to produce an
+element of it, or demonstrate that it is uninhabited.
+
+As you may have already guessed, under the propositions/types correspondence,
+these functions correspond to the rule of double negation elimination
+($\ttfun{dne}$)\index{Double negation elimination}
+and the law of excluded middle ($\ttfun{lem}$)\index{Law of excluded middle}
+\cref{def:lem-dne}.
+
+To demonstrate with finality that these are not definable terms in any
+consistent type theory, consider the application of $\ttfun{lem}$ to a type
+$\ttfun{pnp}$ that corresponds to the $\textsc{P}\neq\textsc{NP}$ conjecture
+under the types-as-propositions interpretation. If $\ttfun{lem}$ existed, we
+could trivially solve this problem and make a million dollars! We need no
+recourse to philosophy to justify the constructive/intuitionistic logic of proof
+assistants: nothing else computes.
+
+\section{The identity type}
+\label{sec:the-identity-type}
+
+\begin{tt-rule}\label[rule]{rule:id-elim}
+  The rule of \define{identity elimination} (in the \HoTT
+  community, known as \define{path induction}) is as follows:\TODO{define id-elim}
+\end{tt-rule}
+
+\begin{lemma}[$\ttfun{ap}$]\label[lemma]{lemma:ap}
+	\TODO{define ap}
+\end{lemma}
+
+\begin{lemma}[Transport]\label[lemma]{lemma:transport}
+	\TODO{define transport}
+\end{lemma}
+
+\begin{notation}\label[notation]{notation:transport}
+  We will often curry\index{Curry} \transportname. If we have a family
+  $P:A\to\universe$ and a path $p:\propeq{A}{x}{y}$, we write $\transpor{P}{p}$
+  for $\λ{x}\transport{P}{p}{x}$.
+\end{notation}
+
+\begin{lemma}\label[lemma]{lemma:transport-compose}
+	For $f:A\to B$, $P:B\to\universe$, and $p:\propeq{A}{x}{y}$,
+  \begin{equation*}
+    \propeq{}{
+      \transpor{P∘ f}{p}
+    }{
+      \transpor{P}{\ap{f}{p}}
+    }
+  \end{equation*}
+\end{lemma}
+
+
+\section{h-levels and truncation}
+\label{sec:h-levels and truncation}
+
+\begin{definition}\label[definition]{def:mere-proposition}
+  A type $X:\universe$ is a \define{mere proposition}, a \define{proposition},
+  or an \define{hprop} if all of its elements are propositionally equal,
+  \begin{equation*}
+    \apply{\isProp}{X} \defeq \pit{x,y:X}x=y
+  \end{equation*}
+\end{definition}
+
+\begin{definition}\label[definition]{def:contr}
+  A type $X:\universe$ is \define{contractible} if it is a mere proposition and
+  is inhabited, that is
+  \begin{equation*}
+    \apply{\isContr}{X} \defeq \sigmat{x:X}{\pit{y:X}x=y}
+  \end{equation*}
+  The first projection is the \define{center} of $X$.
+\end{definition}
+
+\begin{definition}\label[definition]{def:sets}
+
+\end{definition}
+
+\begin{figure}[ht]
+  \centering
+  \caption{\label{fig:awodey} Awodey's two axes: size (universe level)
+    and complexity (h-level).}
+\end{figure}
+
+\begin{lemma}\label[lemma]{lemma:impred}
+  If $X:\universe$, $Y:X→\universe$, and each $\apply{Y}{x}$ is of h-level $n$,
+  then $\∏{x:X}{\apply{Y}{x}}$ is of h-level $n$.
+\end{lemma}
+
+\section{Univalence}
+\label{sec:univalence}
+
+\subsection{Weak equivalences}
+\label{subsec:weak-equivalences}
+
+\begin{definition}\label[definition]{def:fiber}
+	Given a function $f:A→B$ and point $b:B$, the \define{fiber of $f$ above $b$}
+  is the type
+  \begin{equation*}
+    \∑{a:A}{\propeq{}{\apply{f}{a}}{b}}
+  \end{equation*}
+\end{definition}
+
+\begin{definition}\label[definition]{def:weq}
+  A function $f:A→B$ is a weak equivalence if any of the following
+  equivalent\footnote{For proofs that these characterizations are mutually
+    equivalent, see \cite{book}.}
+  conditions hold:
+  \begin{itemize}
+    \itemsep0em
+    \item the fibers of $f$ are contractible,
+      $\∏{b:B}{\apply{\isContr}{\apply{\ttfun{fiber}_f}{b}}}$
+    \item TODO
+  \end{itemize}
+  We abusively denote the type of any of these conditions by
+  $\apply{\isEquiv}{f}$.
+\end{definition}
+
+\begin{notation}\label[notation]{notation:weq-coerce}
+  We may treat a weak equivalence as if it were a function and apply it to an
+  argument. This amounts to implicitly applying $\pr{1}$.
+\end{notation}
+
+\begin{lemma}\label[lemma]{lemma:isequiv-prop}
+	The property of being an equivalence is a proposition.
+\end{lemma}
+
+\begin{lemma}\label[lemma]{lemma:contr-weq-unit}
+	Any contractible type is weakly equivalent to $\unittype$.
+\end{lemma}
+\begin{proof}
+	Suppose $X:\universe$ is contractible with center $x$. Define $f:X→\unittype$
+  as $\λ{x}{\unitelem}$ and $g:\unittype→X$ as $\λ{u}{x}$. Then by hypothesis on
+  $X$, the induction principle for $\unittype$\TODO{reference}, and function
+  extensionality (\cref{thm:funext}), the composites are the appropriate
+  identities.
+\end{proof}
+
+\begin{lemma}\label[lemma]{lemma:weq-eq}
+  If $A,B:\universe$, $w:\weq{A}{B}$, and $x,y:A$ then
+  \begin{equation*}
+    \weq{(\propeq{B}{\apply{w}{x}}{\apply{w}{y}})}{(\propeq{A}{x}{y})}
+  \end{equation*}
+\end{lemma}
+\begin{proof}[Proof sketch]
+  If $p:\propeq{A}{x}{y}$, then
+  $\ap{w}{p}:\propeq{B}{\apply{w}{x}}{\apply{w}{y}}$. Conversely,
+  suppose $\propeq{B}{\apply{w}{x}}{\apply{w}{y}}$.
+  Then $x$ and $y$ are both in the fiber above $\apply{w}{x}$,
+  and since the fibers of a weak equivalence are contractible, $x=y$.
+\end{proof}
+
+\begin{corollary}\label[corollary]{cor:weq-contr}
+	If $w:\weq{A}{B}$ and $B$ is contractible, so is $A$.
+\end{corollary}
+\begin{proof}
+  By contractibility of $B$, 
+  $\propeq{B}{\apply{w}{x}}{\apply{w}{y}}$ for any $a,a':A$, so $A$
+  is a mere proposition. Additionally, $w$ has an inverse which sends the center
+  $b$ of $B$ to some point $\apply{w^{-1}}{b}$, so $A$ is inhabited.
+  Thus, $A$ is contractible.\TODO{reference}
+\end{proof}
+
+The following restates the η-rule for the product type as a weak equivalence:
+
+\begin{lemma}\label[lemma]{lemma:paths-dirprod-weq}
+  For any $A,B:\universe$, $a:A$, $b:B$, and $x:A×B$,
+  \begin{equation*}
+    \weq{\big((\propeq{A}{\appr1{x}}{a})×(\propeq{B}{\appr1{x}}{b})\big)}
+        {\big(\propeq{}{x}{(a,b)}\big)}
+  \end{equation*}
+\end{lemma}
+
+\begin{lemma}\label[lemma]{lemma:weqfibtototal}
+  For any $A:\universe$ and $P,Q:A→\universe$,
+  if $\weq{\apply{P}{a}}{\apply{Q}{a}}$ for every $a:A$, then
+  \begin{align*}
+    \weq{\∏{a:A}{\apply{P}{a}}}{\∏{a:A}{\apply{Q}{a}}}
+    &&\text{and}&&
+    \weq{\∑{a:A}{\apply{P}{a}}}{\∑{a:A}{\apply{Q}{a}}}
+  \end{align*}
+\end{lemma}
+
+\subsection{The univalence axiom}
+\label{subsec:the-univalence-axiom}
+
+\begin{definition}\label[definition]{def:ua}
+  \TODO{definintion}
+  It has the following computation rule:
+
+  Note that this rule holds up to \textit{propositional equality}. This is
+  because in \UTT{}, univalence is indeed an \textit{axiom}. It has
+  no computational meaning. \TODO{mention CTT}
+\end{definition}
+
+\begin{theorem}[Function extensionality]\label[theorem]{thm:funext}
+	Under the hypothesis of the univalence axiom, function extensionality holds,
+  i.e.\ there is a term
+  \begin{equation*}\label{eq:funext}
+    \funext:\∏{A,B\:\universe}{(\homot{f}{g})\to \propeq{}{f}{g}}
+  \end{equation*}
+\end{theorem}
+
+As a simple example of the use of univalence, we can vastly generaize
+\cref{lemma:contr-weq}.
+
+\begin{theorem}
+	Weak equivalences preserve hlevels.
+\end{theorem}
+\begin{proof}
+  Let $A,B:\universe$, $w:\weq{A}{B}$, and $i:\appply{\hlevel}{n}{A}$.
+	Univalence provides an equality $\apply{\ua}{w}:\propeq{\universe}{A}{B}$. 
+  Then
+  \begin{equation*}
+    \transport{\λ{X}{\apply{\isContr}{X}}}{\apply{\ua}{w}}{i} : \appply{\hlevel}{n}{A}
+  \end{equation*}
+\end{proof}
+
+This argument isn't actually specific to contractibility; using univalence any
+proposition of the form ``If $\weq{A}{B}$ and $\apply{P}{A}$, then $\apply{P}{B}$''
+trivially true.
+
+\end{document}
