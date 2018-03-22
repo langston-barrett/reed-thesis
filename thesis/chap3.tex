@@ -7,7 +7,7 @@ Category theory presents a challange to set-theoretic mathematicians: the
 canonical example of a category is $\Set$, the collection of all sets. In
 \ZFC+\FOL{}, this category is undefinable\footnote{In
   particular, its formation is prevented by the axiom of regularity
-  \cite{vonneumann}, which was included in \ZFC to avoid the
+  \cite{vonneumann}, which was included in \ZFC{} to avoid the
   paradoxes of Burali-Forti and Russell. The discovery of said paradoxes
   motivated Bertrand Russell to invent something he called the ``theory of
   types'' \cite{russell}.}.
@@ -64,7 +64,10 @@ The results in this chapter all appear in the \UniMath{} package
 \end{definition}
 
 \begin{example}
-  A student of mathematics will be familiar with the following categories:
+	The following \define{concrete categories}\footnote{These are categories which
+  we can fruitfully consider to have as objects sets with ``additional
+  structure'' and certain functions of the underlying sets as arrows.} are
+  familiar to the student of mathematics:
   \begin{itemize}
     \itemsep-0.2em
     \item $\Set$: The category with sets as objects, functions as morphisms,
@@ -84,11 +87,26 @@ The results in this chapter all appear in the \UniMath{} package
       $\underline{G}$ with a single object (denoted $∗$) and
       $\Hom_{\underline{G}}(∗,∗)\coloneqq G$. Composition is given by the
       group operation.
+    \item For any preorder $(A,≤)$ (a collection with a reflexive, transitive
+      binary relation), there is a category $\bfC(A)$ which has as objects the
+      elements of $A$ and an arrow $a→b$ just if $a≤b$.
+      Conversely, any category with at most one arrow between any two objects
+      defines a preorder.
+  \end{itemize}
+\end{example}
+
+\begin{example}
+  The following arise less outside of category theory itself:
+  \begin{itemize}
+    \itemsep-0.2em
     \item For any set or type $A$, the \define{discrete category on $A$} has as
       objects the members or elements as $A$, and no other arrows except the
       requisite identities.
     \item The category $\ω$ has as objects the natural numbers, and arrows
       $n→\apply{\suc}{n}$ (plus the requisite composites $n→m$ where $n<m$).
+    \item There is a category $\bf1$ with one object and only the identity
+      arrow, called the \define{unit} or (foreshadowing
+      \cref{sec:limits-and-colimits}) \define{terminal} category.
   \end{itemize}
 \end{example}
 
@@ -153,8 +171,60 @@ Just as with functions, inverses (should they exist) are unique.
 \section{Duality}
 \label{sec:duality}
 
-From now on, dual concepts and statements will be introduced in pairs, and
-typeset like so:
+Consider a preorder $(A,≤)$ (that is, a set or type $A$ together with a
+reflexive, transitive relation $≤$). Its \define{opposite preorder} is
+$(A,≤^{\op})$ where
+\begin{equation*}
+	a ≤^{\op} b \Longleftrightarrow b ≤ a
+\end{equation*}
+Consider a group $(G,·,e)$. Its \define{opposite group} has the operation
+\begin{equation*}
+  g ·^\op h \defeq h · g
+\end{equation*}
+Now, suppose we know that $(A,≤)$ has all finite meets. Then we immediately know
+that $(A,≤')$ has all finite joins. In general, if we know some theorem $T$
+about $(A,≤)$ or $(G,·,e)$. It seems like there should be a purely mechanical
+process via which we can discover an appropritate ``opposite theorem'' that
+applies to $(A,≤^\op)$ or $(G,·^\op,e)$.
+
+These are instances of the notion of duality in category theory. It plays an
+economizing role: one \textit{can}, in fact, state ``opposite'' theorems via a
+purely mechanical process, and prove them trivially.
+
+\begin{definition}
+  The opposite category of $\bfC$, denoted $\bfC^\op$ has
+  \begin{itemize}
+    \itemsep0em
+    \item objects $\Obj\bfC^\op\defeq \Obj\bfC$,
+    \item arrows $f^\op∈\Hom_{\bfC^op}(B,A)$ for each $f∈\Hom_{\bfC}(A,B)$,
+    \item and composition $f^\op∘^\op g^\op\defeq (g\circ f)^\op$.
+  \end{itemize}
+\end{definition}
+
+One usually identifies $(\bfC^\op)^\op$ with $\bfC$.\footnote{This is a bit more
+  subtle in type theory! What one wants is a \textit{judgmental} equality
+  $(\bfC^\op)^\op\jdeq \bfC$. To make this possible, one must include a
+  symmetrized version of the associativity axiom.}
+The following might be called ``The Fundamental Meta-theorem of Category Theory'':
+
+\begin{theorem}\label[theorem]{thm:duality}
+  If $\mvar{S}$ is a statement about $\bfC$ in the first-order language of
+  category theory (i.e.\ involving only objects, arrows, composition, and
+  identity), then the statement $\mvar{S}^\op$ holds of $\bfC^\op$, where
+  $\mvar{S}^\op$ is obtained from $\mvar{S}$ by
+  \begin{enumerate}%[label=\Alph*.]
+    \itemsep0em
+    \item switching the domain and codomain of all arrows, and
+    \item reversing composition.
+  \end{enumerate}
+\end{theorem}
+
+Usefully, isomorphisms are self-dual. This means that isomorphic objects in
+$\bfC$ are isomorphic in $\bfC^\op$ and vice-versa.
+
+If $C$ is a concept defined in the language of categories, there is a dual
+definition $C^\op$, obtained in the same way as $S^\op$ above. From now on, dual
+concepts and statements will be introduced in pairs, and typeset like so:
 
 \dual{
   Concept
