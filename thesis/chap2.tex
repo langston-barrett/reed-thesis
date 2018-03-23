@@ -26,79 +26,28 @@ expressive power to \ZFC{}+\FOL{}.\footnote{Indeed, the
 
 \UTT{} mirrors the type theory $\caH'$ of \cite{homotopy-limits}, which itself
 is the system $\caH$ in \cite{inductive} and \cite{homotopy-initial} with the
-addition of the natural numbers and a universe. The results of
+addition of the natural numbers and universes. The results of
 \cref{chap:coinductive-types-in-univalent-type-theory} don't
 require the full power of homotopy type theory (\HoTT), specifically we leave
 out the axioms asserting the existence of higher inductive types.
 
 \begin{notation}
-  In this section, we denote variables and schematic/meta-variables with the
-  same script.
+  Henceforth, we denote variables and meta-variables with the same
+  script.
 \end{notation}
 
 \section{Dependent types}
 \label{sec:dependent-types}
 
-One of the slogans of dependently typed programming is that \textit{types are
-terms}. Propositions, like proof terms, can now be subsumed as objects of study
-in their own right. However, all terms must have a type. What, if anything, is
-the type of types?
-
-\begin{definition}\label[definition]{def:universes}
-  All the base types we have considered up to this point ($⊤$, $⊥$) are members
-  of a \define{universe} \universei{0}, formed via the following rule:
-  \begin{equation*}
-    \prftree[r]{}
-      {}
-      {Γ⊢\type{\universei{0}}}
-  \end{equation*}
-  The type formers $×$, $+$, and $→$
-  preserve membership of this universe, i.e.\
-  \begin{gatherjot}
-    \prftree[r]{}{}{Γ⊢⊤:\universei{0}}
-    \qquad
-    \prftree[r]{}{}{Γ⊢⊥:\universei{0}}
-    \qquad
-    \prftree[r]{}
-      {\prftree[r, noline]{}
-        {Γ ⊢ {a}:\universei{0}}
-        {Γ ⊢ {b}:\universei{0}}}
-      {Γ⊢{a}×{b}:\universei{0}}
-    \qquad
-    \prftree[r]{}
-      {\prftree[r, noline]{}
-        {Γ ⊢ {a}:\universei{0}}
-        {Γ ⊢ {b}:\universei{0}}}
-      {Γ⊢{a}+{b}:\universei{0}}
-  \end{gatherjot}
-  Conversely, if something is a member of the universe, we may conclude that
-  it is a type:
-  \begin{equation*}
-    \prftree[r]{}
-      {Γ ⊢ {a}:\universei{0}}
-      {Γ⊢\type{{a}}}
-  \end{equation*}
-\end{definition}
-
-Universes blur (well, destroy) the distinction between what goes
-on the left- and right-hand side of the typing judgment (``$:$'').
-Additional commentary on the universe follows in
-\cref{rmk:universe-hierarchy}.
-
-\begin{remark}\label[remark]{rmk:meaningless-judgments}
-  If terms can go on either side of ``$:$'', how can we tell what corresponds to
-  a proposition and what corresponds to a proof? How do we avoid falling into
-  incoherence? These issues besiege classical mathematics as well. Certain
-  well-formed propositions might not be particularly meaningful. Consider: what is
-  the content of ``$\emptyset∈\pi$'' (where $π∈\R$ is the usual real number)? 
-  How can we tell whether a certain proposition has ``meaningful'' content?
-  This is a deep and important issue, but decidedly a non-mathematical one.
-\end{remark}
+One of the slogans of dependently typed programming is that ``types are
+terms''. Propositions, like proof terms, can now be subsumed as objects of study
+in their own right.
 
 \begin{definition}
-	A \define{dependent type} or \define{type family} is a term with a ``gap'' of
-  a specified type, which, when filled in with any term of said type, is a type.
-  In other words, $B$ is a dependent type with ``gap'' of type $A$ if for some $Γ$,
+	A \define{dependent type} or \define{type family} is a term with a free
+  variable of a specified type, which, when filled in with any term of said
+  type, is a type. In other words, $B$ is a dependent type with variable of type
+  $A$ if for some $Γ$,
   \begin{equation*}
     Γ,a:A⊢\type{B}.
   \end{equation*}
@@ -106,35 +55,34 @@ Additional commentary on the universe follows in
   \textit{value}. 
 \end{definition}
 
-Using the introduction rule for functions, we may (perhaps imprecisely)
-identify dependent types with \textit{functions} $B:A→\universei{0}$. 
 In the interpretation of types as propositions, dependent types correspond to
-properties. Suppose we have a type $ℕ$ with an element $0$ and an introduction
-rule (or ``constructor'')
-\begin{equation*}
+predicates. The following illustration uses several concepts yet to be
+introduced, trust that it can be made precise after the next few sections.
+Suppose we have a type $ℕ$ with introduction rules (or ``constructors'')
+\begin{align*}
+  \prftree[r]{}
+    {}
+    {Γ ⊢ 0:\ℕ} &&
   \prftree[r]{}
     {Γ ⊢ n:\ℕ}
     {Γ ⊢ \apply{\suc}{n}:\ℕ}
-\end{equation*}
-($\suc$ is what a logician might call a ``function symbol''). We
-might define a type family
+\end{align*}
+($0$ is what a logician might call a ``non-logical constant'' and $\suc$ a
+``function symbol''). We might define a type family
 \begin{alignat*}{3}
-  &\ttfun{Even} &&: \ℕ → \universei{0} \\
   &\apply{\ttfun{Even}}{0} &&\defeq \unittype  \\
   &\apply{\ttfun{Even}}{(\apply{\suc}{0})} &&\defeq \emptytype  \\
   &\apply{\ttfun{Even}}{(\apply{\suc}{(\apply{\suc}{n})})} &&\defeq \apply{\ttfun{Even}}{n}
 \end{alignat*}
-(definitions by cases like this will be introduced in \TODO{ref}, but it means
-what you think it means). Then $\apply{\ttfun{Even}}{n}$ is inhabited ($≅$true)
-when $n$ is even, and empty ($≅$false) otherwise.
+Then $\apply{\ttfun{Even}}{n}$ is inhabited ($≅$true) when $n$ is even, and
+empty ($≅$false) otherwise.
 
 \begin{remark}
-	Echoing \cref{rmk:meaningless-judgments}, here's another opportunity for
-  confusion: is a type like $\ℕ$ ``true''? It's certainly inhabited. Again,
-  we, as humans, must decide which types to interpret as propositions,
-  properties, etc. \Cref{sec:h-levels and truncation} covers types
-  that essentially contain no other information other than whether or not they
-  are inhabited, these are called ``propositions''.
+	Here's an opportunity for confusion: is a type like $\ℕ$ ``true''? It's
+  certainly inhabited. Again, we, as humans, must decide which types to
+  interpret as propositions, properties, etc. \Cref{sec:h-levels and truncation}
+  covers types that essentially contain no other information other than whether
+  or not they are inhabited, these are called ``propositions''.
 \end{remark}
 
 \subsection{Π-types}
@@ -144,10 +92,12 @@ The \define{dependent function type}, or Π-type, generalizes the direct product
 and function types. It is formed via the following rule:
 \begin{equation*}
   \prftree[r]{}
-    {Γ ⊢ A:\universei{0}}
-    {Γ ⊢ B:A→\universei{0}}
-    {Γ ⊢ \pitt{a:A}{\apply{B}{a}}:\universei{0}}
+    {Γ ⊢ \type{A}}
+    {Γ, a:A ⊢ \type{B}}
+    {Γ ⊢ \type{\pitt{a:A}{\apply{B}{a}}}}
 \end{equation*}
+It is \textit{crucial} to remember that the Π (just like λ) scopes over the
+entire rest of the expression, unless otherwise delineated by parentheses.
 This type represents functions with output \textit{types} that depend on the
 \textit{value} of an \textit{input}. They associate to each $a:A$ some element
 of the type $\apply{B}{a}$. Thus, the introduction rule (dropping hypotheses
@@ -166,24 +116,122 @@ unicity rules are also straightforward generalizations of normal functions types
     {Γ ⊢ {a}:{A}}
     {Γ ⊢ \apply{p}{a}:\apply{B}{a}}
   \qquad
-  \prftree[r]{}
+  \prftree[r]{β}
     {Γ, a:A ⊢ b:\apply{B}{a}}
     {Γ ⊢ x:A}
     {Γ ⊢ \apply{\λ{a}{b}}{x}\jdeq b[a\defeq x]:\apply{B}{a}} \\
-  \prftree[r]{}
+  \prftree[r]{η}
     {Γ ⊢ f : \pitt{a:A}{\apply{B}{a}}}
     {Γ ⊢ \λ{x}{\apply{f}{x}}\jdeq f:\pitt{a:A}{\apply{B}{a}}}
 \end{gatherjot}
 
-Such functions might initially seem obscure and their utility unclear. After all,
-most programming languages seem to get along just fine without them!
-However, their applications to both logic and computing are myriad. For instance,
-they subsume Haskell- and ML-style parametric polymorphism when
-$A\defeq\universei{0}$.\footnote{Those familiar with logics such as System F
-  will recognize the next definition, although we write lowercase λ for type
-  inputs as well as term inputs. Why? We couldn't do otherwise: there is no
-  syntactic distinction.} Accordingly, we now have the power to write an
-\textit{single} identity function that works for \textit{all} types.
+Under the types-as-propositions interpretation, Π-types correspond to universal
+quantification. A term of type $\∏{a:A}{\apply{B}{a}}$ takes each $a:A$ to a
+proof or witness that $B$ holds of $a$. Loads of examples to follow throughout.
+
+\begin{example}
+  The following example illustrates that dependent types truly allow for
+  \textit{arbitrary expressions} to appear at the type level:
+  \begin{gather*}
+    f:\∏{t:A+B}{\apppply{\case}{(\λ{a}{\unittype})}{(\λ{b}{\unittype×\unittype})}{t}} \\
+    f \defeq \appply{\case}{(\λ{a}{\unitelem})}{(\λ{b}{(\unitelem,\unitelem)})}.
+  \end{gather*}
+  For $a:A$ and $b:B$, the elimination rules for $+$ and Π give
+  \begin{align*}
+    \apply{f}{(\apply{\inl}{a})} &\jdeq \unitelem \\
+    \apply{f}{(\apply{\inr}{b})} &\jdeq (\unitelem, \unitelem)
+  \end{align*}
+  which have \textit{different types}.
+\end{example}
+
+To comprehend less contrived examples of dependent types and Π-types, one must
+first understand universes.
+
+\subsection{The universe}
+\label{subsec:the-universe}
+
+Another slogan of dependently typed programming is ``All terms must have a
+type''. What, if anything, is the type of types?\footnote{Caution: This thesis
+  doesn't explain the rules for universes nearly as fully as those for all other
+  types.}
+
+\begin{definition}\label[definition]{def:universes}
+  All the base types we have considered up to this point ($⊤$, $⊥$) are members
+  of a \define{universe} \universei{0}, formed via the following rule:
+  \begin{equation*}
+    \prftree[r]{}
+      {}
+      {Γ⊢\type{\universei{0}}}
+  \end{equation*}
+  All type formers preserve membership of this universe, i.e.\
+  \begin{gatherjot}
+    \prftree[r]{}{}{Γ⊢⊤:\universei{0}}
+    \qquad
+    \prftree[r]{}{}{Γ⊢⊥:\universei{0}}
+    \qquad
+    \prftree[r]{}
+      {Γ ⊢ {a}:\universei{0}}
+      {Γ ⊢ {b}:\universei{0}}
+      {Γ⊢{a}×{b}:\universei{0}} \\
+    \prftree[r]{}
+      {Γ ⊢ {a}:\universei{0}}
+      {Γ ⊢ {b}:\universei{0}}
+      {Γ⊢{a}+{b}:\universei{0}} 
+    \qquad
+    \prftree[r]{}
+      {Γ ⊢ A:\universei{0}}
+      {Γ, a:A ⊢ B:\universei{0}}
+      {Γ ⊢ \pitt{a:A}{\apply{B}{a}}:\universei{0}}
+  \end{gatherjot}
+  Conversely, if something is a member of the universe, we may conclude that
+  it is a type:
+  \begin{equation*}
+    \prftree[r]{}
+      {Γ ⊢ {a}:\universei{0}}
+      {Γ⊢\type{{a}}}
+  \end{equation*}
+\end{definition}
+
+Using the introduction rule for functions, we may (perhaps imprecisely)
+identify dependent types with \textit{functions} $B:A→\universei{0}$. 
+Generally, we will also now write the judgment $\type{A}$ as $A:\universei{0}$.
+
+\begin{remark}\label[remark]{rmk:meaningless-judgments}
+  Universes blur (well, destroy) the distinction between what goes
+  on the left- and right-hand side of the typing judgment (``$:$'').
+  But then how can we tell which terms correspond to \textit{meaningful}
+  propositions?
+
+  If there is a complete and unobjectionable answer to this question,
+  it isn't known to classical mathematicians or logicians either. Certain
+  well-formed sentences in any formal system might not be particularly
+  meaningful. Consider: what is the content of ``$\emptyset∈\pi$'' (where $π∈\R$
+  is the usual real number)? For logicians, what is the content of
+  $\Diamond\Diamond\Diamond\Diamond\Diamond\Diamond\Diamond P$, in plain
+  English? This is a deep and important issue, but decidedly one for
+  philosophers, rather than mathematicians and computer scientists.
+\end{remark}
+
+\subsection{Predicativity and the universe hierarchy}
+\label{subsec:predicativity}
+
+A skeptical reader might point out a possible mistake. If Π-types correspond
+to universal quantification and they can quantify over $\universei{0}$, but they
+also \textit{are} types, how can we prevent circular (\textit{impredicative})
+definitions?\footnote{Indeed, this was Russell's motivation for introducing type
+theory in the first place! Note that we can't form the Russellian type of all
+types not containing themselves (which would look like
+$\∏{A:\universei{0}}\lnot (A:A)$) since the typing judgment ``:'' isn't part of
+the language of type theory.}
+
+Of course, sometimes one \textit{does} want to quantify over the whole
+universe. When $A\defeq\universei{0}$, then dependent function types 
+subsume Haskell- and ML-style parametric polymorphism.\footnote{Those familiar
+  with theories such as System F will recognize the next definition, although we
+  write lowercase λ for type inputs as well as term inputs. Why? We couldn't do
+  otherwise: there is no syntactic distinction.} Accordingly, we now have the
+power to write an \textit{single} identity function that works for
+\textit{all} types.
 
 \begin{definition}\label[definition]{def:id-polymorphic}
   The identity function is
@@ -192,6 +240,67 @@ $A\defeq\universei{0}$.\footnote{Those familiar with logics such as System F
     \id \defeq \λ{A}{\λ{a}{a}}.
   \end{align*}
 \end{definition}
+
+If the type $\∏{A:\universei{0}}{A\to A}$ were a member of $\universei{0}$, it
+would be self-referential. To resolve this difficulty,
+\UTT{} uses a \define{hierarchy of universes} $\universei{0},
+\universei{1},\ldots$. In this refined system, one judges
+$\universei{i}:\universei{\apply{\suc}{i}}$, and similarly for terms that
+quantify over a given universe. For instance, the modified formation rule
+for Π looks like the following \cite{cpdt}:
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ A:\universei{i}}
+    {Γ ⊢ B:A→\universei{j}}
+    {Γ ⊢ \pitt{a:A}{\apply{B}{a}}:\universei{\appply{\max}{i}{j}}}.
+\end{equation*}
+
+\begin{remark}\label[remark]{rmk:universe-polymorphism}
+  Are \define{universe indices} part of the object language (\UTT{}) or the
+  meta-language? Different type theories make different choices on this matter.
+  The proof assistant \Agda{} introduces a type $\ttfun{Level}$ with
+  introduction rules
+  \begin{align*}
+    \prftree[r]{}
+      {}
+      {Γ ⊢ \ttfun{lzero}:\ttfun{Level}}
+    &&
+    \prftree[r]{}
+      {Γ ⊢ l:\ttfun{Level}}
+      {Γ ⊢ \apply{\ttfun{lsucc}}{l}:\ttfun{Level}}
+    &&
+    \prftree[r]{}
+      {\prftree[r, noline]{}
+        {Γ ⊢ l_1:\ttfun{Level}}
+        {Γ ⊢ l_2:\ttfun{Level}}}
+      {Γ ⊢ \appply{\ttfun{lmax}}{l_1}{l_2}:\ttfun{Level}}.
+  \end{align*}
+  One could now write a \define{universe polymorphic} identity function
+	\begin{align*}
+    \ttfun{idpoly} :\∏{l:\ttfun{Level}}{\∏{A:\universei{l}}{A\to A}} &&
+    \ttfun{idpoly} \defeq \λ{l}{\λ{A}{\λ{a}{a}}}.
+  \end{align*}
+  This additional power introduces further problems: what is the type the type of
+  $\ttfun{idpoly}$ itself? It doesn't actually have one.
+
+  In \UTT{} as in \Coq{}, no quantification over levels is necessary, we treat
+  them as symbols in the metalanguage. However, definitions like $\id$ will be
+  implicitly treated as defined at all universes.
+\end{remark}
+
+\begin{notation}
+  Naturally, it gets a bit tedious to manually keep track of all the indices, so
+  we follow the standard practice of \define{typical ambiguity}, that is,
+  leaving off the universe levels and just writing $\universe$ when no confusion
+  may arise.
+\end{notation}
+
+\begin{remark}\label[remark]{rmk:cumulativity}
+	Typical ambiguity allows for implicit universe polymorphism, as well as
+  \define{cumulativity}: we may want to allow for $\universei{i}:\universei{j}$
+  for \textit{any} $i<j$, not just $j\defeq \apply{\suc}{i}$ (and similarly for
+  Π-types).
+\end{remark}
 
 \begin{notation}\label[notation]{implicit-args}
   Often in type theory, functions have ``extraneous'' arguments,
@@ -211,62 +320,15 @@ $A\defeq\universei{0}$.\footnote{Those familiar with logics such as System F
         \∏{g:B→C}{
           \∏{h:C→D}{
             \propeq{}{(h∘g)∘f}{h∘(g∘f)}
-    }}}}.\footnote{By the way, this identity is witnessed by reflexivity. To
-    convince yourself that this is so, recall \cref{def:implication-composition}.}
+    }}}}.
   \end{equation*}
   However, the arguments $A$, $B$, $C$, and $D$ can be inferred from the types
   of $f$, $g$, and $h$. In the remainder of this thesis, such arguments may be
   written as subscripts or left out entirely.
 \end{notation}
 
-A skeptical reader might point out a possible mistake. If Π-types correspond
-to quantification and they can quantify over $\universei{0}$, but they also
-\text{are} types, how can we prevent circular (or \textit{impredicative})
-definitions?\footnote{Indeed, this was Russell's motivation for introducing type
-theory in the first place!} Looking back at the formation rule, however, shows
-that Π-types can only be formed when $A$ is in $\universei{0}$. It's not the
-case that $\universei{0}:\universei{0}$.
-
-\begin{remark}\label[remark]{rmk:universe-hierarchy}
-  Of course, sometimes one \textit{does} want to quantify over the whole
-  universe. For instance, using the introduction for $×$, we can construct a
-  function 
-  look something like the following
-\end{remark}
-
-% Π-types correspond to
-% universal quantification.
-
-\subsection{Σ-types}
-\label{subsec:sigma-types}
-
-\begin{lemma}[Paths in $Σ$-types]\label[lemma]{lemma:path-sigma}
-	If $x,y:\∑{a:A}{B(a)}$, then
-  \begin{equation*}
-    \weq{
-      (\propeq{}{x}{y})
-    }{
-      \∑{
-        p:\propeq{}{\appr{1}{x}}{\appr{1}{y}}
-      }{
-        \propeq{}{
-          \transport{}{p}{\appr{2}{x}}
-        }{
-          \appr{2}{y}
-        }
-      }
-    }.
-  \end{equation*}
-  \TODO{cite with page number}
-\end{lemma}
-
-\subsection{Natural numbers and lists}
-\label{subsec:natural-numbers-and-lists}
-
 \subsubsection{On the law of the excluded middle}
 \label{subsec:on-lem}
-
-\TODO{introduce the topic based on previous sections}
 
 Consider functions with the following types:
 \begin{itemize}
@@ -293,18 +355,73 @@ and the law of excluded middle ($\ttfun{lem}$)\index{Law of excluded middle}
 \cref{def:lem-dne}.
 
 To demonstrate with finality that these are not definable terms in any
-consistent type theory, consider the application of $\ttfun{lem}$ to a type
-$\ttfun{pnp}$ that corresponds to the $\textsc{P}\neq\textsc{NP}$ conjecture
-under the types-as-propositions interpretation. If $\ttfun{lem}$ existed, we
-could trivially solve this problem and make a million dollars! We need no
-recourse to philosophy to justify the constructive/intuitionistic logic of proof
-assistants: nothing else computes.
+consistent type theory,\footnote{They may, however, be taken as axioms. However,
+  this naïve version (called LEM\textsubscript{$∞$} in \cite{book}) is
+  inconsistent with the univalence axiom. The restriction to \textit{propositions}
+  \cref{def:mere-proposition} is consistent with univalence.} consider the
+application of $\ttfun{lem}$ to a type $\ttfun{pnp}$ that corresponds to the
+$\textsc{P}\neq\textsc{NP}$ conjecture under the types-as-propositions
+interpretation. If $\ttfun{lem}$ existed, we could trivially solve this problem
+and make a million dollars! The constructive/intuitionistic logic of proof
+assistants requires no recourse to philosophy: nothing else computes.
 
-\section{The identity type}
-\label{sec:the-identity-type}
+\subsection{Σ-types}
+\label{subsec:sigma-types}
+
+The \define{dependent pair type}, or Σ-type, generalizes direct products so that
+the type of the second projection might depend on the value of the first.
+The rules for Σ-types generalize those for direct products in much the same way
+Π-types do for function types:
+\begin{gatherjot}
+  \prftree[r]{}
+    {Γ ⊢ A : \universe}
+    {Γ,a:A ⊢ B : \universe}
+    {Γ ⊢ \sigmatt{a:A}{\apply{B}{a}} : \universe}
+  \qquad
+  \prftree[r]{}
+    {Γ ⊢ a:A}
+    {Γ ⊢ b:\apply{B}{a}}
+    {Γ ⊢ \dpair{a}{b}:\sigmatt{a:A}{\apply{B}{a}}} \\
+  \prftree[r]{}
+    {Γ ⊢ {x}:\sigmatt{a:A}{\apply{B}{a}}}
+    {Γ ⊢ \appr{1}{x}:A}
+  \qquad
+  \prftree[r]{}
+    {Γ ⊢ {x}:\sigmatt{a:A}{\apply{B}{a}}}
+    {Γ ⊢ \appr{2}{x}:A} \\
+  \prftree[r]{βΣ\textsubscript{l}}
+    {Γ ⊢ b:\apply{B}{a}}
+    {Γ ⊢ a:A}
+    {Γ ⊢ \appr{1}{\dpair{a}{b}}\jdeq a:A} 
+  \qquad
+  \prftree[r]{βΣ\textsubscript{r}}
+    {Γ ⊢ b:\apply{B}{a}}
+    {Γ ⊢ a:A}
+    {Γ ⊢ \appr{2}{\dpair{a}{b}}\jdeq b:A}  \\
+  \prftree[r]{η}
+    {Γ ⊢ f : \pitt{a:A}{\apply{B}{a}}}
+    {Γ ⊢ \λ{x}{\apply{f}{x}}\jdeq f:\pitt{a:A}{\apply{B}{a}}}
+\end{gatherjot}
+
+Under the types-as-propositions interpretations, Σ-types correspond to
+existential quantification: a pair $\dpair{a}{b}:\∑{a:A}{\apply{B}{a}}$
+is an element $a:A$ together with a witness or proof term $b$ which demonstrates
+that $a$ has the property $B$. 
+
+\begin{example}\label[example]{ex:ptd}
+	The (universe-polymorphic!) type
+  \begin{align*}
+    \ttfun{Ptd} : \universe && \ttfun{Ptd}\defeq\∑{A:\universe}{A}
+  \end{align*}
+  consists of pairs $\dpair{A}{a}$ where $a:A$. We might call this the type of 
+  \define{pointed} types.
+\end{example}
+
+\subsection{The identity type}
+\label{subsec:the-identity-type}
 
 \begin{tt-rule}\label[rule]{rule:id-elim}
-  The rule of \define{identity elimination} (in the \HoTT
+  The rule of \define{identity elimination} (in the \HoTT{}
   community, known as \define{path induction}) is as follows:\TODO{define id-elim}
 \end{tt-rule}
 
@@ -332,6 +449,9 @@ assistants: nothing else computes.
     }
   \end{equation*}
 \end{lemma}
+
+\subsection{Natural numbers and lists}
+\label{subsec:natural-numbers-and-lists}
 
 
 \section{h-levels and truncation}
@@ -443,16 +563,6 @@ assistants: nothing else computes.
   Thus, $A$ is contractible.\TODO{reference}
 \end{proof}
 
-The following restates the η-rule for the product type as a weak equivalence:
-
-\begin{lemma}\label[lemma]{lemma:paths-dirprod-weq}
-  For any $A,B:\universe$, $a:A$, $b:B$, and $x:A×B$,
-  \begin{equation*}
-    \weq{\big((\propeq{A}{\appr1{x}}{a})×(\propeq{B}{\appr1{x}}{b})\big)}
-        {\big(\propeq{}{x}{(a,b)}\big)}
-  \end{equation*}
-\end{lemma}
-
 \begin{lemma}\label[lemma]{lemma:weqfibtototal}
   For any $A:\universe$ and $P,Q:A→\universe$,
   if $\weq{\apply{P}{a}}{\apply{Q}{a}}$ for every $a:A$, then
@@ -462,6 +572,43 @@ The following restates the η-rule for the product type as a weak equivalence:
     \weq{\∑{a:A}{\apply{P}{a}}}{\∑{a:A}{\apply{Q}{a}}}
   \end{align*}
 \end{lemma}
+
+\subsection{Characterization of paths}
+\label{subsec:characterization-of-paths}
+
+A rich family of applications for weak equivalences comes from characterizing
+path spaces, that is, saying what counts as an equality between the elements of
+a type. For instance, the following restates the η-rule for the product type as
+a weak equivalence:
+
+\begin{lemma}\label[lemma]{lemma:paths-dirprod-weq}
+  For any $A,B:\universe$, $a:A$, $b:B$, and $x:A×B$,
+  \begin{equation*}
+    \weq{\big((\propeq{A}{\appr1{x}}{a})×(\propeq{B}{\appr1{x}}{b})\big)}
+        {\big(\propeq{}{x}{(a,b)}\big)}
+  \end{equation*}
+\end{lemma}
+
+\begin{lemma}[Paths in Σ-types]\label[lemma]{lemma:path-sigma}
+	If $x,y:\∑{a:A}{B(a)}$, then
+  \begin{equation*}
+    \weq{
+      (\propeq{}{x}{y})
+    }{
+      \∑{
+        p:\propeq{}{\appr{1}{x}}{\appr{1}{y}}
+      }{
+        \propeq{}{
+          \transport{}{p}{\appr{2}{x}}
+        }{
+          \appr{2}{y}
+        }
+      }
+    }.
+  \end{equation*}
+  \TODO{cite with page number}
+\end{lemma}
+
 
 \subsection{The univalence axiom}
 \label{subsec:the-univalence-axiom}
