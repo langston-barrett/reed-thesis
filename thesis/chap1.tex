@@ -694,8 +694,7 @@ At this point, we can (un)deduce no further. The form of the judgment allowed
 us no discretion; this is the only derivation (up to\footnote{For the
   non-mathematical reader: When a mathematician says ``X is true up to $R$''
   for some (equivalence) relation $R$, it means that all objects related by $R$
-  are considered equivalent. In this case, ``unique up to isomorphism'' means that
-  there may be other terminal objects, but all of them are mutually isomorphic.}
+  are considered equivalent.}
 renaming of metavariables) that could have produced that conclusion.
 
 The proof term in longer arguments is often cumbersome, and we might wonder if
@@ -746,7 +745,7 @@ affirmative.
 
 \begin{definition}\label[definition]{def:jdeq-ipl}
 	\define{Judgmental equality} of proof terms, denoted
-  $\mvar{p}\jdeq\mvar{q}:mvar{a}$, is the least congruence closed under the
+  $\mvar{p}\jdeq\mvar{q}:\mvar{a}$, is the least congruence closed under the
   following
   \define{computation rules}\index{Computation rules!In \IPL{}}
   (also called \define{β-rules}):
@@ -825,7 +824,10 @@ following \define{unicity rules}\index{Unicity rules}, (also known as
     {Γ ⊢ \apppply{\case}{\inl}{\inr}{\mvar{p}}\jdeq \mvar{p}:\mvar{a}∨\mvar{b}}}.
 \end{gatherjot}
 Naturally, these rules witness local completeness; after applying elimination
-rules and then introduction rules we can recover our original proofs.
+rules and then introduction rules we can recover our original
+proofs.\footnote{There's also no η-rule for $\emptytype$. One can, however,
+  derive that any two elements of $\emptytype$ are equal (just use the
+  elimination rule).}
 
 \subsection{Diagrams}
 \label{subsec:ipl-diagrams}
@@ -870,12 +872,13 @@ We can rewrite the β-rules using the composition we just defined:
 \end{align*}
 Similarly, given $\mvar{p}:\mvar{c}→\mvar{a}$ and $\mvar{q}:\mvar{c}→\mvar{b}$,
 the introduction rule for $∧$ guarantees a function
-$\mvar{f}\defeq\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}:\mvar{c}→\mvar{a}∧\mvar{b}$.
+$\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}:\mvar{c}→\mvar{a}∧\mvar{b}$.
 The computation rules give us the following equalities:
 \begin{align*}
-  \pr{1}∘f &\jdeq \mvar{p} \\
-  \pr{2}∘f &\jdeq \mvar{q}
+  \pr{1}∘(\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}) &\jdeq \mvar{p} \\
+  \pr{2}∘(\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}) &\jdeq \mvar{q}
 \end{align*}
+(For brevity, put $f\defeq\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}$).
 We can express these equalities using the following \define{commutative diagram}
 (skip ahead to \cref{def:commutative-diagram} for details).
 
@@ -919,7 +922,7 @@ We can express these equalities using the following \define{commutative diagram}
       \begin{tikzcd}[sep=large]
         {} & C\arrow[ddl, bend right, swap, "\mvar{p}"{name=F}]\arrow[ddr, bend left, "\mvar{q}"{name=G}]
               % \arrow[d,dashed, bend right, swap, "\mathsf{rec}"{name=FG1}]
-              \arrow[d,dashed, "\langle \mvar{p}\comma \mvar{q} \rangle"{name=FG2}] & {} \\
+              \arrow[d,dashed, "f"{name=FG2}] & {} \\
         {} & A\times B \arrow[dl, "\pr{1}"{name=P1}]
                       \arrow[dr,swap, "\pr{2}"{name=P2}] & {} \\
         A & {} & B

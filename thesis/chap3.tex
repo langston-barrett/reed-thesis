@@ -26,10 +26,6 @@ The results in this chapter all appear in the \UniMath{} package
 \section{Basics}
 \label{sec:basics}
 
-
-\TODO{Type theory and category theory are intimately connected via the
-      discipline of \textit{topos theory}}%\index{Topos theory}.}
-
 \begin{definition}\label[category]{def:category}
 	A \define{category}\index{Category}\footnote{In more general contexts, this
     may be called a \define{$1$-category} or even a $(1,1)$-category.}
@@ -53,8 +49,9 @@ The results in this chapter all appear in the \UniMath{} package
     \item composition is associative, and
     \item the identity acts as a unit for composition.
   \end{enumerate}
-  When the category in question is clear from context, one writes $f:A\to B$ for
-  $f\in\Hom_{\bfC}(A,B)$.
+  When the category in question is clear from context, one writes
+  $f:A\catarrow B$ for $f\in\Hom_{\bfC}(A,B)$.\footnote{We use $\catarrow$ to
+    distinguish this from the type of functions $A→B$.}
 \end{definition}
 
 \begin{definition}\label[definition]{def:domain-and-codomain}
@@ -63,11 +60,11 @@ The results in this chapter all appear in the \UniMath{} package
   \define{codomain}\index{Codomain} or \define{target}\index{Target} of $f$.
 \end{definition}
 
+The presentation of the following examples owes a lot to \cite{context}.
+
 \begin{example}
-	The following \define{concrete categories}\footnote{These are categories which
-  we can fruitfully consider to have as objects sets with ``additional
-  structure'' and certain functions of the underlying sets as arrows.} are
-  familiar to the student of mathematics:
+	The following categories are familiar to the student of
+  mathematics:
   \begin{itemize}
     \itemsep-0.2em
     \item $\Set$: The category with sets as objects, functions as morphisms,
@@ -83,37 +80,42 @@ The results in this chapter all appear in the \UniMath{} package
       \define{subcategory} of $\Grp$).
     \item $F\dVect$: The category of vector spaces\index{Vector space} over a
       field $F$ with linear transformations as morphisms.
+  \end{itemize}
+\end{example}
+
+\begin{example}
+  Morphisms don't have to be functions:
+  \begin{itemize}
+    \itemsep-0.2em
     \item For any group $(G,∘,e)$, there is a corresponding category
       $\underline{G}$ with a single object (denoted $∗$) and
       $\Hom_{\underline{G}}(∗,∗)\coloneqq G$. Composition is given by the
       group operation.
+    \item For any set or type $A$, the \define{discrete category on $A$} has as
+      objects the members or elements as $A$, and no other arrows except the
+      requisite identities.
     \item For any preorder $(A,≤)$ (a collection with a reflexive, transitive
       binary relation), there is a category $\bfC(A)$ which has as objects the
       elements of $A$ and an arrow $a→b$ just if $a≤b$.
       Conversely, any category with at most one arrow between any two objects
       defines a preorder.
-  \end{itemize}
-\end{example}
-
-\begin{example}
-  The following arise less outside of category theory itself:
-  \begin{itemize}
-    \itemsep-0.2em
-    \item For any set or type $A$, the \define{discrete category on $A$} has as
-      objects the members or elements as $A$, and no other arrows except the
-      requisite identities.
-    \item The category $\ω$ has as objects the natural numbers, and arrows
-      $n→\apply{\suc}{n}$ (plus the requisite composites $n→m$ where $n<m$).
+    \item The category $\ω$ is the preorder category $\bfC(\ℕ)$, that is,
+      it has as objects the natural numbers, and arrows
+      $n\catarrow\apply{\suc}{n}$ (plus the requisite composites $n\catarrow m$
+      where $n<m$).
     \item There is a category $\bf1$ with one object and only the identity
       arrow, called the \define{unit} or (foreshadowing
       \cref{sec:limits-and-colimits}) \define{terminal} category.
   \end{itemize}
 \end{example}
 
+For the rest of the chapter, we deal only with categories in the abstract rather
+than particular examples. To this end, let $\bfC$ denote an arbitrary category.
+
 \begin{definition}\label[definition]{def:isomorphism}
-	An \define{isomorphism}\index{Isomorphism!In a category} in $\bfC$ is an arrow
-  $f\in\Hom_{\bfC}(A,B)$ such that there exists an arrow $g\in\Hom_{\bfC}(B,A)$
-  such that $g∘ f=\id_A$ and $f∘ g=\id_B$. We call such a $g$ the
+	An \define{isomorphism}\index{Isomorphism!In a category} is an arrow
+  $f:A\catarrow B$ such that there exists an arrow $g:B\catarrow A$
+  such that $g∘f=\id_A$ and $f∘g=\id_B$. Such a $g$ is the
   \define{inverse}\index{Inverse!In a category} of $f$.
 \end{definition}
 
@@ -140,16 +142,15 @@ Just as with functions, inverses (should they exist) are unique.
 \begin{definition}\label[definition]{def:commutative-diagram}
   A commutative diagram is a way to visualize equations between arrows
   involving composition. Technically a diagram in $\bfC$ is a directed graph
-  with vertices labeled by $\Obj\bfC$. If $e$ is an edge from $A$ to $B$, then it
-  is labeled by an arrow in $\Hom_\bfC(A,B)$. A diagram \define{commutes}, or is
+  with vertices labeled by $\Obj\bfC$ and edges $e$ from $A$ to $B$
+  labeled by arrows in $\Hom_\bfC(A,B)$. A diagram \define{commutes}, or is
   commutative, if the composition of the arrows labeling the edges of any two
   directed paths with the same endpoints are equal.
-  \TODO{better wording}
 \end{definition}
 
 \begin{example}\label[example]{ex:commutative-diagram}
-	If $f\in\Hom_{\bfC}(A,B)$, $g\in\Hom_{\bfC}(B,C)$, $h\in\Hom_{\bfC}(A,C)$,
-  and $g∘ f=h$, then we may draw the following
+	If $f:A\catarrow B$, $g:B\catarrow C$, $h:A\catarrow C$,
+  and $g∘f=h$, then the following diagram commutes, making a
   \define{commutative triangle}:
   \begin{center}
     \begin{tikzcd}[column sep=large]
@@ -157,9 +158,9 @@ Just as with functions, inverses (should they exist) are unique.
       {}                               & C
     \end{tikzcd}
   \end{center}
-	If $f\in\Hom_{\bfC}(A,B)$, $g\in\Hom_{\bfC}(B,D)$, $h\in\Hom_{\bfC}(A,C)$,
-  $i\in\Hom_{\bfC}(C,D)$, and $g∘ f=i∘ h$, then we may draw the
-  following \define{commutative square}:
+	If $f:A\catarrow B$, $g:B\catarrow D$, $h:A\catarrow C$,
+  $i:C\catarrow D$, and $g∘f=i∘h$, then the following diagram commutes,
+  making a \define{commutative square}:
   \begin{center}
     \begin{tikzcd}[column sep=large]
       A \arrow[r, "f"]  \arrow[d, "h"] & B \arrow[d, "g"] \\
@@ -181,11 +182,11 @@ Consider a group $(G,·,e)$. Its \define{opposite group} has the operation
 \begin{equation*}
   g ·^\op h \defeq h · g
 \end{equation*}
-Now, suppose we know that $(A,≤)$ has all finite meets. Then we immediately know
-that $(A,≤')$ has all finite joins. In general, if we know some theorem $T$
-about $(A,≤)$ or $(G,·,e)$. It seems like there should be a purely mechanical
-process via which we can discover an appropritate ``opposite theorem'' that
-applies to $(A,≤^\op)$ or $(G,·^\op,e)$.
+Now, suppose $(A,≤)$ has all finite meets. Immediately, $(A,≤^\op)$ has all finite
+joins. In general, if we know some theorem $T$ about $(A,≤)$ or $(G,·,e)$. It
+seems like there should be a purely mechanical process via which one could
+discover an appropritate ``opposite theorem'' that applies to $(A,≤^\op)$ or
+$(G,·^\op,e)$.
 
 These are instances of the notion of duality in category theory. It plays an
 economizing role: one \textit{can}, in fact, state ``opposite'' theorems via a
@@ -219,34 +220,39 @@ The following might be called ``The Fundamental Meta-theorem of Category Theory'
   \end{enumerate}
 \end{theorem}
 
-Usefully, isomorphisms are self-dual. This means that isomorphic objects in
-$\bfC$ are isomorphic in $\bfC^\op$ and vice-versa.
+Usefully, isomorphisms are self-dual. This means objects are isomorphic in
+$\bfC$ if and only if they are so in $\bfC^\op$.
 
-If $C$ is a concept defined in the language of categories, there is a dual
-definition $C^\op$, obtained in the same way as $S^\op$ above. From now on, dual
-concepts and statements will be introduced in pairs, and typeset like so:
+If $D$ is a definition in the language of categories, there is a dual
+definition $D^\op$, obtained in the same way as $S^\op$ above. If $D$ defines a
+``foo'', then the thing that $D^\op$ defines is usually called a ``cofoo''.
+From now on, dual definitions and statements will be introduced in pairs, and
+typeset like so:
 
 \dual{
-  Concept
+  Definition
 }{
-  Co-concept
+  Co-definition
 }
 
 \section{Limits and colimits}
 \label{sec:limits-and-colimits}
 
-For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
+Many constructions in categories are defined via a \textit{universal property}.
+Such characterizations abound in everyday mathematics, as the examples
+illustrate. All of the definitions to follow are examples of limits and colimits.
+Ultimately, M-types are constructed as limits.
 
 \begin{definition}\label[definition]{def:terminal-and-initial}
   \
   \vspace{-0.3em}\dual{
     A \define{terminal object}\index{Terminal object} is an
     object $⊤\in\Obj\bfC$ such that for all $A\in\Obj\bfC$,
-    there is exactly one arrow $f:A\to⊤$.
+    there is exactly one arrow $f:A\catarrow ⊤$.
   }{
     An \define{initial object}\index{Initial object} is an
     object $⊥\in\Obj\bfC$ such that for all $A\in\Obj\bfC$,
-    there is exactly one arrow $f:⊥\to A$.
+    there is exactly one arrow $f:⊥\catarrow A$.
   }
 \end{definition}
 
@@ -274,11 +280,11 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
           (\cref{lemma:contr-weq-unit})).
         \item{} [\unimathname{categories.Types.InitialType}]
           The elimination rule for the empty type gives an arrow
-          $\emptytype→X$ for any $X$. How do we know it's unique? Apply function
+          $\emptytype→X$ for any $X$. Is it unique? Apply function
           extensionality (\cref{thm:funext}), then it suffices to show that it
           has the same output as any competitor $f:\emptytype\to X$ on some
           $e:\emptytype$. But using the elimination rule for $\emptytype$ on
-          $e$, we can conclude that it does.
+          $e$, conclude that it does.
       \end{itemize}
     \item $\Cat$: 
       \begin{itemize}\renewcommand{\labelitemi}{$∘$}
@@ -299,7 +305,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 
 \begin{remark}\label[remark]{remark:terminal-object-id-unique}
 	In particular, for a terminal object $⊤$, $\id_⊤$ is the only arrow
-  $⊤\to⊤$.\footnote{As noted in \cref{sec:duality}, this statement
+  $⊤\catarrow ⊤$.\footnote{As noted in \cref{sec:duality}, this statement
     holds for initial objects as well. From this point on, we will leave it
     to the reader to construct the dual of a statement and infer its truth.}
 \end{remark}
@@ -309,8 +315,8 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \end{lemma}
 \begin{proof}
 	Suppose $A$ and $B$ are terminal objects.
-  There are unique arrows $f:A\to B$ and $g:B\to A$.
-  Then $g∘ f:A\to A$ and $f∘ g:B\to B$, but as per
+  There are unique arrows $f:A\catarrow B$ and $g:B\catarrow A$.
+  Then $g∘ f:A\catarrow A$ and $f∘ g:B\catarrow B$, but as per
   \cref{remark:terminal-object-id-unique}
   $g∘ f=\id_A$ and $f∘ g=\id_B$.
 \end{proof}
@@ -319,11 +325,11 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
   Given two objects $A,B\in\Obj\bfC$,
   \vspace{-0.3em}\dual{
     a \define{(binary) product}\index{Product!In a category} of $A$ and $B$
-    consists of an object $C\in\Obj\bfC$ together with arrows $p_1:C\to A$ and
-    $p_2:C\to B$ satisfying the following universal property:
+    consists of an object $C\in\Obj\bfC$ together with arrows $p_1:C\catarrow A$ and
+    $p_2:C\catarrow B$ satisfying the following universal property:
 
     For any other ``candidate product'' $D\in\Obj\bfC$ with arrows
-    $q_1:D\to A$ and $q_2:D\to B$, there is a unique arrow $u:D\to C$ making the
+    $q_1:D\catarrow A$ and $q_2:D\catarrow B$, there is a unique arrow $u:D\catarrow C$ making the
     following diagram commute:
     \begin{center}
       \begin{tikzcd}[sep=large,ampersand replacement=\&]
@@ -332,15 +338,15 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
         A \& C \arrow[l, "p_1"]\arrow[r,swap, "p_2"] \& B
       \end{tikzcd}
     \end{center}
-    If $C$ is a product of $A$ and $B$, we will denote it by $A\times B$, and
-    the unque arrow $u$ as $\langle f,g \rangle$.
+    A product of $A$ and $B$ is denoted by $A\times B$, and the unque arrow $u$
+    as $\langle f,g \rangle$.
   }{
     a \define{(binary) coproduct}\index{Coproduct!In a category} of $A$ and $B$
-    consists of an object $C\in\Obj\bfC$ together with arrows $i_1:A\to C$ and
-    $i_2:B\to C$ satisfying the following universal property:
+    consists of an object $C\in\Obj\bfC$ together with arrows $i_1:A\catarrow C$ and
+    $i_2:B\catarrow C$ satisfying the following universal property:
 
     For any other ``candidate coproduct'' $D\in\Obj\bfC$ with arrows
-    $j_1:A\to D$ and $j_2:B\to D$, there is a unique arrow $u:C\to D$ making the
+    $j_1:A\catarrow D$ and $j_2:B\catarrow D$, there is a unique arrow $u:C\catarrow D$ making the
     following diagram commute:
     \begin{center}
       \begin{tikzcd}[sep=large,ampersand replacement=\&]
@@ -350,8 +356,8 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
         {} \& D \& {}
       \end{tikzcd}
     \end{center}
-    If $C$ is a coproduct of $A$ and $B$, we will denote it by $A+B$, and
-    the unque arrow $u$ as $[f,g]$.
+    A coproduct $A$ and $B$ is denoted $A+B$, and the unque arrow $u$ as
+    $[f,g]$.
   }
 \end{definition}
 
@@ -387,7 +393,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
     \item $\universe$: Let $A,B:\universe$.
       \begin{itemize}\renewcommand{\labelitemi}{$∘$}
         \itemsep-0.2em
-        \item{} \vspace{-0.6em} [\coqname{categories.Types.BinProductsType}]
+        \item{} \vspace{-0.6em} [\unimathname{categories.Types.BinProductsType}]
           The product type $A×B$ with its projections is a product.
           (See \label[lemma]{lemma:universe-binproducts}).
         \item{} [\unimathname{categories.Types.BinCoproductsType}]
@@ -409,9 +415,6 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
             \Hom_{\bfA+\bfB}(\apply{\inl}{A}, \apply{\inr}{B}) &= \emptytype \\
             \Hom_{\bfA+\bfB}(\apply{\inr}{A}, \apply{\inl}{B}) &= \emptytype.
           \end{align*}
-          (In set-theoretic foundations, one merely replaces $\apply{\inl}{A}$,
-          $\apply{\inr}{B}$, and $\emptytype$ with $(0,A)$, $(1,B)$, and
-          $\emptyset$ respectively.)
       \end{itemize}
     \item $\Grp$: Let $G,H$ be groups.
       \begin{itemize}\renewcommand{\labelitemi}{$∘$}
@@ -420,7 +423,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
         \item The free product $G∗H$ is a coproduct.
       \end{itemize}
     \item $\AbGrp$, $R\Mod$, $F\dVect$: The direct sum $⊕$ is both a product and
-      coproduct.\footnote{In fact, has a stronger property of being a
+      coproduct.\footnote{In fact, $⊗$ has a stronger property of being a
       \define{biproduct}. These three categories share many significant
       features; one fruitful lens through which to view them is as
       \define{abelian categories}.} 
@@ -459,14 +462,14 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \end{proof}
 
 \begin{definition}\label[definition]{def:equalizer-and-coequalizer}
-  Given objects $A,B∈\Obj\bfC$ and arrows $f,g:A→B$,
+  Given objects $A,B∈\Obj\bfC$ and arrows $f,g:A\catarrow B$,
   \vspace{-0.3em}\dual{
     an \define{equalizer}\index{Equalizer} of $f$ and $g$
-    consists of an object $E$ and an arrow $e:E→A$ satisfying the following
-    universal property:
+    consists of an object $E$ and an arrow $e:E\catarrow A$ satisfying the
+    following universal property:
 
-    For any other ``candidate equalizer'' $C$ with arrow $c:C→A$, there is a
-    unique arrow $u:C→E$ making the following diagram commute:
+    For any other ``candidate equalizer'' $C$ with arrow $c:C\catarrow A$, there
+    is a unique arrow $u:C\catarrow E$ making the following diagram commute:
     \begin{center}
       \begin{tikzcd}[column sep=large, ampersand replacement=\&]
         E \arrow[r, "e"]
@@ -477,12 +480,11 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
       \end{tikzcd}
     \end{center}
   }{
-    a \define{coequalizer}\index{Coequalizer} of $f,g$
-    consists of an object $Q$ and an arrow $q:B→Q$ satisfying the following
-    universal property:
+    a \define{coequalizer}\index{Coequalizer} of $f,g$ consists of an object $Q$
+    and an arrow $q:B\catarrow Q$ satisfying the following universal property:
 
-    For any other ``candidate coequalizer'' $C$ with arrow $c:B→C$, there is a
-    unique arrow $u:Q→C$ making the following diagram commute:
+    For any other ``candidate coequalizer'' $C$ with arrow $c:B\catarrow C$,
+    there is a unique arrow $u:Q\catarrow C$ making the following diagram commute:
     \begin{center}
       \begin{tikzcd}[column sep=large, ampersand replacement=\&]
         A \arrow[r, yshift=2.5,"f"]\arrow[r, yshift=-2.5, swap,"g"]
@@ -530,13 +532,13 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \begin{definition}\label[definition]{def:pullback-and-pushout}
   \
   \vspace{-0.3em}\dual{
-    Given objects $A,B,C∈\Obj\bfC$ with arrows $f:A→C$ and $g:B→C$,
+    For $A,B,C∈\Obj\bfC$ with arrows $f:A\catarrow C$ and $g:B\catarrow C$,
     a \define{pullback}\index{Pullback} of $f$ and $g$
-    consists of an object $P$ together with arrows $p_1:P→A$ and $p_2:P→B$
-    satisfying the following universal property:
+    consists of an object $P$ together with arrows $p_1:P\catarrow A$ and
+    $p_2:P\catarrow B$ satisfying the following universal property:
 
-    For any other ``candidate pullback'' $D$ with arrows $q_1:D→A$ and
-    $q_2:D→B$, there is a unique arrow $u:D→P$ making the following
+    For any other ``candidate pullback'' $D$ with arrows $q_1:D\catarrow A$ and
+    $q_2:D\catarrow B$, there is a unique arrow $u:D\catarrow P$ making the following
     diagram commute:
     \begin{center}
       \begin{tikzcd}[sep=large, ampersand replacement=\&]
@@ -554,14 +556,16 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
       draws an important connection to the product, but omits some the
       key information: \textit{which} arrows are being pulled back matters, 
       and there might be many choices for the same objects $A$, $B$, and $C$.}
+    One says $p_2$ is the result of \textit{pulling $f$ back along $g$} and vice
+    versa for $p_1$.
   }{
-    Given objects $A,B,C∈\Obj\bfC$ with arrows $f:C→A$ and $g:C→B$,
+    For $A,B,C∈\Obj\bfC$ with arrows $f:C\catarrow A$ and $g:C\catarrow B$,
     a \define{pushout}\index{Pushout} of $f$ and $g$
-    consists of an object $P$ with arrows $i_1:A→P$ and $i_2:B→P$ satisfying the
-    following universal property:
+    consists of an object $P$ with arrows $i_1:A\catarrow P$ and
+    $i_2:B\catarrow P$ satisfying the following universal property:
 
-    For any other ``candidate pushout'' $D$, there is a unique arrow $u:P→D$
-    making the following diagram commute:
+    For any other ``candidate pushout'' $D$, there is a unique arrow
+    $u:P\catarrow D$ making the following diagram commute:
     \begin{center}
       \begin{tikzcd}[sep=large, ampersand replacement=\&]
         C\arrow[r, "g"] \arrow[d, "f", swap]
@@ -584,12 +588,12 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
       \begin{itemize}\renewcommand{\labelitemi}{$∘$}
         \itemsep-0.1em
         \item \vspace{-0.6em}
-          Let $A,B,C$ be sets $f:A→C$, and $g:B→C$.
+          Let $A,B,C$ be sets, $f:A→C$, and $g:B→C$.
           The pullback of $f$ and $g$ is the set
           $P\coloneqq \braces{(a,b)∈A×B:\apply{f}{a}=\apply{g}{b}}$; 
           the maps $P→A$ and $P→B$ are just the projections.
         \item 
-          Let $A,B,C$ be sets $f:C→A$, and $g:C→B$.
+          Let $A,B,C$ be sets, $f:C→A$, and $g:C→B$.
           The pushout of $f$ and $g$ is the disjoint union quotiented by the
           smallest equivalence relation containing 
           $(0,\apply{f}{c})∼(1,\apply{g}{c})$; the maps $p_1$ and $p_2$ are the
@@ -624,7 +628,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
         \end{tikzcd}
       \end{center}
       The arrow $f$ picks out a single element of $C$, namely $\apply{f}{∗}∈C$.
-      Call this $c$. Since the square commutes, we have $f∘!=g∘p_2$, that is,
+      Call this $c$. Since the square commutes, $f∘!=g∘p_2$, that is,
       $\apply{(g∘p_2)}{x}=c$ for all $x∈P$. By the explicit
       construction of \cref{ex:pullback-and-pushout},
       \begin{equation*}
@@ -632,7 +636,7 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
            ≅ \braces{b∈B:c=\apply{g}{b}}.
       \end{equation*}
       This says that $P$ is (isomorphic to) the \define{fiber of $g$ above $c$}.
-    \item More generally, we can consider the \define{inverse image} of a subset
+    \item More generally, consider the \define{inverse image} of a subset
       $S⊆C$. Again, let $B$ and $C$ be arbitrary sets and let $f:B→C$.
       Let $i:S↣C$ be the inclusion function. Then the pullback of $i$ and
       $f$ is
@@ -648,6 +652,8 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
         the set of all subsets---of $A$. In the case that $f$ is bijective,
         it sends each $c∈C$ to a singleton, and defines a function $C→A$,
         also denoted $f^{-1}$.}
+      Thus, the inverse image of $C$ under $f$ is the pullback of the inclusion
+      along $f$.
     \item Let $S,R⊆C$. The pullback of the inclusions $i:S↣C$ and $j:R↣C$ is
       (isomorphic to) the \define{intersection} $S∩R$:
       \begin{align*}
@@ -657,6 +663,18 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
          &=S∩R
       \end{align*}
   \end{enumerate}
+\end{example}
+
+\begin{example}\label[example]{ex:pullback-mon}
+  In $\Mon$, the category of monoids, the kernel of $f:M→N$
+  can be represented as a pullback of the unique arrow $!:\braces{∗}→M$ along
+  $f$ as in the following diagram:
+  \begin{center}
+      \begin{tikzcd}[sep=large]
+        \ker f \arrow[r, tail] \arrow[d, swap, "!"] & M \arrow[d, "f"] \\
+        \braces{∗} \arrow[r, swap, "!"] & N
+      \end{tikzcd}
+  \end{center}
 \end{example}
 
 \begin{example}\label[example]{ex:pushout-special-cases-top}
@@ -684,14 +702,14 @@ For this section, fix an arbitrary category $\bfC$.\TODO{elsewhere?}
 \end{example}
 
 \Cref{def:terminal-and-initial}, \cref{def:product-and-coproduct},
-\cref{equalizer-and-coequalizer}, and \cref{def:pullback-and-pushout}
+\cref{def:equalizer-and-coequalizer}, and \cref{def:pullback-and-pushout}
 are all instances of a general construction of \textit{limits} and
 \textit{colimits}. Some preliminary constructions are necessary before these
 definitions; these will help make sense of the terms ``candidate \_'' and
 ``candidate co\_'' used above.
 
-These concepts can be defined in greater generality using
-functors (\cref{def:functor}); here we consider only limits over graphs.
+These concepts can be defined more elegantly using functors
+(\cref{def:functor}); here we consider only limits over graphs.
 
 \begin{definition}\label[definition]{def:graph-diagram}
 	A \define{graph}\index{Graph} $G$ consists of a (not necessarily finite)
@@ -715,8 +733,8 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
   \vspace{-0.3em}\dual{
     A \define{cone}\index{Cone} for $D$ consists of an object $C\in\Obj\bfC$
     (the \define{apex}) together with \define{projections}
-    $\braces{p_{v}:C→\apply{D}{v}}_{v∈G_0}$ such that the following triangle
-    commutes for all $u,v∈G_0$ and $e∈G_1(u,v)$:
+    $\braces{p_{v}:C\catarrow \apply{D}{v}}_{v∈G_0}$ such that the following
+    triangle commutes for all $u,v∈G_0$ and $e∈G_1(u,v)$:
     \begin{center}
       \begin{tikzcd}[row sep=large, column sep=small, ampersand replacement=\&]
         {} \& C \arrow[dl, bend right=20, swap, "p_u"] \arrow[dr, bend left=20, "p_v"] \& {} \\
@@ -726,8 +744,8 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
   }{
     A \define{cocone}\index{Cocone} for $D$ consists of an object $C\in\Obj\bfC$
     (the \define{nadir}) together with \define{injections}
-    $\braces{i_{v}:\apply{D}{v}→C}_{v∈G_0}$ such that the following triangle
-    commutes for all $u,v∈G_0$ and $e∈G_1(u,v)$:
+    $\braces{i_{v}:\apply{D}{v}\catarrow C}_{v∈G_0}$ such that the following
+    triangle commutes for all $u,v∈G_0$ and $e∈G_1(u,v)$:
     \begin{center}
       \begin{tikzcd}[row sep=large, column sep=small, ampersand replacement=\&]
         \apply{D}{u}\arrow[dr, bend right=20, swap, "i_u"] \arrow[rr, "\apply{D}{e}"]\& {} \&
@@ -740,8 +758,8 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
 
 \begin{example}
   A cone for a diagram of shape $·\;·$
-  picks out a ``candidate product'' in $\bfC$. Similarly, we can draw the
-  following correspondences:
+  picks out a ``candidate product'' in $\bfC$. The following correspondences
+  illustrate other ``candidate'' constructions:
   \begin{itemize}\renewcommand{\labelitemi}{$∘$}
     \itemsep-0.2em
     \item \vspace{-0.3em} Terminal/Initial: [empty]
@@ -763,7 +781,8 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
     a \define{limit}\index{Limit} of $D$ consists of a cone $(L,\braces{p_v})$
     satisfying the following universal property:
 
-    For any other cone $(C,\braces{q_v})$, there is a unique arrow $u:C→L$ making
+    For any other cone $(C,\braces{q_v})$, there is a unique arrow
+    $u:C\catarrow L$ making
     the following diagram commute for all $u,v∈G_0$ and $e∈G_1(u,v)$:
     \begin{center}
       \begin{tikzcd}[row sep=large, column sep=small, ampersand replacement=\&]
@@ -819,9 +838,10 @@ functors (\cref{def:functor}); here we consider only limits over graphs.
 \end{remark}
 
 \begin{definition}\label[definition]{def:complete-and-cocomplete}
-  A category $\bfC$ \define{has (co)limits of shape $G$} if any diagram of shape
-  $G$ has a (co)limit in $\bfC$. A category is \define{(co)complete} or
-  \define{has small (co)limits} when it has (co)limits of every shape.
+  A category $\bfC$ \define{has (finite) (co)limits of shape $G$} if any
+  (finite) diagram of shape $G$ has a (co)limit in $\bfC$. A category is
+  \define{(finitely) (co)complete} or \define{has (finite) (co)limits} when it
+  has (co)limits of every shape.
 \end{definition}
 
 Generally, one often says $\bfC$ ``has $x$'' for some object $x$ and
@@ -947,14 +967,19 @@ lattices, rings).
   \vspace{-0.3em}\dual{
     An \define{algebra}\index{(Co)algebra for a functor} for an endofunctor
     $F:\bfC\to\bfC$ (also called an $F$\define{-algebra}) is a pair
-    $(A,α)$ of an object $A\in\Obj\bfC$ and an arrow $α:FA\to A$.
+    $(A,α)$ of an object $A\in\Obj\bfC$ and an arrow $α:FA\catarrow A$.
   }{
     A \define{coalgebra} for an endofunctor
     $F:\bfC\to\bfC$ (also called an $F$\define{-coalgebra}) is a pair
-    $(A,α)$ of an object $A\in\Obj\bfC$ and an arrow $α:A\to FA$
+    $(A,α)$ of an object $A\in\Obj\bfC$ and an arrow $α:A\catarrow FA$
     \cite{category-theory-for-computing-science}.
   }
 \end{definition}
+
+There is an unfortunate profusion of terms in mathematics using ``algebra'' in
+their name. Functor algebras are unrelated to elementary algebra (the
+solution of equations with unknowns). Their relation to
+algebraic structures like groups is a bit more complex.
 
 \begin{remark}\label[remark]{rmk:universal-algebra}
   By the universal property of coproducts, an algebra for a functor of the form
@@ -969,12 +994,7 @@ lattices, rings).
   $A×A→A$ corresponds the group operation, $A→A$ to inversion, and $1→A$ to the
   identity).
 
-  There is an unfortunate profusion of terms in mathematics using ``algebra'' in
-  their name. Functor algebras are unrelated to elementary algebra (the
-  solution of equations with unknowns). Their relation to
-  algebraic structures like groups is a bit more complex.
-
-  Not every algebra for the above functor will be a group. The functor doesn't
+  Not every algebra for this functor will be a group. The functor doesn't
   encode the \textit{equational laws}, e.g.\ that the operation $A×A→A$ is
   associative. To represent such relations, one needs the richer
   structure of a \define{monad}\indeX{Monad}. Monads also have algebras, and it
@@ -991,7 +1011,7 @@ for coalgebras or algebras, it holds dually for the other.
 
 \begin{definition}\label[definition]{def:coalgebra-morphism}
   A \define{coalgebra morphism}\index{(Co)algebra morphism} from
-  $(A,α)$ to $(B,β)$ is an arrow $f:A\to B$ such that the following
+  $(A,α)$ to $(B,β)$ is an arrow $f:A\catarrow B$ such that the following
   diagram commutes:
   \begin{center}
     \begin{tikzcd}
@@ -1003,7 +1023,7 @@ for coalgebras or algebras, it holds dually for the other.
 
 Since $F$ is a functor, the composition of coalgebra morphisms is again a
 coalgebra morphism. In fact, $F$-coalgebras have all of the structure of a
-category, which we will call $F\Coalg$.\TODO{Proof?}
+category, called $F\Coalg$.
 
 \begin{definition}\label[definition]{def:initial-alg}
   \
@@ -1013,7 +1033,7 @@ category, which we will call $F\Coalg$.\TODO{Proof?}
   }{
     An \define{terminal $F$-coalgebra}\index{Terminal coalgebra} is a terminal
     object of $F\Coalg$ (these are more commonly known as
-    \define{final coalgebras in the computer science literature}).
+    \define{final coalgebras} in the computer science literature).
   }
 \end{definition}
 
@@ -1032,7 +1052,7 @@ The following example is crucial to
   bifunctor as in \cref{ex:coproduct-functoriality}. Let's examine
   what it \textit{means} for some $F$-algebra $(N,η)$ to be initial. By
   composing with the coproduct\index{Coproduct!In category theory} injections,
-  we can define
+  define
   \begin{align*}
     \begin{split}
       z &: 1 ⟶ N \\
@@ -1052,7 +1072,7 @@ The following example is crucial to
       {} \& N \& {}
     \end{tikzcd}
   \end{center}
-  Suppose we have another $F$-algebra $(A,α)$, and we define $f,g$ by
+  Suppose $(A,α)$ is another $F$-algebra, and define $f,g$ by
   composition as above so that $α=[f,g]$. By initiality of $(N,η)$,
   there is a unique arrow $u$ making the following diagram commute:
   \newcommand{\eeeeeta}{[z,s]}
@@ -1066,7 +1086,7 @@ The following example is crucial to
   By functoriality of the coproduct (\cref{ex:coproduct-functoriality}), we can
   compose along either the left- or right-hand paths in the above diagram.
   The above square states $u∘ [z,s]= [f,g]∘ (\id_1+u)$. Precomposing
-  with $i_1:1\to 1+N$ yields
+  with $i_1:1\catarrow 1+N$ yields
   \begin{align*}
     u∘ z = u∘ [z,s]∘ i_1
     &= [f,g]∘ (\id_1+u) ∘ i_1
@@ -1082,9 +1102,9 @@ The following example is crucial to
     = [f,g]∘(\id_1+u)∘ i_2
     = g∘ u.
   \end{equation*}
-  Combining the above two equations, we have the following universal property
-  for $(N,η)$. For any object $A$ with arrows $f:1\to A$ and $g:A\to A$,
-  there is a unique arrow $u:N\to A$ making the following diagram commute:
+  Combining the above two equations yields the following universal property
+  for $(N,η)$. For any object $A$ with arrows $f:1\catarrow A$ and $g:A\catarrow A$,
+  there is a unique arrow $u:N\catarrow A$ making the following diagram commute:
   \begin{center}
     \begin{tikzcd}[sep=large]
       1
@@ -1100,7 +1120,7 @@ The following example is crucial to
   Well, we've successfully rephrased the property of initiality, but it seems
   just as cryptic now as it was then. Let's see if we can figure out what an
   type with this property would look like in our favorite category \universe, the
-  universe of small types in \UTT!
+  universe of small types in \UTT{}!
 
   Let \List{\N} be the type of lists of natural numbers
   as in \cref{subsubsec:lists}. To utilize the above property, we need
@@ -1128,7 +1148,7 @@ The following example is crucial to
   }
 \end{example}
 
-\begin{example}\label[example]{ex:final-coalgebra}
+\begin{example}\label[example]{ex:terminal-coalgebra}
   A coalgebra for this same functor $A↦A+1$ is a set $A$ with a partial unary
   operation (where the value $1$ represents failure/undefined).
   In $\universe$ the type $\N_∞\jdeq\N+\unittype$ is the carrier of a final
@@ -1162,24 +1182,50 @@ The following example is crucial to
   \end{itemize}
 \end{example}
 
+These examples suggest a new perspective on inductive types: they are the
+non-equational (or \textit{free}) algebraic structures generated by their
+constructors (introduction rules). 
+
 \section{Type theoretic category theory}
 \label{sec:type-theoretic-category-theory}
 
-Unfortunately, terminology varies between the three predominant sources
-on category theory in univalent type theory \cite{book} \cite{unimath}
-\cite{hott-lib}.
+Type theory is a great foundational system in which to do category theory,
+particularly because of its hierarchy of universes, which deals elegantly with
+problems of ``size''.\footnote{
+  Conversely, certain categories called \textit{topoi} (singular: topos) provide
+  models of type theory. In this case, we can use the logic of type theory to
+  directly prove properties of such categories. In this setting, type theories
+  are called \textit{internal languages} of topoi. See \cref{chap:cccs-and-lc}
+  for some intuitions in this direction.} However, with greater expressiveness,
+issues of definition become more prominent; this section explains the relevant
+considerations.
 
+Unfortunately, terminology varies between the three predominant sources on
+category theory in univalent type theory \cite{book} \cite{unimath}
+\cite{hott-lib}. We follow the \UniMath{} library. The
+following table offers a comparison for those already familiar with \cite{book}.
+\begin{center}
+  \begin{tabular}{| l | l | l | l | l |}
+    \hline
+    \UniMath{} & \cite{book} & $\Obj\bfC$ & $\Hom_{\bfC}$ & Univalence \\ \hline
+    Precategory                  & n/a             & Type & Type  & No \\
+    Category                     & Precategory     & Type & Set   & No \\
+    Univalent category           & Category        & Type & Set   & Yes \\
+    Set category                 & Strict category & Set  & Set   & No \\
+    \hline
+  \end{tabular}
+\end{center}
 For a pioneering development of univalent category theory, see \cite{rezk} (the
 formalization of which served as a foundation for \UniMath{}'s
-\unimathname{CategoryTheory} package). See also Chapter 9 of \cite{book}.
+\unimathname{CategoryTheory} package). 
+
+\subsection{Basics}
+\label{subsec:basics}
 
 Types in \UTT{} are the analogues of sets in \ZFC{}+\FOL{}, insofar as they also
 represent ``collections''. Therefore, a naïve translation of the definition
 would define a category to consist of a type $C:\universe$ of objects and a
 family $\ttHom_{C}:C→C→\universe$ of arrows.
-
-\subsection{Basics}
-\label{subsec:basics}
 
 \begin{definition}\label[definition]{def:precategory}
   A \define{precategory}\index{Precategory} consists of the following data:
@@ -1265,7 +1311,8 @@ thought into the language of precategories.
     elegantly with problems of size: this precategory isn't a member of itself,
     because it is really only a precategory of $\universei{i}$-small
     precategories for fixed $i$, and itself is an element of 
-    $\universei{\apply{\suc}{i}}$.}
+    $\universei{\apply{\suc}{i}}$. A good proof assistant automatically assigns
+    consistent universe indices when possible.}
   there is also a precategory with object type $\ttfun{Category}$.
 \end{example}
 
@@ -1410,7 +1457,7 @@ property of the product.
 \label{subsec:general-limits}
 
 The following definitions are mere translations of those in
-\cref{chap:category-theory}, but their specific constructions will be important
+\cref{sec:limits-and-colimits}, but their specific constructions will be important
 when proving results about them.
 
 \begin{definition}
@@ -1449,9 +1496,7 @@ $0$ (a set). The following lemma is not used after its proof, but shows us that
 the property of being a limit is in some sense a ``logical'' property. 
 
 \begin{lemma}\label[lemma]{lemma:limit-prop}
-  The property of being a limit cone is a proposition. Explicitly, for any
-  category $\bfC$, graph $G$, diagram $D$ of shape $G$ in $\bfC$,
-  and object $X:\bfC$,
+  The property of being a limit cone is a proposition. Explicitly,
   \begin{equation*}
     \apply{\isProp}
           {\paren{\∏{X:\universe}{\apply{\isEquiv}{(\apply{\postcomp}{X})}}}}
@@ -1481,9 +1526,6 @@ the property of being a limit is in some sense a ``logical'' property.
 
 \subsection{Limits in $\universe$}
 \label{subsec:limits-in-universe}
-
-We construct M-types as certain limits in $\universe$. The goal of this section
-is to prove that these exist.
 
 \begin{theorem}\label[theorem]{thm:universe-limits}
   The precategory $\universe$ of types has all limits, in the sense that for any
@@ -1522,7 +1564,7 @@ definition of cones, which requires a corresponding revision to $\postcomp$.
 \begin{definition}\label[definition]{def:limit-homot-cone}
   Let $D$ be a diagram and $\dpair{p}{P}:\appply{\HomotCone}{D}{L}$. Define
   \begin{gather*}
-    \postcomp : \∏{X:\universe} (X\catarrow L)→\appply{\Cone}{D}{X} \\
+    \postcomp : \∏{X:\universe} (X→ L)→\appply{\Cone}{D}{X} \\
     \appply{\postcomp}{X}{f}\defeq \dpair{\λ{v}{p_v∘f}}
            {\λ{u}{\λ{v}{\λ{e}{P_{u,v,e}∘f}}}}
   \end{gather*}

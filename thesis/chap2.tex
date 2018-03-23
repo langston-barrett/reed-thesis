@@ -114,15 +114,15 @@ rule (or ``constructor'')
 \begin{equation*}
   \prftree[r]{}
     {Γ ⊢ n:\ℕ}
-    {Γ ⊢ \apply{S}{n}:\ℕ}
+    {Γ ⊢ \apply{\suc}{n}:\ℕ}
 \end{equation*}
-($S$ is what a logician might call a ``function symbol''). We
+($\suc$ is what a logician might call a ``function symbol''). We
 might define a type family
 \begin{alignat*}{3}
   &\ttfun{Even} &&: \ℕ → \universei{0} \\
   &\apply{\ttfun{Even}}{0} &&\defeq \unittype  \\
-  &\apply{\ttfun{Even}}{(\apply{S}{0})} &&\defeq \emptytype  \\
-  &\apply{\ttfun{Even}}{(\apply{S}{(\apply{S}{n})})} &&\defeq \apply{\ttfun{Even}}{n}
+  &\apply{\ttfun{Even}}{(\apply{\suc}{0})} &&\defeq \emptytype  \\
+  &\apply{\ttfun{Even}}{(\apply{\suc}{(\apply{\suc}{n})})} &&\defeq \apply{\ttfun{Even}}{n}
 \end{alignat*}
 (definitions by cases like this will be introduced in \TODO{ref}, but it means
 what you think it means). Then $\apply{\ttfun{Even}}{n}$ is inhabited ($≅$true)
