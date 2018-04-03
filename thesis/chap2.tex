@@ -77,10 +77,10 @@ Suppose we have a type $ℕ$ with introduction rules (or ``constructors'')
 Then $\apply{\ttfun{Even}}{n}$ is inhabited ($≅$true) when $n$ is even, and
 empty ($≅$false) otherwise.
 
-\begin{remark}
+\begin{remark}\label[remark]{rmk:n-true}
 	Here's an opportunity for confusion: is a type like $\ℕ$ ``true''? It's
   certainly inhabited. Again, we, as humans, must decide which types to
-  interpret as propositions, properties, etc. \Cref{sec:h-levels and truncation}
+  interpret as propositions, properties, etc. \Cref{sec:h-levels}
   covers types that essentially contain no other information other than whether
   or not they are inhabited, these are called ``propositions''.
 \end{remark}
@@ -247,12 +247,16 @@ would be self-referential. To resolve this difficulty,
 \universei{1},\ldots$. In this refined system, one judges
 $\universei{i}:\universei{\apply{\suc}{i}}$, and similarly for terms that
 quantify over a given universe. For instance, the modified formation rule
-for Π looks like the following \cite{cpdt}:
+for Π and $×$ look like the following \cite{cpdt}:
 \begin{equation*}
   \prftree[r]{}
     {Γ ⊢ A:\universei{i}}
     {Γ ⊢ B:A→\universei{j}}
     {Γ ⊢ \pitt{a:A}{\apply{B}{a}}:\universei{\appply{\max}{i}{j}}}.
+  \prftree[r]{}
+    {Γ ⊢ A:\universei{i}}
+    {Γ ⊢ B:\universei{j}}
+    {Γ ⊢ A×B:\universei{\appply{\max}{i}{j}}}.
 \end{equation*}
 
 \begin{remark}\label[remark]{rmk:universe-polymorphism}
@@ -280,8 +284,9 @@ for Π looks like the following \cite{cpdt}:
     \ttfun{idpoly} :\∏{l:\ttfun{Level}}{\∏{A:\universei{l}}{A\to A}} &&
     \ttfun{idpoly} \defeq \λ{l}{\λ{A}{\λ{a}{a}}}.
   \end{align*}
-  This additional power introduces further problems: what is the type the type of
-  $\ttfun{idpoly}$ itself? It doesn't actually have one.
+  This additional power introduces further problems: what is 
+  \textit{the type of the type of $\ttfun{idpoly}$}? It doesn't actually have
+  one.
 
   In \UTT{} as in \Coq{}, no quantification over levels is necessary, we treat
   them as symbols in the metalanguage. However, definitions like $\id$ will be
@@ -365,6 +370,280 @@ interpretation. If $\ttfun{lem}$ existed, we could trivially solve this problem
 and make a million dollars! The constructive/intuitionistic logic of proof
 assistants requires no recourse to philosophy: nothing else computes.
 
+\subsection{A pivot in presentation}
+\label{subsec:a-pivot-in-presentation}
+
+Given the vocabulary of Π-types, the introduction rules for various types
+can be phrased as inhabitants of the dependent function types. Given appropriate
+$A$ and $B$, for instance,
+\begin{align*}
+  \inl : A→A+B
+  &&
+  \dpair{-}{-} : \∏{a:A}{\∏{b:\apply{B}{a}}{\∑{a:A}{\apply{B}{a}}}}
+\end{align*}
+(Where $\dpair{-}{-}$ is a convenient shorthand for $\λ{a}{\λ{b}{\dpair{a}{b}}}$.)
+The elimination rules can be given by such a treatment:
+\begin{gatherjot}
+  \case:(A→P)→(B→P)→(A+B→P) \\
+  \pr{1}:\∑{a:A}{\apply{B}{a}}→A \qquad\qquad
+  \pr{2}:\∏{p:\∑{a:A}{\apply{B}{a}}}\apply{B}{(\appr{1}{p})}
+\end{gatherjot}
+(If the rules for Σ-types are intimidating, think about how they specialize to
+direct products when $B$ is a constant family.)
+
+The presentation of \IPL{}, \TLC{}, and \UTT{} thus far has been in the style of
+the sequent calculus, focusing on what kinds of inferences are valid from what
+sorts of judgments. We now shift to the practical construction of proof terms
+\textit{inside} of \UTT{}. Vividly, instead of ``vertical'' proofs like
+\begin{equation*}
+  \prftree[r]{}
+    {Γ⊢J}
+    {Δ⊢K}
+\end{equation*}
+we pursue ``horizontal'' constructions of a term $a:A$ given some sequence of
+terms $Γ$. The hypotheses of our arguments will be terms of types, never
+judgments. Most further rules will be presented as elements of function types.
+
+Additionally, it is generally unnecessary and confusing to actually write out a
+term using induction principles as in \cref{ex:prod-eq}. Instead, when
+constructing, say, a proof of a universal statement about a product type $A×B$,
+one just implicitly assumes that the elements of $A×B$ are of the form
+$(a,b)$ for $a:A$ and $b:B$. The construction of the actual element is left
+implicit in the proof.
+
+This style more closely matches mathematical practice. There is some vague
+notion that most standard proofs could, in principle, be formalized in the
+language of \FOL{}+\ZFC{}, but this is rarely done outside of introductory
+set theory textbooks.
+
+\subsection{The identity type}
+\label{subsec:the-identity-type}
+
+Since ``$≡$'' isn't part of the language of \IPL{} or \TLC{}, we can't yet
+propose that two terms are equal, or negate, conjoin, etc.\ such a proposition.
+This is the purpose of the \define{identity type}, which internalizes ``$≡$'' in
+the same sense that ``$→$'' internalizes ``$⊢$''. An element of this type is
+called a \define{propositional} equality. For terms of different type, this
+proposition is incoherent. (Does $\unitelem$ equal $5$?) Therefore, the
+formation rule asks for two terms of a given type:
+\begin{equation*}
+  \prftree[r]{}
+    {Γ ⊢ A:\universei{i}}
+    {Γ ⊢ x:A}
+    {Γ ⊢ y:A}
+    {Γ ⊢ \propeq{A}{x}{y}:\universei{i}}.
+\end{equation*}
+This type is frequently written $\ttfun{Id}_A(x,y)$ in the literature. The
+ambient type can be inferred from the terms being compared, and so is often
+left off.
+
+When does it make sense to conclude that two things are equal? Everything
+is equal to itself by reflexivity:
+\begin{equation*}
+  \refl{}:\∏{a:A}{\propeq{A}{a}{a}}
+\end{equation*}
+\cite{book} states ``The induction principle (i.e.\ the elimination rule) for
+the identity types is one of the most subtle parts of type theory, and crucial
+to the homotopy interpretation.'' To phrase it properly, we need to generalize
+the elimination rules we've already seen to the dependent setting.
+
+\subsection{Dependent elimination}
+\label{subsec:dependent-elimination}
+
+How might one prove a predicate, i.e.\ define a dependent function? Our current
+elimination rules don't suffice. For instance, we have no way to prove that
+\begin{equation*}
+	\∏{A,B:\universe}{\∏{x:A×B}{\propeq{}{x}{(\appr{1}{x},\appr{2}{x})}}}.
+\end{equation*}
+Our elimination rules need to be strengthened to \define{dependent elimination
+rules}. Such are often called \define{induction principles}, whereas
+the non-dependent versions are called \define{recursion principles}.
+
+Start with a simple case: the unit type. To prove a universal statement over
+$\unittype$, it suffices to prove it for $\unitelem$:
+\begin{gatherjot}
+	\ind_{\unittype}:\∏{P:\unittype→\universe}{\apply{P}{\unitelem}→\∏{x:\unittype}{\apply{P}{x}}} \\
+  \apppply{\ind_{\unittype}}{P}{f}{\unitelem} \jdeq \apply{f}{\unitelem}
+\end{gatherjot}
+(Note that this isn't really a definition \textit{per se}, the judgmental
+equality expressed here is instead the β-rule.) Skip to \cref{lemma:unit-contr}
+to see an application. For $\emptytype$, one only really needs a recursor.
+\begin{equation*}
+	\rec_{\emptytype}:\∏{A:\universe}{\emptytype→A}
+\end{equation*}
+A ``dependent version'' can be derived.
+
+For more complex types, it will help to see their elimination rules packaged as
+recursion principles first (as seen in \cref{subsec:a-pivot-in-presentation}). The
+recursor for $A×B$ states that to define a function out of $A×B$, it suffices to
+give its value on pairs of an element of $A$ and one of $B$:
+\begin{gatherjot}
+  \rec_{A×B}:\∏{C:\universe}{(A→B→C)→A×B→C} \\
+  \appppply{\rec_{A×B}}{C}{f}{(a,b)} \jdeq \appply{f}{a}{b}
+\end{gatherjot}
+The induction principle should be the ``dependent version'' of this function. 
+It states to prove a statement for all elements of $A×B$, it suffices to prove
+it for pairs:
+\begin{gatherjot}
+	\ind_{A×B}:\∏{C:A×B→\universe}
+              {\paren{\∏{x:A}{\∏{y:B}{\apply{C}{(x,y)}}}}→\∏{x:A×B}{\apply{C}{x}}} \\
+  \appppply{\ind_{A×B}}{C}{f}{(a,b)} \jdeq \appply{f}{a}{b}
+\end{gatherjot}
+Note that in the case that $C$ is a constant family, this definition specializes
+to the recursor. This is a general pattern.
+
+\begin{example}\label[example]{ex:prod-eq}
+  Let $A,B:\universe$. Define
+  \begin{gatherjot}
+    f:\∏{x:A×B}{\propeq{}{x}{(\appr{1}{x},\appr{2}{x})}} \\
+    f\defeq 
+    \apppply{\ind_{A×B}}
+            {(\λ{x}{\propeq{}{x}{(\appr{1}{x},\appr{2}{x})}})}
+            {(\λ{a}{\λ{b}{\refl{(a,b)}}})}
+  \end{gatherjot}
+  For the use of $\refl{}$ to work, we need $x\jdeq (\appr{1}{x},\appr{2}{x})$,
+  but this is exactly the η-rule for products.
+\end{example}
+
+To define a function out of a coproduct $A+B$, it suffices to define it for both
+disjuncts (also known as performing a \textit{case analysis}; we previously
+called this $\case$):
+\begin{gather*}
+  \rec_{A+B}:\∏{C:\universe}{(A→C)→(B→C)→A+B→C} \\
+  \apppppply{\rec_{A+B}}{C}{f}{g}{(\apply{\inl}{a})} \jdeq \appply{f}{a} \\
+  \apppppply{\rec_{A+B}}{C}{f}{g}{(\apply{\inr}{b})} \jdeq \appply{g}{a}
+\end{gather*}
+To prove a universal statement for elements of a coproduct $A+B$, it suffices to
+prove it for both disjuncts:
+\begin{gather*}
+  \rec_{A+B}:\∏{C:A+B→\universe}
+               {\paren{\∏{a:A}{\apply{C}{(\apply{\inl}{a})}}} →
+                \paren{\∏{b:B}{\apply{C}{(\apply{\inr}{b})}}} →
+                \∏{x:A+B}{\apply{C}{x}}} \\
+  \apppppply{\rec_{A+B}}{C}{f}{g}{(\apply{\inl}{a})} \jdeq \appply{f}{a} \\
+  \apppppply{\rec_{A+B}}{C}{f}{g}{(\apply{\inr}{b})} \jdeq \appply{g}{a}
+\end{gather*}
+
+\subsection{Identity elimination}
+\label{subsec:identity-elimination}
+
+The rule for identity elimination is traditionally called $J$. For consistency,
+we also write $\ind_{\propeqsign}$. It states that if one can prove a
+proposition whenever $x\jdeq y$ and $p:\propeq{A}{x}{y}$ is just $\refl{x}$,
+then there is a proof for any $x$, $y$, and $p:\propeq{A}{x}{y}$.
+Here it is in full generality:
+\begin{gatherjot}
+	\ind_{\propeqsign} : \∏{A:\universe}
+                        {\∏{C:\∏{x,y:A}{\propeq{}{x}{y}→\universe}}
+                          {\paren{\∏{x:A}{\apppply{C}{x}{x}{\refl{x}}}}
+                          →\∏{x,y:A}{\∏{p:\propeq{}{x}{y}}{\apppply{C}{x}{y}{p}}}}} \\ \\
+  \appppppply{\ind_{\propeqsign}}{A}{C}{f}{x}{x}{\refl{x}} \jdeq \apply{f}{x}
+\end{gatherjot}
+
+\begin{remark}\label[remark]{rmk:uip}
+	One might assume that $J$ implies that $\refl{}$ is the \textit{only}
+  inhabitant of $\propeq{A}{x}{y}$. However, this is not provable!
+  This principle, called \textit{uniqueness of identity proofs},
+  may be added as an axiom, but destroys the homotopy interpretation.
+\end{remark}
+
+Following \cref{subsec:a-pivot-in-presentation}, the following proof provides
+an example of the implicit construction of a term using $\ind_{\propeqsign}$.
+
+\begin{lemma}\label[lemma]{lemma:propeq-sym}
+  Propositional equality is symmetric. That is, for any $A:\universe$ and
+  $x,y:A$, there is a function
+  \begin{equation*}
+    (\propeq{}{x}{y})→
+    (\propeq{}{y}{x})
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+  By the dependent elimination rule for $\propeqsign$, it suffices to give a
+  function $\propeq{}{x}{x}→\propeq{}{x}{x}$ for any $x:A$, and the identity
+  function $\id_{\propeq{}{x}{x}}$ has this type.
+\end{proof}
+
+If $p:\propeq{}{x}{y}$, then the application of
+the function defined in \cref{lemma:propeq-sym} is denoted
+$p^{-1}:\propeq{}{y}{x}$. 
+
+\begin{lemma}\label[lemma]{lemma:propeq-trans}
+  Propositional equality is transitive. That is, for any $A:\universe$ and
+  $x,y,z:A$, there is a function
+  \begin{equation*}
+    (\propeq{}{x}{y})→
+    (\propeq{}{y}{z})→
+    (\propeq{}{x}{z})
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+  Again, it suffices to show this for the case that $x\jdeq y\jdeq z$, 
+  in which case $\refl{x}$ suffices.
+\end{proof}
+
+If $p:\propeq{}{x}{y}$ and $q:\propeq{}{y}{z}$, then the application of
+the function defined in \cref{lemma:propeq-trans} is denoted
+$p\ct q:\propeq{}{x}{z}$.
+
+There are ``iterated'' identity types. If $x,y:A$ and $p,q:\propeq{}{x}{y}$, we
+may ask if $\propeq{\propeq{}{x}{y}}{p}{q}$. These iterated identity types
+allow for the expression of nice algebraic properties of the ``composition''
+and ``inversion'' operations:
+
+\begin{lemma}
+  If $x,y,z,w:A$ and $p:\propeq{}{x}{y}$, $q:\propeq{}{y}{z}$, $r:\propeq{}{z}{w}$,
+  then
+  \begin{enumerate}[label=\alph*)]
+    \itemsep0em
+    \item $\propeq{}{p}{p\ct\refl{y}}$ and $\propeq{}{p}{\refl{x}\ct p}$,
+    \item $\propeq{}{\refl{x}}{p\ct p^{-1}}$ and $\propeq{}{p^{-1}\ct p}{\refl{y}}$,
+    \item $\propeq{}{p}{(p^{-1})^{-1}}$, and
+    \item $\propeq{}{(p\ct q)\ct r}{p \ct (q\ct r)}$.
+  \end{enumerate}
+\end{lemma}
+
+\begin{lemma}[$\ttfun{ap}$]\label[lemma]{lemma:ap}
+  For any $A,B:\universe$ and $f:A\to B$, there is a function
+  \begin{equation*}
+    \ap:(\propeq{}{x}{y})→(\propeq{}{\apply{f}{x}}{\apply{f}{y}})
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+	Use dependent path elimination with $\refl{\apply{f}{x}}$.
+\end{proof}
+
+\begin{lemma}[Transport]\label[lemma]{lemma:transport}
+  If $A:\universe$, $P:A→\universe$, and $p:\propeq{A}{x}{y}$, then there is a
+  function
+  \begin{equation*}
+    \appply{\transportname}{P}{p} : \apply{P}{x}→\apply{P}{y}
+  \end{equation*}
+\end{lemma}
+
+\begin{notation}\label[notation]{notation:transport}
+  We will often curry\index{Curry} \transportname. If we have a family
+  $P:A\to\universe$ and a path $p:\propeq{A}{x}{y}$, we write $\transpor{P}{p}$
+  for $\λ{x}\transport{P}{p}{x}$.
+\end{notation}
+
+The operation $\transportname$ corresponds to the logical principle of
+``indiscernibility of identicals''. Two equal elements of a type share 
+all their properties. For example, if $A\jdeq \N$, $P\jdeq \ttfun{Even}$, 
+$z:\apply{\ttfun{Even}}{x}$, and $p:\propeq{}{x}{y}$, then
+$\transport{P}{p}{z}$ is a proof that $y$ is even.
+
+\begin{lemma}\label[lemma]{lemma:transport-compose}
+	For $f:A\to B$, $P:B\to\universe$, and $p:\propeq{A}{x}{y}$,
+  \begin{equation*}
+    \propeq{}{
+      \transpor{P∘ f}{p}
+    }{
+      \transpor{P}{(\apply{\ap}{f}{p})}
+    }
+  \end{equation*}
+\end{lemma}
+
 \subsection{Σ-types}
 \label{subsec:sigma-types}
 
@@ -406,7 +685,17 @@ The rules for Σ-types generalize those for direct products in much the same way
 Under the types-as-propositions interpretations, Σ-types correspond to
 existential quantification: a pair $\dpair{a}{b}:\∑{a:A}{\apply{B}{a}}$
 is an element $a:A$ together with a witness or proof term $b$ which demonstrates
-that $a$ has the property $B$. 
+that $a$ has the property $B$. This differs significantly from classical notions
+of existence. To show that for any $n:\N$, there is a prime greater than $n$ is
+to give an \textit{algorithm} for finding said prime.
+
+Additionally, since type theory is \textit{proof-relevant}, one can ``look inside''
+an existence proof. Suppose one has $p:\∑{a:A}{\apply{P}{a}}$. Then
+$\appr{1}{p}:A$ is exactly whichever $a:A$ was shown to have property $P$!
+If one constructs a proof $q$ of another theorem using $p$ and later goes back to
+change how $p$ is constructed, it may affect the validity/value of $q$.
+This sort of dependence on proof content is not infrequent in classical proofs,
+but in that setting is (strictly speaking) an error.
 
 \begin{example}\label[example]{ex:ptd}
 	The (universe-polymorphic!) type
@@ -417,83 +706,218 @@ that $a$ has the property $B$.
   \define{pointed} types.
 \end{example}
 
-\subsection{The identity type}
-\label{subsec:the-identity-type}
-
-\begin{tt-rule}\label[rule]{rule:id-elim}
-  The rule of \define{identity elimination} (in the \HoTT{}
-  community, known as \define{path induction}) is as follows:\TODO{define id-elim}
-\end{tt-rule}
-
-\begin{lemma}[$\ttfun{ap}$]\label[lemma]{lemma:ap}
-	\TODO{define ap}
-\end{lemma}
-
-\begin{lemma}[Transport]\label[lemma]{lemma:transport}
-	\TODO{define transport}
-\end{lemma}
-
-\begin{notation}\label[notation]{notation:transport}
-  We will often curry\index{Curry} \transportname. If we have a family
-  $P:A\to\universe$ and a path $p:\propeq{A}{x}{y}$, we write $\transpor{P}{p}$
-  for $\λ{x}\transport{P}{p}{x}$.
-\end{notation}
-
-\begin{lemma}\label[lemma]{lemma:transport-compose}
-	For $f:A\to B$, $P:B\to\universe$, and $p:\propeq{A}{x}{y}$,
-  \begin{equation*}
-    \propeq{}{
-      \transpor{P∘ f}{p}
-    }{
-      \transpor{P}{\ap{f}{p}}
-    }
-  \end{equation*}
-\end{lemma}
-
 \subsection{Natural numbers and lists}
 \label{subsec:natural-numbers-and-lists}
 
+None of the rules of \UTT{} introduced so far allow for the construction of
+infinite types. One principled family of such types are the \textit{inductive}
+or \textit{well-founded types}. We call the introduction rules of such types
+\define{constructors}. Here, we introduce just two examples: the
+natural numbers and lists.
 
-\section{h-levels and truncation}
-\label{sec:h-levels and truncation}
+\begin{definition}
+	The \define{natural numbers} are the type $\N$ with formation and introduction
+  rules
+  \begin{align*}
+    \prftree[r]{}
+      {}
+      {Γ ⊢ \N:\universe}
+    &&
+    \prftree[r]{}
+      {}
+      {Γ ⊢ 0:\N}
+    &&
+    \prftree[r]{}
+      {Γ ⊢ n:\N}
+      {Γ ⊢ \apply{\suc}{n}:\N}
+  \end{align*}
+  and elimination/computation rules
+  \begin{gatherjot}
+    \rec_{\N}:\∏{C:\universe} C → (\N→C→C) → \N → C \\
+    \appppply{\rec_{\N}}{C}{c}{f}{0} \jdeq c \\
+    \appppply{\rec_{\N}}{C}{c}{f}{(\apply{\suc}{n})} \jdeq
+    \apply{f}{(\appppply{\rec_{\N}}{C}{c}{f}{n})}
+  \end{gatherjot}
+  and
+  \begin{gatherjot}
+    \ind_{\N}:\∏{C:\N→\universe} \apply{C}{0} → \paren{\∏{n:\N}{\apply{C}{n}→\apply{C}{(\apply{\suc}{n})}}} → \∏{n:\N} \apply{C}{n} \\
+    \appppply{\ind_{\N}}{C}{c}{f}{0} \jdeq c \\
+    \appppply{\ind_{\N}}{C}{c}{f}{(\apply{\suc}{n})} \jdeq
+    \apply{f}{(\appppply{\rec_{\N}}{C}{c}{f}{n})}
+  \end{gatherjot}
+\end{definition}
+
+These rules give some intuition as to why the (dependent) elimination 
+rules are called ``recursors'' and ``induction principles'': in the case of
+$\N$, they correspond exactly to definition by recursion and the principle of
+induction. 
+
+\begin{definition}
+  The type of \define{lists} has the following formation and introduction rules:
+  \begin{align*}
+    \prftree[r]{}
+      {Γ ⊢ A:\universei{i}}
+      {Γ ⊢ \List{A}:\universei{i}}
+    &&
+    \prftree[r]{}
+      {}
+      {Γ ⊢ \nil:\List{A}}
+    &&
+    \prftree[r]{}
+      {Γ ⊢ l:\List{A}}
+      {Γ ⊢ a:A}
+      {Γ ⊢ \appply{\cons}{a}{l}:\List{A}}
+  \end{align*}
+  ($\ttfun{List}$ is a \textit{type constructor}, a function
+  $\universe→\universe$.) It has the following induction principle:
+  \begin{equation*}
+    \ind_{\List{A}}:
+    \∏{C:\List{A}→\universe}
+      {\apply{C}{\nil} →
+        \paren{\∏{l:\List{A}}{\∏{a:A}{\apply{C}{l}→\apply{C}{(\appply{\cons}{a}{l})}}}} →
+        \∏{l:\List{A}} \apply{C}{l}}
+  \end{equation*}
+  (With appropriate β-rules, not included here.)
+\end{definition}
+
+The introduction rule $\cons$ takes an element of $A$ and prepends it onto the
+front of the list. This inductive presentation of lists owes much to the
+\software{Lisp} programming language.
+
+\section{h-levels}
+\label{sec:h-levels}
+
+One of the central organizational innovations of \UTT{} is a focus on h-levels. 
+While universes (roughly) stratify types by their ``size'', h-levels stratify
+them by the non-triviality of their nested equality types.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}
+    \draw[step=1.0,black,thin] (0.0,0.0) grid (6,5);
+    \draw[->, black, thick] (0.0,0.0) -- (0,5.5) node[above] {\text{size}};
+    \draw[->, black, thick] (0.0,0.0) -- (6.5,0) node[right] {\text{hlevel}};
+
+    % universe levels
+    \node[] at (-0.5, 1.0) {$\universei{0}$};
+    \node[] at (-0.5, 2.0) {$\universei{1}$};
+    \node[] at (-0.5, 3.0) {$\universei{2}$};
+    \node[] at (-0.5, 4.0) {$\vdots$};
+    \node[] at (-0.5, 5.0) {$\universei{n}$};
+
+    % hlevels
+    \node[rotate=270, anchor=west] at (1.0, -0.5) {contractible};
+    \node[rotate=270, anchor=west] at (2.0, -0.5) {proposition};
+    \node[rotate=270, anchor=west] at (3.0, -0.5) {set};
+    \node[rotate=270, anchor=west] at (4.0, -0.5) {groupoid};
+    \node[rotate=270, anchor=west] at (5.0, -0.5) {$\cdots$};
+    \node[rotate=270, anchor=west] at (6.0, -0.5) {$n$-groupoid};
+
+    % types
+    \node[anchor=west] at (1.0, 1.3) {$\unittype$};
+    \node[scale=3] at (1.0, 0.9) {$\cdot$};
+
+    \node[anchor=west] at (3.0, 1.3) {$\N$};
+    \node[scale=3] at (3.0, 0.9) {$\cdot$};
+
+    \node[anchor=west] at (2.0, 3.5) {$\∏{X:\universei{1}}\apply{\isProp}{X}$};
+    \node[scale=3] at (2.0, 2.9) {$\cdot$};
+    
+  \end{tikzpicture}
+  \caption{\label{fig:awodey} Awodey's two axes: size (universe level)
+    and complexity (h-level) \cite{awodey-proposition-homotopy-type}.}
+\end{figure}
 
 \begin{definition}\label[definition]{def:mere-proposition}
   A type $X:\universe$ is a \define{mere proposition}, a \define{proposition},
-  or an \define{hprop} if all of its elements are propositionally equal,
+  an \define{hprop}, or is \define{of h-level $1$}\footnote{More on this soon.}
+  if all of its elements are propositionally equal,
   \begin{equation*}
     \apply{\isProp}{X} \defeq \pit{x,y:X}x=y
   \end{equation*}
 \end{definition}
 
+Mere propositions act significantly more like propositions in \FOL{},
+in that they are \textit{proof-irrelevant}: a proof of a proposition contains no
+other information than that the proposition is in fact inhabited (any two such
+proofs are equal). The UIP principle can be rephrased as ``identity types are
+propositions''.
+
 \begin{definition}\label[definition]{def:contr}
-  A type $X:\universe$ is \define{contractible} if it is a mere proposition and
-  is inhabited, that is
+  A type $X:\universe$ is \define{contractible} or is \define{of h-level $0$}
+  if it is a mere proposition and is inhabited, that is
   \begin{equation*}
     \apply{\isContr}{X} \defeq \sigmat{x:X}{\pit{y:X}x=y}
   \end{equation*}
   The first projection is the \define{center} of $X$.
 \end{definition}
 
-\begin{definition}\label[definition]{def:sets}
+\begin{lemma}\label[lemma]{lemma:unit-contr}
+	The unit type $\unittype$ is contractible.
+\end{lemma}
+\begin{proof}
+	Use the dependent elimination rule for $\unittype$ with the family
+  \begin{equation*}
+    C\defeq \λ{x}{\propeq{}{\unitelem}{x}}.
+  \end{equation*}
+\end{proof}
 
+Despite \cref{rmk:uip}, we can prove the following:
+
+\begin{lemma}
+	For any $A:\universe$ and $a:A$, the types $\∑{x:A}{\propeq{}{x}{a}}$
+  and $\∑{x:A}{\propeq{}{a}{x}}$ are contractible.
+\end{lemma}
+
+There are certain types for which UIP does hold:
+
+\begin{definition}\label[definition]{def:sets}
+  A type is a \define{set} or \define{hset} if its identity types are
+  propositions. That is, for $A:\universe$
+  \begin{equation*}
+    \apply{\isSet}{A}\defeq \∏{x,y:A}{\isProp{\propeq{}{x}{y}}}
+  \end{equation*}
 \end{definition}
 
-\begin{figure}[ht]
-  \centering
-  \caption{\label{fig:awodey} Awodey's two axes: size (universe level)
-    and complexity (h-level).}
-\end{figure}
+Many early theorems in homotopy type theory express that such sets behave
+remarkably similar to those in, say, \ZFC{}. This holds especially true when
+assuming certain additional classically-minded axioms (similar to the law of
+excluded middle and axiom of choice). 
+
+\begin{definition}
+	A type $A:\universe$ is \define{of h-level $n$} if its identity types are of
+  h-level $n-1$. That is,
+  \begin{alignat*}{3}
+    &\hlevel &&: \N → \universe → \universe \\
+    &\appply{\hlevel}{0}{A} &&\defeq \apply{\isContr}{A} \\
+    &\appply{\hlevel}{(\apply{\suc}{n})}{A} &&\defeq
+    \∏{x,y:A}{\appply{\hlevel}{n}{(\propeq{}{x}{y}})}
+  \end{alignat*}
+  (Note that we implicitly use the elimination rules for $\N$ when defining
+  functions via \textit{pattern matching}.)\footnote{It may be useful to review
+  contractible types, propositions, and sets to ensure that they do indeed follow
+  this pattern.}
+\end{definition}
 
 \begin{lemma}\label[lemma]{lemma:impred}
   If $X:\universe$, $Y:X→\universe$, and each $\apply{Y}{x}$ is of h-level $n$,
   then $\∏{x:X}{\apply{Y}{x}}$ is of h-level $n$.
 \end{lemma}
 
+It is worth mentioning that (with additional axioms) given any type $X$, there
+is a formalism in \HoTT{} for constructing its $n$-truncation $∥X∥_n$, which
+is guaranteed to be of h-level $n$ or lower.
+
 \section{Univalence}
 \label{sec:univalence}
 
 \subsection{Weak equivalences}
 \label{subsec:weak-equivalences}
+
+Weak equivalences are another innovation of the homotopy type theory community.
+They are necessary to state the univalence axiom (and are generally useful!).
+There are several equivalent (and individually enlightening) ways to
+characterize such equivalences, these require a few preliminary definitions.
 
 \begin{definition}\label[definition]{def:fiber}
 	Given a function $f:A→B$ and point $b:B$, the \define{fiber of $f$ above $b$}
@@ -503,29 +927,69 @@ that $a$ has the property $B$.
   \end{equation*}
 \end{definition}
 
+\begin{definition}
+	Given dependent functions $f,g:\∏{a:A}{\apply{B}{a}}$, a \define{homotopy}
+  between them is an inhabitant of
+  \begin{equation*}
+    \∏{a:A}{\propeq{}{\apply{f}{a}}{\apply{g}{a}}}
+  \end{equation*}
+  The above type is written $f\sim g$.
+\end{definition}
+
 \begin{definition}\label[definition]{def:weq}
   A function $f:A→B$ is a weak equivalence if any of the following
   equivalent\footnote{For proofs that these characterizations are mutually
-    equivalent, see \cite{book}.}
+    equivalent, see \cite{book}. The type of equivalence meant in the phrase
+    ``equivalent definitions'' can be understood as any of the ones being defined.}
   conditions hold:
   \begin{itemize}
     \itemsep0em
     \item the fibers of $f$ are contractible,
-      $\∏{b:B}{\apply{\isContr}{\apply{\ttfun{fiber}_f}{b}}}$
-    \item TODO
+      $\∏{b:B}{\apply{\isContr}{(\apply{\ttfun{fiber}_f}{b}})}$
+    \item there are functions $g,h:B→A$ such that their compositions
+      with $f$ are the appropriate identities:
+      \begin{equation*}
+        \paren{\∑{g:B→A}{f∘g\sim \id_B}}×\paren{\∑{h:B→A}{h∘f\sim\id_A}}
+      \end{equation*}
+    \item there is a function $g:B→A$ with homotopies $η:g∘f\sim\id_A$,
+      $ε:f∘g\sim\id_B$, and
+      $τ:\∏{a:A}{\propeq{}{\apply{f}{(\apply{η}{a})}}{\apply{ε}{(\apply{f}{a}})}}$.
   \end{itemize}
   We abusively denote the type of any of these conditions by
-  $\apply{\isEquiv}{f}$.
+  $\apply{\isEquiv}{f}$. When $f:A→B$ is an equivalence, we write
+  $f:\weq{A}{B}$, and may write $\weq{A}{B}$ to indicate that such an $f$
+  exists.
 \end{definition}
+
+\begin{lemma}\label[lemma]{lemma:isequiv-prop}
+	A few basic properties of weak equivalences:
+  \begin{enumerate}
+    \itemsep0em
+    \item The property of being a weak equivalence is a proposition.
+    \item The composition of weak equivalences is again a weak equivalence.
+    \item The relation $\weqsign$ is an equivalence relation on $\universe$.
+  \end{enumerate}
+\end{lemma}
+
+\begin{remark}\label[remark]{rmk:logeq}
+  Under the propositions/types correspondence, we might define
+  types $A,B:\universe$ to be \textit{logically equivalent} if
+  \begin{equation*}
+    (A→B)×(B→A)
+  \end{equation*}
+  (compare to \cref{rmk:n-true}). As can be read off the various definitions of
+  weak equivalences, this is a strictly weaker condition.
+  Tellingly, logical equivalence and weak equivalence coincide for propositions:
+  if $A$ and $B$ are propositions then
+  \begin{equation*}
+    \weq{(\weq{A}{B})}{\paren{(A→B)×(B→A)}}
+  \end{equation*}
+\end{remark}
 
 \begin{notation}\label[notation]{notation:weq-coerce}
   We may treat a weak equivalence as if it were a function and apply it to an
   argument. This amounts to implicitly applying $\pr{1}$.
 \end{notation}
-
-\begin{lemma}\label[lemma]{lemma:isequiv-prop}
-	The property of being an equivalence is a proposition.
-\end{lemma}
 
 \begin{lemma}\label[lemma]{lemma:contr-weq-unit}
 	Any contractible type is weakly equivalent to $\unittype$.
@@ -538,6 +1002,14 @@ that $a$ has the property $B$.
   identities.
 \end{proof}
 
+\begin{corollary}\label[corollary]{cor:weq-contr}
+	If $w:\weq{A}{B}$ and $B$ is contractible, so is $A$.
+\end{corollary}
+\begin{proof}
+  By \cref{lemma:contr-weq-unit}, $\weq{B}{\unittype}$. Composing with this
+  equivalence gives one $\weq{A}{\unittype}$ (\cref{lemma:isequiv-prop}).
+\end{proof}
+
 \begin{lemma}\label[lemma]{lemma:weq-eq}
   If $A,B:\universe$, $w:\weq{A}{B}$, and $x,y:A$ then
   \begin{equation*}
@@ -546,21 +1018,10 @@ that $a$ has the property $B$.
 \end{lemma}
 \begin{proof}[Proof sketch]
   If $p:\propeq{A}{x}{y}$, then
-  $\ap{w}{p}:\propeq{B}{\apply{w}{x}}{\apply{w}{y}}$. Conversely,
+  $\appply{\ap}{w}{p}:\propeq{B}{\apply{w}{x}}{\apply{w}{y}}$. Conversely,
   suppose $\propeq{B}{\apply{w}{x}}{\apply{w}{y}}$.
   Then $x$ and $y$ are both in the fiber above $\apply{w}{x}$,
   and since the fibers of a weak equivalence are contractible, $x=y$.
-\end{proof}
-
-\begin{corollary}\label[corollary]{cor:weq-contr}
-	If $w:\weq{A}{B}$ and $B$ is contractible, so is $A$.
-\end{corollary}
-\begin{proof}
-  By contractibility of $B$, 
-  $\propeq{B}{\apply{w}{x}}{\apply{w}{y}}$ for any $a,a':A$, so $A$
-  is a mere proposition. Additionally, $w$ has an inverse which sends the center
-  $b$ of $B$ to some point $\apply{w^{-1}}{b}$, so $A$ is inhabited.
-  Thus, $A$ is contractible.\TODO{reference}
 \end{proof}
 
 \begin{lemma}\label[lemma]{lemma:weqfibtototal}
@@ -587,9 +1048,14 @@ a weak equivalence:
     \weq{\big((\propeq{A}{\appr1{x}}{a})×(\propeq{B}{\appr1{x}}{b})\big)}
         {\big(\propeq{}{x}{(a,b)}\big)}
   \end{equation*}
+  That is, pairs are equal just when their components (projections) are.
 \end{lemma}
 
-\begin{lemma}[Paths in Σ-types]\label[lemma]{lemma:path-sigma}
+The above lemma cannot be generalized as-is to Σ-types, whose second projections
+aren't of the same type. However, we have the following (incredibly useful)
+lemma, inspired by the homotopy interpretation:
+
+\begin{lemma}\label[lemma]{lemma:path-sigma}
 	If $x,y:\∑{a:A}{B(a)}$, then
   \begin{equation*}
     \weq{
@@ -606,9 +1072,7 @@ a weak equivalence:
       }
     }.
   \end{equation*}
-  \TODO{cite with page number}
 \end{lemma}
-
 
 \subsection{The univalence axiom}
 \label{subsec:the-univalence-axiom}

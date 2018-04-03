@@ -5,29 +5,31 @@
 
 In this chapter, we will present first a logical and then a computational
 framework. We will begin with general remarks on discussing and defining formal
-systems in \cref{sec:discussing-logic}. \Cref{sec:ipl} begins with an
-intuitionistic, proof-relevant version of Gentzen's natural deduction
-\cite{gentzen1935untersuchungen} called \IPL{}. As most
-mathematicians, computer scientists, and philosophers are familiar with some
-version of first-order logic, this section will focus on the introduction of
-notation, meta-logical concerns, and the key differences between
-\IPL{} and \FOL{}. In \cref{sec:the-lambda-calculus}, we
-will introduce Church's λ-calculus \LC{} (and the simply-typed and
-typed versions \STLC{} and \TLC{}). Finally, in
+systems in \cref{sec:discussing-logic}. \Cref{sec:ipl} begins with
+intuitionistic propositional logic (\IPL{}) a weaker, proof-relevant variant of
+standard propositional logic. As most mathematicians, computer scientists, and
+philosophers are familiar with some version of first-order logic, this section
+will focus on the introduction of notation, meta-logical concerns, and the key
+differences between \IPL{} and classical \FOL{}. In
+\cref{sec:the-lambda-calculus}, we will introduce Church's λ-calculus \LC{} (and
+the simply-typed and typed versions \STLC{} and \TLC{}). Finally, in
 \cref{sec:propositions-and-types}, we will discuss the fundamental and
 harmonious relation between these systems known as the Curry-Howard
 correspondence.\TODO{Motivate the formality of this chapter}
 
-The vocabulary of \cref{sec:discussing-logic} is due to Martin-Löf. He
+The vocabulary of \cref{sec:discussing-logic} is due to Martin-Löf, who
 emphasized the importance of the notion of judgment (\cref{def:judgment})
-\cite{martin-lof-meanings} and justified the rules of his type theory
-by meaning explanations \cite{martin-lof-constructive}, which we will imitate
-in \cref{subsec:ipl-intro}. See \cite{modal-judgment} for a similar application
-of Martin-L\"of vocabulary to modal logic, and \cite{hott-meaning} for a
-justification of \HoTT using meaning explanations.
+\cite{martin-lof-meanings}. It may be helpful to see \cite{modal-judgment} for a
+similar application of Martin-L\"of vocabulary to modal logic.
 
-In addition to Martin-Löf-style meaning explanantions, in
-\cref{subsec:proof-terms} we explore  Dummett's 
+While it is in general unclear how to justify logical rules, we attempt to
+provide some informal defense of \IPL{}. One approach is to use 
+meaning explanations \cite{martin-lof-constructive}, where
+introduction and elimination rules are justified by explaining how they match
+with our intuitive ideas of what they mean.\footnote{See \cite{hott-meaning} for a
+  justification of \HoTT{} using meaning explanations.}
+We also explore a variant of Dummitt's notions of harmony, in their ``local''
+versions in \cref{subsec:proof-terms}. 
 
 The presentation of \crefrange{sec:ipl}{sec:the-lambda-calculus} is influenced by
 Philip Wadler \cite{wadler-propositions}, Frank Pfenning's lecture notes for
@@ -278,38 +280,38 @@ of uses of metavariables.
     %   & \(S)TLC
     %   & Constants \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    $\λ{x}\mvar{a}$
-      &
-      & \IPL{}, \formalsystem{((S)T)LC}, \UTT{}
-      & A function that takes an input $x$ \\
     $→$
-      &
+      & \cref{subsec:ipl-form}
       & \IPL{}, \formalsystem{(S)TLC}, \UTT{}
       & Material implication or function type \\
     $×$
-      &
+      & \cref{subsec:ipl-form}
       & \ZFC{}+\FOL{}, \TLC{}, \UTT{}
       & Cartesian or categorical product, product type \\
     $+$
-      &
+      & \cref{subsec:ipl-form}
       & \TLC{}, \UTT{}
       & Coproduct type, categorical coproduct \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\λ{x}\mvar{a}$
+      & \cref{subsec:ipl-intro}
+      & \IPL{}, \formalsystem{((S)T)LC}, \UTT{}
+      & A function that takes an input $x$ \\
     $(a,b)$
-      &
+      & \cref{subsec:ipl-intro}
       & \IPL{}, \TLC{}, \UTT{}
       & Constructor of the pair type \\
     $\inl$, $\inr$
-      &
+      & \cref{subsec:ipl-intro}
       & \IPL{}, \TLC{}, \UTT{}
       & Constructor of the coproduct type \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $\pr{1}$, $\pr{2}$
-      &
+      & \cref{subsec:ipl-elim}
       & \IPL{}, \TLC{}, \UTT{}
       & Destructor of the product type \\
     $\case$
-      &
+      & \cref{subsec:ipl-elim}
       & \IPL{}, \TLC{}
       & Destructor of the coproduct type \\
     $\rec$
@@ -317,14 +319,23 @@ of uses of metavariables.
       & \IPL{}, \TLC{}, \UTT{}
       & Recursion principle or elimination rule \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\universe$, $\universei{0}$
+      & \cref{subsec:the-universe}
+      & \UTT{}
+      & Universe type \\
+    $\∏{\mvar{a}:\mvar{p}}{\apply{\mvar{b}}{\mvar{a}}}$
+      & \cref{subsec:pi-types}
+      & \UTT{}
+      & Π or dependent function type \\
     $\∑{\mvar{a}:\mvar{p}}{\apply{\mvar{b}}{\mvar{a}}}$
-      &
+      & \cref{subsec:sigma-types}
       & \UTT{}
       & Σ or dependent pair type \\
-    $\∏{\mvar{a}:\mvar{p}}{\apply{\mvar{b}}{\mvar{a}}}$
-      &
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $\catarrow$, $\Rightarrow$
+      & \cref{def:category}
       & \UTT{}
-      & Π or dependent pair type \\
+      & The type $\appply{\Hom}{A}{B}$ of arrows from $A$ to $B$ \\
   \end{tabular}
   \caption{\label{tab:symbols}Symbols and their interpretations}
 \end{sidewaystable}
@@ -381,14 +392,7 @@ rules}\index{Formation!In \IFOL{}}:\footnote{For the less
     {\prftree[r, noline]{}
       {Γ ⊢ \prop{\mvar{a}}}
       {Γ ⊢ \prop{\mvar{b}}}}
-    {Γ⊢\prop{\mvar{a}\lor\mvar{b}}} \\
-  % \prftree[r]{}
-  %    {\mvar{a}\prop}{v∉\FV(\mvar{a})}
-  %    {∀ v.\mvar{a}}
-  % \qquad
-  % \prftree[r]{}
-  %    {\mvar{a}\prop}{v∉\FV(\mvar{a})}
-  %    {∃ v.\mvar{a}}
+    {Γ⊢\prop{\mvar{a}\lor\mvar{b}}}
 \end{gatherjot}
 We add parentheses where necessary to disambiguate compound expressions.
 As noted in \cref{tab:symbols}, ``$Γ$'', ``$⊢$'', and the horizontal line
@@ -784,6 +788,13 @@ affirmative.
     proof of an arbitrary proposition (which is not in general one of the ``inputs''
     to falsehood introduction), there's no corresponding β-rule.}
 \end{definition}
+
+Judgmental equality, as the name implies, is a meta-level concept. In
+particular, ``$\≡$'', like ``$:$'', is not part of the syntax of \IPL{}. 
+The term $\mvar{p}\≡\mvar{q}:\mvar{a}$ should never be read as an element of
+$\mvar{a}$. Since it is a congruence, none of the rules of \IPL{} can distinguish
+judgmentally equal terms (this ``indiscerniblility'' is implemented as a rule in
+\UTT{} in \cref{subsec:the-identity-type}).
 
 Besides allowing us to write shorter proofs, these rules witness local
 soundness; they show that the elimination rules never prove any conclusion that
@@ -1496,4 +1507,15 @@ TODO: talk about proof assistants
   \caption{\label{tab:curry-howard}A table of metaphors, including but not
     limited to the Curry-Howard-Lambek-Voevodsky correspondence.}
 \end{sidewaystable}
+
+\subsubsection{Judgmental equality revisited}
+\label{subsubsec:judgmental-equality}
+
+The Curry-Howard correspondence suggests a new reading of judgmental equality
+(``$\≡$'') of proof terms. It might also be considered a kind of
+\textit{computational equality}. In fact, in a way that can be made quite
+precise, $x\≡ y:A$ if and only if $x$ and $y$ have the same βη-normal form
+(i.e.\ $x\betatoo z$ and $y\betatoo z$ for some $z$).\footnote{This also makes
+clear that ``$\≡$'' is an equivalence relation.}
+
 \end{document}

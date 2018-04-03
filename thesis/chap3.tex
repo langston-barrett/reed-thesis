@@ -1155,11 +1155,11 @@ The following example is crucial to
   coalgebra given by a partial operation
   \begin{alignat*}{3}
     &\ttfun{pred} : \N+\unittype &&\to(\N+\unittype)+\unittype \\
-    &\ttfun{pred}(\apinl{0})                 &&\jdeq \apinr{(\apinr{\unitelem})}
+    &\apply{\ttfun{pred}}{\apinl{0}}                 &&\jdeq \apinr{(\apinr{\unitelem})}
       &\qquad\quad&\text{(undefined)}\\
-    &\ttfun{pred}(\apinl{(\apply{\suc}{n})}) &&\jdeq n
+    &\apply{\ttfun{pred}}{\apinl{(\apply{\suc}{n})}} &&\jdeq n
       &\qquad\quad& \\
-    &\ttfun{pred}(\apinr{\unitelem})         &&\jdeq \apinr{\unitelem}
+    &\apply{\ttfun{pred}}{\apinr{\unitelem}}         &&\jdeq \apinr{\unitelem}
       &\qquad\quad&\text{($\apinr{\unitelem}$ is like $∞$)}
   \end{alignat*}
   which acts like the natural numbers with an extra ``infinite element''
