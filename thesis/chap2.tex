@@ -1224,15 +1224,26 @@ paths $\propeq{\universe}{A}{B}$ are exactly the weak equivalences $\weq{A}{B}$.
   \end{equation*}
 \end{definition}
 
-\begin{theorem}[Function extensionality]\label[theorem]{thm:funext}
-	Under the hypothesis of the univalence axiom, function extensionality holds,
-  i.e.\ there is a term
+Intensional equality in type theory has bountiful benefits (decidability of type
+checking and interesting model theory, to name two). However, a particular
+extensional principle called \textit{function extensionality} seems essential to
+standard reasoning. Luckily, it follows from the univalence axiom:
+
+\begin{theorem}\label[theorem]{thm:funext}
+  There is a term
   \begin{equation*}\label{eq:funext}
-    \funext:\∏{A,B\:\universe}{(\homot{f}{g})\to \propeq{}{f}{g}}
+    \ttfun{eqtohomot}:\∏{A,B\:\universe}{\∏{f,g:A→B}{\propeq{}{f}{g}→\homot{f}{g}}}
+  \end{equation*}
+  defined by identity elimination. Under the hypothesis of the univalence axiom,
+  this function is an equivalence. In particular, it has an inverse
+  \begin{equation*}\label{eq:funext}
+    \funext:\∏{A,B\:\universe}{\∏{f,g:A→B}{(\homot{f}{g})\to \propeq{}{f}{g}}}
   \end{equation*}
 \end{theorem}
 
-As a simple example of the use of univalence, we can vastly generalize
+Function extensionality can be considered a characterization of paths for Π-types.
+
+As a simple example of the use of univalence, we can generalize
 \cref{lemma:contr-weq}.
 
 \begin{theorem}
