@@ -359,9 +359,9 @@ the following auxiliary result:
     mathematics}. Although we define $q$ within a proof, we can (without
   cheating) refer to its definition from another proof. Also note the
   use of \cref{notation:weq-coerce}. Working from the other side of the
-  equation, we can use the computational rule of univalence (\cref{def:ua}):
+  equation, we can use the computation rule for univalence (\cref{def:ua}):
   \begin{align*}
-    β(\transport{\id_\universe}{\apply{\ua}{q}}{x})
+    β(\transport{\id_\universe}{(\apply{\ua}{q})}{x})
     = β(\apply{q}{x})
     = β({\appr{1}{f}}{x})
   \end{align*}

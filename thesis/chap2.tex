@@ -613,21 +613,70 @@ and ``inversion'' operations:
 	Use dependent path elimination with $\refl{\apply{f}{x}}$.
 \end{proof}
 
+In the homotopy model, types $A$ correspond to some notion of ``space''. 
+Elements $x,y:A$ correspond to points in these spaces, and equalities
+$p:\propeq{A}{x}{y}$ correspond to paths from $x$ to $y$ in the space $A$
+(recall \cref{tab:curry-howard}). With these metaphors in mind, $\ap$ is
+schematically represented as follows:
+
+\begin{center}
+  \begin{tikzpicture}
+    \def\xshift{6}
+
+    % Base space A
+    \node[circle,scale=1.4,draw,inner sep=0.5cm,label=left:{$A$},xscale=1.5] (A) at (0,0) {};
+    \node[circle,fill,inner sep=1pt,label=left:{$x$}] (a1) at (-.5,0) {};
+    \node[circle,fill,inner sep=1pt,label=right:{$y$}] (a2) at (.5,0) {};
+    \draw[decorate,decoration={snake,amplitude=1}] (a1) -- node[auto,swap] {$p$} (a2);
+
+    \draw[->] (1.8,0) to[bend left=20] node[auto] {$f$} (\xshift-1.8,0);
+
+    % Base space B
+    \node[circle,scale=1.4,draw,inner sep=0.5cm,label=right:{$B$},xscale=1.5] (B) at (\xshift,0) {};
+    \node[circle,fill,inner sep=1pt,label=left:{$\apply{f}{x}$}] (b1) at (\xshift-0.5,0) {};
+    \node[circle,fill,inner sep=1pt,label=right:{$\apply{f}{y}$}] (b2) at (\xshift+0.5,0) {};
+    \draw[decorate,decoration={snake,amplitude=1}] (b1) -- node[auto,swap] {$\appply{\ap}{f}{p}$} (b2);
+    % \draw[decorate,decoration={snake,amplitude=1}] (b1) -- node[auto] {$f(p)$} (b2);
+  \end{tikzpicture}
+\end{center}
+
 \begin{lemma}[Transport]\label[lemma]{lemma:transport}
   If $A:\universe$, $P:A→\universe$, and $p:\propeq{A}{x}{y}$, then there is a
   function
   \begin{equation*}
-    \appply{\transportname}{P}{p} : \apply{P}{x}→\apply{P}{y}
+    \transport{P}{p} : \apply{P}{x}→\apply{P}{y}
   \end{equation*}
 \end{lemma}
 
-\begin{notation}\label[notation]{notation:transport}
-  We will often curry\index{Curry} \transportname. If we have a family
-  $P:A\to\universe$ and a path $p:\propeq{A}{x}{y}$, we write $\transpor{P}{p}$
-  for $\λ{x}\transport{P}{p}{x}$.
-\end{notation}
+In the homotopy model, dependent types $P:A→\universe$ sort of ``lay over'' the
+``base space'' $A$. The following is a schematic representation of
+$\transportname$ with these metaphors in mind:
 
-The operation $\transportname$ corresponds to the logical principle of
+\begin{center}
+  \begin{tikzpicture}
+    \def\xshift{2.7}
+    \def\yheight{2}
+
+    % P(x)
+    \node[circle,draw,inner sep=0.5cm,label=above:{$\apply{P}{x}$},xscale=1.5] (px) at (-\xshift,\yheight) {};
+    \node[circle,fill,inner sep=1pt,label=left:{$\apply{f}{x}$}] (b1) at (px) {};
+
+    % P(y)
+    \node[circle,draw,inner sep=0.5cm,label=above:{$\apply{P}{y}$},xscale=1.5] (py) at (\xshift,\yheight) {};
+    \node[circle,fill,inner sep=1pt,label=left:{$\apply{f}{y}$}] (b1) at (py) {};
+
+    % Base space A
+    \node[circle,scale=1.2,draw,inner sep=0.5cm,label=left:{$A$},xscale=1.5] (A) at (0,0) {};
+    \node[circle,fill,inner sep=1pt,label=left:{$x$}] (b1) at (-.5,0) {};
+    \node[circle,fill,inner sep=1pt,label=right:{$y$}] (b2) at (.5,0) {};
+    \draw[decorate,decoration={snake,amplitude=1}] (b1) -- node[auto,swap] {$p$} (b2);
+
+    \draw[->] (-0.5*\xshift,\yheight+0.2*\yheight) to[bend left] node[auto] {$\transpor{P}{p}$} (0.5*\xshift,\yheight+0.2*\yheight);
+    % \draw[decorate,decoration={snake,amplitude=1}] (b1) -- node[auto] {$f(p)$} (b2);
+  \end{tikzpicture}
+\end{center}
+
+Logically, the operation $\transportname$ corresponds to the principle of
 ``indiscernibility of identicals''. Two equal elements of a type share 
 all their properties. For example, if $A\jdeq \N$, $P\jdeq \ttfun{Even}$, 
 $z:\apply{\ttfun{Even}}{x}$, and $p:\propeq{}{x}{y}$, then
@@ -637,12 +686,49 @@ $\transport{P}{p}{z}$ is a proof that $y$ is even.
 	For $f:A\to B$, $P:B\to\universe$, and $p:\propeq{A}{x}{y}$,
   \begin{equation*}
     \propeq{}{
-      \transpor{P∘ f}{p}
+      \transpor{P∘f}{p}
     }{
-      \transpor{P}{(\apply{\ap}{f}{p})}
+      \transpor{P}{(\appply{\ap}{f}{p})}
     }
   \end{equation*}
 \end{lemma}
+
+Schematically,
+
+\vspace{0.1em}
+\begin{tikzpicture}[yscale=.5,xscale=1]
+  \def\xshift{3.2}
+  \def\yheight{6}
+
+  % P(x)
+  \node[circle,draw,inner sep=0.5cm,label=left:{$\apply{P}{(\apply{f}{x})}$}] (px) at (-1.0*\xshift,\yheight) {};
+  \node[circle,fill,inner sep=1pt,label=left:{$u$}] (u) at (px) {};
+
+  % P(f(y))
+  \node[circle,draw,inner sep=0.6cm,label=above:{$\apply{P}{(\apply{f}{y})}$},yscale=1.5,xscale=3.2] (py) at (1.0*\xshift,\yheight) {};
+    \node[circle,fill,inner sep=1pt,label=right:{$\transport{P∘f}{p}{u}$},yshift=0.5] (tpfu) at (0.45*\xshift,1.15*\yheight) {};
+  \node[circle,fill,inner sep=1pt,label=right:{$\transport{P}{(\appply{\ap}{f}{p})}{u}$},yshift=0.5] (tpu) at (0.45*\xshift,0.85*\yheight) {};
+  \draw[decorate,decoration={snake,amplitude=1}] (tpfu) -- (tpu);
+
+  % P(x) -> P(y)
+  \draw[->,shorten >=0.3cm,shorten <=0.3cm, transform canvas={yshift=0.1cm}] (px) to[bend left] node[above] {$\transpor{P\circ f}{p}$} (py) {};
+  \draw[->,shorten >=0.3cm,shorten <=0.3cm, transform canvas={yshift=-0.1cm}] (px) to[bend right] node[below] {$\transpor{P}{(\appply{\ap}{f}{p})}$} (py) {};
+
+  % Base space B
+  \node[circle,draw,inner sep=0.5cm,label=right:{$B$},xscale=2.2] (B) at (\xshift,0) {};
+  \node[circle,fill,inner sep=1pt,label=left:{$\apply{f}{x}$}] (fy) at (\xshift-0.5,0) {};
+  \node[circle,fill,inner sep=1pt,label=right:{$\apply{f}{y}$}] (fx) at (\xshift+0.5,0) {};
+  \draw[decorate,decoration={snake,amplitude=1}] (fx) -- node[below,swap] {$\appply{\ap}{f}{p}$} (fy);
+
+  % Base space A
+  \node[circle,draw,inner sep=0.5cm,label=left:{$A$},xscale=2.2] (A) at (-1.0*\xshift,0) {};
+  \node[circle,fill,inner sep=1pt,label=left:{$x$}] (b1) at (-.5-1.0*\xshift,0) {};
+  \node[circle,fill,inner sep=1pt,label=right:{$y$}] (b2) at (.5-1.0*\xshift,0) {};
+  \draw[decorate,decoration={snake,amplitude=1}] (b1) -- node[auto,swap] {$p$} (b2);
+
+  \draw[->,shorten >=0.1cm,shorten <=0.1cm] (A) to[] node[auto] {$f$} (B) {};
+\end{tikzpicture}
+
 
 \subsection{Σ-types}
 \label{subsec:sigma-types}
@@ -875,7 +961,7 @@ There are certain types for which UIP does hold:
   A type is a \define{set} or \define{hset} if its identity types are
   propositions. That is, for $A:\universe$
   \begin{equation*}
-    \apply{\isSet}{A}\defeq \∏{x,y:A}{\isProp{\propeq{}{x}{y}}}
+    \apply{\isSet}{A}\defeq \∏{x,y:A}{\apply{\isProp}{(\propeq{}{x}{y})}}
   \end{equation*}
 \end{definition}
 
@@ -923,7 +1009,7 @@ characterize such equivalences, these require a few preliminary definitions.
 	Given a function $f:A→B$ and point $b:B$, the \define{fiber of $f$ above $b$}
   is the type
   \begin{equation*}
-    \∑{a:A}{\propeq{}{\apply{f}{a}}{b}}
+    \apply{\ttfun{fiber}_f}{b}\defeq\∑{a:A}{\propeq{}{\apply{f}{a}}{b}}
   \end{equation*}
 \end{definition}
 
@@ -931,9 +1017,8 @@ characterize such equivalences, these require a few preliminary definitions.
 	Given dependent functions $f,g:\∏{a:A}{\apply{B}{a}}$, a \define{homotopy}
   between them is an inhabitant of
   \begin{equation*}
-    \∏{a:A}{\propeq{}{\apply{f}{a}}{\apply{g}{a}}}
+    f\sim g\defeq \∏{a:A}{\propeq{}{\apply{f}{a}}{\apply{g}{a}}}
   \end{equation*}
-  The above type is written $f\sim g$.
 \end{definition}
 
 \begin{definition}\label[definition]{def:weq}
@@ -945,12 +1030,13 @@ characterize such equivalences, these require a few preliminary definitions.
   \begin{itemize}
     \itemsep0em
     \item the fibers of $f$ are contractible,
-      $\∏{b:B}{\apply{\isContr}{(\apply{\ttfun{fiber}_f}{b}})}$
+      $\∏{b:B}{\apply{\isContr}{(\apply{\ttfun{fiber}_f}{b}})}$,
     \item there are functions $g,h:B→A$ such that their compositions
       with $f$ are the appropriate identities:
       \begin{equation*}
-        \paren{\∑{g:B→A}{f∘g\sim \id_B}}×\paren{\∑{h:B→A}{h∘f\sim\id_A}}
+        \paren{\∑{g:B→A}{f∘g\sim \id_B}}×\paren{\∑{h:B→A}{h∘f\sim\id_A}},
       \end{equation*}
+      or
     \item there is a function $g:B→A$ with homotopies $η:g∘f\sim\id_A$,
       $ε:f∘g\sim\id_B$, and
       $τ:\∏{a:A}{\propeq{}{\apply{f}{(\apply{η}{a})}}{\apply{ε}{(\apply{f}{a}})}}$.
@@ -962,7 +1048,7 @@ characterize such equivalences, these require a few preliminary definitions.
 \end{definition}
 
 \begin{lemma}\label[lemma]{lemma:isequiv-prop}
-	A few basic properties of weak equivalences:
+	\
   \begin{enumerate}
     \itemsep0em
     \item The property of being a weak equivalence is a proposition.
@@ -1056,7 +1142,7 @@ aren't of the same type. However, we have the following (incredibly useful)
 lemma, inspired by the homotopy interpretation:
 
 \begin{lemma}\label[lemma]{lemma:path-sigma}
-	If $x,y:\∑{a:A}{B(a)}$, then
+	If $x,y:\∑{a:A}{\apply{B}{a}}$, then
   \begin{equation*}
     \weq{
       (\propeq{}{x}{y})
@@ -1065,7 +1151,7 @@ lemma, inspired by the homotopy interpretation:
         p:\propeq{}{\appr{1}{x}}{\appr{1}{y}}
       }{
         \propeq{}{
-          \transport{}{p}{\appr{2}{x}}
+          \transport{B}{p}{(\appr{2}{x})}
         }{
           \appr{2}{y}
         }
@@ -1074,16 +1160,69 @@ lemma, inspired by the homotopy interpretation:
   \end{equation*}
 \end{lemma}
 
+Schematically,
+
+\begin{center}
+  \begin{tikzpicture}
+    \def\xshift{3.5}
+    \def\yheight{2.5}
+
+    % B(x)
+    \node[circle,draw,inner sep=0.5cm,label=above:{$\apply{B}{x}$},xscale=2.0] (px) at (-\xshift,\yheight) {};
+    \node[circle,fill,inner sep=1pt,label=left:{$\appr{2}{x}$}] (b1) at (px) {};
+
+    % B(y)
+    % \node[circle,draw,inner sep=0.5cm,label=above:{$\apply{B}{y}$},scale=2] (py) at (\xshift,\yheight) {};
+    % \node[circle,fill,inner sep=1pt,label=left:{$\appr{2}{y}$}] (b1) at (py) {};
+
+    % B(y)
+    \node[circle,draw,inner sep=0.6cm,label=above:{$\apply{B}{y}$},yscale=1.5,xscale=2.8] (py) at (1.0*\xshift,\yheight) {};
+    \node[circle,fill,inner sep=1pt,label=right:{$\transport{B}{p}{(\appr{2}{x})}$},yshift=0.5] (tpfu) at (0.55*\xshift,1.15*\yheight) {};
+    \node[circle,fill,inner sep=1pt,label=right:{$\appr{2}{y}$},yshift=0.5] (tpu) at (0.55*\xshift,0.85*\yheight) {};
+    \draw[decorate,decoration={snake,amplitude=1}] (tpfu) -- (tpu);
+
+    % Base space A
+    \node[circle,scale=1.2,draw,inner sep=0.5cm,label=left:{$A$},xscale=2.5] (A) at (0,0) {};
+    \node[circle,fill,inner sep=1pt,label=left:{$\appr{1}{x}$}] (b1) at (-.5,0) {};
+    \node[circle,fill,inner sep=1pt,label=right:{$\appr{1}{y}$}] (b2) at (.5,0) {};
+    \draw[decorate,decoration={snake,amplitude=1}] (b1) -- node[auto,swap] {$p$} (b2);
+
+    \draw[->] (-0.5*\xshift,\yheight+0.2*\yheight) to[bend left] node[auto] {$\transpor{B}{p}$} (0.2*\xshift,\yheight+0.2*\yheight);
+  \end{tikzpicture}
+\end{center}
+
 \subsection{The univalence axiom}
 \label{subsec:the-univalence-axiom}
 
-\begin{definition}\label[definition]{def:ua}
-  \TODO{definintion}
-  It has the following computation rule:
+The univalence axiom characterizes paths in $\universe$. It states that such
+paths $\propeq{\universe}{A}{B}$ are exactly the weak equivalences $\weq{A}{B}$.
 
-  Note that this rule holds up to \textit{propositional equality}. This is
-  because in \UTT{}, univalence is indeed an \textit{axiom}. It has
-  no computational meaning. \TODO{mention CTT}
+\begin{definition}\label[definition]{def:ua}
+  There is a canonical function
+  \begin{equation*}
+    \ttfun{idtoweq} : \∏{A,B:\universe}{\propeq{}{A}{B}→\weq{A}{B}}
+  \end{equation*}
+  defined by path induction and the identity equivalence (the reflexivity of
+  $\weqsign$). The \define{univalence axiom} states that $\ttfun{idtoweq}$ is an
+  equivalence.\footnote{Note that there are several ways one might define
+    $\ttfun{idtoweq}$. \cite{book} uses an alternative definition, we follow
+    the \UniMath{} library.} In particular, it has an inverse
+  \begin{equation*}
+    \ua : \∏{A,B:\universe}{\weq{A}{B}→\propeq{}{A}{B}}
+  \end{equation*}
+  The axiom may be more concisely yet less precisely stated:
+  \begin{equation*}
+    \weq{(\propeq{\universe}{A}{B})}{(\weq{A}{B})}
+  \end{equation*}
+  It has the following computation rule:\footnote{Which is a
+  \textit{propositional} equality. Recall that it is incoherent to postulate
+  judgmental equalities, which are not part of the language of \UTT{}. 
+  There are efforts to construct so-called ``cubical'' type theories in which
+  univalence is not an axiom, but can be derived. Generally, this β-rule
+  is judgmental in such systems.}
+  \begin{equation*}
+    \transport{\id_\universe}{(\apply{\ua}{p})}{x} = \apply{p}{x}.
+  \end{equation*}
 \end{definition}
 
 \begin{theorem}[Function extensionality]\label[theorem]{thm:funext}
@@ -1094,23 +1233,37 @@ lemma, inspired by the homotopy interpretation:
   \end{equation*}
 \end{theorem}
 
-As a simple example of the use of univalence, we can vastly generaize
+As a simple example of the use of univalence, we can vastly generalize
 \cref{lemma:contr-weq}.
 
 \begin{theorem}
-	Weak equivalences preserve hlevels.
+	Weak equivalences preserve h-levels.
 \end{theorem}
 \begin{proof}
-  Let $A,B:\universe$, $w:\weq{A}{B}$, and $i:\appply{\hlevel}{n}{A}$.
+  Let $A,B:\universe$, $n:\N$, $w:\weq{A}{B}$, and $i:\appply{\hlevel}{n}{A}$.
 	Univalence provides an equality $\apply{\ua}{w}:\propeq{\universe}{A}{B}$. 
   Then
   \begin{equation*}
-    \transport{\λ{X}{\apply{\isContr}{X}}}{\apply{\ua}{w}}{i} : \appply{\hlevel}{n}{A}
+    \transport{\apply{\hlevel}{n}}{(\apply{\ua}{w})}{i} : \appply{\hlevel}{n}{B}
   \end{equation*}
 \end{proof}
 
 This argument isn't actually specific to contractibility; using univalence any
 proposition of the form ``If $\weq{A}{B}$ and $\apply{P}{A}$, then $\apply{P}{B}$''
-trivially true.
+is trivially true. Briefly, everything respects weak equivalences.
+
+\begin{theorem}
+	UIP is inconsistent with the univalence axiom. In particular, there are some
+  types that are not sets.
+\end{theorem}
+\begin{proof}[Proof sketch]
+  If UIP holds, then every type is a set. Thus, it suffices to show that $\universe$
+  is not a set, i.e.\ that there is a type $A:\universe$ and some equality
+  $\propeq{}{A}{A}$ which is not equal to $\refl{A}$. Use $A\defeq\booltype$.
+  There are two weak equivalences $\weq{A}{A}$, $\id_A$ and the one that flips
+  $\btrue$ and $\bfalse$. It can be shown that if these equivalences gave rise
+  to the same equality $\propeq{}{A}{A}$ by univalence, then it would have to be
+  the case that $\propeq{}{\btrue}{\bfalse}$, which can shown to be false.
+\end{proof}
 
 \end{document}
