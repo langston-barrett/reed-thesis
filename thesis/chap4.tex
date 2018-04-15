@@ -3,7 +3,7 @@
 \chapter{Coinductive types in univalent type theory}
 \label{chap:coinductive-types-in-univalent-type-theory}
 
-The results in this chapter all appear in the \UniMath{} package
+The results in this chapter mainly appear in the \UniMath{} package
 \unimathname{Induction}, so that prefix is left off
 (e.g.\ \unimathname{Induction.W.Core} is shortened to
 \unimathname{W.Core}).
@@ -11,15 +11,15 @@ The results in this chapter all appear in the \UniMath{} package
 \section{W and M}
 \label{sec:w-and-m}
 
-We now present W-types and M-types. Per Martin-Löf introduced W-types as a
-way to study types with a well-ordering. In fact, W-types provide a general and
-convenient setting for the study of induction. In extensional type theories,
-W-types are equivalent to initial algebras (as in \cref{def:initial-alg}) for
-polynomial functors (see \cref{def:polynomial-functor}), so all the examples
-we've seen so far of inductive types defined as functor algebras are W-types.
+Per Martin-Löf introduced W-types as a way to study types with a well-ordering.
+In fact, W-types provide a general and convenient setting for the study of
+induction. In extensional type theories, W-types are initial algebras (as in
+\cref{def:initial-alg}) for polynomial functors (see
+\cref{def:polynomial-functor}), so all the examples we've seen so far of
+inductive types defined as functor algebras are W-types.
 
-Dually, M-types are non-wellfounded trees, that is, trees with potentially
-infinitely long branches.
+Dually, M-types are
+non-wellfounded trees, that is, trees with potentially infinitely long branches.
 
 \begin{definition}\label[definition]{def:container}
   A \define{container}\index{Container} (sometimes called a
@@ -28,39 +28,48 @@ infinitely long branches.
   $A:\universe$ and a family $B:A→\universe$.
 \end{definition}
 Given a container, we can form the associated W- and M-types:
-\begin{gatherjot}
-  \prftree[r]{W-form}
+\begin{align*}
+  \prftree[r]{}
     {Γ ⊢ A:\universe}{Γ ⊢ B:A\to\universe}
     {Γ ⊢ \type{\W{a}{A}{B}}}
-  \\
-  \prftree[r]{M-form}
+  &&
+  \prftree[r]{}
     {Γ ⊢ A:\universe}{Γ ⊢ B:A\to\universe}
     {Γ ⊢ \type{\M{a}{A}{B}}}
-\end{gatherjot}
-Again, these types are shaped like trees. An element of a W-type is specified by
+\end{align*}
+These types are shaped like trees. An element of a W-type is specified by
 an element $a:A$ (the ``label'' of this vertex) and a function
-$b:B(a)\to \W{x}{A}{B(x)}$ which picks out its subtrees.
+$b:\apply{B}{a}\to \W{x}{A}{B}$ which picks out its subtrees.
 \begin{equation*}
-  \prftree[r]{W-intro}
-    {Γ ⊢ A:\universe}{Γ ⊢ B:A\to\universe}{Γ ⊢ a:A}{Γ ⊢ b:B(a)\to \W{x}{A}{B}}
+  \prftree[r]{}
+    {Γ ⊢ a:A}
+    {Γ ⊢ b:B(a)\to \W{x}{A}{B}}
     {Γ ⊢ \sup{a}{b}:\W{x}{A}{B}}
 \end{equation*}
-Martin-Löf points out that a ``bottom'' element can be given by taking one of
-the $B(a)$ to be $\emptytype$ and the subtree-function to be the one provided by
-$\rec_{\emptytype}$ (example in \cref{ex:nat-w})\TODO{reference}.
+Martin-Löf points out that a ``bottom'' or ``leaf'' element can be given by
+taking one of the $\apply{B}{a}$ to be $\emptytype$ and the subtree-function to
+be the one provided by $\rec_{\emptytype}$ (example in
+\cref{ex:nat-w})\cite{martin-lof-itt}.
 
-The elimination rule\index{Elimination!For W-types} for W-types encodes
-transfinite induction. If, when a property $C:\W{a}{A}{B}→\universe$ holds for
-all subtrees of a given node it also holds for that node, then it holds for any
-element in $\W{a}{A}{B}$:
+The typographically-challenging elimination rule\index{Elimination!For W-types}
+for W-types encodes transfinite induction. If, when a property
+$C:\W{a}{A}{B}→\universe$ holds for all subtrees of a given node it also holds
+for that node, then it holds for any element in $\W{a}{A}{B}$:
 \begin{equation*}
-  \prftree[r]{W-elim}
+  \prftree[r]{}
     {Γ ⊢ w:\W{a}{A}{B}}
     {\prftree[r, noline]{}
-      {Γ, a:A,\quad f:\apply{B}{a}→\W{a}{A}{B},\quad g:\∏{b:\apply{B}{a}}{\apply{C}{(\apply{f}{b})}}}
+      {Γ,\quad a:A,\quad f:\apply{B}{a}→\W{a}{A}{B},\quad g:\∏{b:\apply{B}{a}}{\apply{C}{(\apply{f}{b})}}}
       {⊢\apppply{h}{a}{f}{g}: C(\sup{a}{f})}}
     {Γ ⊢ \appply{\recW}{w}{h}:\apply{C}{w}}
 \end{equation*}
+As a function:
+\begin{multline*}
+	\recW : \∏{C:\W{a}{A}{B}→\universe}{}
+  \paren{\∏{a:A}{\∏{f:\apply{B}{a}→\W{a}{A}{B}}
+                    {\∏{g:\∏{b:\apply{B}{a}}{\apply{C}{(\apply{f}{b})}}}{\apply{C}{(\sup{a}{f})}}}}}
+                \\ →\∏{w:\W{a}{A}{B}}{\apply{C}{w}}
+\end{multline*}
 
 \begin{example}\label[example]{ex:nat-w}
   The natural numbers are readily encoded as a W-type.
@@ -102,7 +111,7 @@ element in $\W{a}{A}{B}$:
       \node     [above of=D] {$\cdots$};
 
       \node     [right of=D, scale=2.0, color=white] {$\cdot$};
-      \node (E) [right of=D] {$\cdots$};
+      \node (E) [right of=D, xshift=1cm] {$\cdots$};
       \node     [scale=2, above of=E, color=white] {$\cdots$};
 
       \draw[->] (A) edge (B);
@@ -118,25 +127,25 @@ element in $\W{a}{A}{B}$:
   Using this (and ignoring uniquely specified terms like $!$),
   the W-elimination rule for $\N'$ can be reshaped and simplified:
   \begin{equation*}
-    \prftree[r]{\N'-elim}
+    \prftree[r]{}
       {Γ ⊢ n:\N'}
       {\prftree[r, noline]{}
         {Γ⊢h_1: C(0_{\N'})}}
       {\prftree[r, noline]{}
         {Γ, f:\unittype→\N',g:\∏{\unitelem:\unittype}\apply{C}{(\apply{f}{\unitelem)}}}
-        {⊢\appply{h_2}{f}{g}: C(\sup{\btrue}{f})}}
+        {⊢\appply{h_2}{f}{g}: \apply{C}{(\sup{\btrue}{f})}}}
       {Γ ⊢ \apppply{\rec_{\N'}}{n}{h_1}{h_2}:\apply{C}{n}}
   \end{equation*}
   But since a function $\unittype→\N'$ is equivalent to picking out a single
   element of $\N'$ and $\sup{\btrue}{f}\equiv\apply{\suc}{f}$,
-  this is just the elimination rule for the natural numbers (\TODO{ref})
+  this is just the elimination rule for the natural numbers (\cref{def:nat})
   in disguise.
 \end{example}
 
 Other examples include lists, binary trees, ordinals of the second number
 class, and more.\TODO{reference} In the next few sections, we will develop a
 correspondence between W-types (resp.\ M-types) and initial algebras (resp.\
-final coalgebras) for a general class of functor on $\universe$, which will
+terminal coalgebras) for a general class of functor on $\universe$, which will
 include all examples in \cref{sec:functors-and-their-algebras}.
 
 \section{Preliminaries}
@@ -147,7 +156,7 @@ include all examples in \cref{sec:functors-and-their-algebras}.
   Given a container $S\defeq (A,B)$, its associated \define{polynomial functor}
   is the function
   \begin{gather*}
-    P:\universe\to \universe \\
+    P_{A,B}:\universe\to \universe \\
     \apply{P_{A,B}}{X}\defeq\∑{a:A}{B(a)\to X}
   \end{gather*}
   We will regularly leave off the subscript for $P$.
@@ -165,9 +174,9 @@ include all examples in \cref{sec:functors-and-their-algebras}.
   \textit{propositional} equality (as in \cref{def:functor-tt}), which will
   suffice for the following proofs. That is, we have
   \begin{align*}
-    \apply{P^*}{g∘f} = \apply{P^*}{g}∘\apply{P^*}{f}
+    \apply{P^*}{(g∘f)} = \apply{P^*}{g}∘\apply{P^*}{f}
     &&
-    \apply{P^*}{\id_X} = \apply{P^*}{\id_X}
+    \apply{P^*}{\id_X} = \id_{\apply{P}{X}}
   \end{align*}
 \end{remark}
 
@@ -189,26 +198,24 @@ include all examples in \cref{sec:functors-and-their-algebras}.
 See \cref{ex:nat-functor-utt} for the polynomial functor for which $\ℕ$ is
 initial.
 
-\section{Internalizing M-types}
-\label{sec:internalizing-m-types}
+\section{Uniqueness}
+\label{sec:uniqueness}
 
 Fix a container $S\defeq (A,B)$ and let $P$ be the associated polynomial functor.
 We will prove a few auxiliary lemmas on the way to the following result.
 This proof appeared in the \Agda{} formalization of \cite{non-wellfounded}, this
 is its first appearance ``de-formalized''.
 
-\subsection{Uniqueness}
-\label{subsec:uniqueness}
-
 \begin{lemma}[\unimathname{M.Uniqueness.M\_coalg\_eq},
               \unimathname{M.Uniqueness.isaprop\_M}]
-  \label[lemma]{lemma:final-colagebra-unique}
-  Any two final $P$-coalgebras are equal. In other words, the following type is
+  \label[lemma]{lemma:terminal-colagebra-unique}
+  Any two terminal $P$-coalgebras are equal. In other words, the following type is
   a proposition:
   \begin{equation*}
-    \Final(S)\defeq
-    \∑{(X,α):\Coalgtype_{S}}{
-      \∏{(Y,β):\Coalgtype_{S}}{\isContr((Y,β)⇒ (X,α))}
+    \apply{\Final}{\dpair{A}{B}}\defeq
+    \∑{(X,α):\apply{\Coalgtype}{\dpair{A}{B}}}{
+      \∏{(Y,β):\apply{\Coalgtype}{\dpair{A}{B}}}
+        {\apply{\isContr}{\dpair{Y}{β}⇒\dpair{X}{α}}}
     }
   \end{equation*}
 \end{lemma}
@@ -217,18 +224,17 @@ First, we'll show that their carriers are equivalent:
 
 \begin{lemma}[\unimathname{M.Uniqueness.M\_carriers\_iso}]
   \label[lemma]{lemma:algebra-iso-equiv}
-	If $(X,α)$ and $(Y,β)$ are final $P$-coalgebras,
+	If $(X,α)$ and $(Y,β)$ are terminal $P$-coalgebras,
   then the first projections of the unique coalgebra morphisms
   $f:X⇒ Y$ and $g:Y⇒ X$ induce
   an equivalence of types $\weq{X}{Y}$.
 \end{lemma}
-\begin{proof}
-  This proof is a standard categorical technique, much reminiscent of
-  \cref{lemma:terminal-unique}.
-	\TODO{proof}
-\end{proof}
 
-We can then invoke the characterization of paths in $Σ$-types,
+The proof is standard category theory, namely that two objects
+satisfying the same universal property are isomorphic
+(compare to \cref{lemma:terminal-unique}).
+
+We can then invoke the characterization of paths in Σ-types,
 \cref{lemma:path-sigma}. We'll need to demonstrate that the coalgebra map
 $α:X\to FX$ is equal to $β:Y\to FY$ when transported along the path
 constructed in \cref{lemma:algebra-iso-equiv}.
@@ -239,16 +245,19 @@ constructed in \cref{lemma:algebra-iso-equiv}.
   if for all $x:X$ we have
   \begin{equation*}
     \propeq{}{
-      \transport{F}{p}{\apply{f}{x}}
+      \transport{F}{p}{(\apply{f}{x})}
     }{
-      g({\transport{\id_{\universe}}{p}{x}})
+      \apply{g}{({\transport{\id_{\universe}}{p}{x}})}
     }
   \end{equation*}
   then $\propeq{}{\transport{Z↦ (Z\to FZ)}{p}{f}}{g}$.
   That is, $f$ is equal to $g$ after being transported just when
   applying $f$ and transporting the result is the same as transporting the
-  input and applying $g$.
+  input and applying $g$.\footnote{This is a corollary of Lemma 2.9.6 in
+    \cite{book}, which we prove as \coqname{M.Uniqueness.transport\_fun}. The
+    following proof is direct.}
 \end{lemma}
+
 \begin{proof}
   Using identity elimination (\cref{rule:id-elim}), it suffices to assume
   $X\jdeq Y$ and $p\jdeq\refl{X}$. Then by the definition of transport
@@ -313,11 +322,11 @@ the following auxiliary result:
   \end{align*}
 \end{proof}
 
-\begin{proof}[Proof of \cref{lemma:final-colagebra-unique}]
+\begin{proof}[Proof of \cref{lemma:terminal-colagebra-unique}]
   Let:
   \begin{itemize}
     \itemsep0em
-    \item $(X,α)$, $(Y,β)$ be final $P$-coalgebras,
+    \item $(X,α)$, $(Y,β)$ be terminal $P$-coalgebras,
     \item $f:X⇒ Y$ and $g:Y⇒ X$ be the unique $P$-coalgebra
       morphisms between them,
     \item $q:\weq{X}{Y}$ the equivalence of types induced by $f$ and $g$
@@ -391,24 +400,28 @@ the following auxiliary result:
   development for details.
 \end{proof}
 
-\subsection{Fibered algebras and the natural numbers}
-\label{subsec:fibered-algebras}
+\section{Fibered algebras and the natural numbers}
+\label{sec:fibered-algebras}
 
-The following section is alarmingly technical. All but the most dedicated
+In the proof of \cite[Lemma 11]{non-wellfounded}, the authors use a result from
+\cite{homotopy-initial}. This result turns out to be highly nontrivial, namely
+that the type of ``algebra sections'' for a ``(pre)initial fibered algebra''
+(all to be defined in this section) is contractible. In particular, The
+fiber-initial property of $\ℕ$ (see \cref{def:fiber-initiality} and
+\cref{lemma:fiber-initiality-nat}) is essential to proving \cref{lemma:cochains}.
+We don't fully prove this result, but instead hope to provide some intuition
+about what it means that $\N$ is a fiber-initial algebra.
+
+This section is alarmingly technical. All but the most dedicated
 readers should probably skip all theorems and definitions involving the word
 ``fibered''.
 
 A functor algebra $\dpair{X}{α}$ has as its first component a type
-$X:\universe$. What would it mean for an algebra to be ``fibered'' over this
-one, with a first component $Y:X → \universe$? When can a \textit{dependent}
-type (over an algebra) can be given the structure of a functor algebra?
-Such fibered algebras generalize regular algebras for endofunctors.
-
-The fiber-initial property of $\ℕ$
-(see \cref{def:fiber-initiality} and \cref{lemma:fiber-initiality-nat})
-is essential to proving a property about limits
-(\cref{lemma:cochains}) that plays a pivotal role in the proof of the existence
-of M-types.
+$X:\universe$. What would it mean for an algebra to be ``fibered'' or
+``dependent'' over this one, with a first component $Y:X → \universe$? When can
+a \textit{dependent} type (over an algebra) can be given the structure of a
+functor algebra? Such fibered algebras generalize regular algebras for
+endofunctors.
 
 \begin{definition}[\unimathname{W.Fibered.fibered\_alg},
                    \unimathname{W.Fibered.algebra\_section}]
@@ -481,16 +494,16 @@ of M-types.
   contractible.
 \end{definition}
 
-\Cref{subsubsec:fibered-natural-numbers} explores the applications of these
+\Cref{subsec:fibered-natural-numbers} explores the applications of these
 functions to $\ℕ$.
 
-\subsubsection{The natural numbers}
-\label{subsubsec:fibered-natural-numbers}
+\subsection{The natural numbers}
+\label{subsec:fibered-natural-numbers}
 
 We now prove a few facts about the natural numbers and the functor for which
 they are initial, some of which will be familiar from
 \cref{sec:functors-and-their-algebras}.\footnote{These arguments are my own,
-  though some of these theorems are proved in the \Agda development of
+  though some of these theorems are proved in the \Agda{} development of
   \cite{non-wellfounded}.}
 
 \begin{example}[\coqname{W.Naturals.nat\_functor}]
@@ -523,7 +536,7 @@ of $X ↦ 1 + X$.
 \begin{lemma}[\coqname{W.Naturals.nat\_functor\_equiv}]
   \label[lemma]{lemma:nat-alg-simpl}
   A $P$-algebra structure on a type $X$ is given by a point $x_0:X$ and a
-  function $\suc_x:X→X$. More precisely, there is an equivalence:
+  function $\suc_X:X→X$. More precisely, there is an equivalence:
   \begin{equation*}
     w:\weq{\Algtype_P}{\∑{X:\universe}{X × (X → X)}}
   \end{equation*}
@@ -555,9 +568,9 @@ of $X ↦ 1 + X$.
   $\unittype$, both of which will be used extensively in the next few proofs.
 \end{proof}
 
-Applying this equivalence, we could more readily define the $P$-algebra over
-$\ℕ$ as $(\appply{w}{0}{\suc})$. In fact, this gives \textit{judgmentally equal}
-result. We can give a similar lemma for morphisms:
+Applying this equivalence, we could more readily define the $P$-algebra
+structure on $\ℕ$ as $(\appply{w^{-1}}{0}{\suc})$. In fact, this gives
+\textit{judgmentally equal} result. We can give a similar lemma for morphisms:
 
 \begin{lemma}[\coqname{W.Naturals.mk\_nat\_functor\_algebra\_mor}]
   \label[lemma]{lemma:mk-nat-alg-mor}
@@ -630,7 +643,7 @@ result. We can give a similar lemma for morphisms:
   \begin{alignat*}{2}
     &g : ℕ → X \\
     &\apply{g}{0}                 &&\defeq x_0 \\
-    &\apply{g}{(\apply{\suc}{n})} &&\defeq \suc_X(g(n))
+    &\apply{g}{(\apply{\suc}{n})} &&\defeq \apply{\suc_X}{(\apply{g}{n}})
   \end{alignat*}
   By definition $g$ sends the distinguished point $x_0$ to $0$ and intertwines
   $\suc$ with $\suc_X$; by \cref{lemma:nat-alg-mor}, it's an algebra morphism.
@@ -674,7 +687,7 @@ result. We can give a similar lemma for morphisms:
   % commuting condition for $τ$ (in the diagram above),
   \begin{align*}
     \apply{τ}{0}
-    &= \apply{τ}{(\apply{η}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{\ℕ}}})}
+    &\jdeq \apply{τ}{(\apply{η}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{\ℕ}}})}
     &&\quad\text{Definition of }η \\
     &\jdeq \apply{(τ∘η)}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{\ℕ}}} \\
     &= \apply{(α∘P^*τ)}{\dpair{\bfalse}{\apply{\rec_{\𝟘}}{\ℕ}}}
@@ -689,12 +702,12 @@ result. We can give a similar lemma for morphisms:
 
   % (false,, (λ _ : bool_rect (λ _ : bool, UU) ∅ unit false, n0))
   (Inductive step) Suppose the hypothesis holds for $n:\ℕ$. Then
-  $\dpair{\btrue}{\apply{\rec_{\𝟙}}{\ℕ}{n}}:P\ℕ$.
+  $\dpair{\btrue}{\appply{\rec_{\𝟙}}{\ℕ}{n}}:P\ℕ$.
   Recall the definition of $f$ given in the previous proof. Similarly to the
   above reasoning,
   \begin{align*}
     \apply{τ}{(\apply{\suc}{n})}
-    &= \apply{τ}{(\apply{η}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{\ℕ}{n}}})}
+    &\jdeq \apply{τ}{(\apply{η}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{\ℕ}{n}}})}
     &&\quad\text{Definition of }η \\
     &\jdeq \apply{(τ∘η)}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{\ℕ}{n}}} \\
     &= \apply{(α∘P^*τ)}{\dpair{\btrue}{\appply{\rec_{\𝟙}}{\ℕ}{n}}}
@@ -713,25 +726,22 @@ result. We can give a similar lemma for morphisms:
 Similar to the result of \cref{lemma:nat-alg-simpl}, fibered algebras over $\ℕ$
 also have a simple structure understood by an equivalence.
 
-\begin{lemma}[\coqname{W.Naturals.fibered\_algebra\_nat}]
+\begin{lemma}[\unimathname{W.Naturals.fibered\_algebra\_nat}]
   \label[lemma]{lemma:nat-fib-alg-simpl}
   A fibered algebra structure (over $\ℕ$) on a family
   $E:\ℕ\to\universe$ is given by a point $e_0:E_0$
   and a family of functions $f^E:\pit{n:\ℕ}{E_n\to E_{n+1}}$. Specifically,
   there is an equivalence
   \begin{equation*}
-    \weq{\Fibalgtype(\dpair{ℕ}{\suc})}
+    \weq{\apply{\Fibalgtype}{\dpair{ℕ}{\suc}}}
         {\∑{E:\universe}E_0×\pit{n:\ℕ}{E_n\to E_{n+1}}}
   \end{equation*}
 \end{lemma}
-\begin{proof}
-	\TODO{proof?}
-\end{proof}
 
 And like \cref{lemma:mk-nat-alg-mor}, we can also simplify our understanding of
 algebra sections.
 
-\begin{lemma}[\coqname{W.Naturals.mk\_nat\_alg\_sec}]
+\begin{lemma}[\unimathname{W.Naturals.mk\_nat\_alg\_sec}]
   \label[lemma]{lemma:mk-nat-alg-sec}
   % (p1 : x 0 = pr1 (pr2 FA'))
   % (p2 : (∏ n, pr2 (pr2 FA') n (x n) = x (S n))),
@@ -741,16 +751,13 @@ algebra sections.
   then there is a corresponding algebra section with $x$ as the underlying
   function.
 \end{lemma}
-\begin{proof}
-	\TODO{proof?}
-\end{proof}
 
 \begin{lemma}\label[lemma]{lemma:nat-alg-sec-equiv}
   The above function is an equivalence.
 \end{lemma}
 
 This result is proved in the \Agda{} formalization accompanying
-\cite{non-wellfounded}. Its proof is outside of the scope
+\cite{non-wellfounded}. Its proof is outside of the scope of this thesis.
 
 \begin{lemma}[\coqname{W.Naturals.nat\_alg\_is\_preinitial\_sec}]
   \label[lemma]{lemma:fiber-preinitiality-nat}
@@ -763,7 +770,7 @@ This result is proved in the \Agda{} formalization accompanying
     θ:\∏{\dpair{n}{h}:P\ℕ}{\paren{\∏{b:\appppply{\rec_{\𝟚}}{\universe}{\𝟘}{\𝟙}{n}}{\apply{E}{(\apply{h}{b})}}} → \apply{E}{(\apply{η}{\dpair{n}{h}})}}.
   \end{equation*}
   The first part of an algebra section is a function $f:\∏{n:\ℕ}{\apply{E}{n}}$.
-  Define $f$ by induction:
+  Define $f$ by recursion:
   \begin{alignat*}{2}
     &f : \∏{n:\ℕ}{\apply{E}{n}}   &&\\
     &\apply{f}{0}                 &&\defeq
@@ -793,8 +800,7 @@ This result is proved in the \Agda{} formalization accompanying
     &&\quad\text{Definition of }f \\
     &\= \appply{θ}{\dpair{\bfalse}{h}}{(f∘h)}
   \end{align*}
-  by the contractibility of types $\𝟘 → \ℕ$ and
-  $(E∘\fromempty{\ℕ}) → \ℕ$.\TODO{reference}
+  by the contractibility of types $\𝟘 → \ℕ$ and $(E∘\fromempty{\ℕ}) → \ℕ$.
 
   If $b\≡\btrue$, then $h:\𝟙 → ℕ$.
   \begin{align*}
@@ -806,7 +812,7 @@ This result is proved in the \Agda{} formalization accompanying
     &\= \appply{θ}{\dpair{\btrue}{h}}{(f∘h)}
   \end{align*}
   where the last equality is by two applications of function extensionality
-  (\cref{thm:funext}) and the contractibility for $\𝟙$.
+  (\cref{thm:funext}) and the contractibility of $\𝟙$.
 \end{proof}
 
 \begin{lemma}\label[lemma]{lemma:fiber-initiality-nat}
@@ -829,7 +835,155 @@ This result is proved in the \Agda{} formalization accompanying
 \subsection{Limits of (co)chains}
 \label{subsec:limits-of-cochains}
 
-\begin{lemma}[\coqname{Chains.shifted\_limit}]
-  Let $(X,π)$
+Recall that in a precategory $\bfC$, a graph is given by a type $G_0$ of vertices
+and a function $G_0→G_0→\universe$ which gives a type of edges between any two
+vertices. A \define{chain} in any category is given by
+\begin{align*}
+  G_0\defeq \ℕ
+  &&
+  \appply{G_1}{n}{m}\defeq \propeq{}{\apply{\suc}{m}}{n}.
+\end{align*}
+% This graph is called $\ttfun{Chain}$.
+Since $\ℕ$ is a set, this means that there
+is at most one edge between any two vertices. The graph looks like this:
+\begin{center}
+  \begin{tikzpicture}[scale=4]
+    \node (A) [scale=2] {$\cdot$};
+
+    \node (B) [scale=2, right of=A] {$\cdot$};
+
+    \node (C) [scale=2, right of=B] {$\cdot$};
+
+    \node (D) [scale=2, right of=C] {$\cdot$};
+
+    \node     [right of=D, scale=2.0, color=white] {$\cdot$};
+    \node (E) [right of=D, xshift=1cm] {$\cdots$};
+
+    \draw[->] (B) edge (A);
+    \draw[->] (C) edge (B);
+    \draw[->] (D) edge (C);
+    \draw[->] (E) edge (D);
+    % \draw (A) edge [in=-60,out=-20,loop] node[below] {$e$} (A);
+  \end{tikzpicture}
+\end{center}
+The next lemma formalizes this intuition.
+
+\begin{lemma}[\unimathname{CategoryTheory.Chains.Cochains.cochain\_weq}]
+  In any precategory $\bfC$, there is an equivalence between the type of
+  diagrams for the chain graph and the type
+  \begin{equation*}
+    \∑{O:\ℕ→\bfC}{\∏{n:\ℕ}{\apply{O}{(\apply{\suc}{n})}→\apply{O}{n}}}
+  \end{equation*}
 \end{lemma}
+
+\begin{definition}
+	A \define{chain} $\dpair{X}{π}$ is a family of types $X:\ℕ→\universe$
+  together with \define{projections} $π:\∏{n:\ℕ}X_{\apply{\suc}{n}}→X_n$.
+\end{definition}
+
+\begin{example}[\unimathname{CategoryTheory.Chains.Cochains.termCochain}]
+  \label[example]{ex:termcochain}
+  Of particular
+  importance is the chain diagram
+  \begin{center}
+    \begin{tikzpicture}[scale=4]
+      \node (A) [] {$\unittype$};
+
+      \node (B) [xshift=2cm, right of=A] {$\apply{P_{A,B}}{\unittype}$};
+
+      \node (C) [xshift=2cm, right of=B] {$\apply{P_{A,B}^2}{\unittype}$};
+
+      \node (D) [xshift=2cm, right of=C] {$\apply{P_{A,B}^3}{\unittype}$};
+
+      \node     [xshift=2cm, right of=D, color=white] {$\cdot$};
+      \node (E) [right of=D, xshift=1.5cm] {$\cdots$};
+
+      \draw[->] (B) edge (A) node [above, xshift=-1.6cm] {$!$};
+      \draw[->] (C) edge (B) node [above, xshift=-1.5cm] {$\apply{P^*}{!}$};
+      \draw[->] (D) edge (C) node [above, xshift=-1.52cm] {$\apply{(P^*)^2}{!}$};
+      \draw[->] (E) edge (D) node [above, xshift=-1cm] {$\cdots$};
+      % \draw (A) edge [in=-60,out=-20,loop] node[below] {$e$} (A);
+    \end{tikzpicture}
+  \end{center}
+  where $P_{A,B}$ is the polynomial functor associated to a given signature and
+  $P_{A,B}^i$ represents the $i$\textsuperscript{th} repeated application of $P_{A,B}$.
+  The M-type associated to $\dpair{A}{B}$ is the limit of this diagram.
+\end{example}
+
+Recall that the standard limit (\cref{def:standard-limit}) is constructed using
+universal quantification over the edges between two given vertices. Since we
+know that there is at most one edge between any two vertices in this graph,
+we can simplify the limits of chain diagrams (this simplification corresponds to
+\cite[Definition 9]{non-wellfounded}).
+
+\begin{lemma}[\coqname{M.Chains.standard\_limit\_of\_cochains}]
+  For a cochain $\dpair{X}{π}$, there is a simplifying equivalence
+  \begin{align*}
+    \apply{\Stdlim}{\dpair{X}{π}}
+    &\jdeq \∑{x:\∏{v:G_0}{\apply{D}{v}}}
+      {\∏{u,v:G_0}{\∏{e:\appply{G_1}{u}{v}}{\propeq{}{\appply{D}{e}{(\apply{x}{u})}}{\apply{x}{v}}}}} \\
+    &\jdeq \∑{x:\∏{v:\ℕ}{X_v}}
+      {\∏{u,v:\ℕ}{\∏{e:\propeq{}{\apply{\suc}{v}}{u}}{\propeq{}{\appply{D}{e}{(\apply{x}{u})}}{\apply{x}{v}}}}} \\
+    &\weqsign
+        {\∑{x:\∏{n:\ℕ}{X_n}}{\∏{n:ℕ}{\propeq{}{\appply{D}{(\refl{\apply{\suc}{n}})}{(\apply{x}{u})}}}{\apply{x}{v}}}}
+  \end{align*}
+\end{lemma}
+
+\begin{lemma}[\unimathname{M.Chains.shifted\_limit}]
+  \label[lemma]{lemma:shifted-limit}
+  Let $\dpair{X}{π}$ be a chain. The \define{shifted chain} $\dpair{X'}{π'}$
+  is defined by $X'_n\defeq X_{\apply{\suc}{n}}$ and $π'_n\defeq π_{\apply{\suc}{n}}$.
+  The standard limits of these chains are equivalent.
+\end{lemma}
+
+This is a proof by the algebra of types up to weak equivalence, i.e.\
+facts like if $B$ is contractible then $\weq{A}{A×B}$. 
+
+\subsection{Future directions}
+\label{subsec:future-directions}
+
+The goal was to establish the following:
+
+\begin{theorem}
+	There is a unique terminal coalgebra for any signature $\dpair{A}{B}$.
+  Specifically, the following type is contractible:
+  \begin{equation*}
+    \apply{\Final}{\dpair{A}{B}}\defeq
+    \∑{(X,α):\apply{\Coalgtype}{\dpair{A}{B}}}{
+      \∏{(Y,β):\apply{\Coalgtype}{\dpair{A}{B}}}
+        {\apply{\isContr}{\dpair{Y}{β}⇒\dpair{X}{α}}}
+    }
+  \end{equation*}
+\end{theorem}
+
+Unfortunately, this is not yet proved in \UniMath{}.
+There was no fundamental obstacle to its formalization, merely a lack of time.
+The main prerequisites yet to be completed are
+\cref{lemma:fiber-initiality-nat} and the following lemma
+(\cite[Lemma 13]{non-wellfounded}):
+
+\begin{lemma}
+	Polynomial functors commute with limits of chains.
+  Let $\dpair{L}{p}$ be the limit of $\dpair{X}{π}$, and define
+  $\dpair{\apply{P}{X}}{\apply{P^*}{π}}$ by $(\apply{P}{X})_n\defeq \apply{P}{X_n}$
+  and similarly for $\apply{P^*}{π}$. Then there is an equivalence
+  \begin{equation*}
+    \weq{\apply{P}{L}}{\apply{\Stdlim}{\dpair{\apply{P}{X}}{\apply{P^*}{π}}}}
+  \end{equation*}
+\end{lemma}
+
+If the above were to be proved, it would remain only to show that the universal
+property of the limit, when applied to the limit $L$ of the diagram constructed
+in \cref{ex:termcochain}, is equivalent to the statement that $L$ is a terminal
+coalgebra for $\dpair{A}{B}$. The equivalence $w:\weq{L}{\apply{P}{L}}$
+(\cref{lemma:shifted-limit}) gives $L$ the structure of a coalgebra.
+
+To show that $\dpair{L}{w}$ is terminal, \cite{non-wellfounded} doesn't explicitly
+construct a coalgebra homomorphism to it from an arbitrary coalgebra
+$\dpair{Y}{β}$, but rather uses the algebra of types up to weak equivalence to
+show
+\begin{equation*}
+  \weq{\paren{\dpair{Y}{β}⇒\dpair{L}{w}}}{\unittype}.
+\end{equation*}
+
 \end{document}

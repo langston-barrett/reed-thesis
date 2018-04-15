@@ -39,6 +39,7 @@
 \input{../tex-preamble/logic.tex}
 \input{../tex-preamble/hott.tex}
 \input{../tex-preamble/unicode.tex}
+\usepackage{epigraph}
 \usepackage{rotating}
 \usepackage{makeidx}
 \usepackage{prftree}\setlength{\prfinterspace}{1.2em}
@@ -175,10 +176,55 @@
 \setcounter{chapter}{5}
 \setcounter{section}{0}
 
+This thesis has presented univalent type theory, a modified version of Martin-Löf
+dependent type theory inspired by a homotopy-theoretic semantics. The
+presentation began somewhat historically, first discussing intuitionistic
+logic and the λ-calculus, describing their interplay via the BHK interpretation
+and Curry-Howard correspondence, and going on to describe how enrichments of
+these systems lead to full-blown type theory. This perspective emphasizes
+the harmonic interplay between the logical and computational aspects of this
+theory. 
+
+In \cref{chap:type-theory}, we saw some organizational principles such as
+hlevels, weak equivalences, and characterization of paths inspired by the
+homotopy model. Notably, this conceptual framework, motivated by spatial
+intuition, greatly eased the decidedly non-topological work of later chapters. 
+The univalent perspective ends up being useful in practice for logicians and
+computer scientists, and not just topologists.
+
+\Crefrange{chap:category-theory}{chap:coinductive-types-in-univalent-type-theory}
+describe applications of \UTT{}. The development of (higher) category theory in
+type theory continues to be an area of active research with rich results.
+In keeping a well-understood pattern in the practice of constructive mathematics,
+\UTT{} allows for the definition and exploration of classically-equivalent
+concepts (e.g.\ categories and precategories), resulting in a more fine-grained
+and general theory. Type theory is not ``just another'' foundational system in
+which to do the exact same mathematics one might do in set theory, but indeed
+gives rise to interesting, nontrivial, classically-inexpressible results.
+
+While all results in this thesis were formalized in the computer proof assistant
+\Coq{}, the workings, benefits, and limitations of such systems were mostly
+relegated to footnotes when present at all. The methodology of computerized proof
+undergoes an extended renaissance as computer scientists become more
+interested in formally verified code and a wider community of mathematicians
+begin to worry about the robustness of current (informal) proof-checking
+procedures or get excited about \HoTT{}.
+
+The type theory research community is small, yet vibrant. There are incredibly
+important questions in the foundations of the theory itself (Is there a
+constructive model of \UTT{}? Voevodsky's construction uses the axiom of
+choice.), in its use as a framework for mathematics (How can one work
+effectively with structures like $\R$ within a constructive theory?), and
+in its implementations in proof assistants (How can we effectively use
+automation in proofs?). Due to the proliferation of such concerns and the
+ability to utilize intuitions from functional programming or algebraic topology,
+type theory is a field in which even undergraduates can work on significant
+research-level questions. 
+
 %If you feel it necessary to include an appendix, it goes here.
 \appendix
 
-\input{tex/appendix.tex}
+% \input{tex/appendix.tex}
 
 \backmatter % backmatter makes the index and bibliography appear properly in the TOC
 
