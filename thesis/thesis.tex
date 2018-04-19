@@ -120,49 +120,7 @@
 \frontmatter % this stuff will be roman-numbered
 \pagestyle{empty} % this removes page numbers from the frontmatter
 
-% Acknowledgements (Acceptable American spelling) are optional
-% So are Acknowledgments (proper English spelling)
-
-% \input{acknowledgments}
-
-% The pcreface is optional
-% To remove it, comment it out or delete it.
-% \chapter*{Pcreface}
-% This thesis delves into highly interdisciplinary territory. I'll
-
-\chapter*{List of Abbreviations}
-
-\begin{table}[h]
-  \centering
-  \begin{tabular}{ll}
-    \HoTT  	&  Homotopy type theory \\
-    \UTT{}  	&  univalent type theory \\
-    \ITT  	&  Intensional type theory \\
-    \FOL{}  	&  Classical first-order logic \\
-    \IPL{}  	&  Intuitionistic propositional logic \\
-    \LC{}  	  &  Church's untyped λ-calculus \\
-    \STLC{}  	&  Simply-typed λ-calculus \\
-    \TLC{}  	&  Typed λ-calculus
-  \end{tabular}
-\end{table}
-
-% Depth to which to number and print sections in TOC
-\setcounter{tocdepth}{4}
-% \setcounter{secnumdepth}{2}
-\tableofcontents
-% if you want a list of tables, optional
-% \listoftables
-% if you want a list of figures, also optional
-% \listoffigures
-
-\input{tex/abstract.tex}
-
-\chapter*{Dedication}
-
-\mainmatter % here the regular arabic numbering starts
-\pagestyle{fancyplain} % turns page numbering back on
-
-\input{tex/introduction.tex}
+\subfile{frontmatter}
 
 \subfile{chap1}
 \subfile{chap2}
