@@ -1,21 +1,18 @@
 \documentclass[./thesis.tex]{subfiles}
 \begin{document}
 \chapter{Propositions and Types}
-\label[chapter]{chap:propositions-and-types}
+\label{chap:propositions-and-types}
 
-In this chapter, we will present first a logical and then a computational
-framework. We will begin with general remarks on discussing and defining formal
-systems in \cref{sec:discussing-logic}. \Cref{sec:ipl} begins with
+The goal of this chapter is to transform the Curry-Howard correspondence from
+a loose metaphor into an unavoidable identification. \Cref{sec:ipl} discusses
 intuitionistic propositional logic (\IPL{}) a weaker, constructive,
-proof-relevant variant of standard propositional logic. As most mathematicians,
-computer scientists, and philosophers are familiar with some version of
-first-order logic, this section will focus on the introduction of notation,
-meta-logical concerns, and the key differences between \IPL{} and classical
-\FOL{}. In \cref{sec:the-lambda-calculus}, we will introduce Church's λ-calculus
-\LC{} (and the simply-typed and typed versions \STLC{} and \TLC{}). Finally, in
-\cref{sec:propositions-and-types}, we will discuss the fundamental and
-harmonious relation between these systems known as the Curry-Howard
-correspondence.\TODO{Motivate the formality of this chapter}
+proof-relevant variant of standard propositional logic. In
+\cref{sec:the-lambda-calculus}, we introduce Church's λ-calculus (\LC{})
+(and the simply-typed and typed versions \STLC{} and \TLC{}). Finally, in
+\cref{sec:propositions-and-types}, we discuss the fundamental and
+harmonious relation between these systems. A full understanding of \LC{},
+\IPL{}, and their relation via Curry-Howard requires a degree of formality, as
+spelled out in \cref{sec:discussing-logic}.
 
 The vocabulary of \cref{sec:discussing-logic} is due to Martin-Löf, who
 emphasized the importance of the notion of judgment (\cref{def:judgment})
@@ -221,8 +218,8 @@ of uses of metavariables.
 \end{definition}
 
 \begin{notation}\label[notation]{notation:substitution}
-  We denote the substitution of a term $t$ for all free occurrences variable $v$
-  in an expression $e$ by $e[v\coloneqq t]$. We will not deal directly with the
+  The substitution of a term $t$ for all free occurrences variable $v$
+  in an expression $e$ is denoted by $e[v\≔ t]$. We will not deal directly with the
   issues of variable capture, scoping, and substitution here, for a rigorous
   treatment see any thorough textbook on logic.
 \end{notation}
@@ -230,14 +227,15 @@ of uses of metavariables.
 \begin{sidewaystable}
   \centering
   \begin{tabular}{c | l | l | l}
-    Symbol               & Introduced & Language & Meaning \\ \hline
+    Symbol & First used & Language & Meaning \\ \hline
     $J,K,L$
       & \cref{notation:proof-tree}
       & English
       & Some arbitrary judgment \\
     $Γ,Δ,Θ$
-                         & \cref{notation:proof-tree}
-      & English                & Some arbitrary ordered sequence of judgments \\
+      & \cref{notation:proof-tree}
+      & English
+      & Some arbitrary ordered sequence of judgments \\
     $Γ ⊢ J$
       & \cref{notation:sequent}
       & English
@@ -247,9 +245,9 @@ of uses of metavariables.
       & English
       & Metavariable: a term in the object language \\
     $x\≔\mvar{a}$
-      & TODO
+      & \cref{subsec:ipl-intro}
       & English
-      & ``x'' is a shorthand for the expression $\mvar{a}$ \\
+      & ``$x$'' is a shorthand for the expression $\mvar{a}$ \\
     $\mvar{a}[\mvar{b} \≔ \mvar{c}]$
       & \cref{notation:substitution}
       & English
@@ -259,7 +257,7 @@ of uses of metavariables.
       & English
       & Judgment: $\mvar{a}$ is a proposition \\
     $\mvar{a}:\mvar{p}$
-      & \cref{subsec:ipl-intro}, TODO: \STLC{}
+      & \cref{subsec:ipl-intro}
       & English
       & Judgment: $\mvar{a}$ is a proof of (or has type) $\mvar{p}$ \\
     $\mvar{a}\≡\mvar{b}:\mvar{p}$
@@ -272,7 +270,7 @@ of uses of metavariables.
       &  All
       & Application of $\mvar{a}$ to $\mvar{b}$ \\
     $v,w,x,y,z$
-      &
+      & \cref{subsec:ipl-intro}
       & All
       & Variables (free or bound) \\
     % $c_0,c_1,\ldots$
@@ -485,7 +483,7 @@ $v,w,\ldots$
   \prftree[r]{}
     {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \prop{\mvar{b}}}
     {Γ,\mvar{p}:\mvar{a},Δ⊢ \mvar{q}:\mvar{b}}
-    {Γ,Δ⊢\λ{v}{\mvar{q}[\mvar{p}\coloneqq v]}:\mvar{a}→\mvar{b}}.
+    {Γ,Δ⊢\λ{v}{\mvar{q}[\mvar{p}\≔ v]}:\mvar{a}→\mvar{b}}.
 \end{equation*}
 
 \begin{definition}\label[definition]{def:valid-theorem}
@@ -765,7 +763,7 @@ affirmative.
       {Γ, \mvar{p}:\mvar{a}⊢\mvar{q}:\mvar{b}}
       {Γ ⊢ \mvar{r}:\mvar{a}}
       {Γ ⊢ \apply{(\λ{v}\mvar{q})}{\mvar{r}}\jdeq
-        \mvar{q}[\mvar{p}\coloneqq\mvar{r}]:\mvar{b}}} \\
+        \mvar{q}[\mvar{p}\≔\mvar{r}]:\mvar{b}}} \\
     {\prftree[r]{\footnotesize β$∨$\textsubscript{l}}
       {\prftree[r, noline]{}
         {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{c}}
@@ -783,7 +781,7 @@ affirmative.
         \apply{\mvar{q}}{\mvar{r}}:\mvar{c}}}.
   \end{gatherjot}
   (Recall \cref{notation:substitution} for the meaning of
-  $\mvar{q}[\mvar{p}\coloneqq\mvar{r}]$).\footnote{
+  $\mvar{q}[\mvar{p}\≔\mvar{r}]$).\footnote{
     Since the elimination rule for falsehood (\cref{subsec:ipl-elim}) gives back a
     proof of an arbitrary proposition (which is not in general one of the ``inputs''
     to falsehood introduction), there's no corresponding β-rule.}
@@ -1013,7 +1011,7 @@ unicity rule:
     {Γ ⊢ \term{\mvar{a}}}
     {Γ ⊢ \term{\mvar{b}}}
     {Γ ⊢ \apply{(\λ{v}\mvar{a})}{\mvar{b}}\jdeq
-      \mvar{a}[v\coloneqq\mvar{b}]}}
+      \mvar{a}[v\≔\mvar{b}]}}
   &&
   {\prftree[r]{\footnotesize η}
     {Γ ⊢ \term{\mvar{a}}}
@@ -1269,7 +1267,7 @@ of the expressions involved:
     {Γ, \mvar{a}:\mvar{s} ⊢ \mvar{b}:\mvar{t}}
     {Γ ⊢ \mvar{c}:\mvar{s}}
     {Γ ⊢ \apply{(\λ{v}\mvar{b})}{\mvar{c}}\jdeq
-      \mvar{b}[\mvar{a}\coloneqq\mvar{c}]}}
+      \mvar{b}[\mvar{a}\≔\mvar{c}]}}
   &&
   {\prftree[r]{\footnotesize η}
     {Γ ⊢ \term{\mvar{a}}}
@@ -1413,17 +1411,15 @@ notational changes, see \cref{tab:curry-howard}).
 
 While perhaps less surprising due to the notational conveniences of hindsight,
 this observation has startling and deep consequences (and a rich intellectual
-history). It is known as the
-Curry-Howard(-Lambek)\footnote{More on Lambek's part in \cref{rmk:lambek}}
-correspondence, or the propositions-as-types interpretation. This interpretation
-was first investigated by Curry \cite{curry-howard}, who noticed that the types
-of the ``combinators'' of his computational formalism\footnote{Equivalent to the
-λ-calculus, of course.}
-could be interpreted as valid propositions in \IPL{}. This
-observation squared nicely with what's called the Brouwer-Heyting-Kolmogorov
-interpretation of \IPL{}, which asserts that the semantics thereof
-are to be interpreted as referring not exactly to propositions and their proofs,
-but more general ``problems'' and their ``solutions'' \cite{kolmogorov}.
+history). It is known as the Curry-Howard correspondence, or the
+propositions-as-types interpretation. This interpretation was first investigated
+by Curry \cite{curry-howard}, who noticed that the types of the ``combinators''
+of his computational formalism\footnote{Equivalent to the λ-calculus, of
+course.} could be interpreted as valid propositions in \IPL{}. This observation
+squared nicely with what's called the Brouwer-Heyting-Kolmogorov interpretation
+of \IPL{}, which asserts that the semantics thereof are to be interpreted as
+referring not exactly to propositions and their proofs, but more general
+``problems'' and their ``solutions'' \cite{kolmogorov}.
 
 So what does this correspondence really say? It can be understood in many
 ways.\footnote{Read in a particular light, the univalence principle

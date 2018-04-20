@@ -254,13 +254,13 @@ constructed in \cref{lemma:algebra-iso-equiv}.
   That is, $f$ is equal to $g$ after being transported just when
   applying $f$ and transporting the result is the same as transporting the
   input and applying $g$.\footnote{This is a corollary of Lemma 2.9.6 in
-    \cite{book}, which we prove as \coqname{M.Uniqueness.transport\_fun}. The
+    \cite{book}, which we prove as \unimathname{M.Uniqueness.transport\_fun}. The
     following proof is direct.}
 \end{lemma}
 
 \begin{proof}
-  Using identity elimination (\cref{rule:id-elim}), it suffices to assume
-  $X\jdeq Y$ and $p\jdeq\refl{X}$. Then by the definition of transport
+  Using identity elimination (\cref{subsec:identity-elimination}), it suffices
+  to assume $X\jdeq Y$ and $p\jdeq\refl{X}$. Then by the definition of transport
   (\cref{lemma:transport}), our hypothesis becomes
   \begin{align*}
     &\propeq{}{
@@ -297,9 +297,9 @@ the following auxiliary result:
   before it gets applied to its second argument.
 \end{lemma}
 \begin{proof}
-  Note that we're using \cref{notation:transport}. By the elimination rule for
-  the identity type, (\cref{rule:id-elim}), it suffices to assume that $X\jdeq
-  Y$ and that $p\jdeq\refl{X}$. Then
+  By the elimination rule for the identity type,
+  (\cref{subsec:identity-elimination}), it suffices to assume that $X\jdeq Y$
+  and that $p\jdeq\refl{X}$. Then
   \begin{align*}
     P^*\paren*{\transpor{\id_{\universe}}{p}}
     &\jdeq P^*\paren*{\transpor{\id_{\universe}}{\refl{X}}}
@@ -406,11 +406,9 @@ the following auxiliary result:
 In the proof of \cite[Lemma 11]{non-wellfounded}, the authors use a result from
 \cite{homotopy-initial}. This result turns out to be highly nontrivial, namely
 that the type of ``algebra sections'' for a ``(pre)initial fibered algebra''
-(all to be defined in this section) is contractible. In particular, The
-fiber-initial property of $\ℕ$ (see \cref{def:fiber-initiality} and
-\cref{lemma:fiber-initiality-nat}) is essential to proving \cref{lemma:cochains}.
-We don't fully prove this result, but instead hope to provide some intuition
-about what it means that $\N$ is a fiber-initial algebra.
+(all to be defined in this section) is contractible. We don't fully prove this
+result, but instead hope to provide some intuition about what it means that $\ℕ$
+is a fiber-initial algebra.
 
 This section is alarmingly technical. All but the most dedicated
 readers should probably skip all theorems and definitions involving the word
@@ -506,7 +504,7 @@ they are initial, some of which will be familiar from
   though some of these theorems are proved in the \Agda{} development of
   \cite{non-wellfounded}.}
 
-\begin{example}[\coqname{W.Naturals.nat\_functor}]
+\begin{example}[\unimathname{W.Naturals.nat\_functor}]
   \label[example]{ex:nat-functor-utt}
 	Consider the polynomial functor associated to $A\defeq \𝔹$ and
   $B\defeq \apppply{\rec_{\𝔹}}{\universe}{\𝟘}{\𝟙}$:
@@ -533,7 +531,7 @@ correct definition, nor how we can apply our intuition about $\ℕ$ to this
 situation. The next lemma provides more evidence that $P$ is an analogue
 of $X ↦ 1 + X$.
 
-\begin{lemma}[\coqname{W.Naturals.nat\_functor\_equiv}]
+\begin{lemma}[\unimathname{W.Naturals.nat\_functor\_equiv}]
   \label[lemma]{lemma:nat-alg-simpl}
   A $P$-algebra structure on a type $X$ is given by a point $x_0:X$ and a
   function $\suc_X:X→X$. More precisely, there is an equivalence:
@@ -572,7 +570,7 @@ Applying this equivalence, we could more readily define the $P$-algebra
 structure on $\ℕ$ as $(\appply{w^{-1}}{0}{\suc})$. In fact, this gives
 \textit{judgmentally equal} result. We can give a similar lemma for morphisms:
 
-\begin{lemma}[\coqname{W.Naturals.mk\_nat\_functor\_algebra\_mor}]
+\begin{lemma}[\unimathname{W.Naturals.mk\_nat\_functor\_algebra\_mor}]
   \label[lemma]{lemma:mk-nat-alg-mor}
   Let $\dpair{X}{α}$ and $\dpair{Y}{β}$ be $P$-algebras. Any function $f:X → Y$
   which sends $x_0$ to $y_0$ and intertwines $\suc_X$ with $\suc_Y$ is an
@@ -633,7 +631,7 @@ structure on $\ℕ$ as $(\appply{w^{-1}}{0}{\suc})$. In fact, this gives
   \end{align*}
 \end{proof}
 
-\begin{lemma}[\coqname{W.Naturals.nat\_alg\_is\_preinitial}]
+\begin{lemma}[\unimathname{W.Naturals.nat\_alg\_is\_preinitial}]
 	For any $P$-algebra $\dpair{X}{α}$, there is an algebra morphism
   $\dpair{ℕ}{η} ⇒ \dpair{X}{α}$.
 \end{lemma}
@@ -646,10 +644,10 @@ structure on $\ℕ$ as $(\appply{w^{-1}}{0}{\suc})$. In fact, this gives
     &\apply{g}{(\apply{\suc}{n})} &&\defeq \apply{\suc_X}{(\apply{g}{n}})
   \end{alignat*}
   By definition $g$ sends the distinguished point $x_0$ to $0$ and intertwines
-  $\suc$ with $\suc_X$; by \cref{lemma:nat-alg-mor}, it's an algebra morphism.
+  $\suc$ with $\suc_X$; by \cref{lemma:mk-nat-alg-mor}, it's an algebra morphism.
 \end{proof}
 
-\begin{lemma}[\coqname{W.Naturals.nat\_alg\_func\_is\_unique}]
+\begin{lemma}[\unimathname{W.Naturals.nat\_alg\_func\_is\_unique}]
   \label[lemma]{lemma:nat-alg-mor-fun-unique}
   The underlying function of the above morphism is unique. That is,
 	for any algebra morphism $\dpair{τ}{i}:\dpair{ℕ}{η} ⇒ \dpair{X}{α}$,
@@ -759,7 +757,7 @@ algebra sections.
 This result is proved in the \Agda{} formalization accompanying
 \cite{non-wellfounded}. Its proof is outside of the scope of this thesis.
 
-\begin{lemma}[\coqname{W.Naturals.nat\_alg\_is\_preinitial\_sec}]
+\begin{lemma}[\unimathname{W.Naturals.nat\_alg\_is\_preinitial\_sec}]
   \label[lemma]{lemma:fiber-preinitiality-nat}
 	The natural numbers are fiber-preinitial (\cref{def:fiber-preinitiality}).
 \end{lemma}
@@ -916,7 +914,7 @@ know that there is at most one edge between any two vertices in this graph,
 we can simplify the limits of chain diagrams (this simplification corresponds to
 \cite[Definition 9]{non-wellfounded}).
 
-\begin{lemma}[\coqname{M.Chains.standard\_limit\_of\_cochains}]
+\begin{lemma}[\unimathname{M.Chains.standard\_limit\_of\_cochains}]
   For a cochain $\dpair{X}{π}$, there is a simplifying equivalence
   \begin{align*}
     \apply{\Stdlim}{\dpair{X}{π}}

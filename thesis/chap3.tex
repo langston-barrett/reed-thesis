@@ -30,7 +30,7 @@ The results in this chapter all appear in the \UniMath{} package
 \section{Basics}
 \label{sec:basics}
 
-\begin{definition}\label[category]{def:category}
+\begin{definition}\label[definition]{def:category}
 	A \define{category}\index{Category}\footnote{In more general contexts, this
     may be called a \define{$1$-category} or even a $(1,1)$-category.}
   $\bfC$ consists of the following data:
@@ -850,8 +850,7 @@ These concepts can be defined more elegantly using functors
 
 Generally, one often says $\bfC$ ``has $x$'' for some object $x$ and
 collection of arrows defined by a universal property, e.g.\
-``$\bfC$ has (binary) products'' or ``$\bfC$ has internal homs''
-(\cref{def:exponentials}).
+``$\bfC$ has (binary) products'' or ``$\bfC$ has internal homs''.
 
 \section{Functors and their algebras}
 \label{sec:functors-and-their-algebras}
@@ -1127,8 +1126,8 @@ The following example is crucial to
   universe of small types in \UTT{}!
 
   Let \List{\N} be the type of lists of natural numbers
-  as in \cref{subsubsec:lists}. To utilize the above property, we need
-  to choose $A$, $f$, and $g$. Pick the following:
+  as in \cref{subsec:natural-numbers-and-lists}. To utilize the above property,
+  we need to choose $A$, $f$, and $g$. Pick the following:
   \begin{itemize}
     \itemsep0em
     \item $A:\equiv \List{\N}$
@@ -1199,8 +1198,8 @@ problems of ``size''.\footnote{
   Conversely, certain categories called \textit{topoi} (singular: topos) provide
   models of type theory. In this case, we can use the logic of type theory to
   directly prove properties of such categories. In this setting, type theories
-  are called \textit{internal languages} of topoi. See \cref{chap:cccs-and-lc}
-  for some intuitions in this direction.} However, with greater expressiveness,
+  are called \textit{internal languages} of topoi.} However, with greater
+expressiveness,
 issues of definition become more prominent; this section explains the relevant
 considerations.
 
@@ -1211,7 +1210,7 @@ following table offers a comparison for those already familiar with \cite{book}.
 \begin{center}
   \begin{tabular}{| l | l | l | l | l |}
     \hline
-    \UniMath{} & \cite{book} & $\Obj\bfC$ & $\Hom_{\bfC}$ & Univalence \\ \hline
+    \UniMath{} & \HoTT{} book\footnote{\cite{book}} & $\Obj\bfC$ & $\Hom_{\bfC}$ & Univalence \\ \hline
     Precategory                  & n/a             & Type & Type  & No \\
     Category                     & Precategory     & Type & Set   & No \\
     Univalent category           & Category        & Type & Set   & Yes \\
@@ -1306,8 +1305,8 @@ thought into the language of precategories.
   $\appply{\Functor}{\bfC}{\bfD}$.
 \end{definition}
 
-\begin{example}[\coqname{CategoryTheory.categories.Cats.precat\_precat},
-                \\ \coqname{CategoryTheory.categories.Cats.cat\_precat}]
+\begin{example}[\unimathname{CategoryTheory.categories.Cats.precat\_precat},
+                \\ \unimathname{CategoryTheory.categories.Cats.cat\_precat}]
   \label[example]{ex:precat-of-precats}
   There is a precategory of precategories, with object type
   $\Precat$ and morphism type 
@@ -1546,7 +1545,7 @@ it's all we'll need later. It corresponds directly to the proof in
 \cite{homotopy-limits}. The reason is that we'll use a different but equivalent
 definition of cones, which requires a corresponding revision to $\postcomp$.
 
-\begin{lemma}[\coqname{Induction.M.Limits.homot\_cone\_weq\_cone}]
+\begin{lemma}[\unimathname{Induction.M.Limits.homot\_cone\_weq\_cone}]
   \label[lemma]{lemma:weq-homot-cone}
 	There is a weak equivalence between cones for a diagram $D$ with apex $X$ and 
   \define{homotopy cones} for the same diagram with the same apex:
@@ -1579,7 +1578,7 @@ definition of cones, which requires a corresponding revision to $\postcomp$.
 Similarly to \cref{lemma:limit-prop}, the property of being a limiting homotopy
 cone is also a proposition.
 
-\begin{definition}
+\begin{definition}\label[definition]{def:standard-limit}
   The \define{standard limit} of a diagram $D$ for a graph $G$ is the type
   \begin{equation*}
     \Stdlim{D}\defeq

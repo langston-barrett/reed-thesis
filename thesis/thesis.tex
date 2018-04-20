@@ -53,9 +53,7 @@
 \definecolor{accepted}{HTML}{0088EE}
 \definecolor{notaccepted}{HTML}{EE8800}
 % \newcommand{\coqname}{\texttt}
-% \newcommand{\unimathname}[1]{\underline{\texttt{#1}}}
-\newcommand{\coqname}[1]{\texttt{\footnotesize\color{notaccepted} #1}}
-\newcommand{\unimathname}[1]{\texttt{\footnotesize\color{accepted} #1}}
+\newcommand{\unimathname}[1]{\texttt{#1}}
 
 \usepackage{tikz}
 \usetikzlibrary{cd,arrows.meta}
@@ -120,7 +118,209 @@
 \frontmatter % this stuff will be roman-numbered
 \pagestyle{empty} % this removes page numbers from the frontmatter
 
-\subfile{frontmatter}
+% Acknowledgements (Acceptable American spelling) are optional
+% So are Acknowledgments (proper English spelling)
+
+\chapter*{Acknowledgments}
+
+\noindent Safia, your sage advice and unfailing support throughout this
+process made it possible in the first place. Thank you for your flexibility and
+your Virgilian spirit: you managed to guide me through territory unfamiliar to
+both of us.
+
+\vspace{0.6em}
+
+\noindent Benedikt, thank you for organizing and ensuring I could attend
+the \UniMath{} workshop. Your warm welcome into the study of type theory
+has directed the course of this thesis. I look forward to working more with
+you in the future.
+
+\vspace{0.6em}
+
+\noindent Dan and Anders, thank you for your perseverance and thoroughness in
+proof reviews, and for your words of encouragement. I hope to collaborate
+with you soon.
+
+\vspace{0.6em}
+
+\noindent Friends at Reed, thank you for consistently indulging my half-baked
+attempts at explaining my work, and thank you for sharing your curiosities and
+passions just as easily.
+
+% The pcreface is optional
+% To remove it, comment it out or delete it.
+% \chapter*{Pcreface}
+
+% \chapter*{List of Abbreviations}
+
+% \begin{table}[h]
+%   \centering
+%   \begin{tabular}{ll}
+%     \FOL{}  	&  Classical first-order logic \\
+%     \HoTT  	  &  Homotopy type theory \\
+%     \IPL{}  	&  Intuitionistic propositional logic \\
+%     \ITT  	  &  Intensional type theory \\
+%     \LC{}  	  &  Church's untyped λ-calculus \\
+%     \STLC{}  	&  Simply-typed λ-calculus \\
+%     \TLC{}  	&  Typed λ-calculus \\
+%     \UTT{}  	&  Univalent type theory
+%   \end{tabular}
+% \end{table}
+
+% Depth to which to number and print sections in TOC
+% \setcounter{tocdepth}{4}
+% \setcounter{secnumdepth}{2}
+\tableofcontents
+% if you want a list of tables, optional
+% \listoftables
+% if you want a list of figures, also optional
+% \listoffigures
+
+\chapter*{Abstract}
+
+In this thesis we explain univalent type theory, a constructive and
+computationally meaningful foundational system for mathematics inspired by
+recent advances in the model theory of Per Martin-L\"of's intuitionistic type
+theory. We first develop the classical propositions/types correspondence between
+(the constructive subset of) intuitionistic natural deduction and the
+λ-calculus. We proceed to explicate Martin-L\"of's theory of dependent types and
+the central modern development in type theory: Vladimir Voevodsky's univalence
+principle. We go on to examine some category theory and the nature of coinduction
+within this theory, presenting a novel formalization of (parts of) a recent
+result that M-types can be derived \textit{internally} in univalent type theory.
+
+\chapter*{Dedication}
+
+\mainmatter % here the regular arabic numbering starts
+\pagestyle{fancyplain} % turns page numbering back on
+
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+\chaptermark{Introduction}
+\markboth{Introduction}{Introduction}
+
+\setlength{\epigraphwidth}{0.8\textwidth}
+\epigraph{I didn’t have the tools to explore the areas where curiosity was
+  leading me and the areas that I considered to be of value and of interest and
+  of beauty. So I started to look into what I could do to create such tools.}{\cite{voevodsky-ias}}
+
+Mathematicians err. Some acknowledge mistakes in their published work and
+try to move on. For others, the experience can be life-changing. In 1998, Carlos
+Simpson released a pre-print arguing that there was a major mistake in one of
+Vladimir Voevodsky's 1989 papers \cite{voevodsky-presentation}. It was not
+immediately clear whether Voevodsky had erred, or whether there was a flaw in
+Simpson's counterexample. In 1999, Pierre Deligne found a crucial mistake in
+Voevodsky's 1992/93 ``Cohomological Theory of Presheaves with Transfers'', upon
+which he had based much of his work in the area of ``motivic cohomology''. As he
+began to develop more and more complex arguments, Voevodsky wondered: ``And who
+would ensure that I did not forget something and did not make a mistake, if even
+the mistakes in much more simple arguments take years to uncover?''
+\cite{voevodsky-ias}.
+
+Elsewhere in mathematics, new developments raised questions for traditional
+methodology. Complexity, specialization and sheer length made
+proofs difficult to comprehend with the absolute certainty which is
+supposed to characterize this discipline. In the 1970s, two teams of
+topologists proved contradictory results, and neither group could find the error
+in the other's proof \cite{kolata}. Wiles's famous proof of Fermat's last
+theorem was utterly unintelligible to the vast majority of mathematicians
+\cite{nyt}. The classification of the simple finite groups---one of the field's
+crowning achievements---has a combined proof of over ten thousand pages.
+
+The problems facing Voevodsky and his peers seemed insurmountable.
+As the requisite attention span, memory, and capacity for detail required to
+check new developments in higer mathematics reached inhuman proportions,
+where were they to turn? In a fit of interdisciplinary collaborative spirit,
+Voevodsky began to explore an avenue well-known to philosophers and computer
+scientists, but relatively obscure within mathematics: type theory.
+
+\paragraph{An abbreviated history of modern type theory.} After the paradoxes
+and philosophical debates of the early 20\textsuperscript{th} century, most
+mathematicians settled on classical first-order logic (\FOL{}) and an axiomatic
+set theory called \ZFC{} as the gold standard of rigor. Virtually all of
+contemporary research was built on these foundations. However, there remained
+some vocal opposition by logicians and philosophers to these newly-adopted
+methods. Most mathematicians are dimly aware that there's some controversy about
+the Axiom of Choice (the ``C'' in \ZFC{}) \cite{martin-lof-100-years}, but one
+don't have to look further than \FOL{} to find disagreements.
+
+Brouwer, Heyting, and other intuitionists decried the use of the law
+of excluded middle (or equivalently, double-negation elimination). Russell
+doubted the consistency of impredicative (self-referential) definitions.
+In the 1970s, philosopher and logician Per Martin-Löf created a predicative,
+intuitionistically-acceptable logical system called type theory as an
+alternative foundational system for ``constructive''
+mathematics.\footnote{Constructive and intuitionistic mathematics differ in
+their philosophical points, but mostly accord on choice of logical principles.}
+
+Brouwer, Heyting, and Kolmogorov had all at various points suggested that
+intuitionistic logic could be understood not only as a theory of truth, but also
+as a theory of ``problems'' (propositions) and their ``solutions'' (proofs)
+\cite{kolmogorov}. Elsewhere, Haskell Curry noticed that his formalism for
+describing computations shared some surprising features with intuitionistic
+logic \cite{curry-howard}. These observations were synthesized and extended by
+William Howard, who noticed that intuitionistic ``natural deduction''
+corresponds closely to a computational system called the λ-calculus (\LC{}).
+The postcard version of the truth is that Martin-Löf's was aware of these
+connections between constructive logic and computation, and his type theory
+could actually serve as \textit{both} an advanced, (very) high-level programming
+language \textit{and} a foundational system for mathematics (details to come in
+\cref{chap:propositions-and-types}).
+
+Computer scientists Theirry Coquand and Christine Pauline took this Curry/Howard
+thing very seriously. They developed a variant of Martin-Löf's type theory called
+the Calculus of Constructions \cite{coquand}, and it was implemented as the
+programming language \Coq{}.\footnote{The French word for ``rooster'', in the
+tradition of naming software after animals (a lá \software{OCaml}).} Computer
+scientists, facing the problem of ensuring the correctness of algothims and the
+programs based on them, developed this and other ``proof assistants'' in order
+to produce machine-verifiable code. These languages became Voevodsky's
+``tools''.
+
+\paragraph{The simplicial set model.}
+Voevodsky was an algebraic topologist and
+geometer by training. In 2011 in the unpublished \textit{Notes on type systems},
+and later in summaries and reformulations, Voevodsky discovered a new model of
+\Coq{}'s (core) type theory. In this model, types are interpreted as Kan complexes,
+a highly technical and abstract representation of spaces. Voevodsky and others
+were thus able to utilize intuitions from algebraic topology and category theory
+to develop proofs in type theory.
+
+The model inspired two additional logical principles for type theory. The
+Calculus of Constructions together with these ``higher inductive types''
+and the ``univalence axiom'' was called homotopy type theory (\HoTT{}),
+referring explicitly to it newfound semantics.
+
+\paragraph{The \UniMath{} library.} Voevodsky's initial experiments with
+formalizing proofs in \Coq{} turned into a library called
+\software{Foundations}. This and other libraries of code utilizing the
+univalence axiom were merged into the \UniMath{} library. The development of
+this formalism in \Coq{} faces one fundamental barrier: When assuming axioms in
+type theory, one loses the computational behavior.
+
+Developing a ``computational interpretation'' of the univalence axiom, that is,
+the creation of a (computationally meaningful) type theory in which it is a
+theorem rather than an axiom, remains an area of active research. In the
+expectation that there will someday be a proof assistant implementing such a
+type theory (and for a simpler metatheory), the \UniMath{} library uses a
+minimal type theory that we'll develop in this thesis called univalent type
+theory, or \UTT{}.
+
+\paragraph{(Co)induction.}
+
+One fundamental feature of proof assistants (and more
+generally, functional programming languages)
+
+One of the most generally useful tools in the
+development of formal
+
+\begin{notation}
+  All of the results of this thesis have been formalized in the \Coq{} proof
+  assistant \cite{coq-manual}. They were subsequently reviewed (by the \UniMath{}
+  development team \cite{unimath} and Anders Mörtberg) and accepted into the
+  \UniMath{} library. Their names appear in a monospaced font (e.g.\
+  \unimathname{univalence}). 
+\end{notation}
 
 \subfile{chap1}
 \subfile{chap2}
