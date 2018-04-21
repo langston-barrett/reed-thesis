@@ -88,7 +88,7 @@ empty ($≅$false) otherwise.
 \subsection{Π-types}
 \label{subsec:pi-types}
 
-The \define{dependent function type}, or Π-type, generalizes the direct product
+The \define{dependent function type}, or Π-type, generalizes the product type $×$
 and function types. It is formed via the following rule:
 \begin{equation*}
   \prftree[r]{}
@@ -96,7 +96,7 @@ and function types. It is formed via the following rule:
     {Γ, a:A ⊢ \type{B}}
     {Γ ⊢ \type{\pitt{a:A}{\apply{B}{a}}}}
 \end{equation*}
-It is \textit{crucial} to remember that the Π (just like λ) scopes over the
+It is crucial to remember that the Π (just like λ) scopes over the
 entire rest of the expression, unless otherwise delineated by parentheses.
 This type represents functions with output \textit{types} that depend on the
 \textit{value} of an \textit{input}. They associate to each $a:A$ some element
@@ -114,7 +114,7 @@ unicity rules are also straightforward generalizations of normal functions types
   \prftree[r]{}
     {Γ ⊢ {f}:\pitt{a:A}{\apply{B}{a}}}
     {Γ ⊢ {a}:{A}}
-    {Γ ⊢ \apply{p}{a}:\apply{B}{a}}
+    {Γ ⊢ \apply{f}{a}:\apply{B}{a}}
   \qquad
   \prftree[r]{β}
     {Γ, a:A ⊢ b:\apply{B}{a}}
@@ -222,7 +222,8 @@ definitions?\footnote{Indeed, this was Russell's motivation for introducing type
 theory in the first place! Note that we can't form the Russellian type of all
 types not containing themselves (which would look like
 $\∏{A:\universei{0}}\lnot (A:A)$) since the typing judgment ``:'' isn't part of
-the language of type theory.}
+the language of type theory. However, a few of Martin-Löf's earlier type
+theories were vulnerable to a related antimony, Girard's paradox \cite{girard}.}
 
 Of course, sometimes one \textit{does} want to quantify over the whole
 universe. When $A\defeq\universei{0}$, then dependent function types 
@@ -242,7 +243,10 @@ power to write an \textit{single} identity function that works for
 \end{definition}
 
 If the type $\∏{A:\universei{0}}{A\to A}$ were a member of $\universei{0}$, it
-would be self-referential. To resolve this difficulty,
+would be self-referential.\footnote{Specifically, the Π would range over a type
+  ($\universei{0}$) which has as an element $\∏{A:\universei{0}}{A\to A}$
+  itself.}
+To resolve this difficulty,
 \UTT{} uses a \define{hierarchy of universes} $\universei{0},
 \universei{1},\ldots$. In this refined system, one judges
 $\universei{i}:\universei{\apply{\suc}{i}}$, and similarly for terms that
@@ -502,7 +506,8 @@ to the recursor. This is a general pattern.
             {(\λ{a}{\λ{b}{\refl{(a,b)}}})}
   \end{gatherjot}
   For the use of $\refl{}$ to work, we need $x\jdeq (\appr{1}{x},\appr{2}{x})$,
-  but this is exactly the η-rule for products.
+  but this is exactly the η-rule for products (which in proof assistants is
+  applied automatically, and in informal writing applied implicitly).
 \end{example}
 
 To define a function out of a coproduct $A+B$, it suffices to define it for both
@@ -764,8 +769,8 @@ The rules for Σ-types generalize those for direct products in much the same way
     {Γ ⊢ a:A}
     {Γ ⊢ \appr{2}{\dpair{a}{b}}\jdeq b:A}  \\
   \prftree[r]{η}
-    {Γ ⊢ f : \pitt{a:A}{\apply{B}{a}}}
-    {Γ ⊢ \λ{x}{\apply{f}{x}}\jdeq f:\pitt{a:A}{\apply{B}{a}}}
+    {Γ ⊢ x : \sigmatt{a:A}{\apply{B}{a}}}
+    {Γ ⊢ \dpair{\appr{1}{x}}{\appr{2}{x}}\jdeq x:\sigmatt{a:A}{\apply{B}{a}}}
 \end{gatherjot}
 
 Under the types-as-propositions interpretations, Σ-types correspond to
@@ -1087,7 +1092,8 @@ characterize such equivalences, these require a few preliminary definitions.
 \begin{proof}
 	Suppose $X:\universe$ is contractible with center $x$. Define $f:X→\unittype$
   as $\λ{x}{\unitelem}$ and $g:\unittype→X$ as $\λ{u}{x}$. Then by hypothesis on
-  $X$, the induction principle for $\unittype$\TODO{reference}, and function
+  $X$, the dependent elimination rule for
+  $\unittype$\cref{subsec:dependent-elimination}, and function
   extensionality (\cref{thm:funext}), the composites are the appropriate
   identities.
 \end{proof}

@@ -840,113 +840,92 @@ proofs.\footnote{There's also no η-rule for $\emptytype$. One can, however,
   derive that any two elements of $\emptytype$ are equal (just use the
   elimination rule).}
 
-\subsection{Diagrams}
-\label{subsec:ipl-diagrams}
+% \subsection{Diagrams}
+% \label{subsec:ipl-diagrams}
 
-One of the ways that we can understand our computation rules is via a clever
-sort of diagram. This section foreshadows some connections between
-\IPL{} and the content of \cref{chap:category-theory}.
+% One of the ways that we can understand our computation rules is via a clever
+% sort of diagram. This section foreshadows some connections between
+% \IPL{} and the content of \cref{chap:category-theory}.
 
-\begin{definition}\label[definition]{def:implication-composition}
-  Suppose given terms $\mvar{p}:\mvar{a}→\mvar{b}$ and
-  $\mvar{q}:\mvar{b}→\mvar{c}$ under some hypotheses $\Gamma$. We define the
-  \define{composition}\index{Composition!Of proof terms}
-  $\mvar{q}∘\mvar{p}:\mvar{a}→\mvar{c}$ to be the term in the conclusion of the
-  following deduction:
-  \begin{equation*}
-  {\prftree[r]{}
-    {\prftree[r]{}
-      {\prftree[r]{}
-        {\prftree[r]{\footnotesize refl}
-          {}
-          {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{r}:\mvar{a}}}
-        {\prftree[r]{\footnotesize weak}
-          {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{b}}
-          {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{p}:\mvar{a}→\mvar{b}}}
-        {Γ, \mvar{r}:\mvar{a} ⊢ \apply{\mvar{p}}{\mvar{r}}:\mvar{b}}}
-      {\prftree[r]{\footnotesize weak}
-        {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}
-        {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
-      {Γ, \mvar{r}:\mvar{a} ⊢ \apply{\mvar{q}}{(\apply{\mvar{p}}{\mvar{r}})}:\mvar{c}}}
-    {Γ ⊢ \λ{v}{\apply{\mvar{q}}{(\apply{\mvar{p}}{v}})}:\mvar{a}→\mvar{c}}}.
-  \end{equation*}
-  In short, $\mvar{q}∘\mvar{p}\defeq \λ{v}{\apply{\mvar{q}}{(\apply{\mvar{p}}{v}})}$.
-\end{definition}
-
-Now suppose we have terms $\mvar{p}:\mvar{a}→\mvar{c}$ and
-$\mvar{q}:\mvar{b}→\mvar{c}$. Via the elimination rule for $∨$, there is a
-term $\apppply{\case}{\mvar{p}}{\mvar{q}}:\mvar{a}∨\mvar{b}→\mvar{c}$.
-We can rewrite the β-rules using the composition we just defined:
-\begin{align*}
-  \appply{\case}{\mvar{p}}{\mvar{q}}∘\inl &\jdeq \mvar{p} \\
-  \appply{\case}{\mvar{p}}{\mvar{q}}∘\inr &\jdeq \mvar{q}
-\end{align*}
-Similarly, given $\mvar{p}:\mvar{c}→\mvar{a}$ and $\mvar{q}:\mvar{c}→\mvar{b}$,
-the introduction rule for $∧$ guarantees a function
-$\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}:\mvar{c}→\mvar{a}∧\mvar{b}$.
-The computation rules give us the following equalities:
-\begin{align*}
-  \pr{1}∘(\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}) &\jdeq \mvar{p} \\
-  \pr{2}∘(\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}) &\jdeq \mvar{q}
-\end{align*}
-(For brevity, put $f\defeq\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}$).
-We can express these equalities using the following \define{commutative diagram}
-(skip ahead to \cref{def:commutative-diagram} for details).
-
-% Now suppose we have another term $\mvar{r}:\mvar{a}∨\mvar{b}→\mvar{c}$ which
-% obeys the same equalities,
-% \begin{align*}
-%   \mvar{r}∘\inl &\jdeq \mvar{p} \\
-%   \mvar{r}∘\inr &\jdeq \mvar{q}
-% \end{align*}
-
-% \begin{lemma}
-% 	For any $\mvar{f}:\mvar{c}→\mvar{d}$,
+% \begin{definition}\label[definition]{def:implication-composition}
+%   Suppose given terms $\mvar{p}:\mvar{a}→\mvar{b}$ and
+%   $\mvar{q}:\mvar{b}→\mvar{c}$ under some hypotheses $\Gamma$. We define the
+%   \define{composition}\index{Composition!Of proof terms}
+%   $\mvar{q}∘\mvar{p}:\mvar{a}→\mvar{c}$ to be the term in the conclusion of the
+%   following deduction:
 %   \begin{equation*}
-%     \appply{\case}{(f∘\inl)}{(f∘\inr)}
-%     \jdeq f∘\appply{\case}{\inl}{\inr}
+%   {\prftree[r]{}
+%     {\prftree[r]{}
+%       {\prftree[r]{}
+%         {\prftree[r]{\footnotesize refl}
+%           {}
+%           {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{r}:\mvar{a}}}
+%         {\prftree[r]{\footnotesize weak}
+%           {Γ ⊢ \mvar{p}:\mvar{a}→\mvar{b}}
+%           {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{p}:\mvar{a}→\mvar{b}}}
+%         {Γ, \mvar{r}:\mvar{a} ⊢ \apply{\mvar{p}}{\mvar{r}}:\mvar{b}}}
+%       {\prftree[r]{\footnotesize weak}
+%         {Γ ⊢ \mvar{q}:\mvar{b}→\mvar{c}}
+%         {Γ, \mvar{r}:\mvar{a} ⊢ \mvar{q}:\mvar{b}→\mvar{c}}}
+%       {Γ, \mvar{r}:\mvar{a} ⊢ \apply{\mvar{q}}{(\apply{\mvar{p}}{\mvar{r}})}:\mvar{c}}}
+%     {Γ ⊢ \λ{v}{\apply{\mvar{q}}{(\apply{\mvar{p}}{v}})}:\mvar{a}→\mvar{c}}}.
 %   \end{equation*}
-% \end{lemma}
-% \begin{proof}
-% 	\begin{align*}
-%     \appply{\case}{(f∘\mvar{p})}{(f∘\mvar{q})}
-%     &= \λ{v}{\apply{(\appply{\case}{(f∘\mvar{p})}{(f∘\mvar{q})})}{v}}
-%   \end{align*}
-% \end{proof}
+%   In short, $\mvar{q}∘\mvar{p}\defeq \λ{v}{\apply{\mvar{q}}{(\apply{\mvar{p}}{v}})}$.
+% \end{definition}
 
-\begin{center}
-  \begin{minipage}[b]{0.47\linewidth}
-    \centering
-      \begin{tikzcd}[sep=large]
-        A \arrow[dr, "\inl"{name=I1}]\arrow[ddr, swap, "\mvar{p}"{name=F}, bend right] &
-        {} & B\arrow[dl, "\inr"{name=I2},swap] \arrow[ddl,"\mvar{q}"{name=G}, bend left] \\
-        {} & A+B \arrow[d,dashed, "\appply{\case}{\mvar{p}}{\mvar{q}}"] & {} \\
-        {} & C & {}
-        % filling in the cells
-        \arrow[phantom, shift left=0.3em, from=I1, to=F, "(\beta)"]
-        \arrow[phantom, shift right=0.3em, from=I2, to=G, "(\beta)"]
-        % \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
-      \end{tikzcd}
-  \end{minipage}
-  \begin{minipage}[b]{0.47\linewidth}
-    \centering
-      \begin{tikzcd}[sep=large]
-        {} & C\arrow[ddl, bend right, swap, "\mvar{p}"{name=F}]\arrow[ddr, bend left, "\mvar{q}"{name=G}]
-              % \arrow[d,dashed, bend right, swap, "\mathsf{rec}"{name=FG1}]
-              \arrow[d,dashed, "f"{name=FG2}] & {} \\
-        {} & A\times B \arrow[dl, "\pr{1}"{name=P1}]
-                      \arrow[dr,swap, "\pr{2}"{name=P2}] & {} \\
-        A & {} & B
-        % filling in the cells
-        \arrow[phantom, shift right=0.3em, from=P1, to=F, "(\beta)"]
-        \arrow[phantom, shift left=0.3em, from=P2, to=G, "(\beta)"]
-        % \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
-      \end{tikzcd}
-  \end{minipage}
-\end{center}
-In short, each of the two respective computation rules ensure that, whichever
-(directed) path you take around the perimeters of the two triangles, composing
-as you go, you get judgmentally equal results.
+% Now suppose we have terms $\mvar{p}:\mvar{a}→\mvar{c}$ and
+% $\mvar{q}:\mvar{b}→\mvar{c}$. Via the elimination rule for $∨$, there is a
+% term $\apppply{\case}{\mvar{p}}{\mvar{q}}:\mvar{a}∨\mvar{b}→\mvar{c}$.
+% We can rewrite the β-rules using the composition we just defined:
+% \begin{align*}
+%   \appply{\case}{\mvar{p}}{\mvar{q}}∘\inl &\jdeq \mvar{p} \\
+%   \appply{\case}{\mvar{p}}{\mvar{q}}∘\inr &\jdeq \mvar{q}
+% \end{align*}
+% Similarly, given $\mvar{p}:\mvar{c}→\mvar{a}$ and $\mvar{q}:\mvar{c}→\mvar{b}$,
+% the introduction rule for $∧$ guarantees a function
+% $\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}:\mvar{c}→\mvar{a}∧\mvar{b}$.
+% The computation rules give us the following equalities:
+% \begin{align*}
+%   \pr{1}∘(\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}) &\jdeq \mvar{p} \\
+%   \pr{2}∘(\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}) &\jdeq \mvar{q}
+% \end{align*}
+% (For brevity, put $f\defeq\lam{v}{(\apply{\mvar{p}}{v}, \apply{\mvar{q}}{v})}$).
+% We can express these equalities using the following \define{commutative diagram}
+% (skip ahead to \cref{def:commutative-diagram} for details).
+
+% \begin{center}
+%   \begin{minipage}[b]{0.47\linewidth}
+%     \centering
+%       \begin{tikzcd}[sep=large]
+%         A \arrow[dr, "\inl"{name=I1}]\arrow[ddr, swap, "\mvar{p}"{name=F}, bend right] &
+%         {} & B\arrow[dl, "\inr"{name=I2},swap] \arrow[ddl,"\mvar{q}"{name=G}, bend left] \\
+%         {} & A+B \arrow[d,dashed, "\appply{\case}{\mvar{p}}{\mvar{q}}"] & {} \\
+%         {} & C & {}
+%         % filling in the cells
+%         \arrow[phantom, shift left=0.3em, from=I1, to=F, "(\beta)"]
+%         \arrow[phantom, shift right=0.3em, from=I2, to=G, "(\beta)"]
+%         % \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
+%       \end{tikzcd}
+%   \end{minipage}
+%   \begin{minipage}[b]{0.47\linewidth}
+%     \centering
+%       \begin{tikzcd}[sep=large]
+%         {} & C\arrow[ddl, bend right, swap, "\mvar{p}"{name=F}]\arrow[ddr, bend left, "\mvar{q}"{name=G}]
+%               % \arrow[d,dashed, bend right, swap, "\mathsf{rec}"{name=FG1}]
+%               \arrow[d,dashed, "f"{name=FG2}] & {} \\
+%         {} & A\times B \arrow[dl, "\pr{1}"{name=P1}]
+%                       \arrow[dr,swap, "\pr{2}"{name=P2}] & {} \\
+%         A & {} & B
+%         % filling in the cells
+%         \arrow[phantom, shift right=0.3em, from=P1, to=F, "(\beta)"]
+%         \arrow[phantom, shift left=0.3em, from=P2, to=G, "(\beta)"]
+%         % \arrow[phantom, from=FG1, to=FG2, "(\eta)"]
+%       \end{tikzcd}
+%   \end{minipage}
+% \end{center}
+% In short, each of the two respective computation rules ensure that, whichever
+% (directed) path you take around the perimeters of the two triangles, composing
+% as you go, you get judgmentally equal results.
 
 \section{The λ-calculus}
 \label{sec:the-lambda-calculus}

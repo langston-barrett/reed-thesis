@@ -1169,10 +1169,19 @@ The following example is crucial to
   \cite{adamek}.
 \end{example}
 
-\begin{example}
-	Fascinatingly, the closed real interval can be understood as a final
-  coalgebra \cite{freyd}. \TODO{}
-\end{example}
+% \begin{example}
+% 	Fascinatingly, the closed real interval can be understood as a final
+%   coalgebra \cite{freyd}. \TODO{}
+% \end{example}
+% @article{freyd,
+%   title={Algebraic real analysis},
+%   author={Freyd, Peter},
+%   journal={Theory and Applications of Categories},
+%   volume={20},
+%   number={10},
+%   pages={215--306},
+%   year={2008}
+% }
 
 \begin{example}\label[example]{ex:initial-algebras}
   \
@@ -1373,7 +1382,7 @@ constructing general limits in \cref{subsec:limits-in-universe}.
 
 While there are more direct proofs, the following is based on the
 observation made in \cref{rmk:prod-coprod-universal-adj}, and will carry over to
-the case of general limits. We begin a general lemma:
+the case of general limits. We begin a lemma:
 
 \begin{lemma}[\unimathname{limits.binproduct.isBinProduct'\_to\_isBinProduct}]
   \label[lemma]{lemma:isbinproduct}
@@ -1397,7 +1406,9 @@ property of the product.
 \begin{proof}
   Fix $d$, $q_1$, and $q_2$ as in the type of $\ttfun{postcomp}$.
   For $(c,p_1,p_2)$ to be a product of $a$ and $b$, the following type must be
-  contractible:\TODO{actually just put this in its own definition}
+  contractible:\footnote{We haven't defined this separately for
+    type-theoretic categories because this is a direct translation of the
+    classical universal property into this language.}
   \begin{equation*}
     \∑{f:d\→c}{(p_1∘f=q_1)×(p_2∘f=q_2)}
   \end{equation*}
@@ -1439,7 +1450,7 @@ property of the product.
     &\= h
   \end{align*}
   where the final equality is due to function extensionality (\cref{thm:funext})
-  and the η-rule for the product type \TODO{reference}. Further,
+  and the η-rule for the product type \cref{subsec:ipl-uni}. Further,
   \begin{align*}
     \apply{(\ttfun{postcomp}_{\universe}∘g)}{(h,i)}
     &\≡ \apply{\ttfun{postcomp}_{\universe}}{(\λ{c}{(\apply{h}{c},\apply{i}{c})})} \\

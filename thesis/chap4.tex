@@ -501,7 +501,7 @@ functions to $\ℕ$.
 We now prove a few facts about the natural numbers and the functor for which
 they are initial, some of which will be familiar from
 \cref{sec:functors-and-their-algebras}.\footnote{These arguments are my own,
-  though some of these theorems are proved in the \Agda{} development of
+  though some of these theorems are proven in the \Agda{} development of
   \cite{non-wellfounded}.}
 
 \begin{example}[\unimathname{W.Naturals.nat\_functor}]
@@ -561,7 +561,7 @@ of $X ↦ 1 + X$.
     &\apply{α}{\dpair{\bfalse}{h}} \defeq x_0 \\
     &\apply{α}{\dpair{\btrue}{h}}  \defeq \apply{\suc_X}{(\apply{h}{\unitelem})}
   \end{align*}
-  While it's not immediately that these functions are inverses, it follows from
+  While it's not immediately clear that these functions are inverses, it follows from
   initiality of $\emptytype$ in $\universe$ and the contractibility of
   $\unittype$, both of which will be used extensively in the next few proofs.
 \end{proof}
@@ -754,7 +754,7 @@ algebra sections.
   The above function is an equivalence.
 \end{lemma}
 
-This result is proved in the \Agda{} formalization accompanying
+This result is proven in the \Agda{} formalization accompanying
 \cite{non-wellfounded}. Its proof is outside of the scope of this thesis.
 
 \begin{lemma}[\unimathname{W.Naturals.nat\_alg\_is\_preinitial\_sec}]
@@ -954,7 +954,7 @@ The goal was to establish the following:
   \end{equation*}
 \end{theorem}
 
-Unfortunately, this is not yet proved in \UniMath{}.
+Unfortunately, this is not yet proven in \UniMath{}.
 There was no fundamental obstacle to its formalization, merely a lack of time.
 The main prerequisites yet to be completed are
 \cref{lemma:fiber-initiality-nat} and the following lemma
@@ -970,7 +970,7 @@ The main prerequisites yet to be completed are
   \end{equation*}
 \end{lemma}
 
-If the above were to be proved, it would remain only to show that the universal
+If the above were to be proven, it would remain only to show that the universal
 property of the limit, when applied to the limit $L$ of the diagram constructed
 in \cref{ex:termcochain}, is equivalent to the statement that $L$ is a terminal
 coalgebra for $\dpair{A}{B}$. The equivalence $w:\weq{L}{\apply{P}{L}}$
