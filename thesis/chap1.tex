@@ -3,6 +3,10 @@
 \chapter{Propositions and Types}
 \label{chap:propositions-and-types}
 
+% \epigraph{Now, it  is  the  contention of the  intuitionists […] that the basic mathematical notions […] ought to be interpreted in  such a way that the cleavage between mathematics […] and programming that we are witnessing at present disappears.}{\cite{martin-lof-constructive}}
+
+\epigraph{The intuitionistic type theory, which I began to develop solely with the philosophical motive of clarifying the syntax and semantics of intuitionistic mathematics, may equally well be viewed as a programming language.}{\cite{martin-lof-constructive}}
+
 The goal of this chapter is to transform the Curry-Howard correspondence from
 a loose metaphor into an unavoidable identification. \Cref{sec:ipl} discusses
 intuitionistic propositional logic (\IPL{}) a weaker, constructive,
@@ -25,13 +29,12 @@ meaning explanations \cite{martin-lof-constructive}, where
 introduction and elimination rules are justified by explaining how they match
 with our intuitive ideas of what they mean.\footnote{See \cite{hott-meaning} for a
   justification of \HoTT{} using meaning explanations.}
-We also explore a variant of Dummitt's notions of harmony, in their ``local''
+We also explore a variant of Dummett's notions of harmony, in their ``local''
 versions in \cref{subsec:proof-terms}. 
 
 The presentation of \crefrange{sec:ipl}{sec:the-lambda-calculus} is influenced by
 Philip Wadler \cite{wadler-propositions}, Frank Pfenning's lecture notes for
-``Constructive Logic'', and Robert Harper's lectures on
-\HoTT.\TODO{citation}
+``Constructive Logic'', and Robert Harper's lectures on \HoTT \cite{harper}.
 
 Two recent Reed graduates wrote theses on the Curry-Howard correspondence, both
 taking a different approach in presentation that may complement this work,
@@ -100,8 +103,7 @@ when discussing and defining formal systems for logic and computation.
 \end{definition}
 
 \begin{notation}
-  In imitation of various proof assistants, we will prefix metavariables with
-  question mark, e.g.\ $\mvar{a}$.
+  Metavariables are formatted like so: $\mvar{a}$.
 \end{notation}
 
 See \cref{fig:structure}, \cref{ex:judgments}, and \cref{sec:ipl} for examples
@@ -110,9 +112,9 @@ of uses of metavariables.
 \begin{definition}\label[definition]{def:judgment}
 	A \define{judgment}\index{Judgment} is something that could be known. A
   judgment is \define{evident} if one does, in fact, know it.
-  A \define{proof} evidence for a judgment.
+  A \define{proof} is (sufficient, undeniable, etc.) evidence for a judgment.
   A \define{hypothetical judgment}\index{Judgment!Hypothetical} is one that
-  holds under the assumption that some other judgments hold.
+  is evident under the assumption that some other judgments are evident.
 \end{definition}
 
 \begin{example}\label[example]{ex:judgments}
@@ -640,8 +642,8 @@ represent propositions.
       {⊢\λ{w}\apply{w}{(\inr(\λ{v}\apply{w}{(\apply{\inl}{v})}))}:\lnot (\lnot(\mvar{a}\lor\lnot \mvar{a}))}
   }
   \end{center}
-  The law of the excluded middle will be discussed further in \cref{subsec:on-lem}.
-  \TODO{cite bob harper}
+  The law of the excluded middle will be discussed further in
+  \cref{subsec:on-lem} \cite{harper}.
 \end{example}
 
 \subsection{Proof terms and harmony}
@@ -1051,24 +1053,24 @@ unicity rule:
   further.
 \end{example*}
 
-\begin{example*}\label[example]{ex:fixed-point}
-  A \define{fixed point} of a function $f$ (in \LC{},
-  \FOL{}+\ZFC, or any other formal system or programming language)
-  is an input $x$ such that $\apply{f}{x}=x$. Every term of \LC{}
-  has a fixed point (up to judgmental equality $\≡$). To see this, define
-  $θ \defeq (\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})$ and let
-  $𝚯\defeq \apply{θ}{θ}$. Let $\mvar{f}$ be any term of \LC{}. Then
-  \begin{align*}
-    \apply{𝚯}{f}
-    &\≡ \appply{θ}{θ}{f} \\
-    &\≡ \appply{(\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})}{θ}{f} \\
-    &\≡ \apply{f}{(\appply{θ}{θ}{f})} \\
-    &\≡ \apply{f}{(\apply{𝚯}{f})}
-  \end{align*}
-  The term $𝚯$ is called the \define{Turing fixed-point combinator}, and it can
-  be used to define recursive functions in \LC{} and its derivatives
-  \cite{lambda-lecture}.
-\end{example*}
+% \begin{example*}\label[example]{ex:fixed-point}
+%   A \define{fixed point} of a function $f$ (in \LC{},
+%   \FOL{}+\ZFC, or any other formal system or programming language)
+%   is an input $x$ such that $\apply{f}{x}=x$. Every term of \LC{}
+%   has a fixed point (up to judgmental equality $\≡$). To see this, define
+%   $θ \defeq (\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})$ and let
+%   $𝚯\defeq \apply{θ}{θ}$. Let $\mvar{f}$ be any term of \LC{}. Then
+%   \begin{align*}
+%     \apply{𝚯}{f}
+%     &\≡ \appply{θ}{θ}{f} \\
+%     &\≡ \appply{(\λ{x}{\λ{y}{\apply{y}{(\appply{x}{x}{y})}}})}{θ}{f} \\
+%     &\≡ \apply{f}{(\appply{θ}{θ}{f})} \\
+%     &\≡ \apply{f}{(\apply{𝚯}{f})}
+%   \end{align*}
+%   The term $𝚯$ is called the \define{Turing fixed-point combinator}, and it can
+%   be used to define recursive functions in \LC{} and its derivatives
+%   \cite{lambda-lecture}.
+% \end{example*}
 
 We can make choices about what part of an expression to apply the computation
 rule to. Consider the following computations:
@@ -1410,30 +1412,19 @@ analogous, but \textit{identical to} \IPL{} (again, modulo simple
 notational changes, see \cref{tab:curry-howard}).
 
 While perhaps less surprising due to the notational conveniences of hindsight,
-this observation has startling and deep consequences (and a rich intellectual
-history). It is known as the Curry-Howard correspondence, or the
-propositions-as-types interpretation. This interpretation was first investigated
-by Curry \cite{curry-howard}, who noticed that the types of the ``combinators''
-of his computational formalism\footnote{Equivalent to the λ-calculus, of
-course.} could be interpreted as valid propositions in \IPL{}. This observation
-squared nicely with what's called the Brouwer-Heyting-Kolmogorov interpretation
-of \IPL{}, which asserts that the semantics thereof are to be interpreted as
-referring not exactly to propositions and their proofs, but more general
-``problems'' and their ``solutions'' \cite{kolmogorov}.
+this observation has startling and deep consequences. It is known as the
+Curry-Howard correspondence, or the propositions-as-types interpretation. So
+what does this correspondence really say? Most importantly for us, it says that
+proofs of \IPL{} can be encoded into \TLC{}. (More accurately, the proofs in
+\IPL{} \textit{are} terms of \TLC{}.)
 
-So what does this correspondence really say? It can be understood in many
-ways.\footnote{Read in a particular light, the univalence principle
-  \cref{sec:univalence} might suggest that this ``isomorphism'' be read
-  as an \textit{identity}, an expression of the fundamental sameness of logic
-  and computation.}
-It says that \TLC{} can be used to provide semantics for programming
-languages \cite{landin}. It says that proofs of \IPL{} can be
-encoded into \TLC{}. This translation has the nice property that
-type-checking (the process of determining whether or not has a given type in a
-given context $Γ$) is decidable: it can be performed mechanically, preferably by
-a computer. This gives such proofs a strong epistemological footing.
-
-TODO: talk about proof assistants 
+This ``translation'' has the nice property that type-checking (the process of
+determining whether or not $\mvar{x}$ has a given type $t$ in a given context
+$Γ$) is decidable: it can be performed mechanically, preferably by a computer.
+This is the basis for a kind of program called a ``proof assistant'', which
+verifies proofs written in a formal langauge. The ability to verify complex
+arguments by computer (partially) solves many of the difficulties hinted
+at in the introduction.
 
 \begin{sidewaystable}
   \centering

@@ -182,12 +182,12 @@ In this thesis we explain univalent type theory, a constructive and
 computationally meaningful foundational system for mathematics inspired by
 recent advances in the model theory of Per Martin-L\"of's intuitionistic type
 theory. We first develop the classical propositions/types correspondence between
-(the constructive subset of) intuitionistic natural deduction and the
-λ-calculus. We proceed to explicate Martin-L\"of's theory of dependent types and
-the central modern development in type theory: Vladimir Voevodsky's univalence
-principle. We go on to examine some category theory and the nature of coinduction
-within this theory, presenting a novel formalization of (parts of) a recent
-result that M-types can be derived \textit{internally} in univalent type theory.
+intuitionistic natural deduction and the λ-calculus. We proceed to explicate
+Martin-L\"of's theory of dependent types and the central modern development in
+type theory: Vladimir Voevodsky's univalence principle. We go on to examine some
+category theory and the nature of coinduction within this theory, presenting a
+novel formalization of (parts of) a recent result that M-types can be derived
+\textit{internally} in univalent type theory.
 
 \chapter*{Dedication}
 
@@ -270,12 +270,12 @@ language \textit{and} a foundational system for mathematics (details to come in
 Computer scientists Theirry Coquand and Christine Pauline took this Curry/Howard
 thing very seriously. They developed a variant of Martin-Löf's type theory called
 the Calculus of Constructions \cite{coquand}, and it was implemented as the
-programming language \Coq{}.\footnote{The French word for ``rooster'', in the
-tradition of naming software after animals (a lá \software{OCaml}).} Computer
-scientists, facing the problem of ensuring the correctness of algothims and the
-programs based on them, developed this and other ``proof assistants'' in order
-to produce machine-verifiable code. These languages became Voevodsky's
-``tools''.
+programming language \Coq{} \cite{coq-manual}.\footnote{The French word for
+``rooster'', in the tradition of naming software after animals (a lá
+\software{OCaml}).} Computer scientists, facing the problem of ensuring the
+correctness of algothims and the programs based on them, developed this and
+other ``proof assistants'' in order to produce machine-verifiable code. These
+languages became Voevodsky's ``tools''.
 
 \paragraph{The simplicial set model.}
 Voevodsky was an algebraic topologist and
@@ -306,21 +306,25 @@ type theory (and for a simpler metatheory), the \UniMath{} library uses a
 minimal type theory that we'll develop in this thesis called univalent type
 theory, or \UTT{}.
 
-\paragraph{(Co)induction.}
+\paragraph{(Co)induction.} ``Inductive'' types such as the natural numbers $\ℕ$,
+lists, and binary trees, and their ``coinductive'' versions such as streams (not
+necesssarily finite lists) and infinite binary trees, are essential to any
+modern proof assistant (or more broadly, functional programming language).
+However, their presence is generally postulated, rather than derived. Thus,
+\UniMath{} disallows such definitions.
 
-One fundamental feature of proof assistants (and more
-generally, functional programming languages)
+However, recent results have shown that one can derive the presence of
+coinductive types within \UTT{} while only postulating the natural numbers.
+This result has been formalized within the proof assistant \Agda{}, one goal of
+the present work is to prove (some of) that result in \Coq{}, and integrate it
+into \UniMath{} so that it may be practically utilized by a wider research
+community. 
 
-One of the most generally useful tools in the
-development of formal
-
-\begin{notation}
-  All of the results of this thesis have been formalized in the \Coq{} proof
-  assistant \cite{coq-manual}. They were subsequently reviewed (by the \UniMath{}
-  development team \cite{unimath} and Anders Mörtberg) and accepted into the
-  \UniMath{} library. Their names appear in a monospaced font (e.g.\
-  \unimathname{univalence}). 
-\end{notation}
+Hence, the results in this thesis have been formalized in the \Coq{} proof
+assistant. They were subsequently reviewed (by the \UniMath{}
+development team \cite{unimath} and Anders Mörtberg) and accepted into the
+\UniMath{} library. Their names appear in a monospaced font (e.g.\
+\unimathname{univalence}). 
 
 \subfile{chap1}
 \subfile{chap2}

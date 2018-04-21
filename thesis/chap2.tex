@@ -6,7 +6,7 @@
 Whatever the meaning of the Curry-Howard correspondence, its utility is
 circumscribed by the fact that \IPL{}/\TLC{} as
 presented do not match the expressive power of classical \FOL{}:
-there are no types expressing quantification over some domain, nor propositions
+there are no types expressing quantification over some domain, nor properties
 or relations that may ``apply'' to terms and variables. Certainly, they are
 missing the infinite structures of classical set theory.
 
@@ -197,7 +197,7 @@ identify dependent types with \textit{functions} $B:A→\universei{0}$.
 Generally, we will also now write the judgment $\type{A}$ as $A:\universei{0}$.
 
 \begin{remark}\label[remark]{rmk:meaningless-judgments}
-  Universes blur (well, destroy) the distinction between what goes
+  Universes blur the distinction between what goes
   on the left- and right-hand side of the typing judgment (``$:$'').
   But then how can we tell which terms correspond to \textit{meaningful}
   propositions?
@@ -868,7 +868,9 @@ induction.
 
 The introduction rule $\cons$ takes an element of $A$ and prepends it onto the
 front of the list. This inductive presentation of lists owes much to the
-\software{Lisp} programming language.
+\software{Lisp} programming language. Note that (as opposed to every other type
+and rule introduced thus far), the type $\List{A}$ \textit{isn't} part of the
+type theory \UTT{}.
 
 \section{h-levels}
 \label{sec:h-levels}
@@ -1062,8 +1064,11 @@ characterize such equivalences, these require a few preliminary definitions.
   \begin{equation*}
     (A→B)×(B→A)
   \end{equation*}
-  (compare to \cref{rmk:n-true}). As can be read off the various definitions of
-  weak equivalences, this is a strictly weaker condition.
+  (compare to \cref{rmk:n-true}).\footnote{When $T$ is a type, we sometimes
+    abbreviate ``$T$ is inhabited'' as just ``$T$''. This is the same as when
+    one says e.g.\ ``assume the continuum hypothesis'', rather than
+    ``assume the continuum hypothesis is true''.} As can be read off the various
+  definitions of weak equivalences, this is a strictly weaker condition.
   Tellingly, logical equivalence and weak equivalence coincide for propositions:
   if $A$ and $B$ are propositions then
   \begin{equation*}

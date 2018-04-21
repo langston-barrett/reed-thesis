@@ -671,7 +671,7 @@ Ultimately, M-types are constructed as limits.
 
 \begin{example}\label[example]{ex:pullback-mon}
   In $\Mon$, the category of monoids, the kernel of $f:M→N$
-  can be represented as a pullback of the unique arrow $!:\braces{∗}→M$ along
+  can be represented as a pullback of the unique arrow $!:\braces{∗}→N$ along
   $f$ as in the following diagram:
   \begin{center}
       \begin{tikzcd}[sep=large]
@@ -1158,11 +1158,11 @@ The following example is crucial to
   coalgebra given by a partial operation
   \begin{alignat*}{3}
     &\ttfun{pred} : \N+\unittype &&\to(\N+\unittype)+\unittype \\
-    &\apply{\ttfun{pred}}{\apinl{0}}                 &&\jdeq \apinr{(\apinr{\unitelem})}
+    &\apply{\ttfun{pred}}{(\apinl{0})}                 &&\jdeq \apinr{\unitelem}
       &\qquad\quad&\text{(undefined)}\\
-    &\apply{\ttfun{pred}}{\apinl{(\apply{\suc}{n})}} &&\jdeq n
+    &\apply{\ttfun{pred}}{(\apinl{(\apply{\suc}{n})})} &&\jdeq n
       &\qquad\quad& \\
-    &\apply{\ttfun{pred}}{\apinr{\unitelem}}         &&\jdeq \apinr{\unitelem}
+    &\apply{\ttfun{pred}}{(\apinr{\unitelem})}         &&\jdeq \apinl{(\apinr{\unitelem})}
       &\qquad\quad&\text{($\apinr{\unitelem}$ is like $∞$)}
   \end{alignat*}
   which acts like the natural numbers with an extra ``infinite element''
