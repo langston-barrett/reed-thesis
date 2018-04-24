@@ -123,7 +123,7 @@ As a function:
   \end{center}
 
   We can derive from the induction principle of $\booltype$ that it
-  only has two elements, $\bfalse$ and $\btrue$ \TODO{reference}.
+  only has two elements, $\bfalse$ and $\btrue$.
   Using this (and ignoring uniquely specified terms like $!$),
   the W-elimination rule for $\N'$ can be reshaped and simplified:
   \begin{equation*}
@@ -143,7 +143,7 @@ As a function:
 \end{example}
 
 Other examples include lists, binary trees, ordinals of the second number
-class, and more.\TODO{reference} In the next few sections, we will develop a
+class, and more. In the next few sections, we will develop a
 correspondence between W-types (resp.\ M-types) and initial algebras (resp.\
 terminal coalgebras) for a general class of functor on $\universe$, which will
 include all examples in \cref{sec:functors-and-their-algebras}.
@@ -159,7 +159,7 @@ include all examples in \cref{sec:functors-and-their-algebras}.
     P_{A,B}:\universe\to \universe \\
     \apply{P_{A,B}}{X}\defeq\∑{a:A}{B(a)\to X}
   \end{gather*}
-  We will regularly leave off the subscript for $P$.
+  I will regularly leave off the subscript for $P$.
   The \define{action} of $P$ on functions is
   \begin{gather*}
     P^* : (X\to Y)\to P_{A,B}(X)\to P_{A,B}(Y) \\
@@ -181,8 +181,8 @@ include all examples in \cref{sec:functors-and-their-algebras}.
 \end{remark}
 
 \begin{definition}\label[definition]{def:algebra-coalgebra-in-utt}
-  Exactly as in \cref{def:f-coalgebra}, we define the type of (co)algebras for a
-  polynomial functor $P$ associated to a container $(A,B)$ as follows:
+  Exactly as in \cref{def:f-coalgebra}, the type of (co)algebras for a
+  polynomial functor $P$ associated to a container $(A,B)$ is defined as follows:
   \begin{align*}
     \Algtype_P\≔\∑{A:\universe}{PA→A} && \Coalgtype_P\≔\∑{A:\universe}{A→PA}
   \end{align*}
@@ -254,7 +254,7 @@ constructed in \cref{lemma:algebra-iso-equiv}.
   That is, $f$ is equal to $g$ after being transported just when
   applying $f$ and transporting the result is the same as transporting the
   input and applying $g$.\footnote{This is a corollary of Lemma 2.9.6 in
-    \cite{book}, which we prove as \unimathname{M.Uniqueness.transport\_fun}. The
+    \cite{book}, which I prove as \unimathname{M.Uniqueness.transport\_fun}. The
     following proof is direct.}
 \end{lemma}
 
@@ -334,7 +334,7 @@ the following auxiliary result:
   \end{itemize}
   By univalence, there is a path
     $\apply{\ua}{q}:\propeq{\universe}{X}{Y}$.\footnote{This
-    is our first (but not nearly our last) crucial use of univalence. Without an
+    is our first (but not nearly last) crucial use of univalence. Without an
     equality, we couldn't \transportname{} $α$ to $β$ in the next step.
     This step also demonstrates that function extensionality alone doesn't
     suffice.}
@@ -381,12 +381,12 @@ the following auxiliary result:
     &= β(\transport{\id_\universe}{p}{x}) \\
     &= β({\appr{1}{f}}{x})
   \end{align*}
-  However, this is exactly the condition that $f$ is a $P$-coalgebra morphism:
-  \TODO{reference definition}
+  However, this is exactly the condition that $f$ is a $P$-coalgebra morphism
+  \cref{def:coalgebra-morphism}:
   \begin{center}
     \begin{tikzcd}[column sep=large]
       X  \arrow[d, "α"] \arrow[r, "\appr{1}{f}"] & Y \arrow[d, "β"] \\
-      FX \arrow[r, "P^*(\appr{1}{f})"] & FY
+      FX \arrow[r, "\apply{P^*}{(\appr{1}{f})}"] & FY
     \end{tikzcd}
   \end{center}
 \end{proof}
@@ -609,9 +609,9 @@ structure on $\ℕ$ as $(\appply{w^{-1}}{0}{\suc})$. In fact, this gives
   \end{align*}
 
   If $b\≡\btrue$, then $h:\𝟙 → X$. By the induction principle for
-  $\𝟙$\TODO{reference}, for any type $Z:\universe$, any function $k:\𝟙 → Z$, and
-  any $x:\𝟙$, $\apply{k}{x}=\apply{k}{\unitelem}$. In short,
-  $k=\appply{\rec_{\𝟙}}{Z}{(\apply{k}{\unitelem})}$. In this case,
+  $\𝟙$ \cref{subsec:dependent-elimination}, for any type $Z:\universe$, any
+  function $k:\𝟙 → Z$, and any $x:\𝟙$, $\apply{k}{x}=\apply{k}{\unitelem}$. In
+  short, $k=\appply{\rec_{\𝟙}}{Z}{(\apply{k}{\unitelem})}$. In this case,
   \begin{align*}
     \apply{(β∘(P^*f))}{\dpair{\btrue}{h}}
     &\jdeq \apply{β}{\dpair{\btrue}{f ∘ h}} \\
@@ -923,7 +923,7 @@ we can simplify the limits of chain diagrams (this simplification corresponds to
     &\jdeq \∑{x:\∏{v:\ℕ}{X_v}}
       {\∏{u,v:\ℕ}{\∏{e:\propeq{}{\apply{\suc}{v}}{u}}{\propeq{}{\appply{D}{e}{(\apply{x}{u})}}{\apply{x}{v}}}}} \\
     &\weqsign
-        {\∑{x:\∏{n:\ℕ}{X_n}}{\∏{n:ℕ}{\propeq{}{\appply{D}{(\refl{\apply{\suc}{n}})}{(\apply{x}{u})}}}{\apply{x}{v}}}}
+        {\∑{x:\∏{n:\ℕ}{X_n}}{\∏{n:ℕ}{\propeq{}{\appply{D}{(\refl{\apply{\suc}{n}})}{(\apply{x}{(\apply{\suc}{n})})}}}{\apply{x}{n}}}}
   \end{align*}
 \end{lemma}
 

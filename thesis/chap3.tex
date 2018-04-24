@@ -7,20 +7,25 @@
 fits the least comfortably into existing ``foundations of
 mathematics''.}{\cite{rezk}}
 
-Category theory presents a challange to set-theoretic mathematicians: the
+Category theory provides a unifying language for much of modern math. It
+provides a ``zoomed out'' picture of a collection of structures, focusing not on
+individual objects, but on their relations with one another instead. 
+It also presents a challange to set-theoretic mathematicians: the
 canonical example of a category is $\Set$, the collection of all sets. In
-\ZFC+\FOL{}, this category is undefinable\footnote{In
+\ZFC+\FOL{}, this category is undefinable.\footnote{In
   particular, its formation is prevented by the axiom of regularity
   \cite{vonneumann}, which was included in \ZFC{} to avoid the
   paradoxes of Burali-Forti and Russell. The discovery of said paradoxes
   motivated Bertrand Russell to invent something he called the ``theory of
-  types'' \cite{russell}.}.
-\Crefrange{sec:basics}{sec:functors-and-their-algebras},
-are willfully imprecise, we work with an abstract and undefined notion of
-``collection'', and adopt set-theoretic notation. See any textbook on category
-theory for information on how problems of size are dealt with set-theoretically.
-We will examine category theory within \UTT{} in
-\cref{sec:type-theoretic-category-theory}.
+  types'' \cite{russell}.}
+
+While we will examine category theory within \UTT{} in
+\cref{sec:type-theoretic-category-theory},
+\crefrange{sec:basics}{sec:functors-and-their-algebras}
+instead treat the basics of the subject from a somewhat set-theoretic
+perspective. In true category-theoretic style, they are willfully
+imprecise. We work with an abstract and undefined notion of set. For a detailed
+exposition of set-theoretic issues in category theory, see \cite{shulmanset}.
 
 The results in this chapter all appear in the \UniMath{} package
 \unimathname{CategoryTheory}, so that prefix is left off
@@ -31,9 +36,7 @@ The results in this chapter all appear in the \UniMath{} package
 \label{sec:basics}
 
 \begin{definition}\label[definition]{def:category}
-	A \define{category}\index{Category}\footnote{In more general contexts, this
-    may be called a \define{$1$-category} or even a $(1,1)$-category.}
-  $\bfC$ consists of the following data:
+	A \define{category}\index{Category} $\bfC$ consists of the following data:
   \begin{itemize}
     \itemsep-0.2em
     \item a collection of \define{objects}, denoted $\Obj \bfC$,

@@ -11,9 +11,9 @@ The goal of this chapter is to transform the Curry-Howard correspondence from
 a loose metaphor into an unavoidable identification. \Cref{sec:ipl} discusses
 intuitionistic propositional logic (\IPL{}) a weaker, constructive,
 proof-relevant variant of standard propositional logic. In
-\cref{sec:the-lambda-calculus}, we introduce Church's λ-calculus (\LC{})
+\cref{sec:the-lambda-calculus}, I introduce Church's λ-calculus (\LC{})
 (and the simply-typed and typed versions \STLC{} and \TLC{}). Finally, in
-\cref{sec:propositions-and-types}, we discuss the fundamental and
+\cref{sec:propositions-and-types}, I discuss the fundamental and
 harmonious relation between these systems. A full understanding of \LC{},
 \IPL{}, and their relation via Curry-Howard requires a degree of formality, as
 spelled out in \cref{sec:discussing-logic}.
@@ -23,7 +23,7 @@ emphasized the importance of the notion of judgment (\cref{def:judgment})
 \cite{martin-lof-meanings}. It may be helpful to see \cite{modal-judgment} for a
 similar application of Martin-L\"of vocabulary to modal logic.
 
-While it is in general unclear how to justify logical rules, we attempt to
+While it is in general unclear how to justify logical rules, I attempt to
 provide some informal defense of \IPL{}. One approach is to use 
 meaning explanations \cite{martin-lof-constructive}, where
 introduction and elimination rules are justified by explaining how they match
@@ -34,14 +34,14 @@ versions in \cref{subsec:proof-terms}.
 
 The presentation of \crefrange{sec:ipl}{sec:the-lambda-calculus} is influenced by
 Philip Wadler \cite{wadler-propositions}, Frank Pfenning's lecture notes for
-``Constructive Logic'', and Robert Harper's lectures on \HoTT \cite{harper}.
+``Constructive Logic'', and Robert Harper's lectures on \HoTT{} \cite{harper}.
 
 Two recent Reed graduates wrote theses on the Curry-Howard correspondence, both
 taking a different approach in presentation that may complement this work,
 \cite{curry-howard-reed-thesis} and \cite{process-calculi-reed-thesis}.
 
 \begin{notation}\label[notation]{notation:parens}
-  Throughout this thesis, we will omit parentheses when applying function-like
+  Throughout this thesis, I will omit parentheses when applying function-like
   constructions wherever this results in no ambiguity. Function application is
   left-associative. For example, for function-like constructions $f$, $g$, $h$,
   and $i$ we have
@@ -67,7 +67,7 @@ philosophers and mathematicians alike have argued that Skolem's
 has deep and significant consequences for the philosophy of
 mathematics \cite{skolem}. These misunderstandings both arise from a common
 root: the failure to distinguish between object language and metalanguage. In
-this section, we will attempt to mitigate some of the difficulties that arise
+this section, I will attempt to mitigate some of the difficulties that arise
 when discussing and defining formal systems for logic and computation.
 
 \begin{definition}\label[definition]{def:object-meta-language}
@@ -152,11 +152,11 @@ of uses of metavariables.
 
 \begin{notation}\label[notation]{notation:proof-tree}
   The premises and conclusions of proofs or rules of deduction are always
-  judgments. If we can deduce a conclusion $K$ from premises $J_1,\ldots,J_n$
+  judgments. A deduction of a conclusion $K$ from premises $J_1,\ldots,J_n$
   via some rule R (again: $J_1,\ldots,J_n$ and $K$ are \textit{judgments},
   phrased in plain Enlgish, not terms of an object language)\footnote{These
     could be called meta-metavariables.},
-  we will write
+  is written
   \begin{align*}
     \prftree[r]{\footnotesize R}
       {J_1}{J_2}{\ldots}{J_n}
@@ -172,25 +172,23 @@ of uses of metavariables.
       {\ldots}{J_n}
       {K}.
   \end{align*}
-  Iterating this notation, we can write long derivations as trees with the
+  Iterating this notation, one can write long derivations as trees with the
   conclusion as their root.
 \end{notation}
 
 \begin{notation}\label[notation]{notation:sequent}
   If $K$ is a hypothetical judgment holding under assumptions $J_1,\ldots,J_n$,
   we denote this by $J_1,\ldots,J_n⊢ K$ (``$⊢$'' can be read ``entails'').
-  There are three (seemingly) related notions that entailment is distinct from:
+  There are two (seemingly) related notions that entailment is distinct from:
   \begin{enumerate}
-    \itemsep0em
-    \item Gentzen's notion of syntactic entailment, which we won't discuss here,
+    \itemsep-0.5em
     \item the deduction of $K$ from premises $J_1,\ldots,J_n$ (shown in
       \cref{notation:proof-tree}), and
     \item implication (see \cref{subsec:ipl-intro} for more discussion of this
       distinction).
   \end{enumerate}
-  To denote some arbitrary sequence of hypotheses, we will use capital Greek
-  letters $Γ$, $Δ$, and $Θ$.\footnote{Again, these are sorts of
-  meta-metavariables.}
+  Capital Greek letters $Γ$, $Δ$, and $Θ$ will denote some arbitrary sequence of
+  hypotheses.\footnote{Again, these are sorts of meta-metavariables.}
 \end{notation}
 
 \begin{definition}\label[definition]{def:entailment-rules}
@@ -221,7 +219,7 @@ of uses of metavariables.
 
 \begin{notation}\label[notation]{notation:substitution}
   The substitution of a term $t$ for all free occurrences variable $v$
-  in an expression $e$ is denoted by $e[v\≔ t]$. We will not deal directly with the
+  in an expression $e$ is denoted by $e[v\≔ t]$. I will not deal directly with the
   issues of variable capture, scoping, and substitution here, for a rigorous
   treatment see any thorough textbook on logic.
 \end{notation}
@@ -343,23 +341,25 @@ of uses of metavariables.
 \section{Intuitionistic propositional logic}
 \label{sec:ipl}
 
-With these notations, we are prepared to define \IPL{}.
-\Crefrange{sec:ipl}{sec:the-lambda-calculus} present these systems in some
-degree of formality. Proofs in later chapters are not written in this style, but
-it is important to see precisely specified versions of these logics in order to
-understand \cref{sec:propositions-and-types}.
+Intuitionistic propositional logic is a variant of classical sentential logic
+with some rules omitted due to philosophical (or, for computer scientists,
+pragmatic) concerns. As discussed in the introduction, it is commonly understood
+as both a theory of truth, and as a theory of ``problems'' and their ``solutions''.
+
+\Crefrange{sec:ipl}{sec:the-lambda-calculus} present these
+systems in some degree of formality. Proofs in later chapters are not written in
+this style, but it is important to see precisely specified versions of these
+logics in order to understand \cref{sec:propositions-and-types}.
 
 \subsection{Formation rules}
 \label{subsec:ipl-form}
 
-Since \IPL{} is supposed to be a logic, we better have a notion of a
-proposition.\footnote{Why do we judge that terms are propositions, instead of
-  well-formed formulae? Propositions are strictly more general. With
-  hypothetical judgments, we can have a judgment of the form
-  $\true{\mvar{a}}⊢ \prop{\mvar{b}}$, expressing that $\mvar{b}$ is a
-  proposition \textit{under the assumption that $\mvar{a}$ is true}. We will
-  need such expressive power in \cref{chap:type-theory}. This is also why we
-  refrain from specifying our syntax via formal BNF (or similar) grammars.}
+Since \IPL{} is supposed to be a logic, it better have a notion of a
+proposition.\footnote{In the intuitionistically-motivated style of Robert
+  Harper, I avoid specifying the notion of ``well-formed formulae'', opting
+  instead for a more general partial specification of ``propositions''.
+  In this same spirit, I refrain from specifying our syntax via formal BNF (or
+  similar) grammars.}
 Indeed, we denote the judgment that some term $\mvar{a}$ represents a
 proposition by $\prop{\mvar{a}}$. The following are the \define{formation
 rules}\index{Formation!In \IFOL{}}:\footnote{For the less
@@ -433,7 +433,10 @@ give it a trivial proof:
 
 How do we know a conjunction? Intuitively, we know (have a proof of) $\mvar{a}$
 and $\mvar{b}$ (written $\mvar{a}\land\mvar{b}$) just when we know (have a proof
-of) both $\mvar{a}$ and $\mvar{b}$. In symbols,
+of) both $\mvar{a}$ and $\mvar{b}$. In symbols,\footnote{Note that we're
+  currently defining the notation ``$(,)$'', as we defined ``$\star$'' above and
+  will define ``$\inl$'' below. These aren't imported from (though they are
+  inspired by) some other area of math.}
 \begin{equation*}
   \prftree[r]{}
     {Γ ⊢ \prop{\mvar{a}}}{Γ ⊢ \prop{\mvar{b}}}
@@ -459,9 +462,9 @@ know $\mvar{b}$. Correspondingly, we have two introduction rules:
     {Γ ⊢ \mvar{p}:\mvar{b}}
     {Γ ⊢ \apply{\inr}{\mvar{p}}:\mvar{a}\lor\mvar{b}}.
 \end{align*}
-The symbol $⊥$ represents falsehood. We say a logic is
+The symbol $⊥$ represents falsehood. A logic is
 \define{consistent}\index{Consistency} if it cannot prove falsehood (a highly
-desirable property!). To this end, we have no introduction rule for $⊥$.
+desirable property!). To this end, there is no introduction rule for $⊥$.
 
 What does it mean to know a negation? We'll define
 $\lnot\mvar{a}\defeq \mvar{a}→⊥$ and instead worry about when we
@@ -487,6 +490,8 @@ $v,w,\ldots$
     {Γ,\mvar{p}:\mvar{a},Δ⊢ \mvar{q}:\mvar{b}}
     {Γ,Δ⊢\λ{v}{\mvar{q}[\mvar{p}\≔ v]}:\mvar{a}→\mvar{b}}.
 \end{equation*}
+(Generally, $\mvar{q}$ will be some expression containing $\mvar{p}$ so that the
+substitution $\mvar{q}[\mvar{p}\≔ v]$ is different from $\mvar{q}$.)
 
 \begin{definition}\label[definition]{def:valid-theorem}
   If know that under no hypotheses $\mvar{a}$ is a proposition and has a proof,
@@ -497,8 +502,8 @@ $v,w,\ldots$
       {⊢\prop{\mvar{a}}}{⊢\mvar{p}:\mvar{a}}
       {⊢\valid{\mvar{a}}}.
   \end{equation*}
-  In this case, we say that $\mvar{a}$ is a \define{theorem}\index{Theorem!Of
-  \IPL{}} of \IPL{}.
+  In this case, $\mvar{a}$ is a \define{theorem}\index{Theorem!Of \IPL{}} of
+  \IPL{}.
 \end{definition}
 
 \subsection{Elimination rules}
@@ -541,7 +546,7 @@ If both disjuncts imply a hypothesis, so does their disjunction:
     {Γ ⊢ \apppply{\case}{\mvar{p}}{\mvar{q}}{\mvar{r}}:\mvar{c}}.
 \end{align*}
 The elimination rule for implication has the common name
-\define{modus ponens}\index{Modus ponens}, and expresses the idea that, if we
+\textit{modus ponens}\index{Modus ponens}, and expresses the idea that, if we
 had a hypothetical judgment and then come to know all of the hypotheses, we can
 deduce the consequence:
 \begin{align*}
@@ -554,8 +559,8 @@ deduce the consequence:
 The elimination rule for falsehood comes from the principle
 \textit{ex falso quod libet}, ``from falsehood anything follows'' (also more
 dramatically called the ``principle of explosion''). If we've been
-able to prove $⊥$, our whole logic is bankrupt and we can derive anything we
-please:
+able to prove $⊥$, our whole logic is bankrupt (or we're doing a proof by
+contradiction), we can derive anything we please:
 \begin{align*}
   \prftree[r]{}
     {Γ ⊢ \prop{\mvar{a}}}
@@ -597,22 +602,23 @@ represent propositions.
   \index{Double negation elimination}
   \begin{equation*}
     \prftree[r]{\footnotesize DNE}
-      {Γ ⊢ \prop{\mvar{a}}}{\mvar{p}:\lnot\lnot\mvar{a}}
+      {Γ ⊢ \prop{\mvar{a}}}
+      {Γ ⊢ \mvar{p}:\lnot\lnot\mvar{a}}
       {Γ ⊢ \apply{\ttfun{dne}}{\mvar{p}}:\mvar{a}}.
   \end{equation*}
   that is, using the rule LEM, you can construct a proof of DNE and vice versa.
+  These are \textit{not} rules of \IPL{}.
 \end{definition}
 
 \begin{example}\label[example]{ex:ipl-not-not-lem}
   A crucial consequence of the definition of \IPL{} is that the law
-  of excluded middle isn't a theorem. However, we can demonstrate that
-  its negation isn't either. While reading this proof, keep the following in
-  mind:
+  of excluded middle isn't a theorem. However, its negation isn't either. While
+  reading this proof, keep the following in mind:
   \begin{itemize}
     \itemsep0em
-    \item for brevity, we abbreviate our hypothesis
+    \item I abbreviate the hypothesis
       $\mvar{h}:\lnot(\mvar{a}\lor\lnot \mvar{a})$ as $\mvar{h}:H$
-    \item $\lnot\mvar{a}\equiv \mvar{a}→⊥$
+    \item $\lnot\mvar{a}\≔ \mvar{a}→⊥$
   \end{itemize}
   \begin{center}
   \noindent\makebox[\textwidth]{%
@@ -791,10 +797,13 @@ affirmative.
 
 Judgmental equality, as the name implies, is a meta-level concept. In
 particular, ``$\≡$'', like ``$:$'', is not part of the syntax of \IPL{}. 
-The term $\mvar{p}\≡\mvar{q}:\mvar{a}$ should never be read as an element of
+The term $\mvar{p}\≡\mvar{q}:\mvar{a}$ should never be read as a proof of
 $\mvar{a}$. Since it is a congruence, none of the rules of \IPL{} can distinguish
-judgmentally equal terms (this ``indiscerniblility'' is implemented as a rule in
-\UTT{} in \cref{subsec:the-identity-type}).
+judgmentally equal terms. Thus, if $\mvar{p}\jdeq\mvar{q}:\mvar{a}$, then we can
+write $\mvar{q}$ for $\mvar{p}$ anywhere in an \IPL{} derivation without
+changing the meaning.\footnote{This ``indiscerniblility'' is implemented as a
+  rule in \UTT{} in \cref{subsec:the-identity-type}, after we
+  \textit{internalize} the notion of judgmental equality.}
 
 Besides allowing us to write shorter proofs, these rules witness local
 soundness; they show that the elimination rules never prove any conclusion that
@@ -834,11 +843,12 @@ following \define{unicity rules}\index{Unicity rules}, (also known as
     {Γ ⊢ \mvar{p}:\mvar{a}∨\mvar{b}}
     {Γ ⊢ \apppply{\case}{\inl}{\inr}{\mvar{p}}\jdeq \mvar{p}:\mvar{a}∨\mvar{b}}}.
 \end{gatherjot}
-Naturally, these rules witness local completeness; after applying elimination
+These rules witness local completeness; after applying elimination
 rules and then introduction rules we can recover our original
-proofs.\footnote{There's also no η-rule for $\emptytype$. One can, however,
-  derive that any two elements of $\emptytype$ are equal (just use the
-  elimination rule).}
+proofs.\footnote{There's also no η-rule for $\bot$.
+  After internalizing equality (\cref{subsec:the-identity-type}),
+  we'll be able to derive that any two elements of (the analogue of) $\bot$ are
+  equal.}
 
 % \subsection{Diagrams}
 % \label{subsec:ipl-diagrams}
@@ -934,12 +944,12 @@ In the 1930s, mathematicians and computer scientists (though they were not
 called ``computer scientists'' then) sought a rigorous foundation for terms like
 ``effectively computable'' and ``systematic''. They sought to lay on a rigorous
 logical foundation an intuitive idea of what a(n idealized) human being could
-accomplish with specific\footnote{(finite)} instructions and arbitrarily much
+accomplish with specific (finite) instructions and arbitrarily much
 paper, pen, and time. Many particular mathematical models were proposed,
 including the λ-calculus (\LC{}), Turing machines, Post systems,
 register machines, combinatory definability, and more \cite{sep-church-turing}.
 The \textit{Church-Turing thesis} proposes that the proper definition is (any
-model equivalent to) the λ-calculus.\footnote{Perhaps the strongest reason to
+model equivalent to) the λ-calculus.\footnote{Perhaps the strongest argument
   accept such a thesis is the theorem that all models just mentioned are
   equivalent.}
 Computer scientists widely adopt this thesis, and the λ-calculus and its
@@ -962,8 +972,7 @@ itself an extension of the simply-typed λ-calculus (\STLC{}) of
 
 The formation\index{Formation!In the λ-calculus} (really, all) rules of the
 λ-calculus are brilliantly simple.\footnote{Again, ignoring issues of variable
-binding.} We will again assume the presence of a countably infinite set of
-variables $v,w,\ldots$:
+binding.} We will again need a countably infinite set of variables $v,w,\ldots$:
 \begin{align*}
   {\prftree[r]{}
     {}
@@ -983,8 +992,8 @@ In short, we have variables, application of one term to another, and
 notation of function application by juxtaposition (\cref{notation:parens}).
 Accordingly, function application is left-associative.
 
-There are no elimination rules. Again, we define judgmental equality λ-terms to
-be the least congruence closed under the following computation
+There are no elimination rules. Judgmental equality of λ-terms is
+the least congruence closed under the following computation
 rule\index{Computation rules!In \LC{}} and subject to the following
 unicity rule:
 \begin{align*}
@@ -1007,7 +1016,7 @@ unicity rule:
 \end{notation}
 
 \begin{example*}\label[example]{ex:calculations-in-lc}
-  Under the computation rule, we have
+  Under the computation rule,
   \begin{align*}
     &\appply
       {(\λ{u}{\λ{v}{\λ{w}{\appply{\mvar{x}}{v}{w}}}})}
@@ -1026,9 +1035,7 @@ unicity rule:
     \≡ & (\λ{w}{\appply{\mvar{x}}{(\λ{z}{\apply{z}{\mvar{a}}})}{w}})
     &&\quad\text{(substitution)}.
   \end{align*}
-  (Recall the meta-theoretical notation $\mvar{a}[\mvar{b} \≔ \mvar{c}]$,
-  \cref{notation:substitution}.)
-  Since $\mvar{x}$ is some arbitrary term, we can reduce this expression no
+  Since $\mvar{x}$ is some arbitrary term, this expression can be reduced no
   further.
 \end{example*}
 
@@ -1052,7 +1059,7 @@ unicity rule:
 % \end{example*}
 
 We can make choices about what part of an expression to apply the computation
-rule to. Consider the following computations:
+rule to. Consider the following computations (leaving substitution implicit):
 \begin{center}
   \begin{tikzpicture}[node distance=1.5cm]
     \node[] (A) at (0, 0) {$
@@ -1068,18 +1075,13 @@ rule to. Consider the following computations:
                       {(\λ{w}{\mvar{c}})})}
     $};
     \node[below of=B] (C) {$
-      \apply{(\apply{(\λ{y}{\mvar{a}})}{\mvar{a})})}
+      \apply{\mvar{a}}
             {(\apply{(\λ{z}{\apply{z}{\mvar{b}}})}
                       {(\λ{w}{\mvar{c}})})}
     $};
     \node[below of=C] (D) {$
-      \apply{\apply{\mvar{a}}{\mvar{a}}}
-            {(\apply{(\λ{z}{\apply{z}{\mvar{b}}})}
-                      {(\λ{w}{\mvar{c}})})}
-    $};
-    \node[below of=D] (E) {$
-      \apply{\apply{\mvar{a}}{\mvar{a}}}
-            {(\apply{(\λ{w}{\mvar{c}})}{\mvar{b}})}
+      \apply{\mvar{a}}
+            {(\apply{{(\λ{w}{\mvar{c}})}}{\mvar{b}})}
     $};
     %%%%%%%%%%%%%%%%%%%%%%% RIGHT
     \node[below of=A, xshift=8em] (F) {$
@@ -1090,23 +1092,22 @@ rule to. Consider the following computations:
     \node[below of=F] (G) {$
       \apply{(\apply{(\λ{x}{\apply{x}{x}})}
                     {(\λ{y}{\mvar{a}})})}
-            {(\apply{\mvar{b}}{\mvar{c}})}
+            {\mvar{c}}
     $};
     \node[below of=G] (H) {$
       \apply{(\apply{(\λ{y}{\mvar{a}})}{(\λ{y}{\mvar{a}})})}
-            {(\apply{\mvar{b}}{\mvar{c}})}
+            {\mvar{c}}
     $};
     %%%%%%%%%%%%%%%%%%%%%%% LAST
-    \node[below of=A, yshift=-13em] (Z) {$
-      \appply{\mvar{a}}{\mvar{a}}{(\apply{\mvar{b}}{\mvar{c}})}
+    \node[below of=A, yshift=-10em] (Z) {$
+      \apply{\mvar{a}}{\mvar{c}}
     $};
     %%%%%%%%%%%%%%%%%%%%%%% ARROWS
     %%%%% LEFT
     \draw (A) edge [->] node[above] {\scriptsize β} (B);
     \draw (B) edge [->] node[left] {\scriptsize β} (C);
     \draw (C) edge [->] node[left] {\scriptsize β} (D);
-    \draw (D) edge [->] node[left] {\scriptsize β} (E);
-    \draw (E) edge [->] node[below] {\scriptsize β} (Z);
+    \draw (D) edge [->] node[below] {\scriptsize β} (Z);
     %%%%% RIGHT
     \draw (A) edge [->] node[above] {\scriptsize β} (F);
     \draw (F) edge [->] node[right] {\scriptsize β} (G);
@@ -1120,7 +1121,7 @@ result in the same term, but there is \textit{a priori} no reason to think this
 is so in general.
 
 \begin{theorem}[Church-Rosser]\label[theorem]{thm:church-rosser}
-  The order in which we apply computation rules to a term of \LC{}
+  The order in which computation rules are applied to a term of \LC{}
   doesn't matter. More specifically, if $\mvar{a}\betatoo\mvar{b}$ and
   $\mvar{a}\betatoo\mvar{c}$, then there is a term $\mvar{d}$ such that
   $\mvar{b}\betatoo\mvar{d}$ and $\mvar{c}\betatoo \mvar{d}$.
@@ -1149,9 +1150,9 @@ same term.
 
 \begin{definition}\label[definition]{def:normal-form}
 	If $\mvar{a}$ is a term of \LC{} such that there does not exist
-  a term $\mvar{a}'$ with $\mvar{a}\betato \mvar{a}'$, then we say that
+  a term $\mvar{a}'$ with $\mvar{a}\betato \mvar{a}'$, then
   $\mvar{a}$ is in \define{(β-)normal form}\index{Normal form}.
-  If $\mvar{b}\betatoo\mvar{b}'$ and $\mvar{b}'$ is in normal form, we say
+  If $\mvar{b}\betatoo\mvar{b}'$ and $\mvar{b}'$ is in normal form, then
   $\mvar{b}'$ is the normal form of $\mvar{b}$.
 \end{definition}
 
@@ -1174,29 +1175,29 @@ term has a β-normal form.
     &\≡ \appppply{⊥}{⊥}{⊥}{⊥}{⊥} \\
     &\≡ ⋯
   \end{align*}
-  Not only can we build terms that don't really ``progress'' when we try to
-  ``compute'', but we can build terms that actually \textit{expand} under rules
-  meant to \textit{reduce} them, that are judgmentally equal to infinitely many
-  other terms!
+  Not only are there terms that don't really ``progress'' when we try to
+  ``compute'', but some that actually \textit{expand} under rules meant to
+  \textit{reduce} them, that are judgmentally equal to infinitely many other
+  terms!
 \end{example*}
 
 While an ability to loop indefinitely is essential to Turing-Completeness (the
 property of being equivalent to a Turing machine model of computation), we
-might ask if there is another system in which we could express many of the same
+might ask if there is another system which expresses many of the same
 ideas and computations, but with a computation rule that always ``terminates''.
 
 \subsection{The simply-typed λ-calculus}
 \label{subsec:the-simply-typed-lambda-calculus}
 
-In order to fix the problem raised in \cref{ex:non-terminating}, we can add
+In order to fix the problem raised in \cref{ex:non-terminating}, one can add
 \define{types}\index{Types!Simply-typed λ-calculus} to \LC{} to get
 \STLC{}, the simply-typed λ-calculus. We consider two new judgments
 of the form ``$\type{\mvar{t}}$'' and ``$\mvar{a}:\mvar{t}$'', read
-``\mvar{t} is a type'' and ``\mvar{a} has type \mvar{t}'', respectively (recall
-that ``$:$'' is a symbol of the meta-language, it is just shorthand for writing
-a judgment). In writing these judgments, we implicitly assume that all
-expressions are well-formed terms. As a first approximation, a type can be
-thought of as a description of a program's behavior.
+``\mvar{t} is a type'' and ``\mvar{a} has type \mvar{t}'', respectively (``$:$''
+is a symbol of the meta-language, it is just shorthand for writing a judgment).
+In writing these judgments, we implicitly assume that all expressions are
+well-formed terms. As a first approximation, a type can be thought of as a
+description of a program's behavior.
 
 This language begins with additional formation rules
 \begin{align*}
@@ -1392,14 +1393,16 @@ notational changes, see \cref{tab:curry-howard}).
 
 While perhaps less surprising due to the notational conveniences of hindsight,
 this observation has startling and deep consequences. It is known as the
-Curry-Howard correspondence, or the propositions-as-types interpretation. So
-what does this correspondence really say? Most importantly for us, it says that
-proofs of \IPL{} can be encoded into \TLC{}. (More accurately, the proofs in
-\IPL{} \textit{are} terms of \TLC{}.)
-
-This ``translation'' has the nice property that type-checking (the process of
+Curry-Howard correspondence, or the propositions-as-types interpretation. Many
+of its applications stem from the fact that type-checking (the process of
 determining whether or not $\mvar{x}$ has a given type $t$ in a given context
 $Γ$) is decidable: it can be performed mechanically, preferably by a computer.
+This is why languages such as \software{Haskell} and \software{ML} have
+\textit{type systems} inspired by \TLC{}: the compiler uses types to reason
+about properties of the code in question.
+
+Most importantly for us, proofs of \IPL{} can be encoded into \TLC{}. (More
+accurately, the proofs in \IPL{} \textit{are} terms of \TLC{}.) 
 This is the basis for a kind of program called a ``proof assistant'', which
 verifies proofs written in a formal langauge. The ability to verify complex
 arguments by computer (partially) solves many of the difficulties hinted

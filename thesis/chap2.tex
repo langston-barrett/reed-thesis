@@ -13,7 +13,7 @@ missing the infinite structures of classical set theory.
 The system described in this section enriches \TLC{} with
 \textit{dependent types} (\cref{sec:dependent-types}) and a few more base types,
 including our first examples of \textit{inductive types}
-(\cref{subsec:natural-numbers-and-lists}). Additionally, we define and include
+(\cref{subsec:natural-numbers-and-lists}). Additionally, I define and include
 Voevodsky's univalence axiom (\cref{sec:univalence}). The
 resulting system (univalent type theory, or \UTT{}) has similar
 expressive power to \ZFC{}+\FOL{}.\footnote{Indeed, the
@@ -28,28 +28,27 @@ expressive power to \ZFC{}+\FOL{}.\footnote{Indeed, the
 is the system $\caH$ in \cite{inductive} and \cite{homotopy-initial} with the
 addition of the natural numbers and universes. The results of
 \cref{chap:coinductive-types-in-univalent-type-theory} don't
-require the full power of homotopy type theory (\HoTT), specifically we leave
+require the full power of homotopy type theory (\HoTT), specifically I leave
 out the axioms asserting the existence of higher inductive types.
 
 \begin{notation}
-  Henceforth, we denote variables and meta-variables with the same
-  script.
+  Henceforth, variables and meta-variables are denoted with the same script.
 \end{notation}
 
 \section{Dependent types}
 \label{sec:dependent-types}
 
 One of the slogans of dependently typed programming is that ``types are
-terms''. Propositions, like proof terms, can now be subsumed as objects of study
-in their own right.
+terms''. Propositions, like proof terms, can now be \textit{internalized} and
+subsumed as objects of study in their own right.
 
 \begin{definition}
 	A \define{dependent type} or \define{type family} is a term with a free
   variable of a specified type, which, when filled in with any term of said
   type, is a type. In other words, $B$ is a dependent type with variable of type
-  $A$ if for some $Γ$,
+  $A$ if for some hypotheses $Γ$ and $Θ$,
   \begin{equation*}
-    Γ,a:A⊢\type{B}.
+    Γ,a:A,Θ⊢\type{B}.
   \end{equation*}
   That is, a dependent type is a \textit{type} that \textit{depends} on a
   \textit{value}. 
@@ -58,7 +57,10 @@ in their own right.
 In the interpretation of types as propositions, dependent types correspond to
 predicates. The following illustration uses several concepts yet to be
 introduced, trust that it can be made precise after the next few sections.
-Suppose we have a type $ℕ$ with introduction rules (or ``constructors'')
+(In particular, see \cref{def:stn} for the characterizations of $\emptytype$ and
+$\unittype$, which should be thought of as $⊥$ and $⊤$ from
+\cref{chap:propositions-and-types}.) Suppose we have a type $ℕ$ with
+introduction rules (or ``constructors'')
 \begin{align*}
   \prftree[r]{}
     {}
@@ -67,8 +69,9 @@ Suppose we have a type $ℕ$ with introduction rules (or ``constructors'')
     {Γ ⊢ n:\ℕ}
     {Γ ⊢ \apply{\suc}{n}:\ℕ}
 \end{align*}
-($0$ is what a logician might call a ``non-logical constant'' and $\suc$ a
-``function symbol''). We might define a type family
+% ($0$ is what a logician might call a ``non-logical constant'' and $\suc$ a
+% ``function symbol'').
+We might define a type family
 \begin{alignat*}{3}
   &\apply{\ttfun{Even}}{0} &&\defeq \unittype  \\
   &\apply{\ttfun{Even}}{(\apply{\suc}{0})} &&\defeq \emptytype  \\
@@ -81,8 +84,9 @@ empty ($≅$false) otherwise.
 	Here's an opportunity for confusion: is a type like $\ℕ$ ``true''? It's
   certainly inhabited. Again, we, as humans, must decide which types to
   interpret as propositions, properties, etc. \Cref{sec:h-levels}
-  covers types that essentially contain no other information other than whether
-  or not they are inhabited, these are called ``propositions''.
+  covers types whose inhabitants (in a precise sense) contain no other
+  information other than that the type is inhabited, these are called
+  ``propositions''.
 \end{remark}
 
 \subsection{Π-types}
@@ -99,7 +103,7 @@ and function types. It is formed via the following rule:
 It is crucial to remember that the Π (just like λ) scopes over the
 entire rest of the expression, unless otherwise delineated by parentheses.
 This type represents functions with output \textit{types} that depend on the
-\textit{value} of an \textit{input}. They associate to each $a:A$ some element
+\textit{value} of an input. They associate to each $a:A$ some element
 of the type $\apply{B}{a}$. Thus, the introduction rule (dropping hypotheses
 that appear in the formation rule):
 \begin{equation*}
@@ -107,9 +111,10 @@ that appear in the formation rule):
     {Γ, a:A ⊢ b:\apply{B}{a}}
     {Γ ⊢ \λ{a}{b}:\pitt{a:A}{\apply{B}{a}}}
 \end{equation*}
-where the term $b$ usually has a free occurrence of $a$. If it doesn't, the Π-type
-specializes to the normal function type. The elimination, computation, and
-unicity rules are also straightforward generalizations of normal functions types:
+If $b$ doesn't have a free occurance of $a$, then this is a constant function.
+If $B$ doesn't have a free occurance of $a$, then the Π-type specializes to the
+normal function type. The elimination, computation, and
+unicity rules are also generalizations of those for normal functions types:
 \begin{gatherjot}
   \prftree[r]{}
     {Γ ⊢ {f}:\pitt{a:A}{\apply{B}{a}}}
@@ -119,7 +124,7 @@ unicity rules are also straightforward generalizations of normal functions types
   \prftree[r]{β}
     {Γ, a:A ⊢ b:\apply{B}{a}}
     {Γ ⊢ x:A}
-    {Γ ⊢ \apply{\λ{a}{b}}{x}\jdeq b[a\defeq x]:\apply{B}{a}} \\
+    {Γ ⊢ \apply{(\λ{a}{b})}{x}\jdeq b[a\defeq x]:\apply{B}{a}} \\
   \prftree[r]{η}
     {Γ ⊢ f : \pitt{a:A}{\apply{B}{a}}}
     {Γ ⊢ \λ{x}{\apply{f}{x}}\jdeq f:\pitt{a:A}{\apply{B}{a}}}
@@ -151,9 +156,7 @@ first understand universes.
 \label{subsec:the-universe}
 
 Another slogan of dependently typed programming is ``All terms must have a
-type''. What, if anything, is the type of types?\footnote{Caution: This thesis
-  doesn't explain the rules for universes nearly as fully as those for all other
-  types.}
+type''. What, if anything, is the type of types?
 
 \begin{definition}\label[definition]{def:universes}
   All the base types we have considered up to this point ($⊤$, $⊥$) are members
@@ -256,7 +259,7 @@ for Π and $×$ look like the following \cite{cpdt}:
   \prftree[r]{}
     {Γ ⊢ A:\universei{i}}
     {Γ ⊢ B:A→\universei{j}}
-    {Γ ⊢ \pitt{a:A}{\apply{B}{a}}:\universei{\appply{\max}{i}{j}}}.
+    {Γ ⊢ \pitt{a:A}{\apply{B}{a}}:\universei{\appply{\max}{i}{j}}}\qquad
   \prftree[r]{}
     {Γ ⊢ A:\universei{i}}
     {Γ ⊢ B:\universei{j}}
@@ -347,13 +350,13 @@ Consider functions with the following types:
 \end{itemize}
 What can we tell about these functions from their type signatures?
 The term $\ttfun{dne}$ takes as argument a term $x:(A\to⊥)\to⊥$,
-that is, a term showing that $A$ is not the empty type\footnote{More precisely,
+that is, a term showing that $A$ is not the empty type,\footnote{More precisely,
   $x$ demonstrates that $A$ is not \textit{isomorphic} or \textit{equivalent} to
   $⊥$, in the sense of \cref{subsec:weak-equivalences}. If $A$ were isomorphic
-  to $⊥$, then that isomorphism would be an inhabitant of $A\to⊥$.}, and
+  to $⊥$, then that isomorphism would be an inhabitant of $A\to⊥$.} and
 produces some element of $A$. This seems like a very tricky function to write:
 how can we give a term of type $A$ just by knowing $A$ has terms? We don't
-know what form data of type $A$ have! The function $\ttfun{lem}$ seems
+know what kind data of type $A$ is! The function $\ttfun{lem}$ seems
 similarly quagmired. Given a type $A$, this function either has to produce an
 element of it, or demonstrate that it is uninhabited.
 
@@ -367,7 +370,7 @@ To demonstrate with finality that these are not definable terms in any
 consistent type theory,\footnote{They may, however, be taken as axioms. However,
   this naïve version (called LEM\textsubscript{$∞$} in \cite{book}) is
   inconsistent with the univalence axiom. The restriction to \textit{propositions}
-  \cref{def:mere-proposition} is consistent with univalence.} consider the
+  (\cref{def:mere-proposition}) is consistent with univalence.} consider the
 application of $\ttfun{lem}$ to a type $\ttfun{pnp}$ that corresponds to the
 $\textsc{P}\neq\textsc{NP}$ conjecture under the types-as-propositions
 interpretation. If $\ttfun{lem}$ existed, we could trivially solve this problem
@@ -377,6 +380,9 @@ assistants requires no recourse to philosophy: nothing else computes.
 \subsection{A pivot in presentation}
 \label{subsec:a-pivot-in-presentation}
 
+This section uses Σ-types as examples, it is useful to read \cref{subsec:sigma-types} 
+concurrently.
+
 Given the vocabulary of Π-types, the introduction rules for various types
 can be phrased as inhabitants of the dependent function types. Given appropriate
 $A$ and $B$, for instance,
@@ -385,8 +391,9 @@ $A$ and $B$, for instance,
   &&
   \dpair{-}{-} : \∏{a:A}{\∏{b:\apply{B}{a}}{\∑{a:A}{\apply{B}{a}}}}
 \end{align*}
-(Where $\dpair{-}{-}$ is a convenient shorthand for $\λ{a}{\λ{b}{\dpair{a}{b}}}$.)
-The elimination rules can be given by such a treatment:
+(where $\dpair{-}{-}$ is a convenient shorthand for
+$\λ{a}{\λ{b}{\dpair{a}{b}}}$). The elimination rules can be given by such a
+treatment:
 \begin{gatherjot}
   \case:(A→P)→(B→P)→(A+B→P) \\
   \pr{1}:\∑{a:A}{\apply{B}{a}}→A \qquad\qquad
@@ -415,10 +422,12 @@ one just implicitly assumes that the elements of $A×B$ are of the form
 $(a,b)$ for $a:A$ and $b:B$. The construction of the actual element is left
 implicit in the proof.
 
-This style more closely matches mathematical practice. There is some vague
+This style more closely matches mathematical practice, where there is some vague
 notion that most standard proofs could, in principle, be formalized in the
-language of \FOL{}+\ZFC{}, but this is rarely done outside of introductory
-set theory textbooks.
+language of \FOL{}+\ZFC{}, but this is rarely done outside of introductory set
+theory textbooks. One key difference is that the proofs in this thesis
+\textit{in fact have been} formalized in the language of \UTT{} and checked by
+computer.
 
 \subsection{The identity type}
 \label{subsec:the-identity-type}
@@ -607,6 +616,12 @@ and ``inversion'' operations:
     \item $\propeq{}{(p\ct q)\ct r}{p \ct (q\ct r)}$.
   \end{enumerate}
 \end{lemma}
+
+It's great that $\propeqsign$ turns out to be an equivalence relation. However,
+many kinds of isomorphism are equivalence relations as well. What else might one
+expect from a relation claiming to represent \textit{identity}? Identity it is
+the ultimate congruence, the equivalence relation that \textit{everything}
+respects. The next lemma formalizes this intuition.
 
 \begin{lemma}[$\ttfun{ap}$]\label[lemma]{lemma:ap}
   For any $A,B:\universe$ and $f:A\to B$, there is a function
@@ -843,6 +858,25 @@ rules are called ``recursors'' and ``induction principles'': in the case of
 $\N$, they correspond exactly to definition by recursion and the principle of
 induction. 
 
+\begin{definition}\label[definition]{def:stn}
+  The natural numbers can be used to define the \define{standard finite types}.
+  Define
+  \begin{gather*}
+    \ttfun{stn}:\ℕ  → \universe \\
+    \apply{\ttfun{stn}}{n} \defeq \∑{m:\ℕ}{m<n}
+  \end{gather*}
+  We denote $\apply{\ttfun{stn}}{n}$ by a boldface $n$, as in
+  \begin{align*}
+    {\emptytype}\defeq{\apply{\ttfun{stn}}{0}}
+    &&
+    {\unittype}\defeq{\apply{\ttfun{stn}}{1}}
+    &&
+    {\booltype}\defeq{\apply{\ttfun{stn}}{2}}
+  \end{align*}
+  where $\booltype$ is the type of \define{Booleans}, we call its elements
+  $\btrue$ and $\bfalse$ by ``true'' and ``false'', respectively.
+\end{definition}
+
 \begin{definition}
   The type of \define{lists} has the following formation and introduction rules:
   \begin{align*}
@@ -923,8 +957,8 @@ them by the non-triviality of their nested equality types.
 
 \begin{definition}\label[definition]{def:mere-proposition}
   A type $X:\universe$ is a \define{mere proposition}, a \define{proposition},
-  an \define{hprop}, or is \define{of h-level $1$}\footnote{More on this soon.}
-  if all of its elements are propositionally equal,
+  an \define{hprop}, or is \define{of h-level $1$} if all of its elements are
+  propositionally equal,
   \begin{equation*}
     \apply{\isProp}{X} \defeq \pit{x,y:X}x=y
   \end{equation*}
@@ -1013,9 +1047,9 @@ characterize such equivalences, these require a few preliminary definitions.
 
 \begin{definition}\label[definition]{def:fiber}
 	Given a function $f:A→B$ and point $b:B$, the \define{fiber of $f$ above $b$}
-  is the type
+  or the \define{preimage of $b$ under $f$} is the type
   \begin{equation*}
-    \apply{\ttfun{fiber}_f}{b}\defeq\∑{a:A}{\propeq{}{\apply{f}{a}}{b}}
+    \apply{\ttfun{fiber}_f}{b}\defeq\∑{a:A}{\propeq{}{\apply{f}{a}}{b}}.
   \end{equation*}
 \end{definition}
 
@@ -1023,7 +1057,7 @@ characterize such equivalences, these require a few preliminary definitions.
 	Given dependent functions $f,g:\∏{a:A}{\apply{B}{a}}$, a \define{homotopy}
   between them is an inhabitant of
   \begin{equation*}
-    f\sim g\defeq \∏{a:A}{\propeq{}{\apply{f}{a}}{\apply{g}{a}}}
+    f\sim g\defeq \∏{a:A}{\propeq{}{\apply{f}{a}}{\apply{g}{a}}}.
   \end{equation*}
 \end{definition}
 
@@ -1044,8 +1078,7 @@ characterize such equivalences, these require a few preliminary definitions.
       \end{equation*}
       or
     \item there is a function $g:B→A$ with homotopies $η:g∘f\sim\id_A$,
-      $ε:f∘g\sim\id_B$, and
-      $τ:\∏{a:A}{\propeq{}{\apply{f}{(\apply{η}{a})}}{\apply{ε}{(\apply{f}{a}})}}$.
+      $ε:f∘g\sim\id_B$, and $τ:f∘η\sim ε∘f$.
   \end{itemize}
   We abusively denote the type of any of these conditions by
   $\apply{\isEquiv}{f}$. When $f:A→B$ is an equivalence, we write
@@ -1093,7 +1126,7 @@ characterize such equivalences, these require a few preliminary definitions.
 	Suppose $X:\universe$ is contractible with center $x$. Define $f:X→\unittype$
   as $\λ{x}{\unitelem}$ and $g:\unittype→X$ as $\λ{u}{x}$. Then by hypothesis on
   $X$, the dependent elimination rule for
-  $\unittype$\cref{subsec:dependent-elimination}, and function
+  $\unittype$ (\cref{subsec:dependent-elimination}), and function
   extensionality (\cref{thm:funext}), the composites are the appropriate
   identities.
 \end{proof}
@@ -1126,7 +1159,7 @@ characterize such equivalences, these require a few preliminary definitions.
   \begin{align*}
     \weq{\∏{a:A}{\apply{P}{a}}}{\∏{a:A}{\apply{Q}{a}}}
     &&\text{and}&&
-    \weq{\∑{a:A}{\apply{P}{a}}}{\∑{a:A}{\apply{Q}{a}}}
+    \weq{\∑{a:A}{\apply{P}{a}}}{\∑{a:A}{\apply{Q}{a}}}.
   \end{align*}
 \end{lemma}
 
@@ -1142,7 +1175,7 @@ a weak equivalence:
   For any $A,B:\universe$, $a:A$, $b:B$, and $x:A×B$,
   \begin{equation*}
     \weq{\big((\propeq{A}{\appr1{x}}{a})×(\propeq{B}{\appr1{x}}{b})\big)}
-        {\big(\propeq{}{x}{(a,b)}\big)}
+        {\big(\propeq{}{x}{(a,b)}\big)}.
   \end{equation*}
   That is, pairs are equal just when their components (projections) are.
 \end{lemma}
@@ -1213,7 +1246,8 @@ paths $\propeq{\universe}{A}{B}$ are exactly the weak equivalences $\weq{A}{B}$.
     \ttfun{idtoweq} : \∏{A,B:\universe}{\propeq{}{A}{B}→\weq{A}{B}}
   \end{equation*}
   defined by path induction and the identity equivalence (the reflexivity of
-  $\weqsign$). The \define{univalence axiom} states that $\ttfun{idtoweq}$ is an
+  $\weqsign$, \cref{lemma:isequiv-prop}). The \define{univalence axiom} states
+  that $\ttfun{idtoweq}$ is an
   equivalence.\footnote{Note that there are several ways one might define
     $\ttfun{idtoweq}$. \cite{book} uses an alternative definition, we follow
     the \UniMath{} library.} In particular, it has an inverse
@@ -1269,10 +1303,10 @@ As a simple example of the use of univalence, we can generalize
   \end{equation*}
 \end{proof}
 
-This argument isn't actually specific to contractibility; using univalence any
+This argument isn't actually specific to hlevels; using univalence any
 proposition of the form ``If $\weq{A}{B}$ and $\apply{P}{A}$, then $\apply{P}{B}$''
 is trivially true. Briefly, everything respects weak equivalences.
-
+	
 \begin{theorem}
 	UIP is inconsistent with the univalence axiom. In particular, there are some
   types that are not sets.
