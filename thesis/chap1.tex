@@ -218,7 +218,7 @@ of uses of metavariables.
 \end{definition}
 
 \begin{notation}\label[notation]{notation:substitution}
-  The substitution of a term $t$ for all free occurrences variable $v$
+  The substitution of a term $t$ for all free occurrences of a variable $v$
   in an expression $e$ is denoted by $e[v\≔ t]$. I will not deal directly with the
   issues of variable capture, scoping, and substitution here, for a rigorous
   treatment see any thorough textbook on logic.
@@ -263,7 +263,7 @@ of uses of metavariables.
     $\mvar{a}\≡\mvar{b}:\mvar{p}$
       & \cref{def:jdeq-ipl}
       & English
-      & Judgment: $\mvar{a}$ is equal to $\mvar{b}$ proofs/elements of $\mvar{p}$ \\
+      & Judgment: $\mvar{a}$ is equal to $\mvar{b}$ as proofs/elements of $\mvar{p}$ \\
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $\apply{\mvar{a}}{\mvar{b}}$
       & \cref{notation:parens}
@@ -664,7 +664,7 @@ in a dream, but upon waking, couldn't recall the derivation:
 \begin{equation*}
     {Γ ⊢ \apply{\mvar{r}}{(\appr{1}{(\apply{\mvar{p}}{\mvar{q}})})} : \mvar{d}}.
 \end{equation*}
-Well, it certainly had to end with an application of implication eliimination
+Well, it certainly had to end with an application of implication elimination
 to hypotheses of the form $\mvar{b}$ and $\mvar{b}→ \mvar{d}$:
 \begin{equation*}
   \prftree[r]{}
@@ -950,7 +950,7 @@ including the λ-calculus (\LC{}), Turing machines, Post systems,
 register machines, combinatory definability, and more \cite{sep-church-turing}.
 The \textit{Church-Turing thesis} proposes that the proper definition is (any
 model equivalent to) the λ-calculus.\footnote{Perhaps the strongest argument
-  accept such a thesis is the theorem that all models just mentioned are
+  to accept such a thesis is the theorem that all models just mentioned are
   equivalent.}
 Computer scientists widely adopt this thesis, and the λ-calculus and its
 variants are of central importance to the study of computation in

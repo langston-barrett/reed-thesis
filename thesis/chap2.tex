@@ -849,7 +849,7 @@ natural numbers and lists.
     \ind_{\N}:\∏{C:\N→\universe} \apply{C}{0} → \paren{\∏{n:\N}{\apply{C}{n}→\apply{C}{(\apply{\suc}{n})}}} → \∏{n:\N} \apply{C}{n} \\
     \appppply{\ind_{\N}}{C}{c}{f}{0} \jdeq c \\
     \appppply{\ind_{\N}}{C}{c}{f}{(\apply{\suc}{n})} \jdeq
-    \apply{f}{(\appppply{\rec_{\N}}{C}{c}{f}{n})}
+    \apply{f}{(\appppply{\ind_{\N}}{C}{c}{f}{n})}
   \end{gatherjot}
 \end{definition}
 

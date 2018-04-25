@@ -190,7 +190,7 @@ Consider a group $(G,·,e)$. Its \define{opposite group} has the operation
   g ·^\op h \defeq h · g
 \end{equation*}
 Now, suppose $(A,≤)$ has all finite meets. Immediately, $(A,≤^\op)$ has all finite
-joins. In general, if we know some theorem $T$ about $(A,≤)$ or $(G,·,e)$. It
+joins. In general, if we know some theorem $T$ about $(A,≤)$ or $(G,·,e)$, it
 seems like there should be a purely mechanical process via which one could
 discover an appropritate ``opposite theorem'' that applies to $(A,≤^\op)$ or
 $(G,·^\op,e)$.
@@ -204,7 +204,7 @@ purely mechanical process, and prove them trivially.
   \begin{itemize}
     \itemsep0em
     \item objects $\Obj\bfC^\op\defeq \Obj\bfC$,
-    \item arrows $f^\op∈\Hom_{\bfC^op}(B,A)$ for each $f∈\Hom_{\bfC}(A,B)$,
+    \item arrows $f^\op∈\Hom_{\bfC^{\op}}(B,A)$ for each $f∈\Hom_{\bfC}(A,B)$,
     \item and composition $f^\op∘^\op g^\op\defeq (g\circ f)^\op$.
   \end{itemize}
 \end{definition}
@@ -296,7 +296,9 @@ Ultimately, M-types are constructed as limits.
     \item $\Cat$: 
       \begin{itemize}\renewcommand{\labelitemi}{$∘$}
         \itemsep-0.2em
-        \item \vspace{-0.6em} The category with one object and one arrow (its
+        \item \vspace{-0.6em}
+          [\unimathname{categories.Cats.TerminalCat}]
+          The category with one object and one arrow (its
           identity) is terminal.
         \item The empty category is initial, for the same reasons as in $\Set$
           or $\universe$ (depending on which foundational system one is working
@@ -313,7 +315,7 @@ Ultimately, M-types are constructed as limits.
 \begin{remark}\label[remark]{remark:terminal-object-id-unique}
 	In particular, for a terminal object $⊤$, $\id_⊤$ is the only arrow
   $⊤\catarrow ⊤$.\footnote{As noted in \cref{sec:duality}, this statement
-    holds for initial objects as well. From this point on, we will leave it
+    holds for initial objects as well. From this point on, I will leave it
     to the reader to construct the dual of a statement and infer its truth.}
 \end{remark}
 
@@ -430,7 +432,7 @@ Ultimately, M-types are constructed as limits.
         \item The free product $G∗H$ is a coproduct.
       \end{itemize}
     \item $\AbGrp$, $R\Mod$, $F\dVect$: The direct sum $⊕$ is both a product and
-      coproduct.\footnote{In fact, $⊗$ has a stronger property of being a
+      coproduct.\footnote{In fact, $⊕$ has a stronger property of being a
       \define{biproduct}. These three categories share many significant
       features; one fruitful lens through which to view them is as
       \define{abelian categories}.} 
@@ -440,33 +442,11 @@ Ultimately, M-types are constructed as limits.
 \begin{lemma}
 	(Co)products are unique up to a specified isomorphism.
 \end{lemma}
-\begin{proof}
-  Note that for any coproduct $C$ of $A$ and $B$, the identity makes the
-  following diagram ($⋆$) commute, and so is necessarily unique in doing so:
-  \begin{center}
-    \begin{tikzcd}[sep=large,ampersand replacement=\&]
-      A \arrow[r, "i_1"{name=I1}]\arrow[dr, swap, "i_1"{name=F}]
-      \& C \arrow[d,"\id_C"]
-      \& B\arrow[l, "i_2"{name=I2},swap]\arrow[dl,"i_2"{name=G}] \\
-      {} \& C \& {}
-    \end{tikzcd}
-  \end{center}
-	Suppose $C$ and $D$ are coproducts of $A$ and $B$. The universal
-  property of the coproduct induces arrows $u$ and $u'$ making the following
-  diagram commute:
-  \begin{center}
-    \begin{tikzcd}[column sep=large,ampersand replacement=\&]
-      {} \& C \arrow[dd, dashed, "u", bend left] \& {} \\
-      A \arrow[ur]\arrow[dr]
-      \& {}
-      \& B\arrow[ul]\arrow[dl] \\
-      {} \& D \arrow[uu, dashed, "u'", bend left] \& {}
-    \end{tikzcd}
-  \end{center}
-  However by this commutativity, the compositions $u∘u'$ and $u'∘u$ fit into the
-  diagram ($⋆$), and so must be the respective identities, making $C$ and $D$
-  isomorphic.
-\end{proof}
+
+The proof is much the same as that for initial or terminal objects: the
+universal property of the (co)product produces arrows back and forth between the
+two (co)products, and their composites must be the identities. This lemma
+generalizes: any (co)limits are unique up to specified isomorphism.
 
 \begin{definition}\label[definition]{def:equalizer-and-coequalizer}
   Given objects $A,B∈\Obj\bfC$ and arrows $f,g:A\catarrow B$,
@@ -672,17 +652,17 @@ Ultimately, M-types are constructed as limits.
   \end{enumerate}
 \end{example}
 
-\begin{example}\label[example]{ex:pullback-mon}
-  In $\Mon$, the category of monoids, the kernel of $f:M→N$
-  can be represented as a pullback of the unique arrow $!:\braces{∗}→N$ along
-  $f$ as in the following diagram:
-  \begin{center}
-      \begin{tikzcd}[sep=large]
-        \ker f \arrow[r, tail] \arrow[d, swap, "!"] & M \arrow[d, "f"] \\
-        \braces{∗} \arrow[r, swap, "!"] & N
-      \end{tikzcd}
-  \end{center}
-\end{example}
+% \begin{example}\label[example]{ex:pullback-mon}
+%   In $\Mon$, the category of monoids, the kernel of $f:M→N$
+%   can be represented as a pullback of the unique arrow $!:\braces{∗}→N$ along
+%   $f$ as in the following diagram:
+%   \begin{center}
+%       \begin{tikzcd}[sep=large]
+%         \ker f \arrow[r, tail] \arrow[d, swap, "!"] & M \arrow[d, "f"] \\
+%         \braces{∗} \arrow[r, swap, "!"] & N
+%       \end{tikzcd}
+%   \end{center}
+% \end{example}
 
 \begin{example}\label[example]{ex:pushout-special-cases-top}
   In $\Top$, the wedge sum $A∨B$ is an instance of a pushout.
@@ -815,12 +795,12 @@ These concepts can be defined more elegantly using functors
       \begin{tikzcd}[row sep=large, column sep=small, ampersand replacement=\&]
         \apply{D}{u}
         \arrow[rr, "\apply{D}{e}"]
-        \arrow[dr, bend right=15, "j_u"]
-        \arrow[ddr, bend right=25, swap, "i_u"]
+        \arrow[dr, bend right=15, "i_u"]
+        \arrow[ddr, bend right=25, swap, "j_u"]
         \& {} \&
         \apply{D}{v}
-        \arrow[dl, swap, bend left=15, "j_v"]
-        \arrow[ddl, bend left=25, "i_v"] \\
+        \arrow[dl, swap, bend left=15, "i_v"]
+        \arrow[ddl, bend left=25, "j_v"] \\
         {} \& L \arrow[d, dashed, "u"] \& {} \\
         {} \& C \& {}
       \end{tikzcd}
@@ -887,7 +867,7 @@ using the following notation:
 
 \begin{example}\label[example]{ex:identity-functor-cat}
   For any category $\bfC$, there is an \define{identity
-  functor}\index{Identity!Functor} $\id_{\bfC}\bfC\to\bfC$ which acts as the
+  functor}\index{Identity!Functor} $\id_{\bfC}:\bfC\to\bfC$ which acts as the
   identity on objects and morphisms. The composition of functors is associative,
   and there is a category $\Cat$ of ``small'' categories (it doesn't include
   itself, for instance).
@@ -1003,13 +983,14 @@ algebraic structures like groups is a bit more complex.
   Not every algebra for this functor will be a group. The functor doesn't
   encode the \textit{equational laws}, e.g.\ that the operation $A×A→A$ is
   associative. To represent such relations, one needs the richer
-  structure of a \define{monad}\indeX{Monad}. Monads also have algebras, and it
-  is difficult to say whether these generalize $F$-algebras or the other way
-  around. Particular groups, rings, algebras over a field, etc.\
-  are examples of $F$-algebras (for various choices of $F$), but the definition
-  of a $F$-algebra don't encode sufficient information such that
-  \textit{every} $F$-algebra for the ``group signature functor'' is indeed a
-  group.
+  structure of a \define{monad}\indeX{Monad}.
+  % Monads also have algebras, and it
+  % is difficult to say whether these generalize $F$-algebras or the other way
+  % around. Particular groups, rings, algebras over a field, etc.\
+  % are examples of $F$-algebras (for various choices of $F$), but the definition
+  % of a $F$-algebra don't encode sufficient information such that
+  % \textit{every} $F$-algebra for the ``group signature functor'' is indeed a
+  % group.
 \end{remark}
 
 For the remainder of this section when a definition or result is presented only
@@ -1054,7 +1035,7 @@ The following example is crucial to
     A &⟼_0 1+A \\
     f &⟼_1 \id_1+f
   \end{align*}
-  where 1 is a terminal object\index{Terminal object} and $+$ is the coproduct
+  where $1$ is a terminal object\index{Terminal object} and $+$ is the coproduct
   bifunctor as in \cref{ex:coproduct-functoriality}. Let's examine
   what it \textit{means} for some $F$-algebra $(N,η)$ to be initial. By
   composing with the coproduct\index{Coproduct!In category theory} injections,
@@ -1062,11 +1043,11 @@ The following example is crucial to
   \begin{align*}
     \begin{split}
       z &: 1 ⟶ N \\
-      z &= η∘ i_1
+      z &= η∘i_1
     \end{split}
     \begin{split}
-      s &: 1 ⟶ N \\
-      s &= η∘ i_2
+      s &: N ⟶ N \\
+      s &= η∘i_2
     \end{split}
   \end{align*}
   so that $η=[z,s]$:
@@ -1163,7 +1144,7 @@ The following example is crucial to
     &\ttfun{pred} : \N+\unittype &&\to(\N+\unittype)+\unittype \\
     &\apply{\ttfun{pred}}{(\apinl{0})}                 &&\jdeq \apinr{\unitelem}
       &\qquad\quad&\text{(undefined)}\\
-    &\apply{\ttfun{pred}}{(\apinl{(\apply{\suc}{n})})} &&\jdeq n
+    &\apply{\ttfun{pred}}{(\apinl{(\apply{\suc}{n})})} &&\jdeq \apinl{(\apinl{n})}
       &\qquad\quad& \\
     &\apply{\ttfun{pred}}{(\apinr{\unitelem})}         &&\jdeq \apinl{(\apinr{\unitelem})}
       &\qquad\quad&\text{($\apinr{\unitelem}$ is like $∞$)}
