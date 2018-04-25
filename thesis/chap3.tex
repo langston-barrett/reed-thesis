@@ -1248,8 +1248,8 @@ family $\ttHom_{C}:C→C→\universe$ of arrows.
     \itemsep-0.2em
     \item left and right identity:
       \begin{align*}
-        \∏{a,b:\bfC}{\∏{f:\appply{\ttHom_{\bfC}}{a}{b}}{&\id_B∘f=f}} \\
-        \∏{a,b:\bfC}{\∏{f:\appply{\ttHom_{\bfC}}{a}{b}}{&f∘\id_A=f}}
+        \∏{a,b:\bfC}{\∏{f:\appply{\ttHom_{\bfC}}{a}{b}}{&\id_b∘f=f}} \\
+        \∏{a,b:\bfC}{\∏{f:\appply{\ttHom_{\bfC}}{a}{b}}{&f∘\id_a=f}}
       \end{align*}
     \item associativity of composition:
       \begin{equation*}
@@ -1261,7 +1261,7 @@ family $\ttHom_{C}:C→C→\universe$ of arrows.
         }}}}
       \end{equation*}
   \end{enumerate} 
-  We denote arrows $\appply{\ttHom}{a}{b}$ by $a\rightharpoonup b$ in an attempt
+  We denote the type $\appply{\ttHom}{a}{b}$ by $a\rightharpoonup b$ in an attempt
   to distinguish it from the function type $a→b$. 
   The type of all precategories is denoted $\Precat$.
 \end{definition}
@@ -1283,7 +1283,7 @@ thought into the language of precategories.
     \itemsep-0.2em
     \item preservation of identity:
       \begin{equation*}
-        \∏{a:\bfC}{\apply{F_1}{\id_A}=\id_{(\apply{F_0}{A})}}
+        \∏{a:\bfC}{\apply{F_1}{\id_a}=\id_{(\apply{F_0}{a})}}
       \end{equation*}
     \item preservation of composition:
       \begin{equation*}
@@ -1390,9 +1390,7 @@ property of the product.
 \begin{proof}
   Fix $d$, $q_1$, and $q_2$ as in the type of $\ttfun{postcomp}$.
   For $(c,p_1,p_2)$ to be a product of $a$ and $b$, the following type must be
-  contractible:\footnote{We haven't defined this separately for
-    type-theoretic categories because this is a direct translation of the
-    classical universal property into this language.}
+  contractible:
   \begin{equation*}
     \∑{f:d\→c}{(p_1∘f=q_1)×(p_2∘f=q_2)}
   \end{equation*}
@@ -1426,15 +1424,15 @@ property of the product.
     \apply{g}{(h,i)} \defeq \λ{c}{(\apply{h}{c},\apply{i}{c})}
   \end{gather*}
   and let $\ttfun{postcomp}_{\universe}$ be the specialization of 
-  $\ttfun{postcomp}$ to the category of types. Then
+  $\ttfun{postcomp}$ to the precategory of types. Then
   \begin{align*}
     \apply{(g∘\ttfun{postcomp}_{\universe})}{h}
     &\≡ \apply{g}{(\pr{1}∘\apply{h},\pr{2}∘\apply{h})} \\
-    &\≡ \λ{c}{(\pr{1}∘\apply{h},\pr{2}∘\apply{h})} \\
+    &\≡ \λ{c}{(\apply{(\pr{1}∘\apply{h})}{c},\apply{(\pr{2}∘\apply{h})}{c})} \\
     &\= h
   \end{align*}
   where the final equality is due to function extensionality (\cref{thm:funext})
-  and the η-rule for the product type \cref{subsec:ipl-uni}. Further,
+  and the η-rule for the product type (\cref{subsec:ipl-uni}). Further,
   \begin{align*}
     \apply{(\ttfun{postcomp}_{\universe}∘g)}{(h,i)}
     &\≡ \apply{\ttfun{postcomp}_{\universe}}{(\λ{c}{(\apply{h}{c},\apply{i}{c})})} \\
@@ -1442,7 +1440,7 @@ property of the product.
     &\= (h,i)
   \end{align*}
   where the final equality is again due to function extensionality
-  and the η-rule for the product type \cref{lemma:paths-dirprod-weq}.
+  and the η-rule for the function type (\cref{lemma:paths-dirprod-weq}).
 \end{proof}
 
 \begin{proof}[Proof of \cref{lemma:universe-binproducts}]
@@ -1489,9 +1487,13 @@ when proving results about them.
 \end{definition}
 
 In univalent type theory, it's generally useful to know the $h$-level of a given
-type, especially if it is $-2$ (contractible), $-1$ (a proposition), or
-$0$ (a set). The following lemma is not used after its proof, but shows us that
-the property of being a limit is in some sense a ``logical'' property. 
+type, especially if it is $0$ (contractible), $1$ (a proposition), or
+$2$ (a set). The following lemma is not used after its proof, but shows us that
+the property of being a limit is in some sense a ``logical''
+property.\footnote{As a point of contrast, being a precategory is \textit{not}
+  a proposition: it requires specific, non-trivial choices of equalities
+  $\propeq{}{f∘\id_a}{f}$, etc. Being a category \textit{is} a proposition.}
+
 
 \begin{lemma}\label[lemma]{lemma:limit-prop}
   The property of being a limit cone is a proposition. Explicitly,
@@ -1586,7 +1588,7 @@ cone is also a proposition.
   \begin{equation*}
     \dpair{\λ{v}{\λ{L}{\apply{\appr{1}{L}}{v}}}}
           {\λ{u}{\λ{v}{\λ{e}{\λ{L}{\apppply{\appr{2}{L}}{u}{v}{e}}}}}}
-    : \appply{\HomotCone}{D}{(\Stdlim{D})}
+    : \appply{\HomotCone}{D}{(\Stdlim{D})}.
   \end{equation*}
 \end{definition}
 
@@ -1611,7 +1613,7 @@ paths in $\Stdlim{D}$.)
   \begin{equation*}
     \∏{u,v:G_0}
       {\∏{e:\appply{G_1}{u}{v}}
-         {\propeq{}{\appply{D}{e}{(\apply{f}{u})}}{\apply{f}{v}}}}
+         {\propeq{}{\appply{D}{e}{(\apply{f}{u})}}{\apply{f}{v}}}}.
   \end{equation*} 
   This follows immediately from the fact that $q$ forms a cone. In summary,
   we have a function

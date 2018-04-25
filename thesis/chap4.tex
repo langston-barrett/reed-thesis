@@ -24,7 +24,7 @@ non-wellfounded trees, that is, trees with potentially infinitely long branches.
 \begin{definition}\label[definition]{def:container}
   A \define{container}\index{Container} (sometimes called a
   \define{signature}\index{Signature} by analogy, see
-  \cref{rmk:universal-algebra}) is a pair $(A,B)$ of a type
+  \cref{rmk:universal-algebra}) is a pair $\dpair{A}{B}$ of a type
   $A:\universe$ and a family $B:A→\universe$.
 \end{definition}
 Given a container, we can form the associated W- and M-types:
@@ -43,13 +43,13 @@ $b:\apply{B}{a}\to \W{x}{A}{B}$ which picks out its subtrees.
 \begin{equation*}
   \prftree[r]{}
     {Γ ⊢ a:A}
-    {Γ ⊢ b:B(a)\to \W{x}{A}{B}}
+    {Γ ⊢ b:\apply{B}{a}\to \W{x}{A}{B}}
     {Γ ⊢ \sup{a}{b}:\W{x}{A}{B}}
 \end{equation*}
 Martin-Löf points out that a ``bottom'' or ``leaf'' element can be given by
 taking one of the $\apply{B}{a}$ to be $\emptytype$ and the subtree-function to
 be the one provided by $\rec_{\emptytype}$ (example in
-\cref{ex:nat-w})\cite{martin-lof-itt}.
+\cref{ex:nat-w}) \cite{martin-lof-itt}.
 
 The typographically-challenging elimination rule\index{Elimination!For W-types}
 for W-types encodes transfinite induction. If, when a property
@@ -60,7 +60,7 @@ for that node, then it holds for any element in $\W{a}{A}{B}$:
     {Γ ⊢ w:\W{a}{A}{B}}
     {\prftree[r, noline]{}
       {Γ,\quad a:A,\quad f:\apply{B}{a}→\W{a}{A}{B},\quad g:\∏{b:\apply{B}{a}}{\apply{C}{(\apply{f}{b})}}}
-      {⊢\apppply{h}{a}{f}{g}: C(\sup{a}{f})}}
+      {⊢\apppply{h}{a}{f}{g}: \apply{C}{(\sup{a}{f})}}}
     {Γ ⊢ \appply{\recW}{w}{h}:\apply{C}{w}}
 \end{equation*}
 As a function:
@@ -130,7 +130,7 @@ As a function:
     \prftree[r]{}
       {Γ ⊢ n:\N'}
       {\prftree[r, noline]{}
-        {Γ⊢h_1: C(0_{\N'})}}
+        {Γ⊢h_1: \apply{C}{0_{\N'}}}}
       {\prftree[r, noline]{}
         {Γ, f:\unittype→\N',g:\∏{\unitelem:\unittype}\apply{C}{(\apply{f}{\unitelem)}}}
         {⊢\appply{h_2}{f}{g}: \apply{C}{(\sup{\btrue}{f})}}}
@@ -153,24 +153,24 @@ include all examples in \cref{sec:functors-and-their-algebras}.
 
 \begin{definition}[\unimathname{PolynomialFunctors.polynomial\_functor}]
   \label[definition]{def:polynomial-functor}
-  Given a container $S\defeq (A,B)$, its associated \define{polynomial functor}
+  Given a container $\dpair{A}{B}$, its associated \define{polynomial functor}
   is the function
   \begin{gather*}
     P_{A,B}:\universe\to \universe \\
-    \apply{P_{A,B}}{X}\defeq\∑{a:A}{B(a)\to X}
+    \apply{P_{A,B}}{X}\defeq\∑{a:A}{\apply{B}{a}\to X}
   \end{gather*}
   I will regularly leave off the subscript for $P$.
   The \define{action} of $P$ on functions is
   \begin{gather*}
-    P^* : (X\to Y)\to P_{A,B}(X)\to P_{A,B}(Y) \\
-    \apply{P^*f}{(a,g)}\defeq (a,g∘f).
+    P^* : (X\to Y)\to \apply{P}{X}\to \apply{P}{Y} \\
+    \appply{P^*f}{a}{g}\defeq \dpair{a}{g∘f}.
   \end{gather*}
 \end{definition}
 
 \begin{remark}
 	Technically, polynomial functors aren't functors, since $\universe$ isn't
   a category (the whole point of the univalent perspective is that it behaves
-  more like a weak higher category). It has functorial properties only up to
+  more like a higher category). It has functorial properties only up to
   \textit{propositional} equality (as in \cref{def:functor-tt}), which will
   suffice for the following proofs. That is, we have
   \begin{align*}
@@ -182,15 +182,16 @@ include all examples in \cref{sec:functors-and-their-algebras}.
 
 \begin{definition}\label[definition]{def:algebra-coalgebra-in-utt}
   Exactly as in \cref{def:f-coalgebra}, the type of (co)algebras for a
-  polynomial functor $P$ associated to a container $(A,B)$ is defined as follows:
+  polynomial functor $P$ associated to a container $\dpair{A}{B}$ is defined as
+  follows:
   \begin{align*}
     \Algtype_P\≔\∑{A:\universe}{PA→A} && \Coalgtype_P\≔\∑{A:\universe}{A→PA}
   \end{align*}
   and coalgebra morphisms as
   \begin{align*}
-    \ttfun{CoalgMor}((X,α),(Y,β))
-    &\≔ (X,α)⇒(Y,β) \\
-    &\≔ \∑{f:X→Y}{(\apply{P}{f})∘α = β∘f}
+    \appply{\ttfun{CoalgMor}}{\dpair{X}{α}}{\dpair{Y}{β}}
+    &\≔ \dpair{X}{α}⇒\dpair{Y}{β} \\
+    &\≔ \∑{f:X→Y}{(\apply{P^*}{f})∘α = β∘f}
   \end{align*}
   with algebra morphisms defined dually \cite{homotopy-initial}.
 \end{definition}
@@ -201,7 +202,7 @@ initial.
 \section{Uniqueness}
 \label{sec:uniqueness}
 
-Fix a container $S\defeq (A,B)$ and let $P$ be the associated polynomial functor.
+Fix a container $\dpair{A}{B}$ and let $P$ be the associated polynomial functor.
 We will prove a few auxiliary lemmas on the way to the following result.
 This proof appeared in the \Agda{} formalization of \cite{non-wellfounded}, this
 is its first appearance ``de-formalized''.
@@ -224,10 +225,9 @@ First, we'll show that their carriers are equivalent:
 
 \begin{lemma}[\unimathname{M.Uniqueness.M\_carriers\_iso}]
   \label[lemma]{lemma:algebra-iso-equiv}
-	If $(X,α)$ and $(Y,β)$ are terminal $P$-coalgebras,
+	If $\dpair{X}{α}$ and $\dpair{Y}{β}$ are terminal $P$-coalgebras,
   then the first projections of the unique coalgebra morphisms
-  $f:X⇒ Y$ and $g:Y⇒ X$ induce
-  an equivalence of types $\weq{X}{Y}$.
+  $f:X⇒ Y$ and $g:Y⇒ X$ induce an equivalence of types $\weq{X}{Y}$.
 \end{lemma}
 
 The proof is standard category theory, namely that two objects
@@ -266,19 +266,19 @@ constructed in \cref{lemma:algebra-iso-equiv}.
     &\propeq{}{
       \transport{F}{p}{\apply{f}{x}}
     }{
-      g({\transport{\id_{\universe}}{p}{x}})
+      \apply{g}{({\transport{\id_{\universe}}{p}{x}})}
     } \\
     &\implies
     \propeq{}{
       \transport{F}{\refl{X}}{\apply{f}{x}}
     }{
-      g({\transport{\id_{\universe}}{\refl{X}}{x}})
+      \apply{g}{({\transport{\id_{\universe}}{\refl{X}}{x}})}
     } \\
     &\implies
     \propeq{}{\apply{f}{x}}{\apply{g}{x}}
   \end{align*}
   so by function extensionality $f=g$. Again by definition of transport,
-  $\transport{Z↦ (Z\to FZ)}{\refl{X}}{f} \jdeq f=g$.
+  $\transport{Z↦ (Z\to FZ)}{\refl{X}}{f} \jdeq (f=g)$.
 \end{proof}
 
 To complete the proof that the transported coalgebra maps are equal, we'll need
@@ -288,32 +288,30 @@ the following auxiliary result:
   For all $X,Y:\universe$ and $p:\propeq{}{X}{Y}$,
   \begin{equation*}
     \propeq{}{
-      P^*\paren{\transpor{\id_{\universe}}{p}}
+      \apply{P^*}{\paren{\transpor{\id_{\universe}}{p}}}
     }{
       \transpor{P}{p}
     }
   \end{equation*}
-  Note that $P^*$ is applied to the function $\transpor{\id_{\universe}}{p}$
-  before it gets applied to its second argument.
 \end{lemma}
 \begin{proof}
   By the elimination rule for the identity type,
   (\cref{subsec:identity-elimination}), it suffices to assume that $X\jdeq Y$
   and that $p\jdeq\refl{X}$. Then
   \begin{align*}
-    P^*\paren*{\transpor{\id_{\universe}}{p}}
-    &\jdeq P^*\paren*{\transpor{\id_{\universe}}{\refl{X}}}
+    \apply{P^*}{\paren*{\transpor{\id_{\universe}}{p}}}
+    &\jdeq \apply{P^*}{\paren*{\transpor{\id_{\universe}}{\refl{X}}}}
     && \text{Identity elim.} \\
-    &\jdeq P^*\paren{\id_X}
+    &\jdeq \apply{P^*}{\id_X}
     && \text{\Cref{lemma:transport}} \\
-    &\jdeq \λ{(a,f)}{(a,f∘ \id_X)}
+    &\jdeq \λ{\dpair{a}{f}}{\dpair{a}{f∘ \id_X}}
     && \text{\Cref{def:polynomial-functor}} \\
-    &\jdeq \λ{(a,f)}{(a,f)} \\
-    &\jdeq \id_{PX}
+    &\jdeq \λ{\dpair{a}{f}}{\dpair{a}{f}} \\
+    &\jdeq \id_{\apply{P}{X}}
     && \text{\Cref{def:id-polymorphic}} \\
     &\jdeq \transpor{\id_{\universe}}{\refl{PX}}
     && \text{\Cref{lemma:transport}} \\
-    &\jdeq \transpor{\id_{\universe}}{\ap{P}{\refl{X}}}
+    &\jdeq \transpor{\id_{\universe}}{(\appply{\ap}{P}{\refl{X}})}
     && \text{\Cref{lemma:ap}} \\
     &\jdeq \transpor{P}{\refl{X}}
     && \text{\Cref{lemma:transport-compose}} \\
@@ -326,7 +324,7 @@ the following auxiliary result:
   Let:
   \begin{itemize}
     \itemsep0em
-    \item $(X,α)$, $(Y,β)$ be terminal $P$-coalgebras,
+    \item $\dpair{X}{α}$, $\dpair{Y}{β}$ be terminal $P$-coalgebras,
     \item $f:X⇒ Y$ and $g:Y⇒ X$ be the unique $P$-coalgebra
       morphisms between them,
     \item $q:\weq{X}{Y}$ the equivalence of types induced by $f$ and $g$
@@ -338,30 +336,30 @@ the following auxiliary result:
     equality, we couldn't \transportname{} $α$ to $β$ in the next step.
     This step also demonstrates that function extensionality alone doesn't
     suffice.}
-  To demonstrate that $\propeq{}{(X,α)}{(Y,β)}$, we invoke the
+  To demonstrate that $\propeq{}{\dpair{X}{α}}{\dpair{Y}{β}}$ we invoke the
   characterization of paths in $Σ$-types, \cref{lemma:path-sigma}. It
   remains to show
   \begin{equation*}
-    \propeq{(Y\to PY)}{\transport{Z↦ (Z\to PZ)}{\apply{\ua}{q}}{α}}{β}.
+    \propeq{(Y\to PY)}{\transport{Z↦ (Z\to PZ)}{(\apply{\ua}{q})}{α}}{β}.
   \end{equation*}
   but by \cref{lemma:polynomial-functor-transport}, it suffices to show that
   for all $x:X$,
   \begin{equation*}
     \propeq{}{
-      \transport{P}{\apply{\ua}{q}}{\apply{α}{x}}
+      \transport{P}{(\apply{\ua}{q})}{\apply{α}{x}}
     }{
-      β(\transport{\id_\universe}{p}{x})
+      \apply{β}{(\transport{\id_\universe}{p}{x}})
     }.
   \end{equation*}
   % Lemma 2 in HoTT/M-types
   First, note that
   \begin{align*}
     \transpor{P}{\apply{\ua}{q}}
-    &= P^*\paren{\transpor{\id_{\universe}}{\apply{\ua}{q}}}
+    &= \apply{P^*}{\paren{\transpor{\id_{\universe}}{(\apply{\ua}{q})}}}
     && \text{\Cref{lemma:polynomial-functor-transport}} \\
-    &= P^*q
+    &= \apply{P^*}{q}
     && \text{\Cref{def:ua}} \\
-    &= P^*(\appr{1}{f})
+    &= \apply{P^*}{(\appr{1}{f})}
     && \text{\Cref{lemma:algebra-iso-equiv}}
   \end{align*}
   The last step utilizes the idea of \textit{proof-relevant
@@ -370,16 +368,16 @@ the following auxiliary result:
   use of \cref{notation:weq-coerce}. Working from the other side of the
   equation, we can use the computation rule for univalence (\cref{def:ua}):
   \begin{align*}
-    β(\transport{\id_\universe}{(\apply{\ua}{q})}{x})
-    = β(\apply{q}{x})
-    = β({\appr{1}{f}}{x})
+    \apply{β}{(\transport{\id_\universe}{(\apply{\ua}{q})}{x})}
+    = \apply{β}{(\apply{q}{x})}
+    = \apply{β}{(\apply{(\appr{1}{f})}{x})}
   \end{align*}
   Thus, we now want to demonstrate that
   \begin{align*}
-    P^*(\appr{1}{f})(α x) &=
-    \transport{P}{\apply{\ua}{q}}{\apply{α}{x}} \\
-    &= β(\transport{\id_\universe}{p}{x}) \\
-    &= β({\appr{1}{f}}{x})
+    \appply{P^*}{(\appr{1}{f})}{(\apply{α}{x})} &=
+    \transport{P}{(\apply{\ua}{q})}{(\apply{α}{x})} \\
+    &= \apply{β}{(\transport{\id_\universe}{p}{x})} \\
+    &= \apply{β}{(\apply{(\appr{1}{f})}{x})}
   \end{align*}
   However, this is exactly the condition that $f$ is a $P$-coalgebra morphism
   \cref{def:coalgebra-morphism}:
@@ -424,20 +422,18 @@ endofunctors.
 \begin{definition}[\unimathname{W.Fibered.fibered\_alg},
                    \unimathname{W.Fibered.algebra\_section}]
   \label[definition]{def:algebra-fibration}
-  Inspired by the homotopical semantics for \UTT{},
-  if $(X,α)$ is an algebra for the functor associated to $(A,B)$,
+  If $\dpair{X}{α}$ is an algebra for $P_{A,B}$,
   the type of \define{fibered $P$-algebras} over $X$ is
   \begin{equation*}
-    \Fibalgtype(X)\≔
+    \apply{\Fibalgtype}{X}\≔
     \∑{E:X→\universe}
     {\∏{\dpair{x}{h}:P_{A,B}X}{
       \paren{\∏{b:\apply{B}{x}}{\apply{E}{(\apply{h}{b})}}}
       → \apply{E}{(\apply{\alpha}{\dpair{x}{h}})}
-    }}
+    }}.
   \end{equation*}
-  an \define{algebra fibration}.
   % ((∑ (f : forall x, E x), forall a, f (c a) = e a (f ∘ (pr2 a)))).
-  An \define{algebra section} for an algebra fibration $(E,θ)$ is a pair
+  An \define{algebra section} for a fibered algebra $\dpair{E}{θ}$ is a pair
   \begin{equation*}
     \∑{f:\∏{x:X}{\apply{E}{x}}}
     \∏{x:P_{A,B}X}
@@ -454,15 +450,15 @@ endofunctors.
   Any $P$-algebra can be made into a fibered $P$-algebra over $(X,α)$ by using a
   constant family:
   \begin{align*}
-    \Algtype_P &\longrightarrow \Fibalgtype(X) \\
+    \apply{\Algtype}{P} &\longrightarrow \apply{\Fibalgtype}{X} \\
     \dpair{Y}{β} &\longmapsto
                 \dpair{\λ{x}{Y}} {\λ{x}{\λ{f}{\apply{β}{\dpair{\appr{1}{x}}{f}}}}}
   \end{align*}
   Since the $x$ in the argument to the second coordinate is of type
   $P_{A,B}X\jdeq \∑{a:A}\apply{B}{a}→X$ and $f:\apply{B}{(\appr{1}{x})}→Y$, the pair
   $\dpair{x}{f}$ has type $P_{A,B}Y\jdeq \∑{a:A}\apply{B}{a}→Y$, which can then be
-  sent via $β$ to $Y$. This matches our expectation that a non-dependent
-  $\ttfun{foo}$ should be a generalization of a dependent $\ttfun{foo}$.
+  sent via $β$ to $Y$. This matches our expectation that a dependent
+  $\ttfun{foo}$ should be a generalization of a non-dependent $\ttfun{foo}$.
   In turn, any fibered algebra with family $E:X→\universe$ can be turned into a
   non-fibered algebra over the ``total space'' $\∑{x:X}\apply{E}{x}$.
 \end{example}
@@ -519,9 +515,9 @@ they are initial, some of which will be familiar from
   \begin{align*}
     &η : Pℕ → ℕ &&\\
     &\apply{η}{\dpair{\bfalse}{g}} \defeq 0
-    &&\quad(\text{In this case,  }g:\𝟘 → X) \\
+    &&\quad(\text{In this case,  }g:\𝟘 → ℕ) \\
     &\apply{η}{\dpair{\btrue}{g}}  \defeq \apply{\suc}{(\apply{g}{\unitelem})}
-    &&\quad(\text{In this case,  }g:\𝟙 → X) \\
+    &&\quad(\text{In this case,  }g:\𝟙 → ℕ) \\
   \end{align*}
 \end{example}
 
