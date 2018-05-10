@@ -4,7 +4,7 @@
 
 \usepackage{unicode-math}         % use OTF math fonts
 \setoperatorfont\mathup % operators should be set in math font
-% \AtBeginDocument{\let\setminus\minus}
+\AtBeginDocument{\let\setminus\minus}
 
 % \ExplSyntaxOn % fix xmapsto. https://github.com/wspr/unicode-math/issues/197
 % \RenewDocumentCommand \xmapsto { m } {
@@ -19,12 +19,9 @@
 % Tex Gyre Schola Math -  unpretentious, serif (good for \mathbb)
 % Latin Modern Math -  update of Computer Modern, a little thicker (good for \mathcal)
 % Asana Math -  the only font with the correct \setminus
-% \setmathfont{Latin Modern Math}
-\setmathfont{Tex Gyre Pagella Math}
-\setmathfont[range=\mathcal]{Latin Modern Math}
-% \setmathfont[range=\mathcal]{Tex Gyre Schola Math}
-% \setmathfont[range=\mathbb]{Tex Gyre Schola Math}
-% \setmathfont[range=\setminus]{Asana Math}
+\setmathfont{texgyrepagella-math.otf}
+% \setmathfont{TeX Gyre Pagella Math}
+% \setmathfont[range=\mathcal]{Latin Modern Math}
 
 % A good, casual math font:
 % \usepackage{mathpazo}
