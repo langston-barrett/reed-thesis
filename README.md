@@ -2,10 +2,9 @@
 
 <!-- [![Build Status](https://travis-ci.org/siddharthist/reed-thesis.svg?branch=master)](https://travis-ci.org/siddharthist/reed-thesis) -->
 
-This repo holds my undergraduate thesis, which is focused on adding "internal"
-M-types (and maybe W-types) to the [UniMath](https://github.com/UniMath/UniMath)
-library. See this paper for
-details:
+This repo holds my undergraduate thesis (completed in May 2018), which focused
+on adding "internal" M-types to the
+[UniMath](https://github.com/UniMath/UniMath) library. See this paper for details:
 ["Non-wellfounded Trees in Homotopy Type Theory"](https://arxiv.org/abs/1504.02949).
 
 ## Directory Structure
@@ -20,10 +19,6 @@ details:
  - `notes/` contains LaTeX notes on various subjects at the level of detail I required at the time (no attempt to be comprehensive nor expository has been made).
     * `notes/hott-figures` is a bunch of Tikz drawings corresponding to lemmas and theorems in the HoTT book
  - `tex-preamble/` is a collection of LaTeX files that are useful to `\input{}` at the beginning of documents.
-
-## A Note on Continuous Integration
-
-While I would've loved to use Travis CI to check Coq files and compile LaTeX, the time it takes to download and compile _either_ [HoTT/HoTT](https://github.com/HoTT/HoTT) _or_ TeXLive is prohibitive.
 
 ## Work elsewhere
 
