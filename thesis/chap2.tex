@@ -127,7 +127,7 @@ unicity rules are also generalizations of those for normal functions types:
     {Γ ⊢ \apply{(\λ{a}{b})}{x}\jdeq b[a\defeq x]:\apply{B}{a}} \\
   \prftree[r]{η}
     {Γ ⊢ f : \pitt{a:A}{\apply{B}{a}}}
-    {Γ ⊢ \λ{x}{\apply{f}{x}}\jdeq f:\pitt{a:A}{\apply{B}{a}}}
+    {Γ ⊢ \λ{x}{\apply{f}{x}}\jdeq f:\pitt{a:A}{\apply{B}{x}}}
 \end{gatherjot}
 
 Under the types-as-propositions interpretation, Π-types correspond to universal
@@ -234,7 +234,7 @@ subsume Haskell- and ML-style parametric polymorphism.\footnote{Those familiar
   with theories such as System F will recognize the next definition, although we
   write lowercase λ for type inputs as well as term inputs. Why? We couldn't do
   otherwise: there is no syntactic distinction.} Accordingly, we now have the
-power to write an \textit{single} identity function that works for
+power to write a \textit{single} identity function that works for
 \textit{all} types.
 
 \begin{definition}\label[definition]{def:id-polymorphic}
@@ -619,7 +619,7 @@ and ``inversion'' operations:
 
 It's great that $\propeqsign$ turns out to be an equivalence relation. However,
 many kinds of isomorphism are equivalence relations as well. What else might one
-expect from a relation claiming to represent \textit{identity}? Identity it is
+expect from a relation claiming to represent \textit{identity}? Identity is
 the ultimate congruence, the equivalence relation that \textit{everything}
 respects. The next lemma formalizes this intuition.
 
@@ -773,7 +773,7 @@ The rules for Σ-types generalize those for direct products in much the same way
   \qquad
   \prftree[r]{}
     {Γ ⊢ {x}:\sigmatt{a:A}{\apply{B}{a}}}
-    {Γ ⊢ \appr{2}{x}:A} \\
+    {Γ ⊢ \appr{2}{x}:\apply{B}{(\appr{1}{x})}} \\
   \prftree[r]{βΣ\textsubscript{l}}
     {Γ ⊢ b:\apply{B}{a}}
     {Γ ⊢ a:A}
@@ -782,7 +782,7 @@ The rules for Σ-types generalize those for direct products in much the same way
   \prftree[r]{βΣ\textsubscript{r}}
     {Γ ⊢ b:\apply{B}{a}}
     {Γ ⊢ a:A}
-    {Γ ⊢ \appr{2}{\dpair{a}{b}}\jdeq b:A}  \\
+    {Γ ⊢ \appr{2}{\dpair{a}{b}}\jdeq b:\apply{B}{a}}  \\
   \prftree[r]{η}
     {Γ ⊢ x : \sigmatt{a:A}{\apply{B}{a}}}
     {Γ ⊢ \dpair{\appr{1}{x}}{\appr{2}{x}}\jdeq x:\sigmatt{a:A}{\apply{B}{a}}}

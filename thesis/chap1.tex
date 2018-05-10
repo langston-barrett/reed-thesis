@@ -91,7 +91,32 @@ when discussing and defining formal systems for logic and computation.
 
 \begin{figure}
   \centering
-  \includegraphics[scale=1.1]{figures/nested-languages.pdf}
+  \begin{tikzpicture}[scale=2]
+    \node[draw, rounded corners, minimum width=8cm, minimum height=6cm]
+      (eng) at (0, 0) {};
+    \node[below right, inner sep=0pt, xshift=0.2cm, yshift=-0.2cm]
+      at (eng.north west) {\textbf{English}};
+    \node[below right, inner sep=0pt, xshift=0.5cm, yshift=-0.9cm, align=left]
+      at (eng.north west)
+      {``No consistent formal system that contains a certain amount of \\
+        \hspace{0.3em} arithmetic can prove its own consistency.''};
+
+    \node[draw, rounded corners, minimum width=6cm, minimum height=4cm]
+      (zfc) at (0.4, -0.46) {};
+    \node[below right, inner sep=0pt, xshift=0.2cm, yshift=-0.2cm]
+      at (zfc.north west) {\textbf{FOL+ZFC}};
+    \node[below right, inner sep=0pt, xshift=0.5cm, yshift=-0.9cm, align=left]
+      at (zfc.north west)
+      {``Peano Arithmetic is consistent.''};
+
+    \node[draw, rounded corners, minimum width=4cm, minimum height=2cm]
+      (pa) at (0.7, -0.78) {};
+    \node[below right, inner sep=0pt, xshift=0.2cm, yshift=-0.2cm]
+      at (pa.north west) {\textbf{Peano Arithmetic}};
+    \node[below right, inner sep=0pt, xshift=0.5cm, yshift=-0.9cm, align=left]
+      at (pa.north west)
+      {``$∀ x. ∃ y. x + 1 = y$''};
+  \end{tikzpicture}
   \caption{\label{fig:nested}Nested languages, formal and informal. Outer boxes
     are meta-languages, inner boxes are object languages.}
 \end{figure}
@@ -154,7 +179,7 @@ of uses of metavariables.
   The premises and conclusions of proofs or rules of deduction are always
   judgments. A deduction of a conclusion $K$ from premises $J_1,\ldots,J_n$
   via some rule R (again: $J_1,\ldots,J_n$ and $K$ are \textit{judgments},
-  phrased in plain Enlgish, not terms of an object language)\footnote{These
+  phrased in plain English, not terms of an object language)\footnote{These
     could be called meta-metavariables.},
   is written
   \begin{align*}
@@ -558,8 +583,8 @@ deduce the consequence:
 \end{align*}
 The elimination rule for falsehood comes from the principle
 \textit{ex falso quod libet}, ``from falsehood anything follows'' (also more
-dramatically called the ``principle of explosion''). If we've been
-able to prove $⊥$, our whole logic is bankrupt (or we're doing a proof by
+dramatically called the ``principle of explosion''). If we've 
+proven $⊥$, our whole logic is bankrupt (or we're doing a proof by
 contradiction), we can derive anything we please:
 \begin{align*}
   \prftree[r]{}
@@ -596,7 +621,7 @@ represent propositions.
   \begin{equation*}
     \prftree[r]{\footnotesize LEM}
       {Γ ⊢ \prop{\mvar{a}}}
-      {Γ ⊢ \apply{\ttfun{lem}}{\mvar{a}}:\true{\mvar{a}\lor\lnot\mvar{a}}}.
+      {Γ ⊢ \apply{\ttfun{lem}}{\mvar{a}}:\mvar{a}\lor\lnot\mvar{a}}.
   \end{equation*}
   It is inter-derivable with the rule of \define{double negation elimination}:
   \index{Double negation elimination}
@@ -801,7 +826,7 @@ The term $\mvar{p}\≡\mvar{q}:\mvar{a}$ should never be read as a proof of
 $\mvar{a}$. Since it is a congruence, none of the rules of \IPL{} can distinguish
 judgmentally equal terms. Thus, if $\mvar{p}\jdeq\mvar{q}:\mvar{a}$, then we can
 write $\mvar{q}$ for $\mvar{p}$ anywhere in an \IPL{} derivation without
-changing the meaning.\footnote{This ``indiscerniblility'' is implemented as a
+changing the meaning.\footnote{This ``indiscernibility'' is implemented as a
   rule in \UTT{} in \cref{subsec:the-identity-type}, after we
   \textit{internalize} the notion of judgmental equality.}
 
@@ -823,7 +848,7 @@ wasn't given to an introduction rule.
 One worry we might have when designing our logic is that our propositions have
 proofs of a non-standard form. We might \textit{think} that every proof of
 $\mvar{a}∧\mvar{b}$ has the form $(\mvar{p},\mvar{q})$ for $\mvar{p}:\mvar{a}$ and
-$\mvar{q}:\mvar{b}$, but how do we \textit{know}? The answer was is in
+$\mvar{q}:\mvar{b}$, but how do we \textit{know}? The answer is in
 following \define{unicity rules}\index{Unicity rules}, (also known as
 \define{η-rules} or \define{uniqueness principles}):
 \begin{gatherjot}
@@ -984,7 +1009,7 @@ binding.} We will again need a countably infinite set of variables $v,w,\ldots$:
     {Γ ⊢ \term{\apply{\mvar{a}}{\mvar{b}}}}}
   &&
   {\prftree[r]{}
-    {Γ ⊢ \mvar{a}}
+    {Γ ⊢ \term{\mvar{a}}}
     {Γ ⊢ \term{\lam{v}{\mvar{a}}}}}
 \end{align*}
 In short, we have variables, application of one term to another, and
@@ -1263,13 +1288,12 @@ Variables may stand in for terms of arbitrary type.
 \end{theorem}
 
 \begin{example}
-	Recall the problematic term of \cref{ex:non-terminating}:
-  $⊥\≔ \λ{v}{\apply{v}{v}}$. Can the introduction rules assign this term a type?
-  To determine the overall type of $⊥$, we must determine the type of its
-  argument. Its argument gets applied to a term, so it must have a function type
-  $\mvar{a} → \mvar{b}$. However, since it is applied to
-  itself, it must have type $(\mvar{a} → \mvar{b}) → \mvar{b}$. But now it still
-  can't be applied to itself, so it must have type
+	Recall the problematic term $\bot$ of \cref{ex:non-terminating}.
+  Can the introduction rules assign this term a type? To determine the overall
+  type of $⊥$, we must determine the type of its argument. Its argument gets
+  applied to a term, so it must have a function type $\mvar{a} → \mvar{b}$.
+  However, since it is applied to itself, it must have type $(\mvar{a} → \mvar{b})
+  → \mvar{b}$. But now it still can't be applied to itself, so it must have type
   $((\mvar{a} → \mvar{b}) → \mvar{b}) → \mvar{b}$. Of course, this problem
   persists no matter how many layers are added, and leads us to the following
   conclusion: no well-typed term may be applied to itself.
@@ -1452,15 +1476,15 @@ at in the introduction.
       & Judg.\ eq.\ ($A\≡ B$)
       & Equality ($A=B$)
       & Equality ($A=B$) \\
-    Path $f:[0,1]→X$
+    Path ($f:[0,1]→X$)
       &
       & Prop. eq.\ ($\propeq{A}{a}{b}$)
       & Equality ($A=B$)
       & Path \\
     {}
       & {}
-      & Weak equiv.\ $\weq{A}{B}$
-      & Isomorphism $A≅B$
+      & Weak equiv.\ ($\weq{A}{B}$)
+      & Isomorphism ($A≅B$)
       & Equivalence $A\simeq B$ \\
     Universal q.\ ($∀x.Px$)
       & {}

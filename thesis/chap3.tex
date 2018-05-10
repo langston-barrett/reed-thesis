@@ -103,7 +103,7 @@ The presentation of the following examples owes a lot to \cite{context}.
       requisite identities.
     \item For any preorder $(A,≤)$ (a collection with a reflexive, transitive
       binary relation), there is a category $\bfC(A)$ which has as objects the
-      elements of $A$ and an arrow $a→b$ just if $a≤b$.
+      elements of $A$ and an arrow $a\catarrow b$ just if $a≤b$.
       Conversely, any category with at most one arrow between any two objects
       defines a preorder.
     \item The category $\ω$ is the preorder category $\bfC(\ℕ)$, that is,
@@ -347,7 +347,7 @@ Ultimately, M-types are constructed as limits.
         A \& C \arrow[l, "p_1"]\arrow[r,swap, "p_2"] \& B
       \end{tikzcd}
     \end{center}
-    A product of $A$ and $B$ is denoted by $A\times B$, and the unque arrow $u$
+    A product of $A$ and $B$ is denoted by $A\times B$, and the unique arrow $u$
     as $\langle f,g \rangle$.
   }{
     a \define{(binary) coproduct}\index{Coproduct!In a category} of $A$ and $B$
@@ -404,7 +404,6 @@ Ultimately, M-types are constructed as limits.
         \itemsep-0.2em
         \item{} \vspace{-0.6em} [\unimathname{categories.Types.BinProductsType}]
           The product type $A×B$ with its projections is a product.
-          (See \label[lemma]{lemma:universe-binproducts}).
         \item{} [\unimathname{categories.Types.BinCoproductsType}]
           The coproduct type $A+B$ with its injections is a coproduct.
           The universal property is guaranteed by $\rec_{A+B}$, and can be 
@@ -633,11 +632,11 @@ generalizes: any (co)limits are unique up to specified isomorphism.
          &≅\braces{b∈B:\apply{f}{b}∈S},
       \end{align*}
       which is the inverse image of $S$ under $f$, denoted
-      $\apply{f^{-1}}{V}$.\footnote{The notation
+      $\apply{f^{-1}}{S}$.\footnote{The notation
         $f^{-1}$ generalizes the notation for the inverse of a function.
-        We can consider $f^{-1}$ to be a function $C→\caP(A)$ into the powerset---
-        the set of all subsets---of $A$. In the case that $f$ is bijective,
-        it sends each $c∈C$ to a singleton, and defines a function $C→A$,
+        We can consider $f^{-1}$ to be a function $C→\caP(B)$ into the powerset---
+        the set of all subsets---of $B$. In the case that $f$ is bijective,
+        it sends each $c∈C$ to a singleton, and defines a function $C→B$,
         also denoted $f^{-1}$.}
       Thus, the inverse image of $C$ under $f$ is the pullback of the inclusion
       along $f$.
@@ -1018,7 +1017,7 @@ category, called $F\Coalg$.
     An \define{initial $F$-algebra}\index{Initial algebra} is an initial
     object of $F\Alg$.
   }{
-    An \define{terminal $F$-coalgebra}\index{Terminal coalgebra} is a terminal
+    A \define{terminal $F$-coalgebra}\index{Terminal coalgebra} is a terminal
     object of $F\Coalg$ (these are more commonly known as
     \define{final coalgebras} in the computer science literature).
   }
